@@ -38,3 +38,5 @@ jobs:
         run: python3 scripts/test-navigation-browser.py
       - name: Smoke test non-empty accounting snapshot and financial invariants
         run: python3 scripts/test-persisted-data-browser.py
+      - name: Check backup integrity, tamper rejection, scoped restore in browser
+        run: python3 scripts/test-backup-integrity-browser.py
