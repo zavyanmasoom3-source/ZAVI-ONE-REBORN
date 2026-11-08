@@ -1,0 +1,129 @@
+name: REBORN clean Android QA builds
+
+on:
+  push:
+    branches: [dev]
+    paths:
+      - 'apps/**'
+      - 'packages/**'
+      - 'android-build/**'
+      - 'scripts/**'
+      - 'supabase/**'
+      - '.github/workflows/build-pdf-qa.yml'
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  android-qa:
+    name: QA Android ${{ matrix.app }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        app: [one, admin]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Block incomplete migrations
+        run: python3 scripts/check-migration-integrity.py
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.13'
+      - name: Configure Android SDK
+        shell: bash
+        run: |
+          set -euo pipefail
+          SDK_ROOT="${ANDROID_SDK_ROOT:-${ANDROID_HOME:-/usr/local/lib/android/sdk}}"
+          test -d "$SDK_ROOT"
+          echo "ANDROID_HOME=$SDK_ROOT" >> "$GITHUB_ENV"
+          echo "ANDROID_SDK_ROOT=$SDK_ROOT" >> "$GITHUB_ENV"
+          SDKMANAGER="$SDK_ROOT/cmdline-tools/latest/bin/sdkmanager"
+          if [[ ! -x "$SDKMANAGER" ]]; then
+            SDKMANAGER=$(find "$SDK_ROOT/cmdline-tools" -type f -name sdkmanager -print -quit 2>/dev/null || true)
+          fi
+          test -x "$SDKMANAGER"
+          yes | "$SDKMANAGER" --sdk_root="$SDK_ROOT" --licenses >/dev/null || true
+          "$SDKMANAGER" --sdk_root="$SDK_ROOT" "platforms;android-36" "build-tools;36.0.0"
+      - name: Bootstrap Gradle wrapper
+        run: |
+          gradle wrapper --gradle-version 8.13 --distribution-type bin --no-validate-url --no-daemon
+          test -s gradle/wrapper/gradle-wrapper.jar
+          chmod +x ./gradlew
+      - name: Stage app and shared assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf android-build/app/src/main/assets
+          mkdir -p android-build/app/src/main/assets
+          cp -a "apps/${{ matrix.app }}/." android-build/app/src/main/assets/
+          mkdir -p android-build/app/src/main/assets/packages/shared
+          cp -a packages/shared/. android-build/app/src/main/assets/packages/shared/ || true
+          for shared_file in database/supabase-config.js security/access-contract.js i18n/language-core.js; do
+            mkdir -p "android-build/app/src/main/assets/packages/shared/$(dirname "$shared_file")"
+            cp "packages/shared/$shared_file" "android-build/app/src/main/assets/packages/shared/$shared_file"
+          done
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('android-build/app/src/main/assets/index.html')
+          s=p.read_text(encoding='utf-8')
+          # The app source may already use the packaged path or the web-host path.
+          s=s.replace('../../packages/shared/','./packages/shared/')
+          s=s.replace('../packages/shared/','./packages/shared/')
+          p.write_text(s,encoding='utf-8')
+          print('staged shared modules:', list((Path('android-build/app/src/main/assets/packages/shared')).rglob('*'))[:20])
+          PY
+          printf '{"commit":"%s","app":"%s","run":"%s"}\n' "$GITHUB_SHA" "${{ matrix.app }}" "$GITHUB_RUN_NUMBER" > android-build/app/src/main/assets/zavi-build-info.json
+          test -s android-build/app/src/main/assets/zavi-build-info.json
+          mkdir -p android-build/app/src/main/res/drawable-nodpi android-build/app/src/main/res/values android-build/app/src/main/res/xml
+          cp "apps/${{ matrix.app }}/icon-192.png" android-build/app/src/main/res/drawable-nodpi/zavi_launcher_image.png
+          printf '%s\n' '<resources><style name="ZaviTheme" parent="android:style/Theme.Material.Light.NoActionBar"><item name="android:windowLightStatusBar">false</item></style></resources>' > android-build/app/src/main/res/values/styles.xml
+          printf '%s\n' '<?xml version="1.0" encoding="utf-8"?><paths xmlns:android="http://schemas.android.com/apk/res/android"><cache-path name="camera" path="."/></paths>' > android-build/app/src/main/res/xml/zavi_camera_paths.xml
+      - name: Validate WebView source
+        run: |
+          python3 scripts/fix-webview-receipt.py
+          python3 scripts/validate-webview-html.py
+      - name: Clean Android build outputs
+        run: ./gradlew :app:clean -PzaviApp=${{ matrix.app }} -PzaviBuildNumber=${{ github.run_number }} --no-build-cache
+      - name: Assemble QA APK
+        run: ./gradlew :app:assembleDebug -PzaviApp=${{ matrix.app }} -PzaviBuildNumber=${{ github.run_number }} --stacktrace
+      - name: Verify unique identity, commit provenance and PDF assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          apk=$(find android-build/app/build/outputs/apk/debug -maxdepth 1 -type f -name '*.apk' -print -quit)
+          test -n "$apk"
+          unzip -p "$apk" assets/zavi-build-info.json | grep -F "$GITHUB_SHA"
+          if [[ "${{ matrix.app }}" == "one" ]]; then
+            unzip -l "$apk" | grep -F 'assets/zavi-pdf-final-v6760.css'
+          else
+            unzip -l "$apk" | grep -F 'assets/zavi-admin-pdf-final-v1467.css'
+          fi
+          AAPT="$ANDROID_SDK_ROOT/build-tools/36.0.0/aapt"
+          badging=$("$AAPT" dump badging "$apk")
+          printf '%s\\n' "$badging"
+          if [[ "${{ matrix.app }}" == "one" ]]; then
+            printf '%s\\n' "$badging" | grep -F "versionName='66.78-reborn.qa.${{ github.run_number }}'"
+          else
+            printf '%s\\n' "$badging" | grep -F "versionName='1.4.69-reborn.qa.${{ github.run_number }}'"
+          fi
+          mkdir -p final-apks
+          if [[ "${{ matrix.app }}" == "one" ]]; then
+            cp "$apk" final-apks/ZAVI_ONE_REBORN_QA.apk
+          else
+            cp "$apk" final-apks/ZAVI_ONE_ADMIN_REBORN_QA.apk
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ZAVI-ONE-REBORN-QA-${{ matrix.app }}
+          path: final-apks/*.apk
+          if-no-files-found: error
+          retention-days: 14
+
+# Private-repository QA builds only; never publish as final or create a release.
