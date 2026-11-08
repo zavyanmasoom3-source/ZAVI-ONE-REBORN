@@ -5,7 +5,7 @@
  */
 'use strict';
 const APK_ORIGIN='https://appassets.androidplatform.net';
-const CACHE_NAME='zavi-one-shell-reborn-20261108-r2';
+const CACHE_NAME='zavi-one-shell-reborn-20261108-r3';
 const SHELL_PROTOCOL='zavi-shell-v2';
 const CACHE_PREFIX='zavi-one-';
 const CORE=[
@@ -230,6 +230,8 @@ const CORE=[
   "zavi-barcode-label-v6700.js",
   "zavi-message-center-v6720.css",
   "zavi-message-center-v6720.js",
+  "zavi-safe-transfer-v1.css",
+  "zavi-safe-transfer-v1.js",
   "../../packages/shared/database/supabase-config.js",
   "../../packages/shared/security/access-contract.js",
   "../../packages/shared/i18n/language-core.js",
