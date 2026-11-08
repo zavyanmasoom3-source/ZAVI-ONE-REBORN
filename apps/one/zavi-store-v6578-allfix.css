@@ -1,0 +1,76 @@
+/* ZAVI ONE v65.78 — bug fixes, no business/accounting options removed. */
+html,body{box-sizing:border-box;max-width:100%;overflow-x:clip}
+#content,#content>*{box-sizing:border-box;min-width:0;max-width:100%}
+#content :is(.settings-card,.z76-profile-card,.z76-settings-groups,.z76-settings-group,.z652-card,.z652-devices,.z638-warehouse-scanner){box-sizing:border-box;min-width:0!important;max-width:100%!important}
+#content .z76-settings-groups{display:flex!important;flex-direction:column!important;gap:8px!important;width:100%!important;flex-wrap:nowrap!important}
+#content .z76-settings-group{display:block!important;flex:none!important;width:100%!important;max-width:100%!important;min-width:0!important;margin:0!important;border-radius:12px!important;overflow:hidden!important}
+#content .z76-settings-group>summary{display:flex!important;align-items:center!important;justify-content:space-between!important;width:100%!important;max-width:100%!important;min-height:45px!important;box-sizing:border-box!important;white-space:normal!important;overflow-wrap:anywhere!important;padding:10px 13px!important}
+#content .z76-group-body{box-sizing:border-box!important;width:100%!important;min-width:0!important;display:grid!important;grid-template-columns:minmax(0,1fr)!important;overflow-x:hidden!important;padding:8px!important}
+#content .z76-group-body>*{box-sizing:border-box!important;width:100%!important;max-width:100%!important;min-width:0!important}
+#content .z76-group-body :is(.settings-card,.card){min-height:0!important;height:auto!important;margin:0!important;padding:11px!important}
+#content .z76-group-body .form-grid{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))!important;gap:10px!important}
+#content .z76-group-body :is(input,select,button,textarea){box-sizing:border-box!important;min-width:0!important;max-width:100%!important;font-size:12px}
+#content .z76-profile-card :is(h3,p,label,button),#content .z76-settings-group :is(h3,p,label){overflow-wrap:anywhere}
+#content .z78-device-compact{margin:9px 0!important;padding:11px 12px!important;min-height:0!important;height:auto!important}
+#content .z78-device-compact .z652-title{gap:6px!important;align-items:center!important}
+#content .z78-device-compact .z652-title h3{font-size:13px!important;line-height:1.4!important;margin:0!important}
+#content .z78-device-compact .z652-title p{font-size:10px!important;line-height:1.45!important;margin:2px 0!important}
+#content .z78-device-compact .z652-actions{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:5px!important;margin:7px 0!important}
+#content .z78-device-compact .z652-actions button{box-sizing:border-box!important;min-height:36px!important;min-width:0!important;max-width:100%!important;white-space:normal!important;font-size:11px!important;padding:6px!important}
+#content .z78-device-compact .z652-status{font-size:11px!important;line-height:1.5!important;min-height:0!important;max-height:70px!important;overflow-y:auto!important;padding:7px 9px!important;margin:6px 0!important}
+#content .z78-device-compact .z652-devices{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))!important;gap:7px!important;min-height:0!important;max-height:280px!important;overflow-y:auto!important;overscroll-behavior:contain!important}
+#content .z78-device-compact .z652-item{margin:0!important;padding:9px!important;border-radius:10px!important}
+#content .z78-device-compact .z652-audit{margin-top:8px!important;padding-top:7px!important}
+#content .z78-device-compact .z652-warning{margin:7px 0!important;font-size:10px!important;line-height:1.55!important}
+/* All sections drawer is an actual viewport when opened, including compact display modes. */
+html body .z78-full-menu{position:fixed!important;inset:0!important;left:0!important;right:0!important;top:0!important;bottom:0!important;display:block!important;visibility:visible!important;box-sizing:border-box!important;transform:none!important;translate:none!important;scale:1!important;margin:0!important;width:100vw!important;max-width:100vw!important;height:100dvh!important;min-height:100dvh!important;max-height:100dvh!important;overflow-x:hidden!important;overflow-y:auto!important;overscroll-behavior:contain!important;z-index:214000!important;padding:12px max(12px,env(safe-area-inset-right)) max(75px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left))!important;background:var(--surface,#f5f8fd)!important;box-shadow:none!important;border:0!important;border-radius:0!important;direction:inherit!important}
+html body .z78-full-menu>*{max-width:100%!important;min-width:0!important;box-sizing:border-box!important}
+html body .z78-full-menu :is(.zavi-all-sections-grid,.menu-grid,[class*="nav-grid"],[class*="sections-grid"]){display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;width:100%!important;min-width:0!important;gap:8px!important}
+html body .z78-full-menu :is(button,a,[data-go]){max-width:100%!important;min-width:0!important;box-sizing:border-box!important;overflow-wrap:anywhere!important;word-break:normal!important}
+html[data-zavi-theme="dark"] body .z78-full-menu{background:#071b34!important;color:#f1f8ff!important}
+html[data-zavi-theme="light"] body .z78-full-menu{background:#f6faff!important;color:#173852!important}
+/* Narrow topbar with customer avatar and name exactly at the top (not merely hero). */
+.topbar{position:relative!important;min-width:0!important;overflow:visible!important}
+.topbar #z78-user{display:inline-flex!important;align-items:center!important;gap:6px!important;max-width:190px!important;min-width:0!important;overflow:hidden!important;flex:0 1 auto!important;vertical-align:middle!important;direction:rtl!important}
+.topbar #z78-user .z78-user-photo{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;width:32px;height:32px;border:1.5px solid #2a8dcc;border-radius:50%;background:linear-gradient(120deg,#1555c9,#12bbcb);color:#fff;font-size:13px;font-weight:900;overflow:hidden}
+.topbar #z78-user .z78-user-photo img{display:block;width:100%;height:100%;object-fit:cover}
+.topbar #z78-user .z78-user-name{font:800 12px/1.2 Tahoma,system-ui,sans-serif;white-space:nowrap;text-overflow:ellipsis;overflow:hidden;color:inherit!important;max-width:150px;min-width:0}
+html[data-zavi-theme="light"] .topbar #z78-user{color:#17324a!important}
+html[data-zavi-theme="dark"] .topbar #z78-user{color:#f2f9ff!important}
+/* Warehouse and sale barcode scanners: same compact design and functionality, preserve input events. */
+#content .zavi-barcode-box,#overlay .zavi-barcode-box{min-width:0!important;max-width:100%!important;min-height:0!important;padding:12px!important;margin:8px 0!important;border-radius:14px!important;box-sizing:border-box!important;border:1px solid #458fc5!important;background:linear-gradient(120deg,rgba(45,131,230,.10),rgba(13,193,196,.055))!important;box-shadow:none!important}
+#content .zavi-barcode-box .z638-scanner-head{display:flex!important;align-items:flex-start!important;gap:8px!important;justify-content:space-between!important;flex-wrap:wrap!important;margin:0 0 8px!important}
+#content .zavi-barcode-box .z638-scanner-head h3{margin:0 0 3px!important;font-size:13px!important}
+#content .zavi-barcode-box .z638-scanner-head p{font-size:10.5px!important;line-height:1.6!important;margin:0!important}
+#content .zavi-barcode-box .zavi-barcode-actions,#overlay .zavi-barcode-box .zavi-barcode-actions{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;gap:7px!important;width:100%!important;min-width:0!important;align-items:center!important}
+#content .zavi-barcode-box .zavi-barcode-actions :is(input,button),#overlay .zavi-barcode-box .zavi-barcode-actions :is(input,button){box-sizing:border-box!important;min-width:0!important;max-width:100%!important;min-height:42px!important;margin:0!important;border-radius:10px!important;font-size:12px!important}
+#content .zavi-barcode-box .zavi-barcode-actions input{font-size:14px!important;letter-spacing:.2px!important;text-align:start!important}
+#content .zavi-barcode-box [data-zavi-camera-open],#overlay .zavi-barcode-box [data-zavi-camera-open]{padding:7px 12px!important;background:linear-gradient(115deg,#1169c9,#139abb)!important;color:#fff!important;-webkit-text-fill-color:#fff!important;border:1px solid #4fc2e6!important;font-weight:800!important}
+#content .z638-warehouse-result{padding:8px 10px!important;min-height:32px!important;font-size:11px!important;line-height:1.65!important;border-radius:9px!important;overflow-wrap:anywhere!important}
+html[data-zavi-theme="light"] #content .zavi-barcode-box{background:#eaf5ff!important;border-color:#98c3e3!important;color:#174568!important}
+html[data-zavi-theme="dark"] #content .zavi-barcode-box{background:#123452!important;color:#f4faff!important}
+/* Restore light-mode contrast for profile, account forms and settings: exclude primary tinted buttons. */
+html[data-zavi-theme="light"] #content .z76-settings-group,html[data-zavi-theme="light"] #content .z76-profile-card,html[data-zavi-theme="light"] #content .settings-card{background:#fff!important;color:#173950!important;border-color:#bfcfdc!important}
+html[data-zavi-theme="light"] #content :is(.z76-profile-card,.z76-group-body,.settings-card) :is(h2,h3,label,small,p){color:#284960!important;opacity:1!important;-webkit-text-fill-color:currentColor!important}
+html[data-zavi-theme="light"] #content :is(.z76-profile-card,.z76-group-body,.settings-card) :is(input,textarea,select){color:#173752!important;background:#fff!important;-webkit-text-fill-color:#173752!important;border-color:#9bb5cc!important}
+html[data-zavi-theme="light"] #content .z76-button-primary{background:linear-gradient(130deg,#125bc9,#059cbb)!important;color:#fff!important;-webkit-text-fill-color:#fff!important;opacity:1!important;text-shadow:none!important}
+html[data-zavi-theme="light"] #content :is(.settings-card,.z76-profile-card) :is(.btn.primary,button.primary){color:#fff!important;-webkit-text-fill-color:#fff!important;background:linear-gradient(125deg,#185abf,#11a0c4)!important}
+html[data-zavi-theme="light"] #content :is(.settings-card,.z76-profile-card) button:not(.primary):not(.z76-button-primary){color:#18364d!important;-webkit-text-fill-color:currentColor!important}
+html[data-zavi-theme="light"] #content button:disabled{color:#496174!important;-webkit-text-fill-color:#496174!important;opacity:.78!important}
+@media(max-width:780px){
+ .topbar{height:57px!important;min-height:57px!important;max-height:57px!important;padding:5px 9px!important;gap:7px!important;display:flex!important;align-items:center!important;justify-content:space-between!important;flex-wrap:nowrap!important}
+ .topbar>div:first-child{display:none!important}
+ .topbar #z78-user{margin-inline-end:auto!important;flex:1 1 auto!important;max-width:49%!important}
+ .topbar #z78-user .z78-user-name{max-width:125px;font-size:11.5px}
+ .topbar .topbar-actions{max-width:49%!important;flex:0 0 auto!important;gap:5px!important}
+ #content .z76-settings-group .z76-group-body{display:block!important}
+ #content .z76-settings-group .z76-group-body>*{margin:0 0 9px!important}
+ #content .z76-profile-card{padding:11px!important}
+ .z78-full-menu{padding-bottom:90px!important}
+}
+@media(max-width:360px){
+ .topbar #z78-user{max-width:44%!important}
+ .topbar #z78-user .z78-user-name{max-width:82px!important}
+ #content .zavi-barcode-box .zavi-barcode-actions{grid-template-columns:minmax(0,1fr)!important}
+}
+@media(prefers-reduced-motion:reduce){.z78-full-menu *{transition:none!important;animation:none!important}}

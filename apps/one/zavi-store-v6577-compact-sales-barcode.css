@@ -1,0 +1,79 @@
+/* V65.77: mobile compact menu, readable sales modal and modern barcode. Non-destructive. */
+html,body{min-width:0;max-width:100%;overflow-x:clip}
+#content{min-width:0!important;max-width:100%!important;box-sizing:border-box!important}
+#content :is(.card,.settings-card,.z76-settings-group,.z76-profile-card){min-width:0;max-width:100%;box-sizing:border-box}
+#content .z76-profile-card{padding:10px 12px!important;margin:0 0 8px!important;border-radius:12px!important}
+#content .z76-profile-editor{gap:9px!important}
+#content .z76-large-avatar{width:52px!important;height:52px!important}
+#content .z76-profile-head h3{font-size:13px!important}
+#content .z76-profile-actions .z76-button{min-height:38px!important;padding:7px 10px!important;font-size:11px!important}
+#content .z76-settings-groups{gap:7px!important;margin-top:8px!important}
+#content .z76-settings-group>summary{min-height:43px!important;padding:8px 11px!important;font-size:12px!important}
+#content .z76-group-body{padding:7px!important;gap:6px!important}
+#content .z76-group-body>.settings-card{padding:10px!important;margin:0!important;border-radius:11px!important}
+#content .z76-group-body>.settings-card h3{font-size:12px!important;margin:0 0 5px!important}
+#content .z76-group-body>.settings-card :is(p,label,small){font-size:11px!important;line-height:1.65!important}
+#content .z76-profile-chip{cursor:default}
+#content .welcome{min-height:0!important;padding:12px 13px!important;border-radius:13px!important;margin:0 0 11px!important;align-items:center!important;gap:8px!important}
+#content .welcome .eyebrow{font-size:10px!important;margin:0!important}
+#content .welcome h2{font-size:18px!important;line-height:1.45!important;margin:2px 0!important}
+#content .welcome p{font-size:10.5px!important;margin:3px 0!important}
+#content .welcome .zv-today{font-size:10px!important;padding:5px 8px!important}
+#content .welcome .z76-profile-chip{max-width:160px!important;min-height:34px!important;padding:3px 7px 3px 3px!important;margin:0 0 6px!important}
+#content .welcome .z76-small-avatar{width:28px!important;height:28px!important;font-size:11px!important}
+#content .welcome .z76-chip-name{font-size:11px!important;max-width:116px!important}
+#content .z6524-launch{padding:9px 11px!important;margin:7px 0!important;border-radius:11px!important;gap:8px!important;min-height:0!important}
+#content .z6524-launch :is(h3,p){font-size:11px!important;line-height:1.5!important;margin:0!important}
+#content .z6524-launch button{font-size:11px!important;padding:7px!important;min-height:34px!important}
+/* Force actual one-line mobile toolbar, retain language/theme/lock. */
+@media(max-width:750px){
+  html body .topbar{display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;align-items:center!important;justify-content:space-between!important;box-sizing:border-box!important;width:100%!important;max-width:100vw!important;min-width:0!important;min-height:54px!important;max-height:60px!important;height:54px!important;padding:5px 9px!important;gap:6px!important;overflow:hidden!important;position:relative!important}
+  html body .topbar>div:first-child{min-width:0!important;flex:1 1 auto!important;max-width:42%!important;overflow:hidden!important}
+  html body .topbar .mobile-brand{display:flex!important;min-width:0!important;align-items:center!important;gap:5px!important;max-width:100%!important;white-space:nowrap!important;overflow:hidden!important}
+  html body .topbar .mobile-brand .brand-logo{width:27px!important;height:27px!important;min-width:27px!important;min-height:27px!important;margin:0!important}
+  html body .topbar .mobile-brand span{font-size:11px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+  html body .topbar .mobile-brand .zavi-customer-brand-note{display:none!important}
+  html body .topbar #pageTitle,html body .topbar #pageSub{display:none!important}
+  html body .topbar-actions{display:flex!important;flex:0 0 auto!important;flex-direction:row!important;flex-wrap:nowrap!important;align-items:center!important;justify-content:flex-end!important;gap:4px!important;max-width:58%!important;width:auto!important;min-width:0!important;padding:0!important;margin:0!important}
+  html body .topbar-actions #z20TopStatus,html body .topbar-actions #todayStamp,html body .topbar-actions #topSaleBtn,html body .topbar-actions [data-app-install="true"]{display:none!important}
+  html body .topbar-actions #zawiTopLock{display:inline-flex!important;align-items:center!important;justify-content:center!important;flex:0 0 34px!important;width:34px!important;height:34px!important;min-width:34px!important;min-height:34px!important;max-width:34px!important;max-height:34px!important;padding:2px!important;font-size:14px!important;margin:0!important}
+  html body .topbar-actions #zaviTopLanguage{box-sizing:border-box!important;display:block!important;flex:0 0 69px!important;width:69px!important;min-width:69px!important;max-width:69px!important;height:34px!important;min-height:34px!important;padding:2px 5px!important;font-size:11px!important;font-weight:700!important;border-radius:9px!important}
+  #content .z649-dashboard-extras,#content .zv18-insight{margin-bottom:8px!important}
+}
+/* Sale & purchase form: 80% viewport height, body scroll only, fixed actions always reachable. */
+html body #overlay .modal-backdrop{box-sizing:border-box!important;padding:9px!important;align-items:center!important;justify-content:center!important;overflow:hidden!important;backdrop-filter:blur(2px)}
+html body #overlay .modal{box-sizing:border-box!important;display:flex!important;flex-direction:column!important;width:min(100%,680px)!important;max-width:min(100%,680px)!important;max-height:84dvh!important;height:auto!important;overflow:hidden!important;border-radius:14px!important;border:1px solid rgba(108,157,208,.43)!important}
+html body #overlay .modal-head{box-sizing:border-box!important;flex:0 0 auto!important;min-height:47px!important;padding:7px 11px!important;margin:0!important;position:relative!important;top:auto!important}
+html body #overlay .modal-head h3{font-size:14px!important;font-weight:850!important;line-height:1.5!important;margin:0!important}
+html body #overlay .modal-head .icon-button{min-width:32px!important;width:32px!important;min-height:32px!important;height:32px!important;padding:3px!important}
+html body #overlay .modal form#dialogForm{display:flex!important;flex-direction:column!important;overflow:hidden!important;min-height:0!important;max-height:100%!important}
+html body #overlay .modal-body{box-sizing:border-box!important;flex:1 1 auto!important;min-height:0!important;max-height:100%!important;overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior:contain!important;-webkit-overflow-scrolling:touch!important;padding:10px 11px!important}
+html body #overlay .modal-foot{box-sizing:border-box!important;display:flex!important;justify-content:flex-end!important;gap:7px!important;flex:0 0 auto!important;position:relative!important;bottom:auto!important;padding:8px 11px!important;min-height:50px!important;border-top:1px solid rgba(111,160,211,.28)!important}
+html body #overlay .modal-foot button{font-size:11.5px!important;min-height:36px!important;padding:6px 11px!important;border-radius:9px!important}
+html body #overlay .modal-body .form-grid{gap:7px!important;min-width:0!important}
+html body #overlay .modal-body .field{min-width:0!important;margin-bottom:6px!important}
+html body #overlay .modal-body .field label{font-size:10.8px!important;line-height:1.5!important}
+html body #overlay .modal-body :is(input,select,textarea){box-sizing:border-box!important;max-width:100%!important;min-height:35px!important;padding:6px 9px!important;font-size:12px!important;border-radius:9px!important}
+html body #overlay .modal-body .form-section-title{font-size:11.5px!important;margin:9px 0 6px!important}
+html body #overlay .modal-body .z629-line-note,html body #overlay .modal-body .zawi-inline-tip{font-size:10px!important;line-height:1.5!important;margin:5px 0!important}
+html body #overlay .modal-body .order-line{gap:5px!important}
+html body #overlay .modal-body .order-line :is(input,select){padding:5px!important;font-size:11px!important}
+/* Distinct barcode mini-toolbar, original scanning events untouched. */
+html body #overlay .modal-body .zavi-barcode-box{box-sizing:border-box!important;min-width:0!important;max-width:100%!important;margin:8px 0!important;padding:11px!important;border:1px solid #347ac8!important;border-radius:13px!important;background:linear-gradient(130deg,rgba(42,125,212,.14),rgba(4,181,206,.06))!important;box-shadow:inset 0 1px rgba(255,255,255,.12)!important}
+html body #overlay .modal-body .zavi-barcode-box>label{display:block!important;font-size:12px!important;font-weight:850!important;margin-bottom:6px!important}
+html body #overlay .modal-body .zavi-barcode-actions{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important;align-items:stretch!important;max-width:100%!important}
+html body #overlay .modal-body .zavi-barcode-actions #zaviBarcodeScan{grid-column:1/-1!important;box-sizing:border-box!important;min-height:41px!important;width:100%!important;letter-spacing:.25px!important;font-size:12px!important}
+html body #overlay .modal-body .zavi-barcode-actions>button{box-sizing:border-box!important;display:flex!important;align-items:center!important;justify-content:center!important;min-height:36px!important;max-width:100%!important;padding:7px 6px!important;margin:0!important;border-radius:9px!important;font-size:10.7px!important;line-height:1.3!important;white-space:normal!important}
+html body #overlay .modal-body .zavi-barcode-actions [data-zavi-camera-open]{background:linear-gradient(115deg,#205eae,#138cb6)!important;color:#fff!important;-webkit-text-fill-color:#fff!important;border:1px solid #2d8ad7!important}
+html body #overlay .modal-body .zavi-barcode-actions #z659BarcodeConfirm{background:linear-gradient(110deg,#1558d3,#00a4be)!important;color:#fff!important;-webkit-text-fill-color:#fff!important}
+html body #overlay .modal-body .zavi-barcode-actions #z650ManualProduct{grid-column:1/-1!important;min-height:32px!important}
+html body #overlay .modal-body .z641-invoice-preview{font-size:10px!important;min-height:24px!important;padding:5px 8px!important;margin:7px 0 0!important;border-radius:8px!important;line-height:1.5!important}
+html body #overlay .modal-body .z645-barcode-help{font-size:10px!important;margin-top:5px!important}
+@media(max-width:480px){
+ html body #overlay .modal{width:100%!important;max-height:80dvh!important;border-radius:12px!important}
+ html body #overlay .modal-body{padding:8px 9px!important}
+ html body #overlay .modal-body .order-line{grid-template-columns:minmax(0,1.5fr) minmax(46px,.65fr) minmax(60px,.8fr) 27px!important}
+}
+/* iPad/Safari PWA: balanced modal in portrait or landscape. */
+@supports (height:100dvh){#overlay .modal-backdrop{height:100dvh}}
+@media(min-width:768px) and (max-width:1200px){html body #overlay .modal{width:min(620px,88vw)!important;max-height:78dvh!important}html body #overlay .modal-body{padding:12px 15px!important}}

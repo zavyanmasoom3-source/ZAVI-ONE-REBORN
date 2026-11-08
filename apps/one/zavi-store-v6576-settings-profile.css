@@ -1,0 +1,56 @@
+/* ZAVI ONE 65.76 — compact, readable settings; personal profile on device */
+#content .z76-profile-card{box-sizing:border-box;max-width:100%;min-width:0;margin:0 0 13px;padding:14px 15px;background:var(--card,#fff);border:1px solid var(--line,#d6e2ec);border-radius:16px;color:var(--ink,#1b354c);box-shadow:0 2px 12px rgba(12,56,98,.055)}
+#content .z76-profile-head{margin-bottom:11px}
+#content .z76-profile-head h3{font-size:15px;line-height:1.5;margin:0 0 3px;color:inherit;font-weight:900}
+#content .z76-profile-head p{font-size:11.5px;line-height:1.6;color:var(--muted,#4a657e);margin:0}
+#content .z76-profile-editor{display:flex;align-items:center;gap:12px;min-width:0}
+#content .z76-avatar,#content .z76-large-avatar{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;width:66px;height:66px;border-radius:50%;overflow:hidden;border:2px solid #6f9cde;background:linear-gradient(135deg,#2466b3,#06a9bc);color:#fff;box-shadow:0 4px 14px rgba(28,104,173,.16);font-size:22px;font-weight:900}
+#content .z76-large-avatar img,#content .z76-small-avatar img{display:block;width:100%;height:100%;object-fit:cover;image-orientation:from-image}
+#content .z76-profile-fields{flex:1 1 auto;min-width:0}
+#content .z76-field-label{display:block;font-size:11px;font-weight:800;margin:0 0 4px;color:inherit}
+#content .z76-profile-input{display:block;box-sizing:border-box;width:100%;max-width:420px;min-height:43px;padding:8px 11px;color:var(--ink,#19384c);background:var(--card,#fff);border:1px solid var(--line,#cbd6e3);border-radius:10px;font-size:13px;font-weight:650}
+#content .z76-profile-input:focus-visible{outline:3px solid rgba(22,121,199,.25);outline-offset:1px;border-color:#2383c3}
+#content .z76-profile-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:11px}
+#content .z76-button{display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;gap:6px;min-height:41px;padding:9px 12px;border-radius:10px;font-size:11.5px;font-weight:800;line-height:1.4;cursor:pointer;white-space:normal}
+#content .z76-button-primary{background:linear-gradient(125deg,#175ed0,#079db5);border:1px solid #147bb7;color:#fff!important;-webkit-text-fill-color:#fff!important}
+#content .z76-button-secondary{background:rgba(34,117,199,.065);border:1px solid rgba(34,117,199,.28);color:var(--ink,#244768)!important;-webkit-text-fill-color:currentColor!important}
+#content .z76-button:disabled{opacity:.62;cursor:not-allowed}
+#content .z76-profile-notice{font-size:10.5px;line-height:1.65;color:var(--muted,#566c7c);margin:11px 0 0;overflow-wrap:anywhere}
+#content .z76-settings-groups{display:grid;grid-template-columns:1fr;gap:10px;width:100%;min-width:0;margin:11px 0 25px}
+#content .z76-settings-group{box-sizing:border-box;min-width:0;max-width:100%;border-radius:13px;border:1px solid var(--line,#d5e1eb);background:var(--card,#fff);color:var(--ink,#1b354c);overflow:hidden}
+#content .z76-settings-group>summary{display:flex;justify-content:space-between;align-items:center;gap:10px;min-height:50px;padding:11px 14px;cursor:pointer;list-style:none;font-weight:850;font-size:12.5px;line-height:1.5;color:inherit;user-select:none}
+#content .z76-settings-group>summary::-webkit-details-marker{display:none}
+#content .z76-settings-group>summary:after{content:'⌄';font-size:17px;font-weight:900;margin-inline-start:3px;transition:transform .15s ease;color:#347bc3}
+#content .z76-settings-group[open]>summary:after{transform:rotate(180deg)}
+#content .z76-settings-group>summary:focus-visible{outline:3px solid rgba(34,128,188,.32);outline-offset:-3px}
+#content .z76-group-count{font-size:10px;min-width:24px;min-height:21px;text-align:center;padding:2px 6px;border-radius:99px;background:rgba(47,132,196,.10);color:inherit;margin-inline-start:auto}
+#content .z76-group-body{min-width:0;padding:10px 11px 12px;border-top:1px solid var(--line,#dde7ee);display:grid;grid-template-columns:1fr;gap:10px}
+#content .z76-group-body>.settings-card{margin:0!important;min-width:0!important;max-width:100%!important;box-shadow:none!important;border-radius:11px!important;padding:13px!important;overflow-wrap:anywhere}
+#content .z76-group-body>.settings-card h3{font-size:13px!important;line-height:1.55!important;color:inherit}
+#content .z76-group-body>.settings-card p{font-size:11px!important;line-height:1.7!important}
+#content .z76-group-body :is(input,select,textarea,button){max-width:100%;box-sizing:border-box}
+#content .z76-group-body .form-grid{max-width:100%;min-width:0}
+#content .z76-group-body .field{min-width:0}
+#content .welcome .z76-profile-chip{display:inline-flex;align-items:center;gap:8px;max-width:min(78vw,230px);min-height:40px;margin:0 0 9px;padding:3px 9px 3px 4px;border-radius:30px;border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.14);color:#fff;direction:rtl;vertical-align:middle}
+#content .welcome .z76-small-avatar{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;flex:0 0 auto;border-radius:50%;border:1.5px solid rgba(255,255,255,.65);background:linear-gradient(145deg,#1b68c9,#0bb3c2);color:white;font-size:13px;font-weight:850;overflow:hidden}
+#content .welcome .z76-chip-name{display:block;min-width:0;max-width:170px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:11.5px;font-weight:850;line-height:1.2;color:#fff}
+#content .welcome .z76-initials{color:#fff!important}
+html[data-zavi-theme="dark"] #content .z76-profile-card,html[data-zavi-theme="dark"] #content .z76-settings-group{background:#16314b;border-color:#3b5e7b;color:#eef8ff}
+html[data-zavi-theme="dark"] #content .z76-profile-input{background:#1a3b56;color:#f2faff;border-color:#4f7188}
+html[data-zavi-theme="dark"] #content .z76-button-secondary{background:#284762;color:#f0f7ff!important;border-color:#55758c}
+html[data-zavi-theme="dark"] #content .z76-profile-head p,html[data-zavi-theme="dark"] #content .z76-profile-notice{color:#c6d9e8}
+html[data-zavi-theme="dark"] #content .z76-group-body{border-color:#3b5e7b}
+@media(max-width:520px){
+ #content .z76-profile-card{padding:11px;margin-bottom:9px}
+ #content .z76-profile-head h3{font-size:13.5px}
+ #content .z76-large-avatar{width:54px;height:54px}
+ #content .z76-profile-editor{gap:9px}
+ #content .z76-profile-actions{gap:6px}
+ #content .z76-button{padding:8px 9px;min-height:40px;flex:1 0 auto}
+ #content .z76-settings-groups{gap:8px}
+ #content .z76-settings-group>summary{padding:10px;min-height:47px}
+ #content .z76-group-body{padding:8px}
+ #content .z76-group-body>.settings-card{padding:10px!important}
+ #content .welcome .z76-profile-chip{max-width:180px}
+}
+@media(prefers-reduced-motion:reduce){#content .z76-settings-group>summary:after{transition:none}}

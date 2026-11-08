@@ -1,0 +1,19 @@
+/* Store V65.94: compact private unlock and clear owner-verified recovery. */
+.z94-login-card{--z94-border:#567aa9;box-sizing:border-box!important;width:min(440px,calc(100% - 22px))!important;max-width:440px!important;margin-inline:auto!important;padding:clamp(15px,3vw,24px)!important;min-width:0!important;max-height:calc(100dvh - 14px)!important;overflow-y:auto!important;overscroll-behavior:contain!important;scrollbar-width:thin!important}
+.z94-login-card :is(input,select){max-width:100%!important;min-width:0!important;min-height:45px!important;box-sizing:border-box!important;border-radius:12px!important}
+.z94-login-card :is(button,[role=button]){max-width:100%!important;min-height:42px!important;border-radius:12px!important}
+.z94-login-card :is(h1,h2){font-size:clamp(21px,4vw,27px)!important;line-height:1.35!important;margin-block:6px 10px!important}
+.z94-login-card :is(p,small){font-size:clamp(12px,1.6vw,14px)!important;line-height:1.65!important}
+.z94-login-card label{line-height:1.6!important}
+.z94-recovery-card{--z94-surface:#f7fbff;--z94-ink:#142d4c;--z94-muted:#4b6485;--z94-edge:#adc9e6;box-sizing:border-box!important;width:min(530px,100%)!important;max-width:100%!important;min-width:0!important;padding:clamp(13px,3vw,22px)!important;max-height:calc(100dvh - 14px)!important;overflow-y:auto!important;overscroll-behavior:contain!important;scrollbar-width:thin!important}
+.z94-recovery-card .z94-recovery-steps{display:grid!important;gap:8px!important;border:1px solid var(--z94-edge);background:var(--z94-surface);border-radius:16px;padding:13px 15px!important;margin:0 0 15px!important;color:var(--z94-ink)!important;line-height:1.7!important}
+.z94-recovery-card .z94-recovery-steps strong{font-size:clamp(17px,2.1vw,22px)!important;color:var(--z94-ink)!important}
+.z94-recovery-card .z94-recovery-steps p{font-size:14px!important;margin:0!important;line-height:1.85!important;color:var(--z94-ink)!important}
+.z94-recovery-card .z94-recovery-steps small{font-size:12px!important;color:var(--z94-muted)!important}
+.z94-recovery-card :is(input,select){min-height:45px!important;max-width:100%!important;color:inherit;box-sizing:border-box!important}
+.z94-recovery-card :is(button,[role=button]){min-height:43px!important;border-radius:11px!important;max-width:100%!important;overflow-wrap:anywhere!important}
+.z94-recovery-card :is(p,label,small){line-height:1.7!important;overflow-wrap:anywhere!important}
+html[data-theme="dark"] .z94-recovery-card,body.dark .z94-recovery-card,body[data-theme="dark"] .z94-recovery-card{--z94-surface:#0c2949;--z94-ink:#f5faff;--z94-muted:#bfd4ed;--z94-edge:#416a92}
+html[data-theme="light"] .z94-recovery-card,body.light .z94-recovery-card{--z94-surface:#f7fbff;--z94-ink:#142d4c;--z94-muted:#4b6485;--z94-edge:#adc9e6}
+@media(max-width:600px){.z94-login-card{padding:15px!important;width:min(440px,calc(100% - 14px))!important}.z94-recovery-card{width:100%!important;padding:13px!important}}
+@media(prefers-reduced-motion:reduce){.z94-login-card *, .z94-recovery-card *{animation:none!important;transition:none!important}}
