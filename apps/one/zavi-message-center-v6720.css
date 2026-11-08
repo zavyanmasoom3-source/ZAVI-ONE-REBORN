@@ -1,0 +1,13 @@
+/* ZAVI ONE compact local WhatsApp centre, no accounting writes. */
+#zaviMessageCenter6720{color:var(--reborn-ink,#182a40);max-width:100%}
+#zaviMessageCenter6720 .tiny-note{line-height:1.6;color:var(--reborn-muted,#526479)}
+#zaviMessageCenter6720 .z6720-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+#zaviMessageCenter6720 label{display:flex;flex-direction:column;gap:5px;font-size:12px}
+#zaviMessageCenter6720 .z6720-full{grid-column:1/-1}
+#zaviMessageCenter6720 input,#zaviMessageCenter6720 select,#zaviMessageCenter6720 textarea{width:100%;border:1px solid #bbc9d8;border-radius:9px;padding:9px;background:var(--reborn-surface,#fff);color:var(--reborn-ink,#182a40);min-height:40px}
+#zaviMessageCenter6720 textarea{min-height:96px;resize:vertical}
+#zaviMessageCenter6720 .z6720-actions{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0}
+#z6720Error{color:#b42318;font-weight:600}
+.z6720-item{display:flex;justify-content:space-between;gap:9px;padding:10px 0;border-top:1px solid #d5e0e9}
+.z6720-item div{min-width:0}.z6720-item small{display:block;color:#65758b}.z6720-item p{overflow-wrap:anywhere;font-size:11px}
+@media(max-width:480px){#zaviMessageCenter6720 .z6720-grid{grid-template-columns:1fr}#zaviMessageCenter6720 .z6720-full{grid-column:auto}}
