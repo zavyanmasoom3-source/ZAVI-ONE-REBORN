@@ -40,3 +40,5 @@ jobs:
         run: python3 scripts/test-persisted-data-browser.py
       - name: Check backup integrity, tamper rejection, scoped restore in browser
         run: python3 scripts/test-backup-integrity-browser.py
+      - name: Check accounting returns, transfers, FX, voided documents and opening debts
+        run: python3 scripts/test-accounting-edge-cases-browser.py
