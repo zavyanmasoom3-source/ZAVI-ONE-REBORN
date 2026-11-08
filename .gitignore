@@ -1,0 +1,36 @@
+# Build outputs and caches — never commit generated APKs
+.gradle/
+**/build/
+**/dist/
+**/node_modules/
+**/.cache/
+**/.vite/
+*.apk
+*.aab
+*.apks
+*.idsig
+*.zip
+*.log
+*.tmp
+*.bak
+*.orig
+*.swp
+.DS_Store
+Thumbs.db
+
+# Credentials, private keys, and signing material
+.env
+.env.*
+!.env.example
+*.jks
+*.keystore
+*.p12
+*.pem
+*.key
+local.properties
+google-services.json
+
+# Test artifacts
+test-results/
+playwright-report/
+coverage/
