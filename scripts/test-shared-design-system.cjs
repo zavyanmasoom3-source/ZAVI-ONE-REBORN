@@ -25,6 +25,27 @@ assert.match(pashto,/لړم/);
 assert.match(pashto,/\|/);
 assert.doesNotMatch(pashto,/[0-9]/,'Pashto uses one digit style by default');
 assert.throws(()=>ds.formatDualDate('invalid'),/Invalid date/);
+// The real renderer passes Document, not an ordinary element. Language must
+// come from document.documentElement (ownerDocument is null on Document).
+const dateNode = {
+  textContent:'',
+  getAttribute(name) {
+    return name==='data-zds-dual-date' ? '2026-11-05' : null;
+  }
+};
+const fakeDoc = {
+  nodeType:9,
+  documentElement:{lang:'en'},
+  querySelectorAll(selector) {
+    assert.equal(selector,'[data-zds-dual-date]');
+    return [dateNode];
+  }
+};
+assert.equal(ds.refreshDualDateNodes(fakeDoc),1);
+assert.equal(dateNode.textContent,'14 Aqrab 1405 | 5 November 2026');
+fakeDoc.documentElement.lang='fa-AF';
+assert.equal(ds.refreshDualDateNodes(fakeDoc),1);
+assert.equal(dateNode.textContent,'۱۴ عقرب ۱۴۰۵ | ۵ نوامبر ۲۰۲۶');
 
 assert.equal(ds.digits('۱۴۰۵ ٢٠٢٦ 123','latn','fa-AF'), '1405 2026 123');
 assert.equal(ds.digits('1405 ٢٠٢٦ 123','arabext','fa-AF'),'۱۴۰۵ ۲۰۲۶ ۱۲۳');
