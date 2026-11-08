@@ -197,6 +197,8 @@ jobs:
           echo "PASS: R8-optimized unsigned release compilation (not installable, not published)"
       - name: Verify unique identity, commit provenance and PDF assets
         shell: bash
+        env:
+          ZAVI_QA_EXPECTED_CERT_SHA256: ${{ secrets.ZAVI_QA_EXPECTED_CERT_SHA256 }}
         run: |
           set -euo pipefail
           apk=$(find android-build/app/build/outputs/apk/debug -maxdepth 1 -type f -name '*.apk' -print -quit)
@@ -211,7 +213,15 @@ jobs:
             unzip -l "$apk" | grep -F 'assets/zavi-admin-pdf-final-v1467.css'
           fi
           AAPT="$ANDROID_SDK_ROOT/build-tools/36.0.0/aapt"
-          "$ANDROID_SDK_ROOT/build-tools/36.0.0/apksigner" verify --print-certs "$apk"
+          APKSIGNER="$ANDROID_SDK_ROOT/build-tools/36.0.0/apksigner"
+          if [[ "$ZAVI_QA_SIGNING_MODE" == "stable" && -z "$ZAVI_QA_EXPECTED_CERT_SHA256" ]]; then
+            echo "::error::A stable QA keystore requires secret ZAVI_QA_EXPECTED_CERT_SHA256 to prevent key drift"
+            exit 1
+          fi
+          python3 scripts/verify-apk-update.py --app "${{ matrix.app }}" --mode qa \
+            --apk "$apk" --aapt "$AAPT" --apksigner "$APKSIGNER" \
+            --expected-sha256 "$ZAVI_QA_EXPECTED_CERT_SHA256"
+          "$APKSIGNER" verify --print-certs "$apk"
           badging=$("$AAPT" dump badging "$apk")
           printf '%s\\n' "$badging"
           # Android 8.0 (API 26) through Android 16 (API 36) build contract.

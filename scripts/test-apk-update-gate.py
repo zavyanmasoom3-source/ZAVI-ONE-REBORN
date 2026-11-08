@@ -21,6 +21,13 @@ class UpgradeSafetyTests(unittest.TestCase):
     def test_qa_is_separate(self):
         self.assertEqual(mod.check_update(('com.zavione.one.rebornqa',667844,OTHER),'one','qa'),'separate-qa')
         with self.assertRaises(mod.UnsafeUpdate):mod.check_update(('com.zavione.one',667844,OTHER),'one','qa')
+    def test_qa_pinned_certificate_must_match(self):
+        current=('com.zavione.one.rebornqa',667844,OTHER)
+        self.assertEqual(mod.check_update(current,'one','qa',OTHER),'separate-qa')
+        with self.assertRaises(mod.UnsafeUpdate):
+            mod.check_update(current,'one','qa',H)
+        with self.assertRaises(mod.UnsafeUpdate):
+            mod.check_update(current,'one','qa','invalid')
     def test_qa_requires_same_signer_and_newer_version(self):
         prior=('com.zavione.one.rebornqa',667843,OTHER)
         self.assertEqual(mod.check_update(('com.zavione.one.rebornqa',667844,OTHER),'one','qa',installed=prior),'separate-qa')
