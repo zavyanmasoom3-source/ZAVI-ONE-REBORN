@@ -9,7 +9,13 @@ on:
       - 'android-build/**'
       - 'scripts/**'
       - 'supabase/**'
-      - '.github/workflows/build-pdf-qa.yml'
+      - 'gradle/**'
+      - 'gradlew'
+      - 'gradlew.bat'
+      - 'build.gradle'
+      - 'settings.gradle'
+      - 'gradle.properties'
+      - '.github/workflows/build-reborn-qa.yml'
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -36,8 +42,6 @@ jobs:
           distribution: temurin
           java-version: '17'
       - uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: '8.13'
       - name: Configure Android SDK
         shell: bash
         run: |
@@ -53,11 +57,15 @@ jobs:
           test -x "$SDKMANAGER"
           yes | "$SDKMANAGER" --sdk_root="$SDK_ROOT" --licenses >/dev/null || true
           "$SDKMANAGER" --sdk_root="$SDK_ROOT" "platforms;android-36" "build-tools;36.0.0"
-      - name: Bootstrap Gradle wrapper
+      - name: Verify pinned official Gradle 8.13 wrapper
+        shell: bash
         run: |
-          gradle wrapper --gradle-version 8.13 --distribution-type bin --no-validate-url --no-daemon
+          set -euo pipefail
           test -s gradle/wrapper/gradle-wrapper.jar
+          # Exact binary from gradle/gradle v8.13.0; reject substituted wrapper JARs.
+          test "$(git hash-object gradle/wrapper/gradle-wrapper.jar)" = "9bbc975c742b298b441bfb90dbc124400a3751b9"
           chmod +x ./gradlew
+          ./gradlew --version --no-daemon
       - name: Stage app and shared assets
         shell: bash
         run: |
