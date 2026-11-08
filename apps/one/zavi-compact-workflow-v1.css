@@ -1,0 +1,38 @@
+/* ZAVI ONE compact workflow tabs — use existing account/ledger form controls.
+   No JS financial/permissions overrides; responsive and three-theme token aware. */
+.zavi-flow-layout {display:grid;gap:12px;min-width:0;max-width:100%;margin-block:12px 18px}
+.zavi-flow-tabs {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:4px;padding:4px;border-radius:13px;border:1px solid var(--zds-border,#899caf);
+  background:var(--zds-surface,#fff);min-width:0}
+.zavi-flow-tab {min-height:44px;border:1px solid transparent;border-radius:10px;
+  color:var(--zds-text,#152b43);background:transparent;font:inherit;
+  font-weight:650;line-height:1.4;white-space:normal;padding:8px 5px;cursor:pointer}
+.zavi-flow-tab[aria-selected="true"] {color:var(--zds-button-text,#fff);
+  border-color:var(--zds-button,#075fa6);background:var(--zds-button,#075fa6)}
+.zavi-flow-tab:focus-visible {outline:3px solid var(--zds-focus,#075fa6);outline-offset:2px}
+.zavi-flow-panel {min-width:0;display:grid;gap:12px}
+.zavi-flow-panel[hidden] {display:none!important}
+.zavi-flow-panel > :is(.accounts-grid,.action-group,.report-grid,.layout-2) {margin:0}
+.zavi-flow-panel :is(input,select,textarea) {min-width:0;max-width:100%;box-sizing:border-box}
+.zavi-flow-panel .field .zds-field-error,
+.zavi-flow-panel .order-row .zds-field-error {display:block!important;color:var(--zds-danger,#a32035);
+  font-size:12px;line-height:1.5;grid-column:1/-1}
+.zavi-flow-panel .zavi-flow-payment-fields {padding:9px;border-radius:12px;
+  background:var(--zds-surface-alt,#f8fafc);border:1px solid var(--zds-border,#899caf)}
+.zavi-flow-panel .totals {max-width:100%}
+#dialogForm .modal-foot {position:sticky;bottom:0;z-index:4;box-shadow:0 -5px 15px #0000000a}
+#mobileBottom .bottom-btn:disabled {opacity:.48;cursor:not-allowed}
+#mobileBottom .bottom-btn {min-width:0;overflow-wrap:anywhere}
+@media(max-width:760px){
+  .zavi-flow-layout {gap:10px}
+  .zavi-flow-tabs {gap:2px;padding:3px}
+  .zavi-flow-tab {font-size:12px;padding:9px 4px}
+  .zavi-flow-panel .form-grid {grid-template-columns:repeat(2,minmax(0,1fr))}
+  #dialogForm .zavi-flow-panel .order-line {max-width:100%}
+}
+@media(max-width:390px){
+ .zavi-flow-panel .form-grid {grid-template-columns:minmax(0,1fr)}
+}
+@media(prefers-reduced-motion:reduce){
+ .zavi-flow-tab,.zavi-flow-panel {transition:none!important;animation:none!important}
+}
