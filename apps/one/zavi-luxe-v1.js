@@ -1,0 +1,2 @@
+/* Visual hotfix: no observers, no content modification, no change to app data. */
+(()=>{'use strict';const h=document.documentElement;h.classList.remove('zavi-luxe');h.classList.add('zavi-luxe-safe');})();

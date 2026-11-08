@@ -1,0 +1,40 @@
+/* ZAVI ONE V58 — fix iPhone/Android horizontal 12-month chart scrolling */
+.z47-chart-scroll.z27-chart-scroll {
+ display:block!important;
+ position:relative!important;
+ box-sizing:border-box!important;
+ width:100%!important;
+ max-width:100%!important;
+ min-width:0!important;
+ overflow-x:scroll!important;
+ overflow-y:hidden!important;
+ -webkit-overflow-scrolling:touch!important;
+ overscroll-behavior-x:contain!important;
+ touch-action:pan-x pan-y!important;
+ scrollbar-width:auto!important;
+ scroll-behavior:smooth!important;
+}
+.z47-chart-scroll.z27-chart-scroll .bar-chart{
+ width:max-content!important;
+ min-width:948px!important;
+ max-width:none!important;
+ flex-wrap:nowrap!important;
+ touch-action:pan-x pan-y!important;
+}
+.z47-chart-scroll.z27-chart-scroll .bar-chart .bar-col{
+ flex:0 0 76px!important;
+ min-width:76px!important;
+ max-width:76px!important;
+ overflow:visible!important;
+}
+.z47-chart-scroll.z27-chart-scroll::-webkit-scrollbar{height:9px!important;display:block!important}
+.z47-chart-scroll.z27-chart-scroll::-webkit-scrollbar-track{background:#112f57;border-radius:99px}
+.z47-chart-scroll.z27-chart-scroll::-webkit-scrollbar-thumb{background:#1cadd4;border-radius:99px;border:1px solid #183e64}
+.zavi-chart-mobile-controls{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:7px 0 10px}
+.zavi-chart-mobile-controls .zavi-chart-swipe-hint{font-size:12px;color:#b9d4ef;opacity:.95}
+.zavi-chart-mobile-controls .zavi-chart-move{border:1px solid #3b7bb8;background:#103961;color:#e0f9ff;
+ border-radius:10px;padding:7px 11px;min-height:40px;font-size:13px;touch-action:manipulation}
+.zavi-chart-mobile-controls .zavi-chart-move:focus-visible{outline:2px solid #29bfe8;outline-offset:2px}
+@media (min-width:1100px){.zavi-chart-mobile-controls{display:none}}
+@media (max-width:740px){.z47-chart-header.z27-chart-header{min-width:0!important}
+ .z47-chart-scroll.z27-chart-scroll{max-width:calc(100vw - 32px)!important}}

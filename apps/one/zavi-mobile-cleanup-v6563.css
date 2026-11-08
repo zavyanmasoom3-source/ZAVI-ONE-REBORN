@@ -1,0 +1,273 @@
+/* ZAVI ONE 65.63 final consolidated mobile design cleanup.
+ * GPU-friendly, readable, small cards, no financial/auth/offline logic changes.
+ */
+html[data-zavi-theme="light"]{
+ --z63-surface:#fff;--z63-surface2:#f0f6fd;--z63-canvas:#f5f8fe;
+ --z63-ink:#122644;--z63-muted:#506581;--z63-stroke:#d7e4f4;
+ --z63-shadow:0 7px 19px rgba(30,76,136,.075);
+}
+html[data-zavi-theme="dark"]{
+ --z63-surface:#102840;--z63-surface2:#183752;--z63-canvas:#07182d;
+ --z63-ink:#f2f8ff;--z63-muted:#bbd1e8;--z63-stroke:#31516f;
+ --z63-shadow:0 9px 19px rgba(0,9,27,.20);
+}
+html[data-zavi-theme="light"] body #content,
+html[data-zavi-theme="dark"] body #content{
+ color:var(--z63-ink);
+}
+/* DASHBOARD: no duplicate guide/health blocks nor legacy report toggles.
+   Actual stat elements are relocated via zavi-mobile-cleanup-v6563.js. */
+#content.zrf-dashboard .zrf-details-toggle,
+#content.zrf-dashboard>.zrf-legacy-dashboard.zavi-reference-quick,
+#content.zrf-dashboard>.zrf-legacy-dashboard.z649-dashboard-extras,
+#content.zrf-dashboard .z6524-launch{display:none!important}
+#content.zrf-dashboard>.zrf-home .z63-quick-panel,
+#content.zrf-dashboard>.zrf-home .z63-finance-wrap{
+ display:block!important;margin:13px 0 0;min-width:0
+}
+#content.zrf-dashboard .z63-quick-panel h3,
+#content.zrf-dashboard .z63-finance-title{
+ font-size:16px!important;font-weight:900!important;line-height:1.5!important;
+ color:var(--z63-ink)!important;margin:0 0 10px!important
+}
+#content.zrf-dashboard .z63-quick-grid{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:10px;align-items:stretch
+}
+#content.zrf-dashboard .z63-quick-tile{
+ display:flex!important;align-items:center;gap:8px;justify-content:center;
+ min-height:57px!important;width:100%!important;min-width:0!important;
+ padding:10px!important;border-radius:15px!important;
+ border:1px solid var(--z63-stroke)!important;
+ background:var(--z63-surface)!important;color:var(--z63-ink)!important;
+ box-shadow:var(--z63-shadow)!important;font-size:13px!important;font-weight:850!important;
+ line-height:1.45!important;text-align:center!important;
+ transition:transform .2s ease,box-shadow .2s ease!important
+}
+#content.zrf-dashboard .z63-quick-tile:hover{transform:translateY(-2px)}
+#content.zrf-dashboard .z63-quick-tile .z63-quick-glyph{
+ display:grid;place-items:center;flex:none;width:35px;height:35px;
+ border-radius:11px;color:#fff!important;font-size:18px!important;
+ font-weight:900;background:linear-gradient(130deg,#1e85f4,#0bd9ea)
+}
+#content.zrf-dashboard .z63-quick-sale .z63-quick-glyph{background:linear-gradient(135deg,#3b72ff,#097cdb)}
+#content.zrf-dashboard .z63-quick-purchase .z63-quick-glyph{background:linear-gradient(135deg,#8360f6,#4262f6)}
+#content.zrf-dashboard .z63-quick-receive .z63-quick-glyph{background:linear-gradient(135deg,#24cd9f,#079e9d)}
+#content.zrf-dashboard .z63-quick-pay .z63-quick-glyph{background:linear-gradient(135deg,#f59f42,#ef6f39)}
+#content.zrf-dashboard .z63-finance-wrap .z63-finance-grid{
+ display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ gap:9px!important;margin:0!important
+}
+#content.zrf-dashboard .z63-finance-grid>.stat,
+#content.zrf-dashboard .z63-finance-grid>*{
+ min-height:91px!important;margin:0!important;padding:10px 11px!important;
+ min-width:0!important;border-radius:15px!important;
+ border:1px solid var(--z63-stroke)!important;
+ background:var(--z63-surface)!important;
+ box-shadow:var(--z63-shadow)!important;overflow:visible!important;
+}
+#content.zrf-dashboard .z63-finance-grid>*:last-child:nth-child(odd){
+ grid-column:span 2;min-height:83px!important;
+}
+#content.zrf-dashboard .z63-finance-grid *{max-width:100%;overflow-wrap:anywhere}
+#content.zrf-dashboard .z63-finance-grid :is(strong,b,.stat-value,.amount){
+ color:var(--z63-ink)!important;font-variant-numeric:tabular-nums;
+ font-size:clamp(13px,3.4vw,20px)!important;line-height:1.5!important
+}
+#content.zrf-dashboard .z63-finance-grid :is(small,p,.stat-label,.stat-sub){
+ color:var(--z63-muted)!important;font-size:11px!important;
+ line-height:1.5!important;opacity:1!important
+}
+#content.zrf-dashboard .zrf-tile,
+#content.zrf-dashboard .zrf-primary,
+#content.zrf-dashboard .zrf-store-banner{max-width:100%!important;overflow:hidden!important}
+#content.zrf-dashboard .zrf-tile{min-height:88px!important}
+#content.zrf-dashboard .zrf-usd-shell{margin:12px 0!important;max-width:100%!important}
+#content.zrf-dashboard .zrf-primary .zrf-primary-icon,
+#content.zrf-dashboard .zrf-store-icon{flex-shrink:0}
+#content.zrf-dashboard .zrf-tile-copy,
+#content.zrf-dashboard .zrf-dollar-copy{min-width:0}
+#content.zrf-dashboard .zrf-tiles .zrf-tile:nth-child(4){min-height:80px!important}
+/* COMPACT SETTINGS: all fields and actions remain visible/interactive. */
+#content.z63-settings{max-width:100%!important;min-width:0}
+#content.z63-settings .zavi-clean-settings-hub{
+ border-radius:17px!important;padding:12px!important;
+ background:var(--z63-surface)!important;color:var(--z63-ink)!important;
+ border:1px solid var(--z63-stroke)!important;box-shadow:var(--z63-shadow)!important
+}
+#content.z63-settings .zavi-clean-settings-hub :is(h1,h2,h3,strong,b),
+#content.z63-settings .zavi-clean-settings-title strong{
+ color:var(--z63-ink)!important;opacity:1!important
+}
+#content.z63-settings .zavi-clean-settings-hub input{
+ background:var(--z63-surface2)!important;color:var(--z63-ink)!important;
+ border:1px solid var(--z63-stroke)!important;min-height:40px!important
+}
+#content.z63-settings .zavi-clean-settings-hub input::placeholder{color:var(--z63-muted)!important;opacity:1}
+#content.z63-settings .zavi-clean-settings-group{
+ min-width:0!important;border:1px solid var(--z63-stroke)!important;
+ background:var(--z63-surface)!important;border-radius:14px!important;
+ margin:7px 0!important;box-shadow:none!important;overflow:visible!important
+}
+#content.z63-settings .zavi-clean-settings-group>summary{
+ min-height:55px!important;padding:10px 13px!important;gap:7px!important;
+ color:var(--z63-ink)!important;border-radius:13px!important;
+ font-size:13px!important;font-weight:850!important;line-height:1.5!important;
+ background:var(--z63-surface)!important
+}
+#content.z63-settings .zavi-clean-settings-group>summary :is(span,small){
+ color:var(--z63-ink)!important;line-height:1.45!important;
+ opacity:1!important;font-size:12px!important
+}
+#content.z63-settings .zavi-clean-settings-group>summary small{color:var(--z63-muted)!important;font-size:11px!important}
+#content.z63-settings .zavi-clean-settings-stack{gap:9px!important;padding:8px!important}
+#content.z63-settings .settings-card,#content.z63-settings .card.settings-card{
+ max-width:100%;min-width:0!important;padding:12px!important;
+ border-radius:14px!important;margin-block:7px!important;
+ border:1px solid var(--z63-stroke)!important;
+ background:var(--z63-surface)!important;color:var(--z63-ink)!important;
+ box-shadow:none!important
+}
+#content.z63-settings .settings-card :is(h1,h2,h3,h4,strong,label,b),
+#content.z63-settings .z652-card :is(h3,strong,b,label){
+ color:var(--z63-ink)!important;opacity:1!important;line-height:1.55!important
+}
+#content.z63-settings .settings-card :is(p,small,.tiny-note,.muted),
+#content.z63-settings .z652-card :is(p,small,.z652-meta,.z652-warning){
+ color:var(--z63-muted)!important;opacity:1!important;line-height:1.6!important
+}
+#content.z63-settings :is(.settings-card,.z652-card) :is(.form-grid,.action-group){
+ gap:9px!important;min-width:0!important
+}
+#content.z63-settings :is(input,select,textarea){
+ background:var(--z63-surface2)!important;color:var(--z63-ink)!important;
+ border:1px solid var(--z63-stroke)!important;max-width:100%!important;
+ min-width:0!important;min-height:39px;border-radius:10px!important;
+ -webkit-text-fill-color:var(--z63-ink)
+}
+#content.z63-settings :is(input,textarea)::placeholder{
+ color:var(--z63-muted)!important;-webkit-text-fill-color:var(--z63-muted)!important
+}
+#content.z63-settings :is(.btn,button){max-width:100%;overflow-wrap:anywhere;white-space:normal}
+#content.z63-settings button.btn.primary{
+ background:linear-gradient(112deg,#2058e9,#04afed)!important;
+ color:#fff!important;-webkit-text-fill-color:#fff!important;border-color:#1c80f2!important
+}
+#content.z63-settings .z6515-font-preview{max-width:100%;overflow-wrap:anywhere}
+#content.z63-settings :is(.zavi-theme-picker,.zavi-module-grid,.z20-grid){gap:9px!important}
+#content.z63-settings .zavi-theme-picker .zavi-theme-choice{
+ min-height:43px!important;background:var(--z63-surface2)!important;
+ color:var(--z63-ink)!important;border:1px solid var(--z63-stroke)!important
+}
+/* PERSONAL DEVICES: compact without hiding revocation/transfer safety state. */
+#content .z652-card{
+ padding:11px!important;margin:9px 0!important;max-width:100%!important;
+ border-radius:13px!important;box-shadow:var(--z63-shadow)!important;
+ background:var(--z63-surface)!important;color:var(--z63-ink)!important;
+ border:1px solid var(--z63-stroke)!important
+}
+#content .z652-title{gap:8px!important}
+#content .z652-title h3{font-size:14px!important;margin:0 0 3px!important;color:var(--z63-ink)!important}
+#content .z652-title p{font-size:11px!important;line-height:1.5!important;color:var(--z63-muted)!important}
+#content .z652-actions{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px!important;width:100%}
+#content .z652-actions button{min-height:38px!important;min-width:0!important;
+ width:100%;padding:6px!important;font-size:11px!important;line-height:1.5!important;
+ white-space:normal!important
+}
+#content .z652-status{padding:8px 10px!important;margin:8px 0!important;font-size:11px!important;
+ background:var(--z63-surface2)!important;color:var(--z63-ink)!important
+}
+#content .z652-status.z652-error{background:#51263b!important;color:#ffe6ea!important}
+html[data-zavi-theme="light"] #content .z652-status.z652-error{background:#fff1f2!important;color:#9f2447!important}
+#content .z652-devices{grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr))!important;gap:7px!important}
+#content .z652-item{padding:9px!important;border-radius:11px!important;background:var(--z63-surface2)!important;border-color:var(--z63-stroke)!important}
+#content .z652-device-head{gap:5px!important}
+#content .z652-device-head strong{font-size:11.5px!important;color:var(--z63-ink)!important}
+#content .z652-tag{font-size:10px!important;line-height:1.4!important}
+#content .z652-meta{margin:5px 0!important;gap:2px!important;font-size:10px!important;color:var(--z63-muted)!important}
+#content .z652-warning{margin:7px 0 0!important;font-size:10.5px!important}
+#content .z652-audit{padding-top:7px!important;margin-top:8px!important}
+#content .z652-audit summary{font-size:12px!important;color:var(--z63-ink)!important}
+#content .z652-audit .z652-event{padding:6px 0!important;font-size:10.5px!important}
+/* CLOUD: prevent giant empty surfaces and white-on-white in dark mode. */
+#content #z20CloudPanel,#content .z20-panel{
+ max-width:100%;min-width:0!important;min-height:0!important;
+ padding:13px!important;border:1px solid var(--z63-stroke)!important;
+ border-radius:15px!important;background:var(--z63-surface)!important;
+ color:var(--z63-ink)!important;box-shadow:var(--z63-shadow)!important
+}
+#content .z20-team{gap:8px!important;align-items:flex-start!important}
+#content .z20-team :is(h3,b,strong){color:var(--z63-ink)!important;font-size:15px!important}
+#content .z20-team p,#content .z20-sub{color:var(--z63-muted)!important;font-size:11px!important;line-height:1.6!important}
+#content .z20-row,#content .z20-actions{gap:7px!important;flex-wrap:wrap!important}
+#content .z20-alert{padding:8px!important;font-size:11px!important;line-height:1.6!important;overflow-wrap:anywhere}
+#content .z20-pill{max-width:100%;overflow-wrap:anywhere;color:var(--z63-ink)!important;
+ background:var(--z63-surface2)!important;border:1px solid var(--z63-stroke)!important
+}
+#content .z20-panel :is(input,select,textarea){
+ background:var(--z63-surface2)!important;color:var(--z63-ink)!important;
+ border:1px solid var(--z63-stroke)!important;min-width:0!important;max-width:100%!important
+}
+/* Product, debt and finance forms: ensure final card and actions are never covered by bottom bar. */
+#content.z63-products :is(.record-card,.product-card,.stock-item),
+#content.z63-debtors :is(.debt-card,.record-card){
+ min-width:0!important;max-width:100%!important;
+ border-radius:13px!important;border:1px solid var(--z63-stroke)!important;
+ box-shadow:var(--z63-shadow)!important;background:var(--z63-surface)!important;
+ color:var(--z63-ink)!important;overflow-wrap:anywhere
+}
+#content.z63-products :is(.record-card,.product-card),
+#content.z63-debtors :is(.debt-card){padding:11px!important;margin-block:8px!important}
+#content.z63-products :is(.record-card,.product-card) :is(h3,strong,b),
+#content.z63-debtors :is(.debt-card) :is(h3,strong,b){color:var(--z63-ink)!important}
+#content.z63-products :is(.record-card,.product-card) :is(p,small,.muted),
+#content.z63-debtors :is(.debt-card) :is(p,small,.muted){color:var(--z63-muted)!important}
+#content.z63-debtors .debt-cards{gap:10px!important}
+#content.z63-debtors .debt-card :is(.debt-actions,.action-group){
+ display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important
+}
+#content.z63-debtors .debt-card :is(.debt-actions,.action-group)>*{
+ margin:0!important;min-width:0!important;max-width:100%!important;
+ width:100%!important;min-height:35px!important;padding:8px 4px!important;
+ font-size:11px!important;white-space:normal!important;line-height:1.4!important
+}
+#content.z63-debtors :is(.debt-card,.debt-hero) :is(.btn,.button){max-width:100%;white-space:normal}
+#content.z63-products :is(.searchbox,.filterbar,.table-bar),
+#content.z63-debtors :is(.searchbox,.filterbar,.table-bar){max-width:100%!important;min-width:0!important}
+#content :is(.layout-2,.form-grid,.action-group,.record-card,.debt-card,.table-wrap){min-width:0;max-width:100%}
+#content :is(.table-wrap){overflow-x:auto!important;overscroll-behavior-inline:contain}
+html,body,#app,#content{max-width:100%!important}
+#side .zavi-v6-menu-scroll{overflow-y:auto!important;overflow-x:hidden!important;
+ overscroll-behavior:contain!important;-webkit-overflow-scrolling:touch!important
+}
+/* Android 3-button navigation, system gestures, camera hole-punch and keyboard safe areas. */
+@media(max-width:850px){
+ #content{padding-bottom:calc(135px + env(safe-area-inset-bottom,0px))!important;
+  overflow-x:clip!important;min-width:0!important}
+ body{overflow-x:clip!important}
+ #content.z63-settings .zavi-clean-settings-hub{padding:9px!important}
+ #content.zrf-dashboard .z63-quick-panel{margin-top:10px!important}
+ #content.zrf-dashboard .z63-quick-grid{gap:8px!important}
+ #content.zrf-dashboard .z63-finance-grid>.stat,#content.zrf-dashboard .z63-finance-grid>*{min-height:82px!important}
+ #content.z63-debtors .debt-cards,#content.z63-products .products-grid{padding-bottom:24px!important}
+ #content.z63-settings .zavi-clean-settings-group>summary{min-height:48px!important}
+ #content.z63-settings .zavi-clean-settings-stack{padding:6px!important}
+}
+@media(max-width:390px){
+ #content.zrf-dashboard .z63-quick-tile{min-height:52px!important;padding:7px!important;font-size:11.5px!important}
+ #content.zrf-dashboard .z63-quick-glyph{width:29px;height:29px;font-size:15px}
+ #content.z63-debtors .debt-card :is(.debt-actions,.action-group) button{font-size:10.5px!important}
+}
+@media(orientation:landscape) and (max-height:550px){
+ #content{padding-bottom:calc(85px + env(safe-area-inset-bottom,0px))!important}
+ #content.zrf-dashboard .z63-quick-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+ #content.zrf-dashboard .z63-finance-wrap .z63-finance-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+ #content.zrf-dashboard .z63-finance-grid>*:last-child:nth-child(odd){grid-column:auto}
+}
+@media(prefers-reduced-motion:reduce){
+ #content.zrf-dashboard .z63-quick-tile{transition:none!important}
+}
+@media print{
+ #content.zrf-dashboard .z63-quick-panel{display:none!important}
+ #content.zrf-dashboard .z63-finance-wrap{box-shadow:none!important}
+}

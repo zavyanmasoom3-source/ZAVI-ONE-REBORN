@@ -1,0 +1,20 @@
+/* ZAVI ONE / ADMIN — crash-safe premium visual v2. Stays OUT of application layout/rendering. */
+html.zavi-luxe-safe{--zl-cyan:#09d2ec;--zl-blue:#1778f4;--zl-line-dark:rgba(87,179,255,.25);--zl-line-light:#d7e7f6}
+html.zavi-luxe-safe[data-zavi-theme="dark"]{--zl-line:var(--zl-line-dark);--zl-shadow:0 7px 22px rgba(0,10,35,.16)}
+html.zavi-luxe-safe[data-zavi-theme="light"]{--zl-line:var(--zl-line-light);--zl-shadow:0 7px 22px rgba(28,79,146,.10)}
+html.zavi-luxe-safe[data-zavi-theme="dark"] body{background-color:#071932}
+html.zavi-luxe-safe[data-zavi-theme="light"] body{background-color:#f3f8ff}
+html.zavi-luxe-safe :where(.stat,.settings-card,.report-card,.summary-card){border-radius:16px;border-color:var(--zl-line);box-shadow:var(--zl-shadow)}
+html.zavi-luxe-safe :where(.zavi-v37-action,.zsvc-shortcut){border-radius:16px;transition:filter .18s ease}
+html.zavi-luxe-safe :where(.zavi-v37-action,.zsvc-shortcut):active{filter:brightness(.94)}
+html.zavi-luxe-safe :where(.btn.primary,.button.primary){background-image:linear-gradient(120deg,#1978ed,#0ea9d9);border-radius:11px;color:white}
+html.zavi-luxe-safe :where(.welcome,.zavi-hero,.zsh-hero){border-radius:18px;background-image:linear-gradient(115deg,#153a75,#0e67af 75%,#069dc2)}
+html.zavi-luxe-safe :where(.zavi-v37-sale){background-image:linear-gradient(120deg,#137bec,#315cdd)}
+html.zavi-luxe-safe :where(.zavi-v37-purchase){background-image:linear-gradient(120deg,#7a52e5,#5441b9)}
+html.zavi-luxe-safe :where(.zavi-v37-receive){background-image:linear-gradient(120deg,#0a9e9c,#0eaf80)}
+html.zavi-luxe-safe :where(.zavi-v37-pay){background-image:linear-gradient(120deg,#ee7e38,#d95263)}
+html.zavi-luxe-safe :where(button,a,input,select,textarea):focus-visible{outline:2px solid #0bd0ec;outline-offset:2px}
+@media(max-width:760px){html.zavi-luxe-safe :where(.zavi-v37-action,.zsvc-shortcut){min-height:70px}html.zavi-luxe-safe :where(.nav-btn,.nav-item){min-height:42px}html.zavi-luxe-safe :where(.table-wrap,.zsvc-table-scroll){max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}}
+@media(prefers-reduced-motion:reduce){html.zavi-luxe-safe *,html.zavi-luxe-safe *::before,html.zavi-luxe-safe *::after{animation:none!important;transition-duration:0ms!important}}
+@media print{html.zavi-luxe-safe body{background:#fff!important}html.zavi-luxe-safe :where(.stat,.settings-card,.report-card){box-shadow:none!important}}
+/* Do NOT set display, opacity, visibility, position, z-index, height, or overflow on app containers. */

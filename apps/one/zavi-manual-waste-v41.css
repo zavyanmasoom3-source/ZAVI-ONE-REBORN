@@ -1,0 +1,30 @@
+
+/* V41 manual waste register — responsive, light/dark, RTL/LTR. */
+.zavi-waste-page{max-width:1200px;margin-inline:auto}
+.zavi-waste-page .page-head{flex-wrap:wrap}
+.zavi-waste-page .page-head .action-group{gap:9px}
+.zavi-waste-page .page-head .btn{white-space:normal;text-align:center}
+.zavi-waste-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:15px}
+.zavi-waste-stat{background:linear-gradient(145deg,#09264b,#123a69);color:#f3f9ff;border:1px solid #3276ac;border-radius:15px;padding:17px 20px;min-width:0;box-shadow:0 8px 24px #05162a18}
+.zavi-waste-stat small{font-weight:600;opacity:.85;font-size:12px;display:block}
+.zavi-waste-stat b{font-size:clamp(16px,2vw,24px);line-height:1.6;display:block;overflow-wrap:anywhere;direction:ltr;text-align:start;margin-top:7px}
+.zavi-waste-notice{display:flex;align-items:flex-start;gap:10px;color:#0a4e70;background:#e6f6ff;border:1px solid #99d4f3;padding:12px 15px;border-radius:13px;margin-bottom:16px;font-size:12px;line-height:1.9}
+.zavi-waste-notice svg{flex-shrink:0;margin-top:3px}
+.zavi-waste-tools{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;flex-wrap:wrap;border-bottom:1px solid var(--line)}
+.zavi-waste-tools .searchbox{flex:1;max-width:620px;min-width:190px}
+.zavi-waste-list{padding:4px 17px}
+.zavi-waste-row{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;border-bottom:1px solid var(--line);padding:16px 8px}
+.zavi-waste-row:last-child{border:0}
+.zavi-waste-row-main{display:flex;flex-wrap:wrap;align-items:center;gap:8px 13px;min-width:0;flex:1 1 290px}
+.zavi-waste-row-main>strong{font-size:14px;color:var(--ink);min-width:0;overflow-wrap:anywhere}
+.zavi-waste-row-main>small{font-size:12px;color:var(--muted);direction:ltr;unicode-bidi:isolate}
+.zavi-waste-row-main>p{flex:1 0 100%;margin:0;color:var(--muted);font-size:12px;overflow-wrap:anywhere}
+.zavi-waste-date{font-size:11px;color:var(--muted)}
+.zavi-waste-tag{background:#fff0de;color:#915c13;border-radius:100px;padding:2px 10px;font-size:11px;font-weight:700}
+.zavi-waste-row-end{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.zavi-waste-row-end>strong{font-size:14px;color:var(--ink);direction:ltr;unicode-bidi:isolate}
+.zavi-waste-actions{display:flex;gap:6px}
+html[data-zavi-theme="light"] .zavi-waste-stat{background:linear-gradient(125deg,#edf7ff,#daeefe);border-color:#b2d8f6;color:#0b3358}
+html[data-zavi-theme="light"] .zavi-waste-notice{background:#e8f6ff;color:#065075;border-color:#a5d6f3}
+@media(max-width:650px){.zavi-waste-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.zavi-waste-stat:last-child{grid-column:1/-1}.zavi-waste-row-end{width:100%;justify-content:space-between}.zavi-waste-page .action-group{width:100%}.zavi-waste-page .action-group .btn{flex:1}.zavi-waste-list{padding:4px 12px}}
+@media(max-width:360px){.zavi-waste-stats{grid-template-columns:1fr}.zavi-waste-stat:last-child{grid-column:auto}}
