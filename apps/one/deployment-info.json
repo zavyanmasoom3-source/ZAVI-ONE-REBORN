@@ -1,0 +1,233 @@
+{
+  "app": "ZAVI ONE",
+  "version": "65.33-rc1",
+  "type": "ZAVI_PUBLISH_CANDIDATE",
+  "status": "RELEASE_CANDIDATE",
+  "production_database_changes": false,
+  "customer_data_deleted": false,
+  "features": [
+    "12 Afghan Solar Hijri months Hamal to Hoot",
+    "annual year selector",
+    "signed offline license + same-tenant cached snapshot checks",
+    "offline queued general management settings and services",
+    "idempotent service/batch sync",
+    "Scroll-safe purchase/sale modal",
+    "Compact barcode area",
+    "Validated ISO currency settings",
+    "Light/dark contrast and English display digits",
+    "Dark-mode low-GPU optimization",
+    "ZAVI ONE startup intro animation",
+    "RC1 offline cache refresh",
+    "Always-on ZAVI ONE intro animation",
+    "Premium motion-safe UI graphics",
+    "Publish candidate offline cache refresh",
+    "V65.31 professional simple dark/light theme, small dialogs, accessibility and low-GPU safeguards"
+  ],
+  "release": "V65.33 — Responsive Blue Design / Release Candidate",
+  "new_in_v47": [
+    "12 month chart full fiscal year",
+    "local management queue",
+    "offline readiness improvements"
+  ],
+  "language_patch": "19.3",
+  "features_v634": [
+    "actual barcode keyboard scanner in sales and purchases",
+    "view-only colleague management audit improvements",
+    "broader business profile choices",
+    "staged security patch not applied"
+  ],
+  "qa_note": "Static and automated regression tests only; real authenticated end-to-end, printer, recovery and financial audits remain outstanding.",
+  "qa_only": true,
+  "production_deployed": false,
+  "camera_barcode": {
+    "web_barcode_detector": true,
+    "requires_https": true,
+    "requires_user_permission": true,
+    "tested_with_mock_camera_only": true
+  },
+  "production_ready": false,
+  "v636_changes": [
+    "Read-only local accounting data integrity diagnostics",
+    "BigInt scaled-decimal invoice totals for NEW sales and purchases; historic ledger unchanged",
+    "Previous v63.5 features retained",
+    "No production database or site changes"
+  ],
+  "studio_revision": "64.0-qa",
+  "ai_backend_deployed": false,
+  "v638_changes": [
+    "Warehouse camera, USB and Bluetooth keyboard-scanner lookup; verified catalog price and stock",
+    "Registered product SKU via camera in warehouse editor",
+    "Price auto-completion on recognized invoice catalog selection",
+    "Workspace-scoped industry ribbon from business profile; no mock specialized modules",
+    "Light/dark legibility fixes, responsive motion, reduced-motion support",
+    "AI edge function origin-allowlisted CORS middleware; not deployed",
+    "Existing persistent login retained; no token without expiry"
+  ],
+  "v639_changes": [
+    "Business-type prioritized navigation with all legacy pages retained",
+    "Business-specific dashboard shortcuts and non-misleading guidance",
+    "Opt-in focused navigation per workspace through existing owner-scoped commit",
+    "6–12 digit PIN visual progress and animation without modifying credential validation",
+    "Enhanced ADMIN motion, typography, and theme readability",
+    "Industry-tailored ZAVI AI offline example prompts, no online model deployment"
+  ],
+  "v640_changes": [
+    "Business-priority toggle now applies to desktop and mobile menus consistently",
+    "Industry-aware labels for existing authorized module links (no false specialist claims)",
+    "Product stock search includes all registered alternate barcodes",
+    "Trade-aware dashboard heading and subtitles",
+    "Explicit high-contrast product and price text for light/dark themes",
+    "Accessible focus and motion for CLIENT and ADMIN",
+    "Offline shell version bumped to cache all new CSS"
+  ],
+  "staging_version": "65.2-qa",
+  "release_date": "2026-10-22",
+  "v644_changes": [
+    "guided quick start using existing business-management page",
+    "preview-before-commit CSV product import including barcode collision reports",
+    "thermal receipt browser print 58/80mm without printer hardware verification",
+    "tenant-local low-stock/due-debt dashboard alerts",
+    "session-only isolated training page",
+    "local activity trail retained with accounting snapshot"
+  ],
+  "v647_changes": [
+    "Page stock and sales/purchase tables at 60 visible records without altering filter results or ledger totals",
+    "SHA-256 integrity check for all new plain and encrypted backups; legacy backup prompts remain",
+    "No production database changes; permissions and online AI require validated staging"
+  ],
+  "v650_changes": [
+    "Compact real owner colleague cards with correct grid layout and visible theme colors",
+    "Owner sale and purchase controls remain gated by reviewed server RPC activation",
+    "Manual no-barcode product selection in actual sale/purchase invoice form",
+    "Indexed matching across SKU and alternate barcodes (ASCII, Dari, Arabic digits); rebuild on saved state change",
+    "Speed: only re-evaluate theme choice widgets when added, less frequent staff session polling",
+    "Explicit light/dark colleague POS styling, reduced expensive overlay blur",
+    "Existing warehouse dashboard, customer accounts, invoices, POS, and thermal printing retained",
+    "Production permissions migration NOT applied, independent database restore not verified"
+  ],
+  "v651_changes": [
+    "Automatically download and open a unique owner workspace on fresh cloud sign-in",
+    "Remember the preferred workspace per authenticated owner account for multi-business selection",
+    "Preserve unsynced local edits and block conflicting upload/restore",
+    "Prompt verified owner for primary-device replacement; never silently revoke another device",
+    "Keep prior staff permissions SQL gated until backup restoration and two-tenant staging tests pass"
+  ],
+  "v652_changes": [
+    "Device management panel and owner-scoped API integration, localizations Dari/Pashto/English",
+    "Owner-only device revoke request with unsynced transaction checks and audited status changes (SQL staging)",
+    "Block transfer when previous device reports unsynced operations; explicitly acknowledge unknown remote offline state",
+    "RLS-protected security event history: registered/activated/revoked/primary-transfer/staff permission edits",
+    "Preflight/postflight SQL validation scripts and non-destructive emergency disable procedure",
+    "Production migrations NOT DEPLOYED: verified restore and real two-tenant PostgreSQL auth tests required"
+  ],
+  "device_backend": "deployed-on-wbbmwfnmurpphwxesssx-2026-10-22",
+  "web_version": "65.30-rc1",
+  "production_verified": false,
+  "scroll_release": "V65.14 — one scrollable full-height navigation drawer for mobile and desktop; iOS Safari and Android safe scrolling; no DB changes",
+  "v6515_changes": [
+    "Original ZAVI ONE Z1 graphic asset replaces text placeholder on splash animation",
+    "Cloud auth remains saved across normal app closes; periodic/online/foreground refresh attempts preserve data on transient errors",
+    "Explicit sign-out synchronizes between tabs on the same origin",
+    "Three font choices persisted per authenticated account and device without modifying financial data",
+    "PWA cache includes new personal settings assets"
+  ],
+  "locale_qa_changes": [
+    "UI translation before paint to prevent Dari flashes during navigation",
+    "Expanded English/Pashto settings, font, audit, business and POS labels",
+    "Preserve RTL for Dari/Pashto and LTR for English",
+    "Cache all new locale patches offline"
+  ],
+  "v6517_changes": [
+    "Prevent appearance toggle from triggering other delegated settings/navigation handlers",
+    "Replace auto-transfer modal with nonblocking owner action guidance; preserve unsynced-device safeguards",
+    "Keep automatic download of server-synced cloud workspace and existing signed offline auto-activation",
+    "Improve Dari/Pashto/English translations for settings and cloud device guidance"
+  ],
+  "v6518_changes": [
+    "Persistent immediate no-motion preference without navigation/reload",
+    "Reduced-motion CSS + intro suppresses animation when selected",
+    "Dari/Pashto/English expanded UI labels and dynamic settings",
+    "Updated offline release cache"
+  ],
+  "offline_shell_protocol": "zavi-shell-v2",
+  "staging_required": true,
+  "v6520_changes": [
+    "Verified cloud pull marks successful sync on previous device (only when no pending/conflict)",
+    "Active owner device reports fresh sync after server-confirmed pull or push and periodically",
+    "Manual transfer guides owner to sync/check-in previous device within fifteen minutes",
+    "Post-transfer license failure shown independently from completed primary-device transfer",
+    "No bypass of signed offline license or unsent-transaction guard"
+  ],
+  "v6521_notes": [
+    "Single owner click triggers safe server device transfer, ES256 signed offline license and app-shell preparation.",
+    "A previous device with pending or unverifiable sync blocks transfer; never revokes unsent invoices.",
+    "In-page user feedback replaces repeated browser alert dialogs.",
+    "Live database functions and customer data remain unchanged in this release."
+  ],
+  "staging_security_migration_applied": false,
+  "v6523_changes": [
+    "Owner-confirmed emergency recovery when the former device is lost and its sync report is stale or includes unsent records",
+    "Normal transfer still requires clean device state; emergency acceptance never bypasses owner authentication, subscription, or server device validation",
+    "Cloud workspace existence is read-only verified before emergency transfer",
+    "Offline grant and shell preparation continue in one operation after confirmed transfer",
+    "Cloud data is never deleted; offline-only old-device records may be irretrievable",
+    "New light/dark 3-language confirmation dialog replaces browser-host alert"
+  ],
+  "v6524_features": [
+    "Tenant-scoped health center and safe diagnostics",
+    "Offline rule-based assistant with actionable troubleshooting",
+    "Owner-confirmed daily journal notes with no ledger locking",
+    "Debt and inventory reminders, manually approved sharing",
+    "Existing type-aware smart business plans surfaced",
+    "Accounting integrity alerts and non-destructive guidance"
+  ],
+  "v6525_industry_workspaces": {
+    "business_types": 18,
+    "category_guided_setup": true,
+    "gold_gross_karat_stones_labor_preview": true,
+    "tenant_scoped_specialist_reference_records": true,
+    "auto_financial_posting": false,
+    "owner_role_enforced": true,
+    "production_db_changed": false,
+    "limitations": "Trade metadata is stored in tenant accounting snapshot and linked optionally to existing product/invoice. Specialized workflows are not a substitute for regulated clinical, tax, hallmark or full point-of-sale vertical certification."
+  },
+  "v6527_invoice_design": {
+    "industry_profiles": 18,
+    "color_palettes": 8,
+    "design_templates": 4,
+    "default_paper": "A5",
+    "supported": "in-app sales/purchase canvas; manual sales/purchase document; thermal receipt preview",
+    "tenant_scope": "invoiceDesign field inside authenticated store database",
+    "financial_mutations": false,
+    "verified_on_real_device": false
+  },
+  "client_publish_candidate": "65.27-rc1",
+  "release_version": "65.27-rc1",
+  "invoice_studio_ready_for_staging": true,
+  "v6528_changes": [
+    "Simple guided our-payables workflow and opening balance explanation",
+    "Four-part creditor statement including original currency notes",
+    "ISO 4217 currency choices where FX is supported; manual rates recorded with amount",
+    "Accidental duplicate prior-debt entry warning",
+    "No automatic currency conversion or financial ledger reset"
+  ],
+  "v6529_notes": "18 store types: industry-specific catalog and invoice line metadata; daily-work moved to Daily Operations; colleague dialog compact. No changes to server or live financial data.",
+  "v6530_changes": [
+    "صرافی با فرم ارز مبدأ و مقصد، نرخ، کارمزد و رسید",
+    "پیمانکاری ساختمانی و پروژه‌ها جدا از مصالح ساختمانی",
+    "نام آزاد برای گرفتن قرض با ایجاد خودکار حساب طلبکار",
+    "محاسبات تخصصی فقط پیش‌نمایش و نیازمند تأیید مالی",
+    "کش آفلاین نسخه تازه"
+  ],
+  "new_in_v6532": [
+    "Easy mode navigation + quick-start actions",
+    "44-page illustrated Dari training PDF delivered separately"
+  ],
+  "v6533_changes": [
+    "Desktop and mobile responsive approved blue layout applied to live app DOM",
+    "Easy mode and Show all sections controls removed",
+    "Preserves full permission-scoped navigation and financial logic",
+    "No database or customer records changed",
+    "PWA shell version increment for same-host cache migration"
+  ]
+}
