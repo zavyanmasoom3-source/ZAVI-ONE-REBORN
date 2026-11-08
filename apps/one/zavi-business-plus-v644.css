@@ -1,0 +1,25 @@
+/* ZAVI ONE V64.4 — operational suite, contrast-safe for both themes. */
+.z644-suite,.z644-alert-card{padding:clamp(15px,2.4vw,25px)!important;isolation:isolate;overflow:hidden;position:relative}
+.z644-suite::before,.z644-alert-card::before{content:"";position:absolute;inset-inline-start:0;top:0;width:4px;height:100%;background:linear-gradient(180deg,#20b8db,#19ceaf);border-radius:8px;pointer-events:none}
+.z644-suite h3,.z644-alert-card h3{font-size:clamp(15px,2vw,18px);font-weight:900;margin:0 0 7px;letter-spacing:0;line-height:1.55}
+.z644-suite p,.z644-alert-card p,.z644-suite small,.z644-alert-card small{font-size:clamp(12px,1.2vw,13px);line-height:1.85;opacity:1}
+.z644-card-head{margin-bottom:14px;position:relative}
+.z644-steps,.z644-alert-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:14px 0}
+.z644-steps span,.z644-alert-chip{display:flex;flex-direction:column;gap:4px;align-items:start;text-align:start;border:1px solid var(--z644-border,#53728a65);background:var(--z644-panel,#15375928);color:var(--z644-text,inherit);padding:13px;border-radius:14px;line-height:1.65;min-height:68px}
+.z644-alert-chip{cursor:pointer;transition:transform .18s ease,background .18s ease,border-color .18s ease}
+.z644-alert-chip:not(button){cursor:default}
+.z644-alert-chip strong{font-size:clamp(23px,3vw,28px);line-height:1.25;color:var(--z644-highlight,#1f9dd2);font-weight:900}
+.z644-suite .btn,.z644-alert-card .btn{white-space:normal;line-height:1.6;min-height:43px}
+.z644-history{font-size:12px;max-height:240px;overflow:auto;padding-inline-start:24px}
+.z644-history li{padding:7px 0;border-bottom:1px solid var(--z644-border,#53728a65);overflow-wrap:anywhere}
+.z644-import-summary{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:10px 12px;border-radius:12px;background:#e4f5ed;color:#185d44}
+html[data-zavi-theme="dark"]{--z644-panel:#173755;--z644-border:#335776;--z644-text:#f0f7ff;--z644-highlight:#64e8e0}
+html[data-zavi-theme="light"]{--z644-panel:#edf5fd;--z644-border:#d4e2f0;--z644-text:#173755;--z644-highlight:#0b6ca5}
+html[data-zavi-theme="dark"] .z644-suite,html[data-zavi-theme="dark"] .z644-alert-card{color:#f0f7ff}
+html[data-zavi-theme="light"] .z644-suite,html[data-zavi-theme="light"] .z644-alert-card{color:#173755}
+.z644-suite select,.z644-suite input:not([type="file"]){background:var(--z644-panel)!important;color:var(--z644-text)!important;border-color:var(--z644-border)!important}
+.z644-suite select option{background:#153755;color:#fff}
+.z644-suite :is(button,a,input,select):focus-visible,.z644-alert-card button:focus-visible{outline:3px solid #18b9bd;outline-offset:3px}
+@media(max-width:650px){.z644-steps,.z644-alert-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.z644-suite .action-group>*{flex:1 1 auto}}
+@media(prefers-reduced-motion:no-preference){html:not([data-z637-no-motion="true"]) .z644-suite,html:not([data-z637-no-motion="true"]) .z644-alert-card{animation:z644Rise .36s cubic-bezier(.2,.8,.2,1) both}html:not([data-z637-no-motion="true"]) .z644-alert-chip:hover{transform:translateY(-3px);border-color:#24bacc}@keyframes z644Rise{from{opacity:.7;transform:translateY(8px)}to{opacity:1;transform:none}}}
+@media(prefers-reduced-motion:reduce){.z644-suite,.z644-alert-card,.z644-alert-chip{animation:none!important;transition:none!important;transform:none!important}}

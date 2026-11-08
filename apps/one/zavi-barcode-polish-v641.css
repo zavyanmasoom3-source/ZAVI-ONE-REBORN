@@ -1,0 +1,66 @@
+/* ZAVI ONE V64.1 — scanned-product registration and accessible motion.
+   The new layer only changes presentation. It does not change financial or inventory records. */
+:root{--z641-ease:cubic-bezier(.2,.8,.2,1);--z641-ink:#eaf5ff;--z641-muted:#bed2e7;--z641-cyan:#36d5d8}
+html[data-zavi-theme=dark]{--z641-modal:#101f35;--z641-input:#192f49;--z641-input-border:#466280;--z641-ink:#f0f7ff;--z641-muted:#bcd0e7;--z641-notice:#172e45;--z641-notice-border:#416b85}
+html[data-zavi-theme=light]{--z641-modal:#fff;--z641-input:#f5f9fd;--z641-input-border:#a7bfd5;--z641-ink:#17334e;--z641-muted:#475e74;--z641-notice:#eaf5fa;--z641-notice-border:#9ec6d5}
+/* In older builds the product modal's blue gradients made both value and placeholder hard to read. */
+html[data-zavi-theme] .modal{background:var(--z641-modal)!important;color:var(--z641-ink)!important;border:1px solid var(--z641-input-border);box-shadow:0 28px 95px #020b20a0;border-radius:24px;overflow:hidden}
+html[data-zavi-theme] .modal .modal-head{background:linear-gradient(112deg,#124184,#155dc2)!important;color:#fff!important;border-bottom:1px solid #ffffff25}
+html[data-zavi-theme] .modal .modal-head h3{color:#fff!important;font-weight:850}
+html[data-zavi-theme] .modal .modal-body{background:var(--z641-modal)!important;color:var(--z641-ink)!important}
+html[data-zavi-theme] .modal .form-grid .field label,html[data-zavi-theme] .modal .field>label,html[data-zavi-theme] .modal .form-section-title{color:var(--z641-ink)!important;font-weight:700!important;opacity:1!important}
+html[data-zavi-theme] .modal :is(input:not([type=checkbox]):not([type=radio]):not([type=file]),textarea,select){background:var(--z641-input)!important;background-image:none!important;color:var(--z641-ink)!important;-webkit-text-fill-color:var(--z641-ink)!important;border:1.5px solid var(--z641-input-border)!important;border-radius:13px!important;box-shadow:none!important;min-height:43px;font-size:15px!important;transition:border-color .22s ease,box-shadow .22s ease,background-color .22s ease}
+html[data-zavi-theme] .modal :is(input,textarea)::placeholder{color:var(--z641-muted)!important;-webkit-text-fill-color:var(--z641-muted)!important;opacity:1!important}
+html[data-zavi-theme] .modal :is(input,textarea,select):focus-visible{outline:0!important;border-color:#3fbdcf!important;box-shadow:0 0 0 3px #33c3db30!important}
+html[data-zavi-theme] .modal :is(.small-info,.tiny-note,.field-hint){color:var(--z641-muted)!important;opacity:1!important;line-height:1.9}
+html[data-zavi-theme] .modal .zavi-barcode-box{border-radius:15px;border:1px dashed var(--z641-input-border)!important;background:var(--z641-notice)!important;padding:14px!important}
+html[data-zavi-theme] .modal .modal-foot{background:var(--z641-modal)!important;border-top:1px solid var(--z641-input-border)!important}
+/* Status is calm for new/empty codes, helpful for a genuine existing barcode. */
+.z641-product-match{display:flex;gap:7px;flex-direction:column;align-items:flex-start;padding:13px 15px;border-radius:15px;border:1px solid var(--z641-notice-border);background:var(--z641-notice);color:var(--z641-ink);width:100%;min-height:64px}
+.z641-product-match strong{font-size:14px;font-weight:800;color:var(--z641-ink)!important}
+.z641-product-match>span{font-size:12px;line-height:1.9;color:var(--z641-muted)!important}
+.z641-product-match.new{border-color:#2b997b;background:color-mix(in srgb,var(--z641-notice),#1ccca0 7%)}
+.z641-product-match.existing{border-color:#dfad47;background:color-mix(in srgb,var(--z641-notice),#e2a43e 8%)}
+.z641-product-match.error{border-color:#f17d8a}
+.z641-match-details{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;width:100%;margin-block:5px}
+.z641-match-details>span{display:flex;flex-direction:column;gap:1px;padding:9px 11px;border-radius:10px;border:1px solid var(--z641-input-border);background:var(--z641-modal);min-width:0}
+.z641-match-details small{color:var(--z641-muted)!important;font-size:11px}
+.z641-match-details b{color:var(--z641-ink)!important;font-size:13px;overflow-wrap:anywhere}
+.z641-edit-existing{min-height:44px;margin-top:7px}
+/* Motion is concentrated on app navigation, product-match notice, and saving transitions. */
+@keyframes z641-modal-enter{from{opacity:0;transform:translateY(16px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes z641-bubble-enter{from{opacity:.2;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@keyframes z641-scanner-beam{0%{transform:translateY(0);opacity:0}12%{opacity:.85}88%{opacity:.85}100%{transform:translateY(94px);opacity:0}}
+html[data-zavi-theme] .modal-backdrop .modal{animation:z641-modal-enter .42s var(--z641-ease) both;transform-origin:50% 15%}
+html[data-zavi-theme] .z641-product-match{animation:z641-bubble-enter .24s var(--z641-ease)}
+html[data-zavi-theme] .z638-warehouse-scanner .zavi-barcode-actions{position:relative}
+html[data-zavi-theme] .z638-warehouse-scanner .zavi-barcode-actions:focus-within{border-radius:12px;box-shadow:0 0 0 3px #24b7ce24}
+html[data-zavi-theme] .zavi-camera-panel video{border-radius:16px;border:2px solid #36c6e2}
+@media(max-width:640px){.z641-match-details{grid-template-columns:1fr 1fr}html[data-zavi-theme] .modal{border-radius:18px}html[data-zavi-theme] .modal .modal-body{padding-inline:13px!important}.z641-edit-existing{width:100%}}
+@media(prefers-reduced-motion:reduce){html[data-zavi-theme] .modal-backdrop .modal,html[data-zavi-theme] .z641-product-match{animation:none!important}html[data-zavi-theme] .modal :is(input,textarea,select){transition:none!important}}
+html[data-z637-no-motion=true] .modal-backdrop .modal,html[data-z637-no-motion=true] .z641-product-match{animation:none!important}
+html[data-z637-no-motion=true] .modal :is(input,textarea,select){transition:none!important}
+@media print{.z641-product-match{display:none!important}html[data-zavi-theme] .modal-backdrop .modal{animation:none!important}}
+/* Live read-only invoice preview while typing; Enter is still required to commit a scan to the invoice. */
+.z641-invoice-preview{display:flex;flex-direction:column;gap:5px;align-items:flex-start;margin-block:10px;padding:11px 14px;min-height:43px;border-radius:13px;border:1px solid var(--z641-notice-border);background:var(--z641-notice);color:var(--z641-muted);font-size:12px;line-height:1.8}
+.z641-invoice-preview.found{border-color:#1baa92;background:color-mix(in srgb,var(--z641-notice),#21ce9f 8%)}
+.z641-invoice-preview.warning{border-color:#e6a54c}
+.z641-invoice-preview strong{font-size:14px;color:var(--z641-ink)!important}
+.z641-invoice-preview span{color:var(--z641-ink)!important}
+.z641-invoice-preview small{color:var(--z641-muted)!important}
+/* Consistent gentle animation across ZAVI ONE screens: no distracting number-counter motion. */
+@keyframes z641-soft-in{from{opacity:.6;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+html[data-zavi-theme] #content>.stat-grid .stat:nth-child(-n+5),html[data-zavi-theme] #content>.card:nth-child(-n+6){animation:z641-soft-in .44s var(--z641-ease) both}
+html[data-zavi-theme] #content>.stat-grid .stat:nth-child(2){animation-delay:65ms}
+html[data-zavi-theme] #content>.stat-grid .stat:nth-child(3){animation-delay:110ms}
+html[data-zavi-theme] #content>.stat-grid .stat:nth-child(4){animation-delay:155ms}
+html[data-zavi-theme] #content>.stat-grid .stat:nth-child(5){animation-delay:190ms}
+html[data-zavi-theme] :is(.card,.stat,.z638-warehouse-scanner){transition:border-color .25s ease,box-shadow .3s ease}
+html[data-zavi-theme] #content :is(.stat,.z638-warehouse-scanner):focus-within{box-shadow:0 0 0 2px #2bbfd138,0 14px 38px #081b3130}
+html[data-zavi-theme] .zavi-barcode-actions .btn[data-zavi-camera-open]{position:relative;overflow:hidden;isolation:isolate}
+html[data-zavi-theme] .zavi-barcode-actions .btn[data-zavi-camera-open]::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(110deg,transparent 15%,#ffffff28 50%,transparent 85%);transform:translateX(-130%);transition:transform .75s var(--z641-ease);pointer-events:none}
+html[data-zavi-theme] .zavi-barcode-actions .btn[data-zavi-camera-open]:hover::after{transform:translateX(130%)}
+@media(prefers-reduced-motion:reduce){html[data-zavi-theme] #content>.stat-grid .stat,html[data-zavi-theme] #content>.card{animation:none!important}html[data-zavi-theme] :is(.card,.stat,.z638-warehouse-scanner){transition:none!important}html[data-zavi-theme] .zavi-barcode-actions .btn[data-zavi-camera-open]::after{display:none!important}}
+html[data-z637-no-motion=true] #content>.stat-grid .stat,html[data-z637-no-motion=true] #content>.card{animation:none!important}
+html[data-z637-no-motion=true] :is(.card,.stat,.z638-warehouse-scanner){transition:none!important}
+html[data-z637-no-motion=true] .zavi-barcode-actions .btn[data-zavi-camera-open]::after{display:none!important}

@@ -1,0 +1,39 @@
+/* ZAVI ONE V57 MOBILE-ONLY STABILITY PATCH - business/data logic untouched */
+:root{color-scheme:dark;--zavi-mobile-back:#07172f;--zavi-mobile-surface:#102b54;--zavi-mobile-outline:#31659d;--zavi-mobile-text:#eaf6ff}
+html{min-width:0;scroll-padding-top:76px;-webkit-text-size-adjust:100%}
+body{min-width:0;max-width:100%;-webkit-overflow-scrolling:touch;overscroll-behavior-y:auto}
+input,select,textarea,button{max-width:100%;font-size:max(14px,1em)}
+/* Recovery flow had a separate hard-coded white theme; match existing navy/cyan UI. */
+#z24Recovery{background:rgba(2,11,31,.94)!important;color:var(--zavi-mobile-text)!important;overflow-x:hidden!important;overflow-y:auto!important;overscroll-behavior:contain;padding:max(12px,env(safe-area-inset-top)) 12px max(12px,env(safe-area-inset-bottom))!important;align-items:safe center!important;-webkit-overflow-scrolling:touch!important}
+#z24Recovery .z24-pbox{color:#eaf6ff!important;background:linear-gradient(145deg,#103464,#071c3d)!important;border:1px solid #3774ad!important;box-shadow:0 16px 54px #020918ba!important;max-height:none!important;min-width:0!important;overflow:visible!important}
+#z24Recovery .z24-ph{background:linear-gradient(115deg,#0d3771,#087ab3)!important;color:#fff!important}
+#z24Recovery .z24-ph p,#z24Recovery .z24-ph h2{color:#f1fcff!important}
+#z24Recovery .z24-note{background:#10325f!important;border:1px solid #356eaa!important;color:#cae8ff!important}
+#z24Recovery .z24-pfield{color:#dbeeff!important}
+#z24Recovery .z24-pfield input,#z24Recovery .z24-pfield select,#z24Recovery textarea{background:#0a224b!important;color:#eefbff!important;border:1px solid #4075af!important;outline-color:#29ccf3!important;min-height:44px!important}
+#z24Recovery input::placeholder{color:#a6c4e5!important}
+#z24Recovery .z24-pbtn,#z24Recovery button{background:linear-gradient(100deg,#1268d9,#08aeca)!important;color:white!important;border:1px solid #52c6ed!important}
+#z24Recovery .z24-pbtn.alt{background:#113a72!important;color:#e0f5ff!important}
+#z24Recovery .z24-pstatus{color:#b7e8ff!important;overflow-wrap:anywhere}
+#z24Recovery .z24-pstatus.err{color:#ffacb7!important}
+#z24Recovery .z24-label{background:#084d55!important;color:#a7ffe3!important}
+/* Keep print invoices white on paper; never globally force printing background. */
+@media(max-width:820px){
+ html,body,.app,.main,.content{max-width:100%!important;min-width:0!important}
+ .content{overflow:visible!important;min-width:0!important}
+ .sidebar{max-height:100dvh!important;height:100dvh!important;overflow-y:auto!important;overscroll-behavior:contain!important;touch-action:pan-y!important;-webkit-overflow-scrolling:touch!important;padding-bottom:max(16px,env(safe-area-inset-bottom))!important}
+ .sidebar #sidebarLinks,.sidebar #sidebarLinks2{flex:0 0 auto!important;overflow:visible!important;min-height:0!important}
+ .sidebar-footer{margin-top:18px!important;flex-shrink:0!important}
+ .topbar{min-height:0!important;max-width:100%!important;padding-inline:12px!important}
+ .topbar-actions,.action-group{flex-wrap:wrap!important;min-width:0!important}
+ #overlay,#z24Recovery{touch-action:pan-y!important;-webkit-overflow-scrolling:touch!important}
+ #overlay .modal,#overlay .modal-body,#overlay #dialogForm{min-height:0!important}
+ #overlay .modal{max-height:calc(100dvh - 16px)!important;overflow-y:auto!important;overscroll-behavior:contain!important}
+ #overlay .modal-body{overflow-y:auto!important;-webkit-overflow-scrolling:touch!important}
+ #z24Recovery{max-height:100dvh!important}
+ #z24Recovery .z24-pbox{margin:4px auto!important;padding:clamp(13px,4vw,25px)!important;width:100%!important}
+ #z24Recovery .z24-pactions{display:flex!important;flex-wrap:wrap!important}
+ #z24Recovery .z24-pbtn{min-height:44px!important;white-space:normal!important}
+ .table-wrap,.z45-chart-scroll,.z47-chart-scroll{max-width:100%!important;overflow-x:auto!important;-webkit-overflow-scrolling:touch!important}
+}
+@media print{#z24Recovery{display:none!important}body{color:#000!important}}
