@@ -16,6 +16,8 @@ jobs:
     # Owner enables this only after loading original keystores in Secrets.
     if: ${{ vars.ZAVI_RELEASE_PREFLIGHT == 'enabled' }}
     name: Verify original-key update — ${{ matrix.app }}
+    # Original production signing Secrets are environment-scoped and need owner approval.
+    environment: production
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
