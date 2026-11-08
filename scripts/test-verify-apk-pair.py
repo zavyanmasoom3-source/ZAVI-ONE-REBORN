@@ -61,6 +61,22 @@ class ApkPairTests(unittest.TestCase):
         with self.assertRaises(mod.VerificationError):
             mod.normalise_cert('not-a-sha256')
 
+    def test_valid_v1_v2_v3_signature_metadata(self):
+        apk = pathlib.Path(__file__)
+        original = mod.command
+        try:
+            def mocked(args):
+                if args[0] == 'aapt':
+                    return "package: name='com.zavione.one.rebornqa' versionCode='667802' versionName='66.78'\n"
+                return ('Verified using v1 scheme (JAR signing): true\n'
+                        'Verified using v2 scheme (APK Signature Scheme v2): true\n'
+                        'Verified using v3 scheme (APK Signature Scheme v3): true\n'
+                        'Signer #1 certificate SHA-256 digest: '+QA_SHA+'\n')
+            mod.command = mocked
+            self.assertEqual(mod.read_apk(apk, 'aapt', 'apksigner')['certificateSHA256'], QA_SHA)
+        finally:
+            mod.command = original
+
     def test_missing_signing_scheme_refused(self):
         # Mock the external command outputs, not the comparison logic.
         apk = pathlib.Path(__file__)
