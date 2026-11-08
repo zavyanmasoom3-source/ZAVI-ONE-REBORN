@@ -7,6 +7,8 @@ on:
       - 'packages/**'
       - 'scripts/render-qa-screens.py'
       - 'scripts/test-pdf-59-route-coverage.py'
+      - 'scripts/test-shared-design-browser.py'
+      - 'packages/shared/ui/**'
       - '.github/workflows/visual-qa.yml'
   workflow_dispatch:
 permissions:
@@ -22,11 +24,14 @@ jobs:
         run: python3 scripts/render-qa-screens.py
       - name: Capture actual browser route evidence for all 59 PDF mappings
         run: python3 scripts/test-pdf-59-route-coverage.py
+      - name: Measure actual shared color contrast, language, date and field errors in Chrome
+        run: python3 scripts/test-shared-design-browser.py
       - uses: actions/upload-artifact@v4
         with:
           name: REBORN-PDF-VISUAL-QA
           path: |
             qa-screens/
             qa-pdf-routes/
+            qa-design-contrast/
           retention-days: 7
           if-no-files-found: error
