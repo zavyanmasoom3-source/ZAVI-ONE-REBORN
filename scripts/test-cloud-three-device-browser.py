@@ -172,6 +172,8 @@ with ExitStack() as stack:
                 .map(x=>x.innerText||'').filter(Boolean).slice(-6);
               return {id,online:navigator.onLine,entitlementMocked:window.__zaviQaEntitlementMocked,
                 afterSave:typeof window.zaviCloudAfterSave,
+                hookSource:String(window.zaviCloudAfterSave).slice(0,450),
+                saveSource:String(save).slice(-600),
                 pendingKeys:keys.map(key=>({key,value:localStorage.getItem(key)})),
                 notices};
             })()""")
