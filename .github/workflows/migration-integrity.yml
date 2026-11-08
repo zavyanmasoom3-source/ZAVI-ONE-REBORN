@@ -19,6 +19,8 @@ jobs:
         run: python3 scripts/check-public-source-security.py
       - name: Verify anonymous access is denied by real ADMIN RPCs
         run: python3 scripts/test-admin-rpc-authorization.py
+      - name: Test server-confirmed ADMIN trash and restore controls
+        run: node scripts/test-admin-trash.cjs
       - name: Verify APK build version metadata is fresh and QA-only
         run: python3 scripts/test-stamp-qa-version.py
       - name: Verify migration completeness
