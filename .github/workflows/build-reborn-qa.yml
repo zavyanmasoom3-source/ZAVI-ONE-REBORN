@@ -37,6 +37,17 @@ jobs:
         run: python3 scripts/check-migration-integrity.py
       - name: Verify route navigation and settings design
         run: python3 scripts/verify-ui-navigation.py
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify JavaScript parses in both apps and shared modules
+        shell: bash
+        run: |
+          set -euo pipefail
+          find apps packages/shared -type f -name '*.js' -print0 |
+            while IFS= read -r -d '' file; do
+              node --check "$file"
+            done
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -118,6 +129,9 @@ jobs:
           AAPT="$ANDROID_SDK_ROOT/build-tools/36.0.0/aapt"
           badging=$("$AAPT" dump badging "$apk")
           printf '%s\\n' "$badging"
+          # Android 8.0 (API 26) through Android 16 (API 36) build contract.
+          printf '%s\\n' "$badging" | grep -F "sdkVersion:'26'"
+          printf '%s\\n' "$badging" | grep -F "targetSdkVersion:'36'"
           if [[ "${{ matrix.app }}" == "one" ]]; then
             printf '%s\\n' "$badging" | grep -F "package: name='com.zavione.one.rebornqa'"
             printf '%s\\n' "$badging" | grep -F "versionName='66.78-reborn.qa.${{ github.run_number }}'"
