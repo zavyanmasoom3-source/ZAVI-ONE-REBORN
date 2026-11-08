@@ -1,0 +1,59 @@
+/* ZAVI ONE V63.9 — motion system, industry accent, accessible layout. */
+:root{--z639-ease:cubic-bezier(.2,.85,.2,1);--z639-glow:#20a7df}
+html,body,button,input,select,textarea{font-family:'Estedad','Vazirmatn','Noto Sans Arabic','Segoe UI',Tahoma,sans-serif!important}
+body{font-size:14px;line-height:1.9}
+:where(.page-head h2,.topbar-title,.panel-head h3){letter-spacing:0!important;line-height:1.55}
+/* Industry-specific tint changes decoration ONLY, never the user's custom accent. */
+html[data-z639-industry=pharmacy],html[data-z639-industry=cosmetics]{--z639-glow:#0fb99e}
+html[data-z639-industry=laboratory],html[data-z639-industry=services]{--z639-glow:#4d8ee9}
+html[data-z639-industry=gold]{--z639-glow:#daa348}
+html[data-z639-industry=supermarket],html[data-z639-industry=bookstore]{--z639-glow:#20aaab}
+html[data-z639-industry=mobile],html[data-z639-industry=electronics]{--z639-glow:#8b70ef}
+.z639-focus-card{padding:18px 20px;margin:0 0 18px;border:1px solid var(--z638-line,#d1e4ed);border-radius:20px;background:var(--z638-surface,#fff);color:var(--z638-ink,#18314c);box-shadow:0 14px 36px #0929540b;position:relative;overflow:hidden;animation:z639-enter .52s var(--z639-ease) both}
+.z639-focus-card:before{content:"";position:absolute;right:-40px;top:-75px;width:220px;height:160px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--z639-glow) 18%,transparent),transparent 70%);pointer-events:none}
+.z639-focus-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;position:relative}
+.z639-focus-head strong{font-size:16px;line-height:1.65;color:var(--z638-ink,#123)}
+.z639-focus-head small{font-size:12px;color:var(--z638-muted,#567);display:block}
+.z639-focus-actions{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 4px;position:relative}
+.z639-focus-actions .btn{font-size:12px;min-height:39px}
+.z639-focus-notes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;position:relative;margin-top:13px}
+.z639-focus-notes>span{padding:10px 12px;border:1px solid var(--z638-line,#dae7f2);border-radius:12px;color:var(--z638-muted,#475f72);font-size:12px;line-height:1.9;background:color-mix(in srgb,var(--z638-surface,#fff) 95%,var(--z639-glow) 5%)}
+.z639-focus-notes>span::before{content:'✦';color:var(--z639-glow);font-weight:900;margin-left:8px}
+/* Rich entrance effects without animating financial values or table contents. */
+#content>.page-head{animation:z639-enter .35s var(--z639-ease) both}
+#content>.card,#content>.z639-focus-card,.z638-business-ribbon{transform-origin:top center}
+.nav-btn[aria-current=page]{position:relative}
+.nav-btn[aria-current=page]::after{content:"";position:absolute;left:7px;top:calc(50% - 3px);height:6px;width:6px;border-radius:100%;background:var(--z639-glow);box-shadow:0 0 0 4px color-mix(in srgb,var(--z639-glow) 17%,transparent)}
+:where(.btn,.nav-btn,.z639-focus-card,.stat):focus-within{scroll-margin:16px}
+:where(.btn,.nav-btn,.z639-focus-actions button):focus-visible{outline:3px solid #21b8d9!important;outline-offset:3px}
+/* Lock screen: no raw digits shown in the meter. */
+.zawi-lock-screen{background:radial-gradient(circle at 75% 12%,#226eac55 0,transparent 40%),radial-gradient(circle at 15% 85%,#189f9f44,transparent 43%),linear-gradient(140deg,#07162e,#123b65 55%,#091b39)!important}
+.zawi-auth-card{position:relative;overflow:hidden;box-shadow:0 35px 90px #04132a99,0 0 0 1px #e1effa!important;animation:z639-lock-intro .72s var(--z639-ease) both}
+.zawi-auth-card:before{content:"";display:block;height:4px;position:absolute;top:0;right:0;left:0;background:linear-gradient(90deg,#20a9d5,#795af1,#14c6a3);background-size:200% 100%;animation:z639-shimmer 7s linear infinite}
+.zawi-pin-field input{transition:box-shadow .26s,border-color .26s,transform .2s!important}
+.zawi-pin-field input:focus{transform:translateY(-1px);box-shadow:0 0 0 4px #19a7da25,0 12px 25px #06295312!important}
+.z639-pin-progress{display:flex;justify-content:center;gap:7px;direction:ltr;margin:12px 0 6px}
+.z639-pin-dot{width:9px;height:9px;border-radius:50%;background:#cddaea;border:1px solid #9bb3c9;transition:transform .25s var(--z639-ease),background .25s,box-shadow .25s}
+.z639-pin-dot.filled{background:#168ec9;border-color:#168ec9;transform:scale(1.23);box-shadow:0 0 0 4px #1a9bd520}
+.z639-pin-progress[data-complete=true] .z639-pin-dot.filled{background:#0a9a81;border-color:#0a9a81;box-shadow:0 0 0 3px #0ac3a221}
+.z639-pin-status{text-align:center;min-height:21px;font-size:11px;color:#41617d}
+#zawiPrivateGate.z639-pin-invalid .zawi-auth-card{animation:z639-shake .3s ease-out}
+.zawi-pin-btn{background:linear-gradient(112deg,#167dc6,#0a9ab5)!important;box-shadow:0 10px 24px #137a9d35;transition:transform .22s,box-shadow .22s!important}
+.zawi-pin-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 14px 28px #137a9d4d}
+html:not(.zawi-locked) .main{animation:z639-unlock .62s var(--z639-ease) both}
+/* Further consistent contrast for controls, without recoloring the semantic pills. */
+html[data-zavi-theme=dark] :is(.field label,.topbar-sub,.page-head p,.rec-detail,.stock-sub,.panel-body .muted){color:#c5d9ec!important}
+html[data-zavi-theme=light] :is(.field label,.topbar-sub,.page-head p,.rec-detail,.stock-sub,.panel-body .muted){color:#3d5871!important}
+html[data-zavi-theme=dark] :is(.searchbox input,.filterbar input,.filterbar select){color:#f2f8ff!important;background:#17344f!important;-webkit-text-fill-color:#f2f8ff!important}
+html[data-zavi-theme=light] :is(.searchbox input,.filterbar input,.filterbar select){color:#122d46!important;background:#fff!important;-webkit-text-fill-color:#122d46!important}
+html[data-zavi-theme=dark] :is(.z639-focus-card,.z639-focus-notes>span) :is(strong,b){color:#f1f8ff!important}
+html[data-zavi-theme=light] :is(.z639-focus-card,.z639-focus-notes>span) :is(strong,b){color:#15334c!important}
+@keyframes z639-enter{from{opacity:.4;transform:translateY(13px)}to{opacity:1;transform:translateY(0)}}
+@keyframes z639-unlock{from{opacity:.65;filter:blur(4px);transform:translateY(7px)}to{opacity:1;filter:none;transform:none}}
+@keyframes z639-lock-intro{from{opacity:.4;transform:translateY(16px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes z639-shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+@keyframes z639-shimmer{to{background-position:200% 0}}
+@media(max-width:650px){.z639-focus-card{padding:13px 14px}.z639-focus-notes{grid-template-columns:1fr}.z639-focus-actions .btn{flex:1}.z639-focus-head strong{font-size:14px}}
+@media(prefers-reduced-motion:reduce){.z639-focus-card,#content>.page-head,.zawi-auth-card,.zawi-auth-card::before,html:not(.zawi-locked) .main,#zawiPrivateGate.z639-pin-invalid .zawi-auth-card{animation:none!important;transition:none!important}}
+html[data-z637-no-motion=true] .z639-focus-card,html[data-z637-no-motion=true] .zawi-auth-card,html[data-z637-no-motion=true] .zawi-auth-card::before,html[data-z637-no-motion=true] .main{animation:none!important}
+@media print{.z639-focus-card,.z639-pin-progress{display:none!important}}

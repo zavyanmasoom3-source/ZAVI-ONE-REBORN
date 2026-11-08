@@ -1,0 +1,6 @@
+/* V64.7: paged lists preserve the existing dark/light palette and touch targets. */
+.z647-pages{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin:16px 8px;padding:13px;border-radius:14px;background:var(--white,#fff);color:var(--ink,#10264b);border:1px solid var(--line,rgba(125,180,230,.3));font-variant-numeric:tabular-nums;direction:rtl}
+.z647-pages button{min-width:80px;min-height:40px;border-radius:11px;border:1px solid currentColor;background:transparent;color:inherit;cursor:pointer;padding:8px 15px;font:inherit}
+.z647-pages button:focus-visible{outline:3px solid #38bdf8;outline-offset:2px}.z647-pages button:disabled{opacity:.38;cursor:not-allowed}
+.z647-pages strong{font-size:.94rem}.z647-pages span{font-size:.88rem;opacity:.9}
+@media(prefers-reduced-motion:reduce){.z647-pages button{transition:none!important}}

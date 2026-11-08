@@ -1,0 +1,21 @@
+/* Customer phonebook. Responsive, RTL/LTR and touch-friendly. */
+.zavi-phonebook{padding:20px;margin-top:15px}
+.zavi-phonebook-head{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:0 0 15px}
+.zavi-phonebook-head h3{margin:0;font-size:18px}
+.zavi-phone-form{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-items:end}
+.zavi-phone-form label,.zavi-phone-search label{font-size:13px;font-weight:700;display:flex;flex-direction:column;gap:6px}
+.zavi-phone-form input,.zavi-phone-search input{width:100%;min-width:0;min-height:44px;border-radius:11px;border:1px solid #285582;background:#0b2447;color:#f3f8ff;padding:10px 12px;font-size:15px}
+.zavi-phone-form button{grid-column:1/-1;justify-self:start;min-height:43px}
+.zavi-phonebook form{padding-bottom:20px;border-bottom:1px solid #23426a;margin-bottom:20px}
+.zavi-phone-search{margin:0 0 16px}.zavi-phone-search label{max-width:430px}
+.zavi-phone-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.zavi-phone-card{border:1px solid #245077;border-radius:14px;background:#0b2442d9;padding:15px;min-width:0}
+.zavi-phone-main{display:flex;align-items:center;gap:12px;min-width:0}
+.zavi-phone-main strong{display:block;font-size:15px;overflow-wrap:anywhere}
+.zavi-phone-main small{display:block;opacity:.75;overflow-wrap:anywhere}
+.zavi-phone-avatar{display:grid;place-items:center;flex:0 0 40px;height:40px;background:linear-gradient(125deg,#06b6d4,#1e40af);border-radius:12px;color:#fff;font-weight:800}
+.zavi-phone-number{text-align:start;color:#8ce4fb;unicode-bidi:isolate;margin:4px 0}
+.zavi-phone-actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.zavi-phone-actions .btn{min-height:37px;align-items:center}
+html[dir=ltr] .zavi-phonebook{text-align:left}
+@media(max-width:780px){.zavi-phone-form{grid-template-columns:1fr}.zavi-phone-grid{grid-template-columns:1fr}.zavi-phonebook{padding:14px}}

@@ -1,0 +1,93 @@
+/* V66.69 compact mobile QA — preserve sales, invoices, warehouses and settings actions. */
+@media(max-width:600px){
+ body :is(.card,.panel,.dashboard-card,.menu-card){box-sizing:border-box;max-width:100%;min-width:0}
+ body :is(.card,.panel,.dashboard-card,.menu-card) :is(h2,h3,h4){line-height:1.4;overflow-wrap:break-word}
+ body :is(.card,.panel,.dashboard-card,.menu-card) :is(input,select,textarea,button){max-width:100%;box-sizing:border-box}
+ body :is(input,select,textarea){min-width:0;font-size:16px}
+ body :is(.grid,.row,.flex)>*{min-width:0}
+ body #zavi-location-manager{padding:10px}
+ body #zavi-location-manager .zavi-location-grid{gap:8px;grid-template-columns:repeat(auto-fit,minmax(min(100%,145px),1fr))}
+ body .z638-warehouse-scanner{padding:9px}
+ body .z638-warehouse-scanner :is(p,small){line-height:1.45}
+ html[data-zavi-theme="light"] body :is(input,select,textarea){background:#fff;color:#17243c;border-color:#aebbd0}
+ html[data-zavi-theme="light"] body :is(input,textarea)::placeholder{color:#596981;opacity:1}
+}
+@media(prefers-reduced-motion:reduce){body :is(.card,.panel,.dashboard-card,.menu-card){animation:none!important;transition:none!important}}
+
+/* V66.62 screenshot issues: calmer accounting panels and accessible light theme. */
+@media(max-width:600px){
+ #content :is(.settings-card,.report-card,.table-card,.form-card,.summary-card){padding:12px!important;margin-block:8px!important;min-width:0}
+ #content :is(.settings-card,.report-card,.table-card,.form-card,.summary-card) :is(h2,h3,h4){margin-block:4px 8px!important;line-height:1.4!important}
+ #content :is(.settings-card,.report-card,.table-card,.form-card,.summary-card) :is(p,small,.hint){line-height:1.5!important}
+ #content :is(.table-wrap,.table-scroll,.zsvc-table-scroll,.zv-table-scroll){overflow-x:auto;max-width:100%;-webkit-overflow-scrolling:touch}
+ #content :is(.zv-wh-transfer,.zv-wh-transfer-form){min-width:0;max-width:100%;box-sizing:border-box}
+ #content :is(.zv-wh-transfer-form,.zv-wh-transfer-form *){overflow-wrap:break-word}
+}
+html[data-zavi-theme="light"]:not([data-zavi-appearance="glass"]) #content :is(.settings-card,.report-card,.table-card,.form-card,.summary-card) :is(label,p,small,span,td,th){color:#20344d}
+html[data-zavi-theme="light"]:not([data-zavi-appearance="glass"]) #content :is(.settings-card,.report-card,.table-card,.form-card,.summary-card) :is(.muted,.hint,.subtitle){color:#465c75!important}
+@media(prefers-reduced-motion:reduce){
+ #content :is(.settings-card,.report-card,.table-card,.form-card,.summary-card,.zv-wh-transfer){animation:none!important;transition:none!important}
+}
+
+/* V66.62 visible flicker guard: stabilize frequently re-rendered accounting cards.
+   Avoid display:none or removal of financial controls. */
+@media(max-width:780px){
+ html[data-zavi-theme] #content :is(.card,.panel,.settings-card,.report-card,.table-card,.form-card,.summary-card,.stat,.metric){
+   animation:none!important;
+   transition-property:color,background-color,border-color!important;
+   transition-duration:0.12s!important;
+   transform:none!important;
+   backface-visibility:visible;
+ }
+ html[data-zavi-theme] #content :is(.card,.panel,.settings-card,.report-card,.table-card,.form-card,.summary-card) :is(button,input,select,textarea){
+   animation:none!important;
+ }
+ html[data-zavi-theme] #content :is(.table-wrap,.table-scroll,.zsvc-table-scroll,.zv-table-scroll){
+   overscroll-behavior-x:contain;
+ }
+}
+
+/* Compact warehouse and settings on mobile, preserve controls. */
+@media(max-width:650px){
+#content .zv-wh-manager{padding:10px!important;margin:8px 0!important}
+#content .zv-wh-form{gap:7px!important;margin:8px 0!important}
+#content .zv-wh-row{padding:8px!important;gap:7px!important}
+#content .zv-wh-transfer-form{gap:7px!important}
+#content .zavi-clean-settings-groups{gap:7px!important}
+#content .zavi-clean-settings-group>summary{min-height:52px!important;padding-block:9px!important}
+#content .zavi-clean-settings-stack{padding:8px!important;gap:7px!important}
+}
+
+/* V66.62 layout audit: responsive financial forms, tables, and readable light theme. */
+@media(max-width:720px){
+ #content :is(.settings-card,.report-card,.table-card,.form-card,.summary-card,.zv-wh-manager){max-width:100%!important;min-width:0!important;box-sizing:border-box!important}
+ #content :is(.settings-card,.report-card,.table-card,.form-card,.summary-card,.zv-wh-manager) :is(input,select,textarea){max-width:100%!important;min-width:0!important;box-sizing:border-box!important}
+ #content :is(.settings-card,.report-card,.table-card,.form-card,.summary-card,.zv-wh-manager) :is(h1,h2,h3,h4,p,small,label){overflow-wrap:anywhere}
+ #content :is(.table-wrap,.table-scroll,.zsvc-table-scroll,.zv-table-scroll){overflow-x:auto!important;max-width:100%!important}
+ #content .zv-wh-transfer-form>*{min-width:0!important}
+ #content .zv-wh-stock-row{min-width:0!important}
+}
+html[data-zavi-theme="light"]:not([data-zavi-appearance="glass"]) #content :is(.zv-wh-manager,.zavi-clean-settings-hub,.settings-card,.report-card,.table-card,.form-card) :is(input,select,textarea){
+ background:#fff!important;color:#162b45!important;border-color:#98a9be!important;
+}
+html[data-zavi-theme="light"]:not([data-zavi-appearance="glass"]) #content :is(.zv-wh-manager,.zavi-clean-settings-hub,.settings-card,.report-card,.table-card,.form-card) :is(label,.hint,.muted,small){
+ color:#354a63!important;opacity:1!important;
+}
+
+/* Mobile screenshot QA: compact warehouse records and settings, no hidden functionality. */
+@media(max-width:600px){
+ #content .zv-wh-manager .zv-wh-head{gap:6px!important}
+ #content .zv-wh-manager .zv-wh-head h3{font-size:14px!important}
+ #content .zv-wh-manager .zv-wh-form{grid-template-columns:minmax(0,1fr) minmax(0,100px)!important;gap:7px!important}
+ #content .zv-wh-manager .zv-wh-form button{grid-column:1/-1!important}
+ #content .zv-wh-manager .zv-wh-row{padding:8px!important;gap:6px!important}
+ #content .zv-wh-manager .zv-wh-stock-row{padding:7px 2px!important;gap:5px!important}
+ #content .zv-wh-manager .zv-wh-transfer-form{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important}
+ #content .zavi-clean-settings-title{gap:6px!important;margin-bottom:8px!important}
+ #content .zavi-clean-settings-title strong{font-size:19px!important}
+ #content .zavi-clean-settings-group>summary{min-height:52px!important;padding-block:9px!important}
+ #content .zavi-clean-settings-stack>.settings-card{padding:10px!important}
+}
+@media(max-width:350px){
+ #content .zv-wh-manager .zv-wh-form,#content .zv-wh-manager .zv-wh-transfer-form{grid-template-columns:minmax(0,1fr)!important}
+}
