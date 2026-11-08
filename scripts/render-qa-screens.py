@@ -30,7 +30,28 @@ class Handler(SimpleHTTPRequestHandler):
             query=self.path.split('?',1)[1] if '?' in self.path else ''
             route=next((part[6:] for part in query.split('&') if part.startswith('route=')),None)
             if app=='one' and route:
-                probe=f"""<script>window.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{{try{{go({json.dumps(route)})}}catch(err){{document.body.setAttribute('data-qa-error',String(err))}}}},350),{{once:true}});</script>"""
+                # Unlock through the actual local PIN form in a disposable profile.
+                # Do not capture a hidden dashboard behind a lock-screen overlay.
+                probe=f"""<script>
+window.addEventListener('DOMContentLoaded',()=>{{
+ const pin=document.getElementById('zawiPinOne');
+ const rep=document.getElementById('zawiPinRepeat');
+ const form=document.getElementById('zawiPinForm');
+ if(pin&&rep&&form&&document.documentElement.classList.contains('zawi-locked')){{
+   pin.value='987654321';rep.value='987654321';
+   form.dispatchEvent(new Event('submit',{{bubbles:true,cancelable:true}}));
+ }}
+ let checks=0;
+ const navigate=()=>{{
+   if(document.documentElement.classList.contains('zawi-locked')&&checks++<120){{
+     setTimeout(navigate,50);return;
+   }}
+   try{{if(document.documentElement.classList.contains('zawi-locked'))throw Error('PIN remained locked');go({json.dumps(route)});}}
+   catch(err){{document.body.setAttribute('data-qa-error',String(err))}}
+ }};
+ navigate();
+}},{{once:true}});
+</script>"""
                 html=html.rsplit('</body>',1)[0]+probe+'</body>'+html.rsplit('</body>',1)[1]
             raw=html.encode('utf-8')
             self.send_response(200)

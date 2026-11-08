@@ -24,10 +24,23 @@ if not browser:
 probe=r"""
 <script id="zavi-smoke-injected">
 window.addEventListener('DOMContentLoaded',()=>{
- setTimeout(()=>{
+ setTimeout(async()=>{
   const routes=['dashboard','sales','purchases','products','contacts','debtors','creditors','money','reports','settings'];
-  const result={routes:[],errors:[]};
+  const result={routes:[],errors:[],unlocked:false};
   try {
+   // Exercise the actual local PIN setup in a disposable browser profile.
+   // Previously the test clicked routes behind an inaccessible lock overlay.
+   const gate=document.getElementById('zawiPinForm');
+   const pin=document.getElementById('zawiPinOne');
+   const again=document.getElementById('zawiPinRepeat');
+   if(!gate||!pin||!again)throw Error('Local PIN form missing');
+   pin.value='987654321';again.value='987654321';
+   gate.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
+   for(let i=0;i<120&&document.documentElement.classList.contains('zawi-locked');i++)
+    await new Promise(resolve=>setTimeout(resolve,50));
+   if(document.documentElement.classList.contains('zawi-locked'))
+    throw Error('Local PIN flow did not unlock: '+(document.getElementById('zawiPinError')?.textContent||''));
+   result.unlocked=true;
    if(typeof go!=='function')throw Error('main navigation function go() was not defined');
    for(const route of routes) {
     try {
@@ -91,7 +104,7 @@ try:
     result=json.loads(unescape(found.group(1)))
     print(json.dumps(result,ensure_ascii=False,indent=2))
     bad=[x for x in result['routes'] if not all((x['rendered'],x['selected'],x['nav']))]
-    if result['errors'] or bad or len(result['routes'])!=10:
+    if not result.get('unlocked') or result['errors'] or bad or len(result['routes'])!=10:
         raise SystemExit('FAIL: ZAVI ONE pages did not navigate/render as expected')
     print('PASS: 10 real app routes render and select correctly')
 finally:
