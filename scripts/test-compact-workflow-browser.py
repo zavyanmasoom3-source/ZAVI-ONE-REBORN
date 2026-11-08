@@ -34,6 +34,19 @@ with Session() as browser:
     })()""")
     assert quick['present'] and quick['actual']==quick['expected'] and quick['dualDate'],quick
     print('PASS: permission-filtered dashboard actions link to live routes; compact dual date rendered')
+    # The sample rate exists only in memory inside this disposable test browser.
+    # It is never committed to the app, cloud or a customer's workspace.
+    rate=browser.eval("""(()=>{
+       const original=db.usdRate,unit=db.currency;
+       db.currency='AFN';db.usdRate=75;
+       go('dashboard');
+       const text=document.querySelector('.zavi-usd-rate-value')?.textContent||'';
+       db.usdRate=original;db.currency=unit;
+       go('dashboard');
+       return text.trim();
+    })()""")
+    assert rate=='۱ USD = ۷۵ AFN',rate
+    print('PASS: actual dashboard displays ۱ USD = ۷۵ AFN with uniform digits and correct order')
     for route,keys in [
       ('money',['accounts','transactions','more']),
       ('reports',['summary','details','output'])
