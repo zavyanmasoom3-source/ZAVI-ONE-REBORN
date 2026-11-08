@@ -1,0 +1,115 @@
+/* V65.9 visual/UX refinement: no accounting/auth schema changes. */
+:root{--z659-focus:#16a5d2}
+.z62-backdrop{align-items:flex-start!important;justify-content:center!important;overflow-y:auto!important;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:clamp(8px,2vh,20px)!important}
+.z62-dialog{flex:0 1 660px!important;width:min(660px,100%)!important;max-height:calc(100dvh - 20px)!important;min-height:0!important;overflow-y:auto!important;overscroll-behavior:contain;scrollbar-width:thin;-webkit-overflow-scrolling:touch;touch-action:pan-y}
+.z62-dialog .z62-head{position:sticky;top:0;z-index:2}.z62-dialog .z62-body{overflow:visible!important;min-height:0;padding-bottom:max(25px,env(safe-area-inset-bottom))!important}
+.z62-member{min-width:0;flex-wrap:wrap}.z62-member .z650-member-main{flex:1 1 220px;min-width:0}.z62-member small{word-break:break-all}
+html[data-zavi-theme="light"] .z62-dialog{background:#f6fbff!important;color:#173652!important;border-color:#b2d9eb!important}
+html[data-zavi-theme="light"] .z62-head{background:#17638c!important;color:#fff!important}
+html[data-zavi-theme="light"] .z62-head h2,html[data-zavi-theme="light"] .z62-head button{color:#fff!important}
+html[data-zavi-theme="light"] :is(.z62-total,.z62-member){background:#e8f4fc!important;color:#183c54!important;border-color:#b7d5e8!important}
+html[data-zavi-theme="light"] .z62-note,html[data-zavi-theme="light"] .z62-member-date,html[data-zavi-theme="light"] .z62-member small{color:#3c6177!important}
+html[data-zavi-theme="light"] .z62-member b{color:#193851!important}
+/* Short compact device summary, still full management actions and risk notices. */
+#z652DevicePanel{padding:12px!important;margin:12px 0!important;border-radius:13px!important}
+#z652DevicePanel .z652-title{gap:7px}
+#z652DevicePanel .z652-title h3{font-size:15px!important}
+#z652DevicePanel .z652-title p{font-size:11px!important;margin:0!important}
+#z652DevicePanel .z652-devices{grid-template-columns:repeat(auto-fit,minmax(min(100%,205px),1fr))!important;gap:7px!important}
+#z652DevicePanel .z652-item{padding:8px 10px!important;border-radius:10px!important}
+#z652DevicePanel .z652-meta{font-size:11px!important;gap:2px!important;margin:5px 0!important}
+#z652DevicePanel .z652-tag{font-size:10px!important;padding:1px 6px!important}
+#z652DevicePanel .z652-status{padding:7px 9px!important;font-size:12px!important;margin:7px 0!important}
+#z652DevicePanel .z652-warning{font-size:11px!important}
+#z652DevicePanel .z652-actions .btn{padding:6px 9px!important;min-height:34px!important;font-size:11px!important}
+.z659-daily-quick[hidden]{display:none!important}.z659-daily-quick{display:grid;gap:2px;margin:6px 0 8px}.z659-daily-quick .nav-btn{padding:8px 12px!important;font-size:12px;min-height:38px;white-space:normal}
+.z659-journal-pager{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:center;padding:14px}.z659-journal-pager span{font-weight:800}
+.zv-journal-item [data-z659-delete-note]{margin-inline-start:10px}
+.zavi-barcode-actions{display:flex!important;flex-wrap:wrap!important;gap:7px!important;align-items:center}
+.zavi-barcode-actions #zaviBarcodeScan{flex:1 1 180px;min-width:130px}.zavi-barcode-actions button{min-height:44px!important;white-space:normal}
+/* Kabul calendar date chips: legible in BOTH themes. */
+html[data-zavi-theme="light"] :is(#zaviDateBanner,.zavi-date-chip,.zavi-date-part,.zv-today){color:#123b5a!important}
+html[data-zavi-theme="light"] #zaviDateBanner{background:#ecf7ff!important;border:1px solid #bed9ee!important;border-radius:12px}
+html[data-zavi-theme="light"] #zaviDateBanner :is(span,b,small){color:#153d60!important}
+html[data-zavi-theme="light"] .welcome .zv-today{color:white!important}
+html[data-zavi-theme="light"] .zavi-date-preview{color:#214f6e!important}
+html[data-zavi-theme="dark"] #zaviDateBanner{color:#f3f9ff!important;background:#193653!important;border:1px solid #355979!important;border-radius:12px}
+html[data-zavi-theme="dark"] #zaviDateBanner :is(span,b){color:#f3f9ff!important}
+/* Restore readability and efficient dark rendering: eliminate costly infinite effects. */
+html[data-zavi-theme="dark"]{scroll-behavior:auto!important}
+html[data-zavi-theme="dark"] :is(.main,.card,.settings-card,.stat,.panel,.modal,.z652-card,.z62-dialog,.z642-smart,.z639-focus-card){backdrop-filter:none!important;-webkit-backdrop-filter:none!important;filter:none!important}
+html[data-zavi-theme="dark"] :is(.card,.settings-card,.stat,.panel,.z652-card,.z62-dialog){box-shadow:0 2px 12px rgba(0,0,0,.17)!important}
+html[data-zavi-theme="dark"] :is(.nav-btn[aria-current=page]::after,.z642-smart,.z642-smart-tile,#content>.page-head,.z639-focus-card,#content>.z638-business-ribbon){animation:none!important}
+html[data-zavi-theme="dark"] :is(.nav-btn,.btn,.card,.z652-item){transition:background-color .15s linear,color .15s linear,border-color .15s linear!important}
+html[data-zavi-theme="dark"] :is(.main,.content){transform:none!important}
+/* Light settings form was covered by older themed rules. */
+html[data-zavi-theme="light"] .z637-customize{background:#fff!important;color:#173652!important}
+html[data-zavi-theme="light"] .z637-customize :is(label,h3,p,output){color:#16405f!important}
+html[data-zavi-theme="light"] .z637-customize :is(input,select){background:#fff!important;color:#173652!important;border:1px solid #accce3!important;opacity:1!important}
+html[data-zavi-theme="light"] #z645DesignPreview{display:block!important;background:#e9f6fe!important;padding:9px;border-radius:9px}
+/* Animated yet GPU-light lock background: transforms on only two pseudo-elements, no blur. */
+.zawi-lock-screen{isolation:isolate;overflow-y:auto!important;overflow-x:hidden!important}
+.zawi-lock-screen:after{content:"";position:fixed;width:min(70vw,580px);height:min(70vw,580px);border:2px solid rgba(42,184,216,.27);border-radius:50%;top:-23%;left:-15%;pointer-events:none;transform:translate3d(0,0,0);animation:z659LockOrbit 18s ease-in-out infinite alternate;z-index:-1}
+.zawi-lock-screen:before{animation:z659LockGrid 24s linear infinite alternate;transform:translate3d(0,0,0)}
+@keyframes z659LockOrbit{to{transform:translate3d(10vw,13vh,0) scale(.8);opacity:.45}}
+@keyframes z659LockGrid{to{transform:translate3d(-18px,12px,0)}}
+.zawi-auth-card{position:relative;z-index:1}
+@media(max-width:600px){.z62-backdrop{padding:4px!important}.z62-dialog{max-height:calc(100dvh - 8px)!important}.z62-body{padding:10px!important}.zavi-barcode-actions #zaviBarcodeScan{flex-basis:100%}.z659-daily-quick{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){.zawi-lock-screen:before,.zawi-lock-screen:after{animation:none!important}}
+html[data-z637-no-motion="true"] .zawi-lock-screen:before,html[data-z637-no-motion="true"] .zawi-lock-screen:after{animation:none!important}
+
+/* V65.10: compact, accessible, low-paint business UI. */
+.z62-dialog{width:min(580px,calc(100vw - 14px))!important;flex-basis:580px!important;max-height:min(78dvh,690px)!important;border-radius:18px!important}
+.z62-dialog .z62-head{padding:8px 14px!important;min-height:42px!important}
+.z62-dialog .z62-head h2{font-size:15px!important;margin:0!important}
+.z62-dialog .z62-body{padding:10px 13px 14px!important}
+.z62-dialog .z62-total{padding:8px 10px!important;margin-bottom:8px!important}
+.z62-dialog .z62-member{padding:10px!important;margin-block:6px!important;border-radius:12px!important}
+.z62-dialog button{min-height:34px!important}
+.z659-daily-quick:empty,.z659-daily-quick[hidden],.z659-daily-quick [hidden]{display:none!important}
+.z659-daily-quick{margin:0 0 8px!important}
+/* Debt cards and statement: clearer hierarchy, five actions that wrap on phones. */
+.debt-cards{gap:14px!important}
+.debt-card{border-radius:16px!important;padding:clamp(12px,1.7vw,19px)!important;min-width:0!important;box-shadow:0 2px 9px rgba(14,44,80,.07)!important}
+.debt-card .dc-amount{font-size:clamp(21px,2vw,27px)!important;line-height:1.4!important;font-variant-numeric:tabular-nums}
+.debt-card .dc-contact{overflow-wrap:anywhere}
+.debt-card .dc-actions{display:flex!important;flex-wrap:wrap!important;gap:7px!important;margin-top:14px!important}
+.debt-card .dc-actions .btn{flex:0 1 auto;min-height:35px!important;padding:7px 11px!important;font-size:11px!important;white-space:normal!important;line-height:1.5!important}
+.z660-ledger-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:13px 0 16px}
+.z660-ledger-summary>div{padding:12px 10px;background:var(--card,#edf6ff);border:1px solid var(--border,#cbddef);border-radius:13px;min-width:0}
+.z660-ledger-summary small{display:block;font-weight:600;opacity:.87;font-size:11px;margin-bottom:4px}
+.z660-ledger-summary b{display:block;overflow-wrap:anywhere;font-size:clamp(13px,1.5vw,17px);font-variant-numeric:tabular-nums}
+.ledger-table{font-size:12px!important;line-height:1.8!important}
+.ledger-table th{font-weight:800!important;white-space:normal!important;padding:10px!important}
+.ledger-table td{padding:9px 10px!important;vertical-align:top}
+/* Date pill contrast: override earlier night-blue component on light mode. */
+html[data-zavi-theme="light"] .zavi-date-chip .zavi-date-part{background:#e9f4ff!important;border:1px solid #b9d3e7!important;color:#123551!important;box-shadow:none!important}
+html[data-zavi-theme="light"] .zavi-date-chip .zavi-date-part :is(b,span,small){color:#123551!important;-webkit-text-fill-color:#123551!important;text-shadow:none!important;opacity:1!important}
+html[data-zavi-theme="dark"] .zavi-date-chip .zavi-date-part{background:#1b3450!important;color:#f1f8ff!important;border:1px solid #486b88!important}
+html[data-zavi-theme="dark"] .zavi-date-chip .zavi-date-part :is(b,span,small){color:#f1f8ff!important;-webkit-text-fill-color:#f1f8ff!important}
+/* Flat surfaces + stable borders eliminate repeated translucent composites. */
+html[data-zavi-theme="dark"] :is(.debt-card,.debt-hero,.card,.stat,.settings-card,.modal,.z62-dialog,.z637-ai-panel,.ledger-intro,.z660-ledger-summary>div){box-shadow:0 2px 7px rgba(0,0,0,.14)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;filter:none!important;text-shadow:none!important}
+html[data-zavi-theme="dark"] :is(.debt-card,.debt-hero,.z660-ledger-summary>div){background:#152a42!important;color:#edf7ff!important;border-color:#3a5572!important}
+html[data-zavi-theme="dark"] :is(.debt-card,.debt-hero,.z660-ledger-summary>div) :is(small,span,p){color:#d7e6f6!important}
+html[data-zavi-theme="dark"] :is(.debt-cards,.debt-card,.debt-hero,.card,.settings-card,.z62-dialog,.stat)::before,
+html[data-zavi-theme="dark"] :is(.debt-cards,.debt-card,.debt-hero,.card,.settings-card,.z62-dialog,.stat)::after{animation:none!important}
+html[data-zavi-theme="dark"] :is(.debt-card,.z62-dialog,.ledger-table,.z660-ledger-summary){will-change:auto!important;transition:none!important}
+html[data-zavi-theme="dark"] .debt-card .dc-actions .btn{box-shadow:none!important}
+html[data-zavi-theme="light"] :is(.debt-card,.ledger-intro,.z660-ledger-summary>div){background:#fff!important;color:#17344d!important;border:1px solid #d2e3f1!important}
+html[data-zavi-theme="light"] .debt-hero{background:linear-gradient(110deg,#e4f4ff,#f8fcff)!important;color:#153451!important;border-color:#c1d9eb!important}
+html[data-zavi-theme="light"] .debt-hero :is(small,strong,span){color:#153451!important;-webkit-text-fill-color:#153451!important}
+:where(.debt-card,.z62-dialog,.settings-card) :focus-visible{outline:3px solid #159ed1!important;outline-offset:2px}
+@media(max-width:600px){.z62-dialog{max-height:calc(83dvh - 8px)!important;width:100%!important}.z660-ledger-summary{grid-template-columns:1fr!important}.debt-card .dc-actions .btn{flex:1 1 42%!important}.ledger-table{min-width:550px!important}}
+@media(prefers-reduced-motion:reduce){html[data-zavi-theme] :is(.debt-card,.z62-dialog,.z637-ai-panel){animation:none!important;transition:none!important}}
+
+@supports (content-visibility:auto){.debt-cards>.debt-card{content-visibility:auto;contain-intrinsic-size:auto 172px}}
+/* V65.10 tablet: remove remaining full-screen GPU filters & perpetual loops in dark mode. */
+html[data-zavi-theme="dark"] :is(.topbar,.modal-backdrop,.z637-ai-backdrop,.sidebar,.mobile-bottom){backdrop-filter:none!important;-webkit-backdrop-filter:none!important;filter:none!important}
+html[data-zavi-theme="dark"] .topbar{background:#0b2039!important;box-shadow:0 1px 6px rgba(0,0,0,.16)!important}
+html[data-zavi-theme="dark"] .modal-backdrop{background:rgba(2,11,25,.79)!important}
+html[data-zavi-theme="dark"] .z637-ai-button::before{animation:none!important}
+html[data-zavi-theme="dark"] :is(.welcome::before,.welcome::after,.zawi-lock-screen::before,.zawi-lock-screen::after){animation:none!important}
+html[data-zavi-theme="dark"] :is(.welcome,.debt-card,.stat,.card,.report-stat,.hawala-record){transition:none!important}
+html[data-zavi-theme="dark"] :is(.card,.debt-card):hover{transform:none!important;box-shadow:0 2px 9px rgba(0,0,0,.14)!important}
+html[data-zavi-theme="dark"] :is(.z642-smart,.z644-alert-card,.z645-business-hero,.z639-focus-card,.welcome){filter:none!important;backdrop-filter:none!important}
+html[data-zavi-theme="dark"] .zavi-date-chip{transform:none!important}

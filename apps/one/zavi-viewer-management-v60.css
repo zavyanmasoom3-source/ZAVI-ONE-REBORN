@@ -1,0 +1,30 @@
+/* ZAVI ONE V60 — Owner-managed view-only colleagues. No change to financial data. */
+#z60TeamDashboard:empty{display:none}
+#z60TeamDashboard{margin-bottom:16px;max-width:100%;min-width:0}
+.z60-team-dashboard{padding:17px 19px!important;overflow:hidden;min-width:0}
+.z60-team-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.z60-team-head h3{font-size:17px!important;line-height:1.7;margin:0!important;color:inherit}
+.z60-team-head p{color:inherit;opacity:.7;font-size:11px;line-height:1.8;margin:3px 0 0}
+.z60-team-number{display:flex;justify-content:center;align-items:center;min-width:44px;height:44px;border-radius:13px;border:1px solid #0c9fc5;background:linear-gradient(145deg,#085dac,#0eafc1);color:white!important;font:800 20px/1.2 system-ui,sans-serif}
+.z60-team-actions{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin:12px 0}
+.z60-team-actions .btn{min-width:0;white-space:normal}
+.z60-team-items{display:grid;gap:9px;margin-top:10px}
+.z60-team-member{display:flex;justify-content:space-between;align-items:center;gap:9px;border:1px solid #1a72a660;border-radius:12px;padding:10px 12px;min-width:0;background:#11558314}
+.z60-team-person{display:flex;flex-direction:column;align-items:flex-start;gap:3px;min-width:0;flex:1}
+.z60-team-person b{font-size:13px}
+.z60-team-role,.z60-team-person small{color:inherit;opacity:.75;font-size:10.5px}
+.z60-team-uid{font:10px/1.6 ui-monospace,SFMono-Regular,monospace;max-width:100%;overflow-wrap:anywhere;user-select:all;opacity:.8}
+.z60-team-remove{flex:none;min-height:39px!important;white-space:normal!important}
+.z60-team-note{font-size:12px;line-height:1.9;color:inherit;opacity:.88;padding:8px 0}
+.z60-team-error{color:#d65e67;opacity:1}
+#z20Members .z60-team-member{background:#0d647515}
+@media(max-width:650px){
+ .z60-team-dashboard{padding:13px!important}
+ .z60-team-number{min-width:45px;height:45px}
+ .z60-team-uid{font-size:10px}
+ .z60-team-remove{font-size:12px!important;padding:8px 10px!important}
+ .z60-team-member{align-items:flex-start}
+ .z60-team-actions .btn{flex:1}
+ .z60-team-settings .z20-row{grid-template-columns:1fr!important}
+ .z60-team-settings #z20MemberUID{width:100%!important;min-width:0!important}
+}

@@ -1,0 +1,2 @@
+/* ZAVI ONE web responsive module — no server access or data writes. */
+(()=>{'use strict';document.documentElement.classList.add('zavi-web-responsive');document.documentElement.dataset.zaviWebEdition='2026.10.24';})();

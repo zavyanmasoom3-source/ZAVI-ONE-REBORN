@@ -1,0 +1,29 @@
+.zv-wh-manager{padding:17px;margin:16px 0}.zv-wh-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}.zv-wh-head h3{margin:0;font-size:15px}.zv-wh-note,.zv-wh-status{font-size:12px;line-height:1.8;color:var(--muted)}.zv-wh-status{min-height:20px}.zv-wh-form{display:grid;grid-template-columns:1fr 140px auto;gap:10px;align-items:end;margin:12px 0}.zv-wh-form label{display:grid;gap:5px;font-size:12px}.zv-wh-form input{width:100%;min-height:40px;border:1px solid var(--line);border-radius:10px;padding:8px;background:var(--white);color:var(--ink)}.zv-wh-list{display:grid;gap:8px}.zv-wh-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;border:1px solid var(--line);padding:10px 12px;border-radius:10px}.zv-wh-row strong{flex:1;min-width:110px}.zv-wh-row small{direction:ltr}.zv-wh-row span{font-size:12px}@media(max-width:650px){.zv-wh-form{grid-template-columns:1fr 1fr}.zv-wh-form button{grid-column:1/-1}}@media(max-width:360px){.zv-wh-form{grid-template-columns:1fr}}
+.zv-wh-stock{margin-top:16px;padding-top:12px;border-top:1px solid var(--line)}
+.zv-wh-stock h4{font-size:13px;margin:0 0 10px}
+.zv-wh-stock-row{display:grid;grid-template-columns:minmax(90px,1fr) minmax(110px,1.5fr) minmax(70px,auto);align-items:center;gap:9px;padding:9px 4px;border-bottom:1px solid var(--line);font-size:12px}
+.zv-wh-stock-row span{overflow-wrap:anywhere}
+.zv-wh-stock-row b{text-align:end;font-variant-numeric:tabular-nums;direction:ltr}
+.zv-wh-negative{color:#c32e49}
+html[data-zavi-theme="dark"] .zv-wh-manager{color:#eff5fc}
+@media(max-width:420px){.zv-wh-stock-row{grid-template-columns:1fr auto}.zv-wh-stock-row span{grid-column:1 / -1;grid-row:2}}
+
+.zv-wh-history{margin-top:15px;padding-top:12px;border-top:1px solid var(--line)}
+.zv-wh-history h4{font-size:13px;margin:0 0 10px}
+.zv-wh-edit-form{display:grid;grid-template-columns:minmax(110px,1fr) minmax(90px,140px) auto auto;gap:8px;width:100%;align-items:center}
+.zv-wh-edit-form input{width:100%;min-width:0;min-height:38px;padding:7px 8px;border-radius:9px;border:1px solid var(--line);background:var(--white);color:var(--ink)}
+.zv-wh-edit-form button{min-height:38px}
+@media(max-width:600px){.zv-wh-edit-form{grid-template-columns:1fr 1fr}.zv-wh-edit-form button{width:100%}}
+@media(max-width:370px){.zv-wh-edit-form{grid-template-columns:1fr}}
+
+
+/* Server-confirmed, idempotent warehouse stock transfer */
+.zv-wh-transfer{margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+.zv-wh-transfer h4{font-size:14px;margin:0 0 10px}
+.zv-wh-transfer-form{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;align-items:end}
+.zv-wh-transfer-form label{display:flex;flex-direction:column;gap:5px;font-size:12px;min-width:0}
+.zv-wh-transfer-form input,.zv-wh-transfer-form select{min-height:38px;width:100%;max-width:100%;min-width:0;padding:6px 8px;border-radius:9px;background:var(--white,var(--card,#fff));color:var(--ink,var(--text,#182a40));border:1px solid var(--line,#bdc6d1)}
+.zv-wh-transfer-form button{min-height:38px}
+.zv-wh-transfer-status{min-height:18px;margin-top:9px;font-size:12px;overflow-wrap:anywhere}
+@media(max-width:550px){.zv-wh-transfer-form{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:350px){.zv-wh-transfer-form{grid-template-columns:minmax(0,1fr)}}

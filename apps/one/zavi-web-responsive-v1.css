@@ -1,0 +1,54 @@
+/* ZAVI ONE Web Responsive 2026.10.24 — CSS-only refinements.
+   Scoped to html.zavi-web-responsive. Never overwrites application rendering, auth,
+   offline queues, sale/purchase, receipt or currency calculations. */
+html.zavi-web-responsive{--zwr-cyan:#10bfe5;--zwr-blue:#1889ee;max-width:100%;scrollbar-width:thin}
+html.zavi-web-responsive body{max-width:100%;overflow-x:clip}
+html.zavi-web-responsive :where(button,a,input,select,textarea):focus-visible{outline:3px solid var(--zwr-cyan)!important;outline-offset:2px}
+html.zavi-web-responsive :where(.main,.content,.topbar,.app,.modal,.card,.panel,.dash-stat,.stats-grid){min-width:0}
+html.zavi-web-responsive .content{max-width:100%;box-sizing:border-box}
+html.zavi-web-responsive :where(.topbar,.mobile-bottom){backdrop-filter:blur(8px)}
+html.zavi-web-responsive :where(.stat,.summary-card,.dashboard-card){border-radius:16px}
+html.zavi-web-responsive :where(.zavi-usd-today-card){scroll-margin-top:20px;box-sizing:border-box;max-width:100%;min-width:0}
+html.zavi-web-responsive .zavi-usd-input-row{display:flex;align-items:center;flex-wrap:wrap;gap:9px}
+html.zavi-web-responsive .zavi-usd-input-row input{min-width:95px;max-width:100%;box-sizing:border-box;touch-action:manipulation}
+html.zavi-web-responsive .zavi-usd-inline-form button{min-height:44px}
+html.zavi-web-responsive :where(.table-wrap,.table-scroll,.wide-table,.data-table-wrap){overflow-x:auto;max-width:100%;-webkit-overflow-scrolling:touch}
+html.zavi-web-responsive :where(.content,.modal) :where(h1,h2,h3,h4,label,p,small){overflow-wrap:break-word}
+html.zavi-web-responsive :where(.content,.modal) :where(input,textarea,select){max-width:100%;box-sizing:border-box}
+html.zavi-web-responsive .sidebar :where(.nav-btn,[data-go]){touch-action:manipulation}
+html.zavi-web-responsive .mobile-bottom :where(button,[role=button]){min-height:45px}
+html.zavi-web-responsive :where(.btn,.nav-btn,.zavi-v37-action){transition:filter .18s ease,box-shadow .18s ease}
+html.zavi-web-responsive :where(.btn,.nav-btn,.zavi-v37-action):not(:disabled):active{filter:brightness(.95)}
+@media(min-width:1450px){
+ html.zavi-web-responsive .content{max-width:1700px;margin-inline:auto}
+ html.zavi-web-responsive .main{min-width:0}
+}
+@media(min-width:761px) and (max-width:1100px){
+ html.zavi-web-responsive .content{padding-inline:clamp(14px,2vw,23px)}
+ html.zavi-web-responsive .topbar{gap:12px;flex-wrap:wrap;min-height:70px}
+}
+@media(max-width:760px){
+ html.zavi-web-responsive .main{max-width:100%!important;min-width:0!important}
+ html.zavi-web-responsive .content{padding-inline:clamp(10px,3vw,17px)!important;padding-bottom:max(96px,env(safe-area-inset-bottom,0px))!important}
+ html.zavi-web-responsive .topbar{min-width:0;max-width:100%;gap:9px;flex-wrap:wrap;padding-inline:12px!important}
+ html.zavi-web-responsive :where(.stat,.summary-card,.dashboard-card){padding:clamp(10px,3vw,16px);max-width:100%}
+ html.zavi-web-responsive .zavi-usd-today-card{display:flex;align-items:center;gap:11px;flex-wrap:wrap}
+ html.zavi-web-responsive .zavi-usd-inline-form{flex:1 1 180px;min-width:0}
+ html.zavi-web-responsive #side.sidebar.mobile-drawer{position:fixed!important;inset:0!important;overflow-y:auto!important;overflow-x:hidden!important;width:100vw!important;max-width:100vw!important;min-width:100vw!important;max-height:100dvh!important;height:100dvh!important;z-index:2147481800!important}
+ html.zavi-web-responsive #side.sidebar.mobile-drawer .zavi-v6-menu-scroll{flex:1 1 auto!important;min-height:0!important;max-height:none!important;overflow:auto!important;-webkit-overflow-scrolling:touch!important}
+ html.zavi-web-responsive .mobile-bottom{padding-bottom:env(safe-area-inset-bottom,0px)}
+}
+@media(max-width:360px){
+ html.zavi-web-responsive .content{padding-inline:9px!important}
+ html.zavi-web-responsive .zavi-usd-inline-form{flex-basis:100%}
+ html.zavi-web-responsive .zavi-usd-rate-value{font-size:17px}
+}
+@media(prefers-reduced-motion:reduce){
+ html.zavi-web-responsive *,html.zavi-web-responsive *::before,html.zavi-web-responsive *::after{animation-duration:.001ms!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
+}
+@media print{
+ html.zavi-web-responsive body{max-width:none;overflow:visible!important}
+ html.zavi-web-responsive .content{max-width:100%!important;padding:0!important}
+ html.zavi-web-responsive .zavi-usd-inline-form{display:none!important}
+ html.zavi-web-responsive :where(.sidebar,.mobile-bottom){display:none!important}
+}
