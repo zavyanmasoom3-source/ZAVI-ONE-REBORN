@@ -55,11 +55,11 @@ def inspect(apk,aapt,apksigner):
     # the APK has a valid JAR signature, so never infer it from default output.
     signing=run_command([apksigner,'verify','--verbose','--print-certs',apk])
     for scheme in ('v2','v3'):
-        if not re.search(r'(?m)^Verified using '+scheme+r' scheme.*?: true\\s*$', signing):
+        if not re.search(r'(?m)^Verified using '+scheme+r' scheme.*?: true\s*$', signing):
             raise UnsafeUpdate('APK lacks a verified '+scheme+' signature')
     legacy=run_command([apksigner,'verify','--min-sdk-version','23',
                         '--verbose','--print-certs',apk])
-    if not re.search(r'(?m)^Verified using v1 scheme.*?: true\\s*$',legacy):
+    if not re.search(r'(?m)^Verified using v1 scheme.*?: true\s*$',legacy):
         raise UnsafeUpdate('APK lacks a verified JAR v1 signature under API23')
     signer=parse_signers(signing)
     if signer!=parse_signers(legacy):
