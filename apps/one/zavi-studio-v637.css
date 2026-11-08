@@ -1,0 +1,82 @@
+/* ZAVI ONE STUDIO V63.7 — visual enhancement only. No accounting logic or stored data touched.
+   Font uses remote Estedad when connected and installed Noto/Vazirmatn when offline.
+   All animations respect prefers-reduced-motion. */
+:root{
+ --z637-font:'Estedad','Vazirmatn','Noto Sans Arabic','Segoe UI',Tahoma,sans-serif;
+ --z637-ocean:#0e98ad;--z637-sky:#3c8dff;--z637-violet:#8b73fd;
+ --z637-ease:cubic-bezier(.22,1,.36,1);
+}
+html,body,button,input,select,textarea,table{font-family:var(--z637-font)!important}
+html{font-optical-sizing:auto;text-rendering:optimizeLegibility}
+body{letter-spacing:0;overscroll-behavior-y:contain}
+:where(button,a,input,select,textarea,[tabindex]):focus-visible{outline:3px solid #16c6dc!important;outline-offset:3px!important}
+::selection{background:#36cbdc66;color:inherit}
+.app{isolation:isolate}
+.sidebar{background:linear-gradient(166deg,#071c37 0%,#0b2850 43%,#0a1732 100%)!important;
+ border-inline-start:1px solid #4bd3f325!important;box-shadow:inset -1px 0 #f6ffff14, -4px 0 28px #0813261c!important}
+.sidebar::before{content:"";pointer-events:none;position:absolute;inset:0;opacity:.32;
+ background:radial-gradient(ellipse at 70% -12%,#49dffa50,transparent 41%),radial-gradient(ellipse at 10% 115%,#7764ff44,transparent 46%)}
+.sidebar>*{position:relative}
+.brand{gap:14px!important}
+.brand-logo{border-radius:17px!important;box-shadow:0 14px 30px #0519345c,0 0 0 1px #c7fbff35!important;overflow:hidden}
+.brand-name{font-weight:900!important;letter-spacing:.15px}
+.nav-btn{font-weight:750!important;min-height:43px!important;border:1px solid transparent!important;
+ transition:background .24s var(--z637-ease),box-shadow .24s var(--z637-ease),transform .24s var(--z637-ease),color .24s!important}
+.nav-btn:hover{background:#64daf71c!important;transform:translateX(-3px);border-color:#90d9f326!important}
+.nav-btn.active{background:linear-gradient(112deg,#187dcb3c,#31d7d31e)!important;
+ border-color:#5ce6f050!important;box-shadow:inset -3px 0 #4ce6e7,0 8px 26px #0013231e!important;color:white!important}
+.sidebar-footer{border-color:#b4e1ff2a!important}
+.main{background:radial-gradient(ellipse at 55% -12%,#2288e719,transparent 58%),var(--bg)!important}
+.topbar{border-bottom:1px solid #9ac4df31!important;box-shadow:0 6px 30px #03152810!important;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.topbar-title{font-weight:900!important;letter-spacing:0!important}
+.content{animation:z637-appear .6s var(--z637-ease) both}
+.card,.stat,.settings-card,.zv-feature-card{border-radius:20px!important;
+ transition:transform .35s var(--z637-ease),box-shadow .35s var(--z637-ease),border-color .35s!important}
+.card:hover,.zv-feature-card:hover{box-shadow:0 16px 45px #0824441a!important;border-color:#5caee952!important}
+.stat:hover{transform:translateY(-4px);box-shadow:0 18px 36px #0a305028!important}
+.stat-icon{border-radius:14px!important;transition:transform .4s var(--z637-ease)}
+.stat:hover .stat-icon{transform:rotate(-7deg) scale(1.06)}
+.welcome{isolation:isolate;border-radius:25px!important;background:linear-gradient(118deg,#0a2652,#134b86 43%,#0d938f 100%)!important;
+ box-shadow:0 18px 45px #0b4b8550!important}
+.welcome:before{animation:z637-orbit 24s linear infinite}
+.welcome:after{animation:z637-bob 6s ease-in-out infinite}
+.welcome h2{font-weight:900!important;letter-spacing:.1px!important}
+.page-head h2,.panel-head h3{font-weight:850!important;letter-spacing:0!important}
+.btn,.icon-button,[type=submit]{transition:transform .18s var(--z637-ease),background .2s,box-shadow .23s var(--z637-ease),border-color .2s!important}
+.btn:hover:not(:disabled),.icon-button:hover:not(:disabled){transform:translateY(-2px)}
+.btn:active:not(:disabled),.icon-button:active:not(:disabled){transform:translateY(0) scale(.985)}
+.btn.primary{background:linear-gradient(110deg,var(--z637-accent,#1478d7),#119ab0)!important;border-color:#258bbf!important;
+ box-shadow:0 8px 22px #0b8aab30!important;color:#fff!important}
+.btn.primary:hover{box-shadow:0 12px 28px #0b8aab4b!important}
+.searchbox,input:not([type=checkbox]):not([type=radio]),select,textarea{transition:border-color .22s,box-shadow .22s!important}
+.searchbox:focus-within,input:focus,select:focus,textarea:focus{border-color:#229ac9!important;box-shadow:0 0 0 3px #21afc526!important}
+.transaction-table tbody tr,.record-card{transition:background .22s ease!important}
+.transaction-table tbody tr:hover{background:#2da5dc0d!important}
+.pill,.badge{font-weight:800!important;letter-spacing:0}
+#overlay,[role=dialog]{-webkit-font-smoothing:antialiased}
+.modal,.modal-card{animation:z637-modal .28s var(--z637-ease) both}
+#toast:not(:empty){animation:z637-toast .3s var(--z637-ease)}
+/* Motion and contrast adjusted for light theme without overriding existing light-only rules. */
+html[data-zavi-theme=light] .sidebar{background:linear-gradient(172deg,#fff,#eef7ff 70%,#e6f0ff)!important;
+ box-shadow:inset -1px 0 #97c3e94d,4px 0 28px #08264a13!important}
+html[data-zavi-theme=light] .sidebar::before{opacity:.06}
+html[data-zavi-theme=light] .nav-btn:hover{background:#e1efff!important;color:#13578b!important}
+html[data-zavi-theme=light] .nav-btn.active{background:linear-gradient(112deg,#0e6bcc,#12a6c0)!important;color:#fff!important}
+html[data-zavi-theme=light] .main{background:radial-gradient(ellipse at 80% -8%,#62afff22,transparent 65%),#f3f8fe!important}
+html[data-zavi-theme=light] .topbar{background:#ffffffd9!important}
+html[data-zavi-theme=light] .card:hover{border-color:#66b6eb!important}
+@keyframes z637-appear{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes z637-modal{from{opacity:0;transform:translateY(14px) scale(.985)}to{opacity:1;transform:none}}
+@keyframes z637-toast{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes z637-bob{50%{transform:translateY(-12px)}}
+@keyframes z637-orbit{to{transform:rotate(360deg)}}
+@media (max-width: 900px){.stat-grid{gap:12px!important}.stat{min-height:116px!important}.content{animation-duration:.45s}}
+@media (max-width: 580px){.topbar{backdrop-filter:none}.content{padding-inline:14px!important}.welcome{border-radius:19px!important}.card{border-radius:16px!important}.stat:hover{transform:none}}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+@media print{.z637-ai-button,.z637-ai-panel,.z637-ai-backdrop{display:none!important}.card,.stat{box-shadow:none!important;animation:none!important;transform:none!important}}
+
+/* Workspace-scoped appearance controls */
+.z637-customize{padding:20px;margin-bottom:16px}.z637-customize h3{margin:0 0 7px;font-size:17px}.z637-customize p{color:var(--muted);margin:0 0 15px;font-size:12px}.z637-customize .form-grid{max-width:760px}
+.z637-design-motion{display:inline-flex;align-items:center;gap:10px;font-weight:700}.z637-design-motion input{width:20px;height:20px;accent-color:var(--z637-accent,#1478d7)}
+html[data-z637-density=compact] .stat{min-height:100px!important;padding:12px 15px!important}html[data-z637-density=compact] .transaction-table :is(th,td){padding-block:8px!important}
+html[data-z637-no-motion=true] *,html[data-z637-no-motion=true] *::before,html[data-z637-no-motion=true] *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}

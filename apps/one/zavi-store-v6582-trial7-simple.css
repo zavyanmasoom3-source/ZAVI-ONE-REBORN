@@ -1,0 +1,32 @@
+/* ZAVI ONE V65.82 — concise signed offline status; retain all recovery controls. */
+[data-zavi-auto-offline-card] .z82-simple-status{
+  display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;
+  box-sizing:border-box;width:100%;margin:10px 0;padding:9px 12px;border-radius:11px;
+  border:1px solid rgba(56,180,222,.5);background:rgba(39,123,182,.13);
+  color:inherit;font-weight:650;line-height:1.6;font-size:clamp(12px,3.3vw,14px);
+  min-width:0;overflow-wrap:anywhere;
+}
+[data-zavi-auto-offline-card] .z82-simple-status strong{
+  flex:0 0 auto;white-space:normal;font-size:inherit;font-weight:850;color:inherit;
+}
+[data-zavi-auto-offline-card] .z82-simple-status span{
+  flex:1 1 190px;font-weight:550;min-width:0;color:inherit;opacity:.96;
+}
+[data-zavi-auto-offline-card] .z82-simple-status[data-kind="ready"]{
+ border-color:rgba(35,169,116,.55);background:rgba(32,169,111,.13);
+}
+[data-zavi-auto-offline-card] [data-zavi-offline-recovery] .zsh-actions{display:flex;gap:7px;flex-wrap:wrap}
+[data-zavi-auto-offline-card] [data-zavi-offline-recovery] .zsh-actions > button{
+ max-width:100%;min-height:40px;border-radius:10px;
+ padding:8px 11px;line-height:1.4;font-size:clamp(12px,3.4vw,14px);font-weight:750;
+ flex:1 1 180px;white-space:normal;overflow-wrap:anywhere;
+}
+[data-zavi-auto-offline-card] .z46-recovery-message{
+ margin:6px 0;font-size:clamp(12px,3.3vw,14px);line-height:1.6;
+}
+[data-zavi-auto-offline-card] .z46-technical-options{margin-top:6px;}
+[data-zavi-auto-offline-card] .z46-technical-options summary{cursor:pointer;padding:6px 2px;font-size:13px;}
+@media(max-width:430px){
+ [data-zavi-auto-offline-card] .z82-simple-status{gap:3px 6px;}
+ [data-zavi-auto-offline-card] [data-zavi-offline-recovery] .zsh-actions > button{flex:1 1 100%;}
+}

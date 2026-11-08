@@ -1,0 +1,44 @@
+/* ZAVI ONE V64.0 — visual coherence, trade-aware navigation and accessible animation.
+ * Presentation only: never touch customer data, backend roles or stock records.
+ * Font fallback remains usable without Google Fonts / Internet connectivity. */
+:root{--z640-speed:.3s;--z640-curve:cubic-bezier(.18,.8,.2,1);--z640-focus:#20c7cf}
+html,body,button,input,select,textarea,table{font-family:'Estedad','Vazirmatn',Tahoma,system-ui,sans-serif!important}
+html[data-zavi-theme=light]{--z640-text:#132d48;--z640-sub:#405c76;--z640-surface:#fff;--z640-field:#fff;--z640-edge:#b4cadd;--z640-surface-alt:#edf5fc;--z640-hover:#e5f0fa}
+html[data-zavi-theme=dark]{--z640-text:#f1f8ff;--z640-sub:#c0d5e8;--z640-surface:#132b45;--z640-field:#173753;--z640-edge:#55738f;--z640-surface-alt:#1a3957;--z640-hover:#224765}
+/* Every product identifier and stock/finance value must keep explicit contrast, even under old theme styles. */
+html[data-zavi-theme] #content :is(.zavi-product-entry b,.zavi-product-entry strong,.prod-title,.stock-left b,.stock-item strong,.record-card strong,.stat-value,.amount,.page-head h2,.panel-head h3){color:var(--z640-text)!important;opacity:1!important}
+html[data-zavi-theme] #content :is(.stock-sub,.rec-detail,.stat-label,.stat-foot,.field-hint,.tiny-note,.muted,.page-head p){color:var(--z640-sub)!important;opacity:1!important}
+html[data-zavi-theme] #content :is(.record-card,.stock-item,.z638-warehouse-result,.z639-focus-card,.z638-business-ribbon){color:var(--z640-text)!important;border-color:var(--z640-edge)!important}
+html[data-zavi-theme] #content :is(.z638-warehouse-metrics span,.z639-focus-notes>span){background:var(--z640-surface-alt)!important;color:var(--z640-text)!important}
+html[data-zavi-theme] :is(#searchInput,#zaviWarehouseScan,#zaviBarcodeScan,.field input:not([type=checkbox]):not([type=radio]),.field select,.field textarea){background:var(--z640-field)!important;color:var(--z640-text)!important;border-color:var(--z640-edge)!important;-webkit-text-fill-color:var(--z640-text)!important}
+html[data-zavi-theme] :is(#searchInput,#zaviWarehouseScan,#zaviBarcodeScan,.field input,.field textarea)::placeholder{color:var(--z640-sub)!important;opacity:1!important;-webkit-text-fill-color:var(--z640-sub)!important}
+html[data-zavi-theme] :is(.transaction-table th,.transaction-table td){border-color:var(--z640-edge)!important}
+html[data-zavi-theme=light] .transaction-table th{background:#eaf3fa!important;color:#244664!important}
+html[data-zavi-theme=dark] .transaction-table th{background:#1a405d!important;color:#e9f5ff!important}
+html[data-zavi-theme=light] .transaction-table td{background:#fff!important;color:#15314a!important}
+html[data-zavi-theme=dark] .transaction-table td{background:#132b45!important;color:#f3f9ff!important}
+html[data-zavi-theme=dark] :is(.transaction-table td,.record-card,.z638-warehouse-result) :is(.amount,strong,b):not(.pill){color:#f3f9ff!important}
+html[data-zavi-theme=light] :is(.transaction-table td,.record-card,.z638-warehouse-result) :is(.amount,strong,b):not(.pill){color:#15314a!important}
+/* Keep semantic pill colors: do not recolor warning/success badges. */
+html[data-zavi-theme] :is(.btn,.nav-btn,.bottom-btn,.z637-ai-button){transition:transform var(--z640-speed) var(--z640-curve),box-shadow var(--z640-speed) var(--z640-curve),background-color var(--z640-speed)!important}
+html[data-zavi-theme] :is(.btn,.nav-btn,.bottom-btn):hover:not(:disabled){transform:translateY(-2px)}
+html[data-zavi-theme] :is(.btn,.nav-btn,.bottom-btn,.z637-ai-button):focus-visible{outline:3px solid var(--z640-focus)!important;outline-offset:3px!important}
+html[data-zavi-theme] .z639-focus-card{border-radius:22px;box-shadow:0 16px 36px #102a4620;isolation:isolate}
+html[data-zavi-theme] .z639-focus-actions .btn{border-radius:12px;min-height:44px}
+html[data-zavi-theme] .zavi-v6-menu-scroll .nav-btn[aria-current=page]{background:linear-gradient(110deg,#0d7997a6,#207bb66e);color:#f8fcff!important;font-weight:800;box-shadow:inset 3px 0 var(--z639-glow)}
+html[data-zavi-theme] .zavi-v6-menu-scroll .nav-btn[aria-current=page] span{color:inherit!important}
+/* Quick scanner is a key action, never hidden by automatic trade personalization. */
+html[data-zavi-theme] .z638-warehouse-scanner{border-radius:20px;box-shadow:0 12px 30px #102a4619}
+html[data-zavi-theme] .z638-warehouse-scanner input{font-size:16px!important;letter-spacing:.035em}
+html[data-zavi-theme] .z638-warehouse-result strong{overflow-wrap:anywhere}
+/* Subtle, GPU-friendly card entrance, but no animation of changing money figures. */
+@keyframes z640-card-reveal{0%{opacity:.55;transform:translateY(9px)}100%{opacity:1;transform:translateY(0)}}
+@keyframes z640-selected-glow{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--z639-glow) 30%,transparent)}50%{box-shadow:0 0 0 6px color-mix(in srgb,var(--z639-glow) 7%,transparent)}}
+#content>.z639-focus-card,#content>.z638-business-ribbon{animation:z640-card-reveal .48s var(--z640-curve) both}
+.nav-btn[aria-current=page]::after{animation:z640-selected-glow 3.8s ease-in-out infinite}
+@media(max-width:680px){html[data-zavi-theme] .z639-focus-actions .btn{flex:1 1 42%;min-width:0}html[data-zavi-theme] .z638-warehouse-scanner .zavi-barcode-actions{display:flex;flex-wrap:wrap}html[data-zavi-theme] .z638-warehouse-scanner .zavi-barcode-actions input{min-width:0;flex:1 1 170px}}
+/* Honor system preferences and the owner's own setting for all V64 effects. */
+@media(prefers-reduced-motion:reduce){#content>.z639-focus-card,#content>.z638-business-ribbon,.nav-btn[aria-current=page]::after{animation:none!important}html[data-zavi-theme] :is(.btn,.nav-btn,.bottom-btn,.z637-ai-button){transition:none!important;transform:none!important}}
+html[data-z637-no-motion=true] :is(#content>.z639-focus-card,#content>.z638-business-ribbon,.nav-btn[aria-current=page]::after){animation:none!important}
+html[data-z637-no-motion=true] :is(.btn,.nav-btn,.bottom-btn,.z637-ai-button){transition:none!important;transform:none!important}
+@media print{#content>.z639-focus-card,#content>.z638-business-ribbon,.nav-btn[aria-current=page]::after{animation:none!important;box-shadow:none!important}}
