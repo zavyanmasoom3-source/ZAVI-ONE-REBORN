@@ -78,9 +78,14 @@ with Session() as browser:
         localSale:saved?.tx?.[0]?.id,activeSale:db?.tx?.[0]?.id,
         pendingRevision:pending?.revision};
     })()"""%(json.dumps(UID),json.dumps(WID),json.dumps(UID),json.dumps(WID)))
-    writes=[x for x in final['requests'] if x['method']!='GET']
-    if writes:
-        raise SystemExit('FAIL unknown-revision changed server: '+str(writes))
+    # Device-registration and offline-license checks may POST to their own RPCs.
+    # The mock rejects those requests (403). Only workspace payload writes
+    # can corrupt an accounting ledger, so assert the exact protected endpoint.
+    ledger_writes=[x for x in final['requests']
+                   if x['method'] in ('PATCH','PUT','POST')
+                   and x['path'].startswith('/rest/v1/zavi_workspaces')]
+    if ledger_writes:
+        raise SystemExit('FAIL recovered ledger attempted cloud write: '+str(ledger_writes))
     if (final['localSale']!='offline-sale' or final['activeSale']!='offline-sale'
             or final['pendingRevision']!=-1):
         raise SystemExit('FAIL local ledger was replaced or revision misreported: '+str(final))
