@@ -1,0 +1,216 @@
+/* ZAVI ONE v65.57 — reference-matched visual layer, 25 Oct 2026.
+   Scope: visual styling. Existing accounting, auth, data, translation, offline and navigation untouched.
+   Light/dark explicit tokens; RTL/LTR inherit the app language. */
+html{
+ --zr-blue:#1878f3;--zr-cyan:#24c5e7;--zr-green:#0eba91;
+ --zr-purple:#8f5bec;--zr-orange:#f29b40;--zr-pink:#ef5898;
+ --zr-round:15px;--zr-focus:0 0 0 3px rgba(25,131,255,.18);
+ color-scheme:dark;
+}
+html:not([data-zavi-theme="light"]){
+ --zr-bg:#081522;--zr-surface:#0e2034;--zr-side:#0a1b2c;
+ --zr-glass:#112640;--zr-soft:#152d49;--zr-txt:#eaf3ff;
+ --zr-muted:#a6b8cd;--zr-line:#254260;
+ --zr-shadow:0 6px 22px rgba(0,5,16,.20);
+ --bg:#081522;--white:#0e2034;--ink:#eaf3ff;--muted:#a6b8cd;
+ --line:#254260;--primary:#258cf7;--shadow:0 6px 22px rgba(0,5,16,.2);
+}
+html[data-zavi-theme="light"]{
+ color-scheme:light;--zr-bg:#f3f7fc;--zr-surface:#fff;
+ --zr-side:#ffffff;--zr-glass:#ffffff;--zr-soft:#eaf3fe;
+ --zr-txt:#122a47;--zr-muted:#61738e;--zr-line:#dce6f2;
+ --zr-shadow:0 4px 18px rgba(23,54,90,.055);
+ --bg:#f3f7fc;--white:#fff;--ink:#122a47;--muted:#61738e;
+ --line:#dce6f2;--primary:#157cf1;--shadow:0 4px 18px rgba(23,54,90,.055);
+}
+html,html body{max-width:100%;overflow-x:clip}
+html body{background:var(--zr-bg)!important;color:var(--zr-txt)}
+body .app,body .app>.main{min-width:0;background:var(--zr-bg)}
+body #side.sidebar{background:var(--zr-side)!important;color:var(--zr-txt)!important;
+ border-inline-start:1px solid var(--zr-line)!important;box-shadow:none!important;
+ overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+body #side .brand{background:transparent!important;border-color:var(--zr-line)!important}
+body #side .brand strong,body #side .brand b{color:var(--zr-txt)!important}
+body #side .section-nav{color:var(--zr-muted)!important;letter-spacing:.01em}
+body #side .nav-btn{min-height:40px;padding:9px 13px!important;
+ border:1px solid transparent!important;border-radius:11px!important;
+ color:var(--zr-muted)!important;background:transparent!important;
+ font-weight:650!important;box-shadow:none!important;transition:background 140ms ease,color 140ms ease}
+body #side .nav-btn:hover{background:var(--zr-soft)!important;color:var(--zr-blue)!important}
+body #side .nav-btn.active,body #side .nav-btn.selected,body #side .nav-btn[aria-current="page"]{
+ background:var(--zr-soft)!important;color:var(--zr-blue)!important;
+ border-inline-start:3px solid var(--zr-blue)!important}
+body .topbar{background:var(--zr-surface)!important;color:var(--zr-txt)!important;
+ border-bottom:1px solid var(--zr-line)!important;box-shadow:none!important}
+body .topbar-title{color:var(--zr-txt)!important;font-weight:850!important;letter-spacing:-.02em}
+body .topbar-sub{color:var(--zr-muted)!important}
+body #content{min-width:0!important;max-width:100%;padding:clamp(12px,1.5vw,22px)!important;
+ background:var(--zr-bg);color:var(--zr-txt)}
+body #content .welcome{
+ position:relative;isolation:isolate;overflow:hidden;
+ min-height:142px;padding:22px 26px!important;margin-bottom:17px!important;
+ border:1px solid var(--zr-line)!important;border-radius:var(--zr-round)!important;
+ background:linear-gradient(95deg,rgba(31,116,211,.09),transparent 68%),
+ linear-gradient(135deg,var(--zr-surface),var(--zr-soft))!important;
+ color:var(--zr-txt)!important;box-shadow:none!important}
+body #content .welcome::after{
+ content:"";position:absolute;inset:auto auto 0 0;width:58%;height:74%;
+ clip-path:polygon(0% 100%,0% 64%,12% 46%,20% 55%,34% 15%,48% 54%,61% 30%,72% 70%,86% 43%,100% 82%,100% 100%);
+ background:linear-gradient(160deg,rgba(76,158,231,.27),rgba(21,106,185,.02));z-index:-1;pointer-events:none}
+body #content .welcome .eyebrow{color:var(--zr-blue)!important;font-weight:850!important}
+body #content .welcome h2{font-size:clamp(18px,2.3vw,30px);font-weight:900!important;
+ color:var(--zr-txt)!important;margin:7px 0 5px!important}
+body #content .welcome p,body #content .welcome .zv-today{color:var(--zr-muted)!important}
+body #content .stat-grid{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(175px,1fr))!important;
+ align-items:stretch;gap:12px!important;margin-block:13px 17px!important}
+body #content .stat-grid>*{min-width:0!important;margin:0!important;max-width:100%;
+ background:var(--zr-surface)!important;border:1px solid var(--zr-line)!important;
+ border-radius:var(--zr-round)!important;box-shadow:var(--zr-shadow)!important}
+body #content .stat-grid strong,body #content .stat-grid .stat-value,
+body #content .stat-grid .amount{color:var(--zr-txt)!important;font-variant-numeric:tabular-nums}
+body #content .stat-grid small,body #content .stat-grid p{color:var(--zr-muted)!important}
+body #content .card,body #content .panel,body #content .dashboard-card,
+body #content .z649-dashboard-extras,body #content .zavi-card{
+ border-radius:var(--zr-round)!important;border:1px solid var(--zr-line)!important;
+ background:var(--zr-surface)!important;color:var(--zr-txt);box-shadow:var(--zr-shadow)!important}
+body #content .panel-head,body #content .table-bar{border-color:var(--zr-line)!important}
+body #content .card h3,body #content .panel h3,body #content .panel-head h3,
+body #content h1,body #content h2{color:var(--zr-txt)!important}
+body #content .muted,body #content .tiny-note,body #content .stock-sub{color:var(--zr-muted)!important}
+body #content .layout-2{gap:13px!important}
+body #content .btn,body .topbar button,body #content .pill{
+ border-radius:10px!important;box-shadow:none!important}
+body #content .btn.primary{background:linear-gradient(115deg,#1278eb,#239eea)!important;
+ color:#fff!important;border-color:transparent!important}
+body #content :is(input,select,textarea){max-width:100%;min-width:0;
+ border-color:var(--zr-line)!important;border-radius:10px!important;
+ background:var(--zr-surface)!important;color:var(--zr-txt)!important}
+body #content :is(input,select,textarea):focus-visible,body #content button:focus-visible,
+body #side button:focus-visible{outline:2px solid var(--zr-blue)!important;outline-offset:2px}
+body #content .table-wrap{max-width:100%;overflow-x:auto;overscroll-behavior-inline:contain}
+body #content table{border-collapse:separate;border-spacing:0;width:100%}
+body #content th{background:var(--zr-soft)!important;color:var(--zr-muted)!important;
+ font-weight:750!important;border-color:var(--zr-line)!important}
+body #content td{color:var(--zr-txt)!important;border-color:var(--zr-line)!important}
+body #content tbody tr:hover{background:var(--zr-soft)!important}
+body #content .zavi-reference-quick{
+ display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;
+ margin:13px 0 15px;direction:inherit}
+body #content .zavi-reference-quick .btn{
+ min-width:0!important;display:flex;align-items:center;justify-content:center;
+ gap:9px;min-height:49px;padding:10px 9px!important;
+ font-size:clamp(12px,1.15vw,14px);font-weight:800!important;border:1px solid transparent!important;
+ text-align:center}
+body #content .zavi-reference-quick .zrq-sale{background:#dbfaef!important;color:#067554!important;border-color:#8be0c6!important}
+body #content .zavi-reference-quick .zrq-buy{background:#e2f1ff!important;color:#1265ba!important;border-color:#a8d2ff!important}
+body #content .zavi-reference-quick .zrq-product{background:#f2e8ff!important;color:#7741c2!important;border-color:#d4b5f9!important}
+body #content .zavi-reference-quick .zrq-stock{background:#fff0dc!important;color:#955107!important;border-color:#f5c989!important}
+html:not([data-zavi-theme="light"]) body #content .zavi-reference-quick .zrq-sale{background:#103b39!important;color:#57e6c0!important;border-color:#12806e!important}
+html:not([data-zavi-theme="light"]) body #content .zavi-reference-quick .zrq-buy{background:#102b4e!important;color:#83c0ff!important;border-color:#235cad!important}
+html:not([data-zavi-theme="light"]) body #content .zavi-reference-quick .zrq-product{background:#322452!important;color:#c7a0ff!important;border-color:#7950ba!important}
+html:not([data-zavi-theme="light"]) body #content .zavi-reference-quick .zrq-stock{background:#422c19!important;color:#ffb56b!important;border-color:#ad5b28!important}
+/* Never apply these decorative card styles to printing, security gate or modal overlays. */
+@media(max-width:900px){
+ body #content{padding:12px!important}
+ body #content .welcome{padding:17px!important;min-height:114px}
+ body #content .stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}
+ body #content .zavi-reference-quick{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+ body #content .layout-2{grid-template-columns:minmax(0,1fr)!important}
+ body #side.sidebar{max-width:min(90vw,310px)}
+}
+@media(max-width:380px){
+ body #content .stat-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important}
+ body #content .zavi-reference-quick .btn{font-size:11.5px;min-height:46px}
+}
+@media(prefers-reduced-motion:reduce){body #side .nav-btn{transition:none!important}}
+@media print{body #content .zavi-reference-quick{display:none!important}
+ body #content .welcome::after{display:none!important}}
+
+
+/* V65.58: clear screen-level redesign; not just token substitutions */
+html body .app{background:var(--zr-bg)!important}
+html body #side.sidebar{width:244px!important;padding:17px 12px!important;background:var(--zr-side)!important}
+html body #side .brand{margin:0 0 18px!important;padding:5px 10px 14px!important;
+ border-bottom:1px solid var(--zr-line)!important}
+html body #side .brand-logo{border-radius:12px!important;background:linear-gradient(145deg,#0568dc,#02bbeb)!important}
+html body #side .brand-name{font-weight:900!important;font-size:21px!important;letter-spacing:.01em}
+html body #side .nav-btn{margin-bottom:4px!important;font-size:13px!important;
+ display:flex!important;align-items:center;gap:12px;padding:11px 13px!important}
+html body #side .nav-btn svg{color:var(--zr-blue)!important}
+html body .main{margin-right:244px!important;width:calc(100% - 244px)!important}
+html body .topbar{min-height:75px!important;padding-inline:22px!important}
+html body #content{padding:20px!important}
+html body #content>.welcome{padding:22px 27px!important;min-height:155px!important;
+ display:flex!important;align-items:center;justify-content:space-between;
+ border:1px solid var(--zr-line)!important;box-shadow:none!important;
+ background:linear-gradient(100deg,transparent 0%,rgba(49,159,247,.07) 57%,rgba(20,115,232,.13) 100%),
+ repeating-linear-gradient(168deg,transparent,transparent 13px,rgba(24,135,238,.016) 14px),
+ var(--zr-surface)!important;position:relative}
+html body #content>.welcome::before{content:"ZAVI ONE";font-weight:900;
+ font-size:clamp(21px,3vw,39px);position:absolute;inset-inline-start:22px;
+ bottom:28px;letter-spacing:0.025em;color:var(--zr-blue);pointer-events:none;opacity:.7}
+html body #content>.welcome::after{z-index:0!important;inset:auto 0 0 auto!important;
+ width:50%!important;height:82%!important;
+ background:linear-gradient(145deg,rgba(51,168,255,.23),rgba(24,72,132,.08))!important;
+ clip-path:polygon(0 100%,0 78%,12% 52%,26% 64%,40% 12%,51% 54%,63% 40%,77% 77%,88% 47%,100% 73%,100% 100%)!important;
+ opacity:.75!important}
+html body #content>.welcome>div,html body #content>.welcome>button{position:relative;z-index:1}
+html body #content>.welcome h2{font-size:clamp(20px,2vw,28px)!important;max-width:640px}
+html body #content>.welcome .eyebrow{letter-spacing:.05em;font-size:12px}
+html body #content>.stat-grid{gap:11px!important;margin-block:17px 18px!important}
+html body #content>.stat-grid .stat{padding:13px 15px!important;
+ min-height:132px!important;border:1px solid var(--zr-line)!important;
+ background:var(--zr-surface)!important;border-radius:13px!important;
+ box-shadow:var(--zr-shadow)!important;overflow:hidden}
+html body #content>.stat-grid .stat:nth-child(5n + 1){border-top:3px solid #258afe!important}
+html body #content>.stat-grid .stat:nth-child(5n + 2){border-top:3px solid #0cbf94!important}
+html body #content>.stat-grid .stat:nth-child(5n + 3){border-top:3px solid #ffa347!important}
+html body #content>.stat-grid .stat:nth-child(5n + 4){border-top:3px solid #ae70ed!important}
+html body #content>.stat-grid .stat:nth-child(5n + 5){border-top:3px solid #ec6eab!important}
+html body #content>.stat-grid .stat-label{font-size:12px!important;
+ font-weight:800!important;color:var(--zr-muted)!important;margin-block:9px 2px!important}
+html body #content>.stat-grid .stat-value{font-size:clamp(19px,1.8vw,27px)!important;
+ line-height:1.5!important;font-weight:900!important;color:var(--zr-txt)!important}
+html body #content>.stat-grid .stat-icon{width:39px!important;height:39px!important;
+ border-radius:12px!important}
+html body #content>.layout-2{grid-template-columns:minmax(0,1.48fr) minmax(0,1fr)!important;
+ gap:13px!important;margin-bottom:15px!important}
+html body #content .panel-head{padding:15px 17px!important}
+html body #content .panel-body{padding:16px!important}
+html body #content .card{border-radius:13px!important}
+html body #content .transaction-table th{background:var(--zr-soft)!important}
+html body #content .transaction-table td{padding:11px!important}
+html body #content .zavi-reference-quick{
+ margin:14px 0!important;grid-template-columns:repeat(4,minmax(0,1fr))}
+html body #content .zavi-reference-quick button{min-height:57px!important;
+ font-size:13px!important;line-height:1.3!important;border-radius:12px!important}
+html body .zavi-ref-top-tools{display:flex;align-items:center;gap:6px;
+ padding:5px;border:1px solid var(--zr-line);background:var(--zr-soft);
+ border-radius:12px;flex:0 0 auto}
+html body .zavi-ref-top-tools button{border:0!important;border-radius:8px!important;
+ background:transparent!important;color:var(--zr-muted)!important;
+ min-height:31px!important;min-width:39px!important;padding:4px 9px!important;font-size:15px!important}
+html[data-zavi-theme="light"] body .zavi-ref-top-tools button[data-zavi-theme-choice="light"],
+html[data-zavi-theme="dark"] body .zavi-ref-top-tools button[data-zavi-theme-choice="dark"]{
+ background:var(--zr-surface)!important;color:var(--zr-blue)!important;
+ box-shadow:0 1px 7px rgba(26,87,150,.15)!important}
+html body #content .zavi-ref-mode-note{color:var(--zr-muted)!important;
+ text-align:end;font-size:11px;padding:2px 6px;margin-bottom:4px}
+@media(max-width:900px){
+ html body .main{margin-right:0!important;width:100%!important}
+ html body #side.sidebar{width:min(85vw,310px)!important}
+ html body #content{padding:11px!important}
+ html body #content>.welcome{min-height:118px!important;padding:16px!important}
+ html body #content>.welcome::before{font-size:15px;inset-inline-start:12px;bottom:12px}
+ html body #content>.welcome h2{font-size:18px!important}
+ html body #content>.welcome p{font-size:12px!important}
+ html body #content>.stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+ html body #content>.stat-grid .stat{min-height:104px!important;padding:11px!important}
+ html body #content>.stat-grid .stat-label{font-size:11px!important}
+ html body #content>.stat-grid .stat-value{font-size:18px!important}
+ html body #content>.layout-2{grid-template-columns:minmax(0,1fr)!important}
+ html body #content .zavi-reference-quick{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+ html body #content .zavi-reference-quick button{min-height:54px!important}
+ html body .zavi-ref-top-tools{gap:2px;padding:2px}
+ html body .zavi-ref-top-tools button{min-width:32px!important;min-height:29px!important}
+}

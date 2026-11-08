@@ -1,0 +1,60 @@
+/* ZAVI ONE V63.8 — high-legibility palette and motion, layout-only.
+   Scoped to theme, preserves product data and transactional behavior. */
+:root{--z638-timing:cubic-bezier(.2,.8,.2,1)}
+html[data-zavi-theme="light"]{color-scheme:light;--z638-ink:#172b45;--z638-muted:#445c75;--z638-surface:#fff;--z638-line:#b9cfe1}
+html[data-zavi-theme="dark"]{color-scheme:dark;--z638-ink:#edf6ff;--z638-muted:#c3d5e6;--z638-surface:#132942;--z638-line:#426079}
+html[data-zavi-theme="light"] :is(.main,#content,.card,.settings-card,.record-card,.modal,.modal-card){color:var(--z638-ink)!important}
+html[data-zavi-theme="dark"] :is(.main,#content,.card,.settings-card,.record-card,.modal,.modal-card){color:var(--z638-ink)!important}
+html[data-zavi-theme="light"] :is(.card,.settings-card,.record-card,.modal,.modal-card){background-color:#fff!important;border-color:#cfdeeb!important}
+html[data-zavi-theme="dark"] :is(.card,.settings-card,.record-card,.modal,.modal-card){background-color:#122940!important;border-color:#355776!important}
+html[data-zavi-theme="light"] :is(.card,.settings-card,.record-card,.modal,.modal-card) :is(h1,h2,h3,h4,strong,b):not(.btn):not(.pill){color:#15314d}
+html[data-zavi-theme="dark"] :is(.card,.settings-card,.record-card,.modal,.modal-card) :is(h1,h2,h3,h4,strong,b):not(.btn):not(.pill){color:#f0f8ff}
+html[data-zavi-theme="light"] :is(.muted,.tiny-note,.field-hint,.stat-label,.stat-foot,.topbar-sub,.page-head p,.rec-detail){color:#52687c!important;opacity:1!important}
+html[data-zavi-theme="dark"] :is(.muted,.tiny-note,.field-hint,.stat-label,.stat-foot,.topbar-sub,.page-head p,.rec-detail){color:#c2d5e7!important;opacity:1!important}
+html[data-zavi-theme="light"] :is(.card,.settings-card,.record-card,.modal) :is(input:not([type="checkbox"]):not([type="radio"]),textarea,select){color:#172e48!important;background-color:#fff!important;border-color:#98b5ce!important;-webkit-text-fill-color:#172e48}
+html[data-zavi-theme="dark"] :is(.card,.settings-card,.record-card,.modal) :is(input:not([type="checkbox"]):not([type="radio"]),textarea,select){color:#f0f8ff!important;background-color:#183551!important;border-color:#6c8aab!important;-webkit-text-fill-color:#f0f8ff}
+html[data-zavi-theme="dark"] :is(.card,.settings-card,.record-card,.modal) :is(input,textarea)::placeholder{color:#bbcede!important;opacity:1}
+html[data-zavi-theme="light"] :is(.card,.settings-card,.record-card,.modal) :is(input,textarea)::placeholder{color:#667e91!important;opacity:1}
+html[data-zavi-theme="light"] .transaction-table th{color:#345571!important;background:#edf5fc!important}
+html[data-zavi-theme="dark"] .transaction-table th{color:#e8f3ff!important;background:#1d405e!important}
+html[data-zavi-theme="light"] .transaction-table td{color:#19304a!important;border-color:#d9e5ef!important}
+html[data-zavi-theme="dark"] .transaction-table td{color:#f3f8ff!important;border-color:#385670!important}
+html[data-zavi-theme="light"] :is(.nav-btn,.sidebar-footer,.section-nav,.brand-sub){color:#244768!important}
+html[data-zavi-theme="light"] .sidebar :is(.brand,.brand-name){color:#11395c!important}
+html[data-zavi-theme="light"] .sidebar .nav-btn.active{color:#fff!important}
+html[data-zavi-theme="dark"] :is(.nav-btn,.sidebar-footer,.section-nav,.brand-sub){color:#d2e5f5!important}
+html[data-zavi-theme="light"] .searchbox{background:#fff!important;border-color:#b4cde1!important}
+html[data-zavi-theme="dark"] .searchbox{background:#17344f!important;border-color:#6684a2!important}
+html[data-zavi-theme="light"] .topbar-title{color:#163657!important}
+html[data-zavi-theme="dark"] .topbar-title{color:#ebf6ff!important}
+html[data-zavi-theme="dark"] :is(.pill.blue,.pill.green,.pill.red,.pill.amber,.badge){filter:brightness(1.11)}
+html[data-zavi-theme="light"] .zavi-product-entry :is(b,strong){color:#143250!important}
+html[data-zavi-theme="dark"] .zavi-product-entry :is(b,strong){color:#eff9ff!important}
+html[data-zavi-theme="light"] .stat-value{color:#112b48!important}
+html[data-zavi-theme="dark"] .stat-value{color:#f5fbff!important}
+/* Scanner: trustworthy output, never reuses user input as markup. */
+.z638-warehouse-scanner{padding:20px 22px;margin:0 0 18px;border:1px solid var(--z638-line)!important;animation:z638-slide .55s var(--z638-timing) both}
+.z638-scanner-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap}
+.z638-scanner-head h3{font-size:16px;margin:0 0 2px}.z638-scanner-head p{font-size:12px;color:var(--z638-muted);margin:0 0 13px}
+.z638-warehouse-scanner .zavi-barcode-actions input{flex:1;min-width:170px;min-height:45px;border:1px solid var(--z638-line)!important;border-radius:12px;padding:8px 13px}
+.z638-warehouse-result{margin-top:12px;padding:14px 15px;background:color-mix(in srgb,var(--z638-surface) 87%,#4eb7ff 13%);border:1px solid var(--z638-line);border-radius:13px;line-height:1.9;min-height:54px;color:var(--z638-ink);font-size:13px}
+.z638-warehouse-result>strong{font-size:16px;display:block;margin-bottom:7px;color:var(--z638-ink)!important}
+.z638-warehouse-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:10px}
+.z638-warehouse-metrics span{padding:9px 11px;border:1px solid var(--z638-line);border-radius:10px;min-width:0;background:var(--z638-surface)}
+.z638-warehouse-metrics small{display:block;font-size:10px;color:var(--z638-muted)}
+.z638-warehouse-metrics b{display:block;font-size:13px;overflow-wrap:anywhere;color:var(--z638-ink)!important}
+/* Industry-aware quick access. Does not claim unavailable modules exist. */
+.z638-business-ribbon{display:flex;gap:16px;align-items:center;flex-wrap:wrap;position:relative;overflow:hidden;padding:15px 18px;margin-bottom:19px;border-radius:19px;border:1px solid var(--z638-line);background:var(--z638-surface);color:var(--z638-ink);animation:z638-slide .5s var(--z638-timing) both}
+.z638-business-ribbon::after{content:"";position:absolute;inset:auto -20% -90px auto;width:230px;height:160px;pointer-events:none;border-radius:50%;background:radial-gradient(circle,#1eaac321,transparent 70%)}
+.z638-industry-icon{display:grid;place-items:center;width:56px;height:56px;border-radius:17px;font-size:28px;background:linear-gradient(135deg,#dcefff,#d6faf6);box-shadow:0 5px 13px #07193818;flex:none}
+.z638-business-ribbon>div:nth-child(2){flex:1;min-width:190px}.z638-business-ribbon small{display:block;color:var(--z638-muted);font-size:10px}.z638-business-ribbon strong{display:block;font-size:17px;color:var(--z638-ink);line-height:1.6}.z638-business-ribbon p{margin:0;color:var(--z638-muted);font-size:11px}
+.z638-business-buttons{display:flex;align-items:center;flex-wrap:wrap;gap:7px;position:relative;z-index:1}
+/* Delightful but restrained motion; never animate entire tables on each keystroke. */
+.card,.stat,.record-card{transition:box-shadow .27s var(--z638-timing),border-color .27s var(--z638-timing),transform .27s var(--z638-timing)!important}
+#content>.card,#content>.stat-grid{animation:z638-slide .48s var(--z638-timing) both}
+.zavi-product-entry{transition:transform .25s var(--z638-timing)}.transaction-table tr:hover .zavi-product-entry{transform:translateX(-2px)}
+@keyframes z638-slide{from{opacity:.7;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media(max-width:650px){.z638-warehouse-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.z638-warehouse-scanner{padding:14px}.z638-business-ribbon{padding:12px;gap:11px}.z638-industry-icon{width:46px;height:46px;font-size:23px}}
+@media(prefers-reduced-motion:reduce){.z638-warehouse-scanner,.z638-business-ribbon,#content>.card,#content>.stat-grid{animation:none!important}}
+html[data-z637-no-motion=true] .z638-business-ribbon,html[data-z637-no-motion=true] .z638-warehouse-scanner{animation:none!important}
+@media print{.z638-warehouse-scanner,.z638-business-ribbon{display:none!important}}

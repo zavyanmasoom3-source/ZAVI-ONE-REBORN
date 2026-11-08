@@ -1,0 +1,23 @@
+/* V64.3: restrained premium UI; no forced animations for cashiers or reduced-motion users. */
+:root{--z643-ink:#142a46;--z643-muted:#50627a;--z643-panel:#ffffff;--z643-line:rgba(48,92,135,.18)}
+:root[data-zavi-theme="dark"]{--z643-ink:#f1f7ff;--z643-muted:#b3c6e0;--z643-panel:#102641;--z643-line:rgba(154,200,251,.22)}
+.z643-workflow{position:relative;overflow:hidden;border:1px solid var(--z643-line);background:var(--z643-panel);color:var(--z643-ink);padding:clamp(16px,2.5vw,26px);margin-bottom:18px;border-radius:20px;box-shadow:0 16px 44px rgba(2,20,43,.10)}
+.z643-workflow:before{content:"";position:absolute;inset:0 0 auto;height:3px;background:linear-gradient(90deg,#17baa8,#48a5fa,#6c6fe8)}
+.z643-workflow-title{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.z643-workflow-title h3{color:var(--z643-ink)!important;margin:0;font-size:clamp(18px,2vw,23px);line-height:1.6}
+.z643-workflow p,.z643-workflow small{color:var(--z643-muted)!important;line-height:1.95}.z643-workflow p{margin:7px 0 16px}
+.z643-workflow-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}.z643-workflow .z643-step{font:inherit;text-align:right;min-height:65px;border:1px solid var(--z643-line);background:color-mix(in srgb,var(--z643-panel) 90%,#5bb9ec 10%);color:var(--z643-ink);border-radius:13px;padding:13px 15px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:2px;transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease;cursor:pointer}
+.z643-workflow .z643-step:hover,.z643-workflow .z643-step:focus-visible{transform:translateY(-2px);border-color:#2fa5de;box-shadow:0 8px 22px rgba(10,91,168,.15)}
+.z643-workflow .z643-step:focus-visible{outline:3px solid #41baf2;outline-offset:2px}.z643-workflow .z643-step[disabled]{opacity:.65;cursor:not-allowed;box-shadow:none;transform:none}
+.z643-workflow .z643-step b{color:inherit}.z643-workflow .z643-step small{font-size:11px}.z643-workflow .z643-workflow-note{padding:10px 13px;margin-top:15px;background:rgba(39,151,198,.09);border-inline-start:3px solid #37c4dc;border-radius:9px}
+/* Explicitly maintain contrast in dense product and team forms. */
+:root[data-zavi-theme="dark"] #dialogForm :is(input,select,textarea),:root[data-zavi-theme="dark"] .transaction-table :is(td,th),:root[data-zavi-theme="dark"] .z643-workflow :is(button,b,strong){color:#f1f7ff}
+:root[data-zavi-theme="light"] #dialogForm :is(input,select,textarea),:root[data-zavi-theme="light"] .transaction-table :is(td,th){color:#142a46}
+#dialogForm .field-hint{line-height:1.85;opacity:1}#dialogForm :is(input,select,textarea):focus-visible{outline:2px solid #28a4e0;outline-offset:1px}
+@media(max-width:560px){.z643-workflow{padding:15px;border-radius:15px}.z643-workflow-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.z643-workflow .z643-step{min-width:0;min-height:68px;padding:10px}}
+@media(prefers-reduced-motion:reduce){.z643-workflow *{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+:root[data-z637-no-motion="true"] .z643-workflow *{animation:none!important;transition:none!important}
+.z643-preflight-grid{display:grid;gap:9px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));margin-top:14px}
+.z643-preflight-check{display:grid;grid-template-columns:24px 1fr;column-gap:10px;align-items:center;border-radius:12px;border:1px solid var(--z643-line);padding:11px 12px;background:color-mix(in srgb,var(--z643-panel) 93%,#64a7e1 7%)}
+.z643-preflight-check>b{border-radius:50%;width:22px;height:22px;text-align:center;background:rgba(32,138,182,.16);color:inherit;font-size:13px;line-height:22px}
+.z643-preflight-check>span{color:var(--z643-ink);font-size:12px;line-height:1.8;font-weight:650}
+.z643-preflight-check>small{grid-column:2;font-size:11px;line-height:1.6}
