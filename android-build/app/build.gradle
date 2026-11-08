@@ -29,6 +29,19 @@ def qaSigningEnv = [
 def qaSigning = qaSigningEnv.collectEntries { field, envName ->
     [(field): providers.environmentVariable(envName).getOrElse('')]
 }
+// Explicitly isolated, non-updatable test builds. Never permitted for Release or QA.
+def isolatedTestEnv = [
+    storeFile: 'ZAVI_ISOLATED_TEST_STORE_FILE',
+    storePassword: 'ZAVI_ISOLATED_TEST_STORE_PASSWORD',
+    keyAlias: 'ZAVI_ISOLATED_TEST_KEY_ALIAS',
+    keyPassword: 'ZAVI_ISOLATED_TEST_KEY_PASSWORD'
+]
+def isolatedSigning = isolatedTestEnv.collectEntries { field, name ->
+    [(field): providers.environmentVariable(name).getOrElse('')]
+}
+boolean isolatedSigningPresent = isolatedSigning.values().every { it }
+boolean isolatedTestFlag = providers.gradleProperty('zaviIsolatedTestOnly')
+    .map { it == 'true' }.getOrElse(false)
 boolean qaSigningPresent = qaSigning.values().every { it }
 if (!qaSigningPresent && qaSigning.values().any { it }) {
     throw new GradleException('Incomplete stable QA signing credentials; all four variables are required.')
@@ -47,6 +60,18 @@ android {
         resValue 'string', 'app_name', admin ? 'ZAVI ONE ADMIN' : 'ZAVI ONE'
     }
     signingConfigs {
+        isolatedTestOnly {
+            enableV1Signing true
+            enableV2Signing true
+            enableV3Signing true
+            enableV4Signing false
+            if (isolatedSigningPresent) {
+                storeFile file(isolatedSigning.storeFile)
+                storePassword isolatedSigning.storePassword
+                keyAlias isolatedSigning.keyAlias
+                keyPassword isolatedSigning.keyPassword
+            }
+        }
         zaviQa {
             enableV1Signing true
             enableV2Signing true
@@ -85,6 +110,18 @@ android {
                 signingConfig signingConfigs.zaviQa
             }
         }
+        isolatedTestOnly {
+            // Isolated from both production and stable QA signing identities.
+            initWith debug
+            applicationIdSuffix '.testnotforrelease'
+            versionNameSuffix '-TEST-NOT-FOR-RELEASE'
+            debuggable true
+            resValue 'string', 'app_name',
+                admin ? 'ZAVI ADMIN TEST-NOT-FOR-RELEASE' : 'ZAVI ONE TEST-NOT-FOR-RELEASE'
+            if (isolatedSigningPresent) {
+                signingConfig signingConfigs.isolatedTestOnly
+            }
+        }
         release {
             minifyEnabled true
             shrinkResources true
@@ -106,6 +143,15 @@ dependencies { implementation 'androidx.webkit:webkit:1.13.0'; implementation 'a
 // Fail closed for ALL installable QA and Release APKs; an unsigned R8 QA
 // compilation is intentionally not installable and is never distributed.
 gradle.taskGraph.whenReady { graph ->
+    if (graph.allTasks.any { it.project == project &&
+            it.name.toLowerCase() ==~ /.*(assemble|package|install|bundle).*isolatedtestonly.*/ }) {
+        if (!isolatedTestFlag || System.getenv('CI') != 'true') {
+            throw new GradleException('TEST-NOT-FOR-RELEASE requires isolated CI flag; production signing must remain unchanged.')
+        }
+        if (!isolatedSigningPresent || !file(isolatedSigning.storeFile).isFile()) {
+            throw new GradleException('TEST-NOT-FOR-RELEASE requires its OWN ephemeral key; no stable QA/release fallback allowed.')
+        }
+    }
     if (graph.allTasks.any { it.project == project &&
             it.name.toLowerCase() ==~ /.*(assemble|package|install|bundle).*debug.*/ }) {
         if (!qaSigningPresent) {
