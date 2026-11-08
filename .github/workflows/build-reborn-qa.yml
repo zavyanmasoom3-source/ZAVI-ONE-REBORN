@@ -119,8 +119,10 @@ jobs:
           badging=$("$AAPT" dump badging "$apk")
           printf '%s\\n' "$badging"
           if [[ "${{ matrix.app }}" == "one" ]]; then
+            printf '%s\\n' "$badging" | grep -F "package: name='com.zavione.one.rebornqa'"
             printf '%s\\n' "$badging" | grep -F "versionName='66.78-reborn.qa.${{ github.run_number }}'"
           else
+            printf '%s\\n' "$badging" | grep -F "package: name='com.zavione.one.admin.rebornqa'"
             printf '%s\\n' "$badging" | grep -F "versionName='1.4.69-reborn.qa.${{ github.run_number }}'"
           fi
           mkdir -p final-apks
