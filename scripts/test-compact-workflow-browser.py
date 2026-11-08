@@ -79,6 +79,34 @@ with Session() as browser:
       (out/(route+'.png')).write_bytes(browser.screenshot())
       print('PASS:',route,'live account/report controls remain connected across all three tabs')
 
+    browser.route('products')
+    browser.until("!!document.querySelector('[data-zavi-flow=\"products\"]')",
+                  'inventory product warehouse movement tabs mounted')
+    warehouse=browser.eval("""(()=>{
+       const root=document.querySelector('[data-zavi-flow="products"]');
+       const tabs=[...root.querySelectorAll('[role="tab"]')];
+       const panels=[...root.querySelectorAll('[role="tabpanel"]')];
+       const real=panels[1].querySelector('.zv-wh-manager');
+       const first=!!panels[0].querySelector('section.card .table-bar')&&
+           !!panels[0].querySelector('.z638-warehouse-scanner');
+       tabs[1].click();
+       const second=!panels[1].hidden && panels[0].hidden;
+       tabs[2].click();
+       const third=!panels[2].hidden && panels[1].hidden;
+       const source=real?.querySelector('.zv-wh-history');
+       const projected=panels[2].querySelector('.zavi-history-rows');
+       return {keys:tabs.map(x=>x.dataset.zaviFlowLabel),
+           first,second,third,manager:!!real,
+           sameOriginalManager:real?.id==='zvWarehouseManager',
+           formPreserved:!!real?.querySelector('form[data-wh-add]'),
+           historySource:!!source,projection:!!projected&&!!projected.textContent.trim(),
+           projectionReadOnly:!projected?.querySelector('form,input,button')};
+    })()""")
+    assert warehouse['keys']==['products','warehouses','movements'],warehouse
+    assert all(warehouse[k] for k in ['first','second','third','manager',
+       'formPreserved','historySource','projection','projectionReadOnly']),warehouse
+    (out/'inventory-warehouses-stock-history.png').write_bytes(browser.screenshot())
+    print('PASS: three inventory tabs preserve the live warehouse editor and read-only actual server history')
     browser.route('purchases')
     purchaseActions=browser.eval("""(()=>{
       const container=document.querySelector('[data-module="purchases"]');
