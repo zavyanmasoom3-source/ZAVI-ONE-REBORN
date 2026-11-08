@@ -236,6 +236,7 @@
       field.focus({preventScroll:true});
     });
     document.addEventListener('zavi:language-change',update);
+    document.addEventListener('zavi:language-changed',update);
     document.addEventListener('DOMContentLoaded',update);
   }
   return Object.freeze({
