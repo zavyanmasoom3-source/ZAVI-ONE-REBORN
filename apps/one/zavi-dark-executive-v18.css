@@ -1,0 +1,38 @@
+/* ZAVI ONE V18: Dark Executive visual refresh. Pure presentation; no modification to ledger or authorizations. */
+:root{--bg:#050e20;--white:#0d2245;--ink:#edf7ff;--muted:#a9c5e5;--line:#234a74;--primary:#087be5;--primary2:#04c6d7;--teal:#18ddcb;--shadow:0 12px 42px rgba(0,3,18,.30)}
+html{color-scheme:dark;font-synthesis:none}
+body{background:radial-gradient(ellipse at 70% -10%,#0b397555,transparent 60%),linear-gradient(160deg,#040a19,#071d3b 72%,#051226) fixed!important;color:#e9f5ff!important}
+.sidebar{background:linear-gradient(180deg,#06132a,#081b34 64%,#040b1c)!important;border-inline-start:1px solid #17365d!important;box-shadow:-4px 0 25px #0005!important}
+.nav-btn,.bottom-btn{border-radius:13px!important;transition:background .14s,transform .14s}
+.nav-btn:hover,.nav-btn.active{background:linear-gradient(95deg,#0752ab,#087cc8)!important;box-shadow:0 4px 18px #0796ec30}
+.topbar,.header,.app-header{background:#081c39ef!important;backdrop-filter:blur(14px);border-bottom:1px solid #245075!important}
+.card,.stat,.panel,.welcome,.report-stat,.form-card,.settings-card{border:1px solid #254978!important;background:linear-gradient(136deg,#10274d,#081a35)!important;color:#eaf6ff!important;box-shadow:0 10px 35px #0006!important;border-radius:18px!important}
+.stat-label,.stat-foot,.muted,.tiny-note,small{color:#abc9e5}
+.stat-value,.card h3,.card strong{color:#f1faff}
+input,select,textarea{background:#0b2446;color:#f5fbff;border-color:#3a6694;border-radius:10px}
+input::placeholder,textarea::placeholder{color:#a4b3c9}
+.btn.primary,.btn.blue{background:linear-gradient(110deg,#0c5be0,#05b5d5)!important;border-color:#19bde5!important;color:white!important;box-shadow:0 4px 15px #057cb844}
+.btn:hover:not(:disabled){filter:brightness(1.1)}
+:where(.table-wrap,.transaction-table) tr{border-color:#284b76}th{color:#bce6ff}
+:focus-visible{outline:2px solid #20d7e9!important;outline-offset:3px}
+/* Finance and stock intelligence, read-only views */
+.zv18-insight{border:1px solid #23638e;background:linear-gradient(125deg,#0c2b52,#081831);box-shadow:0 12px 35px #0004;border-radius:20px;margin:16px 0 20px;padding:18px;display:block}
+.zv18-title{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:9px;margin:0 0 14px}
+.zv18-title h3{margin:0;color:#eefaff!important;font-size:17px}
+.zv18-pill{color:#9af1ff;border:1px solid #197ba8;border-radius:40px;background:#0b3855;padding:4px 10px;font-size:11px}
+.zv18-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(142px,1fr));gap:10px}
+.zv18-kpi{display:flex;min-height:90px;flex-direction:column;gap:6px;border:1px solid #23527d;background:linear-gradient(135deg,#0f2c58,#0a2145);border-radius:15px;padding:12px}
+.zv18-kpi>span{font-size:12px;color:#afcbe8}.zv18-kpi strong{font-size:21px;color:#eff9ff!important}.zv18-kpi small{font-size:10px;color:#9bbfdc}
+.zv18-highlight{border-color:#18b8d5;background:linear-gradient(145deg,#05536b,#102850)}
+.zv18-warn{border-color:#bf8550}.zv18-note{margin:12px 0 0;font-size:11px;color:#adc7df}
+.zv18-stock-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:9px;margin-top:14px}
+.zv18-stock-row{display:flex;justify-content:space-between;gap:12px;align-items:center;border:1px solid #2a577f;padding:9px;border-radius:12px;font-size:11px}
+.zv18-stock-row strong{max-width:60%;overflow-wrap:anywhere;color:white}.zv18-stock-row span{color:#b4ceea}
+/* English alignment without changing accounting behavior */
+html[dir=ltr] .sidebar{right:auto!important;left:0!important;border-left:0;border-right:1px solid #17365d!important}
+html[dir=ltr] .app .main,html[dir=ltr] .main-content,html[dir=ltr] .workspace{margin-inline-start:0}
+html[dir=ltr] .nav-btn{text-align:left}html[dir=ltr] table{text-align:left}
+@media(max-width:780px){.zv18-insight{padding:12px}.zv18-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.zv18-kpi strong{font-size:17px}.zv18-stock-list{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){.nav-btn,.bottom-btn,.btn{transition:none!important}}
+@media(min-width:861px){html[dir=ltr] .main{margin-right:0!important;margin-left:255px!important}}
+@media(max-width:860px){html[dir=ltr] .main{margin:0!important;width:100%!important}}

@@ -1,0 +1,18 @@
+/* V27: accessible and responsive dual calendar chart (existing branding preserved). */
+html[data-zavi-lang="en"] .z27-chart-scroll,html[data-zavi-lang="en"] .z27-chart-scroll .bar-chart{direction:ltr!important}
+html[data-zavi-lang="fa-AF"] .z27-chart-scroll,html[data-zavi-lang="ps-AF"] .z27-chart-scroll,
+html[data-zavi-lang="fa-AF"] .z27-chart-scroll .bar-chart,html[data-zavi-lang="ps-AF"] .z27-chart-scroll .bar-chart{direction:rtl!important}
+.z27-chart-header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.z27-chart-filters{display:flex;flex-wrap:wrap;align-items:center;gap:10px;max-width:100%}
+.z27-chart-filters label{display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
+.z27-chart-filters select{max-width:160px;min-width:78px;min-height:39px;padding:5px 9px;font-size:13px;cursor:pointer}
+.z27-chart-scroll{max-width:100%;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin;scrollbar-color:#3e88b1 transparent}
+.z27-chart-scroll .bar-chart{min-width:948px!important;max-width:none!important;display:flex!important;justify-content:space-around!important;align-items:stretch!important;gap:5px!important;height:263px!important;padding:12px 6px 0!important;box-sizing:border-box}
+.z27-chart-scroll .bar-col{flex:1 0 74px!important;min-width:74px!important;max-width:none!important;gap:5px!important;align-items:center!important;overflow:hidden!important;box-sizing:border-box}
+.z27-chart-scroll .bar-col .label{display:block;width:100%;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;text-align:center!important;font-size:11px!important;line-height:1.35!important;min-height:17px;font-weight:750}
+.z27-chart-scroll .bar-col .solar-gregorian-label{display:block!important;max-width:100%;width:100%;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;text-align:center!important;color:#b0c7e7!important;font-size:10px!important;line-height:1.4!important;direction:auto;unicode-bidi:isolate}
+.z27-chart-scroll .bar-col .tip{font-variant-numeric:tabular-nums}
+.z27-chart-scroll .bar-col:focus-visible{outline:2px solid #12cfed;outline-offset:-2px;border-radius:7px}
+@media(max-width:740px){.z27-chart-header{align-items:flex-start}.z27-chart-filters{width:100%}.z27-chart-scroll .bar-chart{min-width:948px!important}}
+/* Keep the original sign-in language choice; no floating duplicate. */
+#zawiPrivateGate .zavi-auth-language{margin-bottom:15px}

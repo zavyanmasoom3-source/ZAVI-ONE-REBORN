@@ -1,0 +1,20 @@
+/* Management console V63.8: readable forms and business profile transitions. */
+html body{font-family:'Estedad','Vazirmatn','Noto Sans Arabic',Tahoma,sans-serif!important;text-rendering:optimizeLegibility}
+body :is(input,textarea,select){min-height:40px;font:inherit;color:#182f48;background:#fff;border:1px solid #9fbbd3;border-radius:9px}
+body :is(input,textarea,select):focus-visible,body button:focus-visible{outline:3px solid #2db4ca;outline-offset:2px}
+body .card{border-radius:17px;box-shadow:0 7px 22px #0b325015;transition:box-shadow .28s,transform .28s}
+body .card:hover{box-shadow:0 11px 28px #08304b20}
+body .status{line-height:1.9;overflow-wrap:anywhere}
+html[data-zavi-theme=dark] body .card :is(input,textarea,select){background:#183551;color:#eff9ff;border-color:#7a9bb8}
+html[data-zavi-theme=dark] body .card :is(input,textarea)::placeholder{color:#bcd0e0}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+.z638-feature-note{grid-column:1/-1;background:#edf8ff;color:#234765;border:1px solid #b4d6eb;border-radius:12px;padding:12px 14px;font-size:12px;line-height:1.85}
+.z638-feature-recommended{border-color:#45acbd!important;box-shadow:inset 0 0 0 1px #7fd6df33}
+.z638-feature-recommended small{color:#0d777e;font-size:10px;margin-inline:6px;font-weight:700}
+html[data-zavi-theme=dark] .z638-feature-note{background:#173954;color:#e8f5ff;border-color:#578cac}
+html[data-zavi-theme=dark] .z638-feature-recommended small{color:#a5f0e9}
+
+#z638PharmacySection[hidden],#z638ServicesSection[hidden]{display:none!important}
+.z638-all-modules{display:flex;align-items:center;gap:9px;margin:14px 0;color:inherit;font-size:12px;line-height:1.8}
+.z638-all-modules input{min-height:unset;min-width:18px;width:18px;height:18px;accent-color:#0b88a2}

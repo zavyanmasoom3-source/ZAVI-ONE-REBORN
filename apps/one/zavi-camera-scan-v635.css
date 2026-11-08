@@ -1,0 +1,9 @@
+/* ZAVI ONE V63.5 camera scanner — real invoice integration */
+.zavi-barcode-actions{display:flex;align-items:stretch;gap:9px;flex-wrap:wrap}
+.zavi-barcode-actions #zaviBarcodeScan{flex:1 1 210px;min-width:0}
+.zavi-barcode-actions [data-zavi-camera-open]{min-height:48px;white-space:normal}
+.zavi-camera-panel{margin-top:10px;padding:10px;background:#0a2740;color:#f4fcff;border:1px solid #3bacc5;border-radius:12px;display:grid;gap:8px}
+.zavi-camera-panel video{display:block;max-height:250px;width:100%;object-fit:cover;background:#07121d;border-radius:8px;transform:scaleX(1)}
+.zavi-camera-panel button{justify-self:start}
+.zavi-camera-panel .field-hint{color:#e1f6fc!important;font-size:13px}
+@media(max-width:480px){.zavi-barcode-actions [data-zavi-camera-open]{width:100%}.zavi-camera-panel video{max-height:220px}}
