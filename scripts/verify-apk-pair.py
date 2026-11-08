@@ -52,12 +52,21 @@ def read_apk(apk, aapt, apksigner):
     if code <= 0:
         raise VerificationError('Android versionCode must be positive')
     output = command([apksigner, 'verify', '--verbose', '--print-certs', str(apk)])
-    for scheme in ('v1', 'v2', 'v3'):
+    # Android >= 24 no longer requires JAR v1. The default apksigner report
+    # may say v1=false even when a valid v1 signature exists.
+    for scheme in ('v2', 'v3'):
         if not re.search(r'(?m)^Verified using '+scheme+r' scheme(?: \([^\n]*?\))?: true\s*$', output):
             raise VerificationError(f'{apk.name}: {scheme} signature not verified')
+    legacy = command([apksigner, 'verify', '--min-sdk-version', '23',
+                      '--verbose', '--print-certs', str(apk)])
+    if not re.search(r'(?m)^Verified using v1 scheme(?: \([^\n]*?\))?: true\s*$', legacy):
+        raise VerificationError(f'{apk.name}: v1 signature failed API 23 verification')
     matches = re.findall(r'(?m)^Signer #(\d+) certificate SHA-256 digest:\s*([0-9a-fA-F: ]+)\s*$', output)
     if len(matches) != 1 or matches[0][0] != '1':
         raise VerificationError('Exactly one signed certificate is required (rotation not supported)')
+    legacy_matches = re.findall(r'(?m)^Signer #(\d+) certificate SHA-256 digest:\s*([0-9a-fA-F: ]+)\s*$', legacy)
+    if len(legacy_matches) != 1 or legacy_matches[0][0] != '1' or normalise_cert(legacy_matches[0][1]) != normalise_cert(matches[0][1]):
+        raise VerificationError('Signer identity changed across v1 and v2/v3 verification')
     return {'package': package, 'versionCode': code, 'certificateSHA256': normalise_cert(matches[0][1])}
 
 
