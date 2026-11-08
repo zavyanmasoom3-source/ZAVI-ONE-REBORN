@@ -1,0 +1,10 @@
+{
+  "title": "ZAVI Windows conservative responsiveness patch",
+  "mode": "one",
+  "generatedAt": "2026-10-24T10:17:30.185Z",
+  "applied": [
+    "Debounced search re-render by 140ms to avoid rebuilding large result tables on every keystroke."
+  ],
+  "safety": "Accounting logic, stored records, authentication, and cloud sync intervals were not changed.",
+  "note": "These changes target search typing and repeated DOM polling. They do not by themselves guarantee that every database or device bottleneck is resolved."
+}

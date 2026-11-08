@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="300" viewBox="0 0 680 300" fill="none" role="img" aria-label="نمودار نمادین رشد تجارت">
+<defs>
+  <linearGradient id="front" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#18cafa"/><stop offset=".42" stop-color="#0873ef"/><stop offset="1" stop-color="#04226f"/></linearGradient>
+  <linearGradient id="side" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#026bd4"/><stop offset="1" stop-color="#031b53"/></linearGradient>
+  <linearGradient id="glow" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#18bdf7"/><stop offset="1" stop-color="#60ffd0"/></linearGradient>
+  <filter id="g"><feGaussianBlur stdDeviation="9"/></filter>
+  <pattern id="win" width="22" height="23" patternUnits="userSpaceOnUse"><path d="M4 0v23M17 0v23M0 12h22" stroke="#82e4fc" stroke-opacity=".24" stroke-width="1"/></pattern>
+</defs>
+<path d="M0 248 91 194 182 209 296 170 401 222 507 180 680 250v50H0z" fill="#0a56bb" fill-opacity=".25"/>
+<path d="M55 258V114l66-36 57 26v154" fill="url(#side)"/><path d="m55 114 66-36v180H55z" fill="url(#front)"/><path d="m121 78 57 26v154h-57z" fill="#061d55"/><path d="M55 114l66-36 57 26" stroke="#3cbff9" stroke-width="3"/><path d="M55 114h123v144H55z" fill="url(#win)"/>
+<path d="M199 256V68l76-46 70 31v203" fill="url(#side)"/><path d="m199 68 76-46v234h-76z" fill="url(#front)"/><path d="m275 22 70 31v203h-70z" fill="#032569"/><path d="M199 68l76-46 70 31" stroke="#62dafa" stroke-width="4"/><path d="M199 68h146v188H199z" fill="url(#win)"/>
+<path d="M362 260V150l80-36 59 30v116" fill="url(#front)"/><path d="m442 114 59 30v116h-59z" fill="#04256c"/><path d="M362 150l80-36 59 30" stroke="#4bddf9" stroke-width="3"/><path d="M362 150h139v110H362z" fill="url(#win)"/>
+<path d="M15 241 92 189 163 207 248 125 325 156 415 76 480 110 593 25" stroke="#00fff0" stroke-opacity=".42" stroke-width="18" filter="url(#g)"/>
+<path d="M15 241 92 189 163 207 248 125 325 156 415 76 480 110 593 25" stroke="url(#glow)" stroke-width="8" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="m556 24 44-12-11 45" stroke="#6affd0" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M0 269 Q155 245 265 265t415-2v37H0" fill="#07bdf0" fill-opacity=".09"/>
+</svg>
