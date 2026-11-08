@@ -31,6 +31,8 @@ jobs:
         run: python3 scripts/check-migration-integrity.py
       - name: Verify APK identity and signing safety checks
         run: python3 scripts/test-apk-update-gate.py
+      - name: Verify secure keystore preflight rejects missing, changed, and malformed credentials
+        run: python3 scripts/test-prepare-ci-signing.py
       - name: Verify two consecutive APK certificates and monotonic versions (isolated vectors)
         run: python3 scripts/test-verify-apk-pair.py
       - name: Verify crash-safe cloud synchronization and full workspace acknowledgements
