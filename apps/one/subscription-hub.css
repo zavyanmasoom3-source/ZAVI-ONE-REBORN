@@ -1,0 +1,40 @@
+/* ZAVI ONE Subscription Hub - isolated visual layer */
+.zsh{max-width:1200px;margin:0 auto;color:#173153;direction:rtl;font-family:inherit}.zsh *{box-sizing:border-box}.zsh-hero{border-radius:26px;padding:32px 36px;color:white;background:linear-gradient(115deg,#0c2e65,#0869be 68%,#14bbcf);box-shadow:0 16px 34px #0b4e9530;margin-bottom:22px;position:relative;overflow:hidden}.zsh-hero:after{content:"";position:absolute;width:280px;height:280px;left:-80px;top:-140px;border:1px solid #ffffff35;border-radius:50%;pointer-events:none}.zsh-hero-top{display:flex;align-items:center;justify-content:space-between;gap:20px}.zsh-eyebrow{font-size:11px;letter-spacing:2px;opacity:.8}.zsh-hero h2{font-size:30px;margin:10px 0}.zsh-hero p{margin:0;color:#e1f5ff}.zsh-emblem{display:grid;place-items:center;background:#ffffff25;border:1px solid #ffffff44;width:72px;height:72px;border-radius:22px;font-size:35px}.zsh-state{display:inline-flex;align-items:center;gap:9px;background:#ffffff23;border:1px solid #ffffff55;border-radius:30px;margin-top:22px;padding:8px 15px;font-size:13px}.zsh-dot{width:9px;height:9px;background:#72f7c8;border-radius:50%}.zsh-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px}.zsh-card{min-width:0;border:1px solid #dfebf6;border-radius:22px;background:white;padding:27px;box-shadow:0 7px 28px #23466a0b}.zsh-caption{font-size:13px;color:#7790a8}.zsh-card h3{font-size:20px;margin:10px 0 18px;color:#193d69}.zsh-days{font-size:54px;font-weight:850;color:#0879b9;display:flex;align-items:baseline;gap:12px}.zsh-days small{font-size:13px;font-weight:500;color:#7990a5}.zsh-progress{height:9px;background:#e8f3fa;border-radius:20px;margin-top:17px;overflow:hidden}.zsh-progress span{display:block;height:100%;border-radius:20px;background:linear-gradient(90deg,#15bed0,#1477e7)}.zsh-progress-note,.zsh-hint{font-size:12px;color:#8293a6;margin:12px 0 0}.zsh-row{display:flex;justify-content:space-between;gap:12px;align-items:center;border-bottom:1px solid #eef2f7;padding:13px 0;font-size:14px}.zsh-row span{color:#768ba1}.zsh-row strong{font-weight:750;text-align:left}.zsh-note{font-size:12px;color:#58728b;line-height:1.9;margin-top:16px}.zsh-section-title{display:flex;gap:14px;align-items:center}.zsh-section-title h3{margin:0 0 5px;font-size:18px}.zsh-section-title p{margin:0;color:#8294a6;font-size:12px;line-height:1.8}.zsh-icon{display:grid;place-items:center;width:48px;height:48px;border-radius:14px;background:#e8f5ff;color:#137ec4;font-size:24px;flex-shrink:0}.zsh-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:25px}.zsh-btn{border:0;border-radius:12px;padding:13px 17px;cursor:pointer;text-decoration:none;font:inherit;font-size:13px;font-weight:750;display:inline-flex;justify-content:center;align-items:center}.zsh-btn-primary{color:white;background:linear-gradient(100deg,#1064df,#10b7c7)}.zsh-btn-light{background:#f0f7fd;color:#1464a3;border:1px solid #dceaf8}.zsh-btn:hover{filter:brightness(.96)}@media(max-width:720px){.zsh-hero{padding:25px 22px;border-radius:20px}.zsh-hero h2{font-size:24px}.zsh-emblem{width:55px;height:55px}.zsh-grid{grid-template-columns:1fr;gap:14px;margin-bottom:14px}.zsh-card{padding:21px;border-radius:18px}.zsh-days{font-size:44px}.zsh-actions .zsh-btn{flex:1 1 160px}}
+
+.zsh-plan-choices{display:flex;flex-wrap:wrap;gap:8px;margin-top:17px}.zsh-plan-choices span{display:inline-flex;align-items:center;gap:8px;border:1px solid #dcecf9;background:#f5faff;border-radius:12px;padding:9px 12px;color:#456680;font-size:12px}.zsh-plan-choices strong{color:#1266b2;font-size:14px}
+
+/* V46: quiet automatic offline UI; manual controls visible only for recovery. */
+.zsh [hidden]{display:none!important}
+.z46-offline-card{background:linear-gradient(120deg,#f5fbff,#f1fcfb);border:1px solid #d6eaf4;padding:21px 24px;margin:14px 0 20px}
+.z46-offline-card .zsh-section-title h3{font-size:17px;margin:0 0 4px}
+.z46-offline-card .zsh-section-title p{font-size:12px}
+.z46-offline-indicator{display:inline-flex;align-items:center;gap:9px;border:1px solid #dceaf2;padding:10px 14px;border-radius:13px;background:#fff;color:#335772;margin-top:16px;font-size:13px}
+.z46-indicator-dot{width:9px;height:9px;border-radius:50%;background:#79aac8;flex:none}
+.z46-offline-card[data-state="ready"] .z46-offline-indicator{background:#e7f9f3;border-color:#aee8d0;color:#087354}
+.z46-offline-card[data-state="ready"] .z46-indicator-dot{background:#13a978}
+.z46-offline-card[data-state="action_required"] .z46-offline-indicator,.z46-offline-card[data-state="error"] .z46-offline-indicator,.z46-offline-card[data-state="offline_wait"] .z46-offline-indicator{background:#fff8eb;border-color:#f3dba9;color:#895a16}
+.z46-offline-card[data-state="action_required"] .z46-indicator-dot,.z46-offline-card[data-state="error"] .z46-indicator-dot,.z46-offline-card[data-state="offline_wait"] .z46-indicator-dot{background:#dfad4c}
+.z46-recovery-message{font-size:12px;color:#627992;line-height:1.8;margin:10px 0 0}
+.z46-offline-recovery .zsh-actions{margin-top:12px}
+.z46-technical-options{margin-top:14px;font-size:12px;color:#486a86}
+.z46-technical-options summary{cursor:pointer}
+.z46-technical-result{font-size:12px;color:#526a88;white-space:pre-line;line-height:1.7;margin-top:10px}
+.z46-security-note{display:flex;align-items:center}
+@media(max-width:720px){.z46-offline-card{padding:17px}.z46-offline-card .zsh-actions .zsh-btn{flex:1 1 100%}}
+
+
+/* V50 dark neon subscription center */
+.zsh{color:#e9f7ff!important}.zsh-card,.z46-offline-card{background:linear-gradient(135deg,#113262,#081b3b)!important;border:1px solid #2b5a96!important;box-shadow:0 9px 32px #000c2480,inset 0 1px #ffffff12!important}.zsh-caption,.zsh-progress-note,.zsh-hint,.zsh-note,.z46-technical-result{color:#b5ceeb!important}.zsh-card h3,.zsh-days,.zsh-row strong{color:#fff!important}.zsh-row{border-color:#2b507d!important}.zsh-row span{color:#b5ceeb!important}.zsh-progress,.z46-offline-indicator{background:#0d2b58!important;border-color:#36639a!important;color:#dff8ff!important}.zsh-progress span{background:linear-gradient(90deg,#18d7ff,#1462f0)!important}.zsh-btn-light{background:#103364!important;color:#dff8ff!important;border:1px solid #356aa1!important}.zsh-btn-primary{background:linear-gradient(110deg,#1858ed,#06bcd7)!important}.zsh-icon,.zsh-state,.zsh-emblem{background:#103364!important;border-color:#356aa1!important;color:#dff8ff!important}
+
+/* V10: show equivalent Afghan Solar and Gregorian dates together */
+.zsh-row .zavi-v10-date{display:inline-flex;flex-direction:column;gap:5px;align-items:flex-start;direction:rtl;text-align:right;max-width:100%;white-space:normal}
+.zsh-row .zavi-v10-date>span{display:flex;flex-wrap:wrap;justify-content:flex-start;align-items:baseline;column-gap:8px;line-height:1.6}
+.zsh-row .zavi-v10-date small{font-size:10px;color:#6fe1f2;font-weight:650}
+.zsh-row .zavi-v10-date b{color:#eafaff;font-size:12px;font-weight:760;white-space:nowrap}
+@media(max-width:520px){.zsh-row{align-items:flex-start}.zsh-row .zavi-v10-date>span{gap:4px}.zsh-row .zavi-v10-date b{font-size:11px}}
+
+/* V65.19: app files are downloaded independently of primary device authorization. */
+.z46-shell-actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:13px}
+.z46-shell-actions .zsh-btn{flex:0 1 auto;padding:10px 14px}
+.z46-shell-actions .z46-shell-status{font-size:12px;line-height:1.8;flex:1 1 210px;color:inherit}
+@media(max-width:720px){.z46-shell-actions{flex-direction:column;align-items:stretch}.z46-shell-actions .zsh-btn{width:100%}}
