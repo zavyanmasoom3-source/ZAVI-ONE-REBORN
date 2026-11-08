@@ -162,6 +162,12 @@ jobs:
           if [[ -z "$apk" ]]; then echo "::error::Expected isolated APK not found"; exit 1; fi
           apksigner="$ANDROID_SDK_ROOT/build-tools/36.0.0/apksigner"
           aapt="$ANDROID_SDK_ROOT/build-tools/36.0.0/aapt"
+          # AGP emitted v2+v3 but no v1 despite the signingConfig flag.
+          # Re-sign with the *same isolated CI-only key* and force all three
+          # Android APK signature schemes; never relax any verifier.
+          resigned="$RUNNER_TEMP/zavi-testonly-v123.apk"
+          "$apksigner" sign --ks "$ZAVI_ISOLATED_TEST_STORE_FILE"             --ks-type PKCS12 --ks-key-alias "$ZAVI_ISOLATED_TEST_KEY_ALIAS"             --ks-pass env:ZAVI_ISOLATED_TEST_STORE_PASSWORD             --key-pass env:ZAVI_ISOLATED_TEST_KEY_PASSWORD             --v1-signing-enabled true --v2-signing-enabled true             --v3-signing-enabled true --v4-signing-enabled false             --out "$resigned" "$apk"
+          apk="$resigned"
           if ! "$apksigner" verify --verbose --print-certs "$apk" > "$RUNNER_TEMP/isolated-apk-verify.txt" 2>&1; then
             cat "$RUNNER_TEMP/isolated-apk-verify.txt"
             echo "::error::APK cryptographic signature verification failed"; exit 1
