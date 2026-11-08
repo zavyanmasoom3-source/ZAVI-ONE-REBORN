@@ -8,20 +8,23 @@ OUT=ROOT/'qa-screens'
 OUT.mkdir(exist_ok=True)
 ROUTES=('dashboard','sales','purchases','products','money','debtors','settings')
 with Session() as browser:
-    error=browser.unlock_one()
-    if error:raise SystemExit('PIN setup failed: '+error)
-    # Wait for the one-time splash to finish before recording page designs.
-    time.sleep(2.5)
     entries=[]
-    for route in ROUTES:
-        state=browser.route(route)
-        if not(state['selected'] and state['visible'] and not state['locked']):
-            raise SystemExit('Unusable route '+route+': '+str(state))
-        time.sleep(.15)
-        p=OUT/('one-'+route+'.png')
-        p.write_bytes(browser.screenshot())
-        entries.append({**state,'file':p.name})
-        print('CAPTURED',p.name,p.stat().st_size)
+    for theme in ('light','dark','glass'):
+        # Use actual Settings preference in a disposable local test profile.
+        browser.navigate('one')
+        browser.eval("localStorage.setItem('zavi_theme_preference_v29',"+repr(theme)+")")
+        error=browser.unlock_one()
+        if error:raise SystemExit('PIN setup failed: '+error)
+        time.sleep(2.5 if theme=='light' else .5)
+        for route in ROUTES:
+            state=browser.route(route)
+            if not(state['selected'] and state['visible'] and not state['locked']):
+                raise SystemExit('Unusable route '+route+' ('+theme+'): '+str(state))
+            time.sleep(.15)
+            p=OUT/('one-'+route+'-'+theme+'.png')
+            p.write_bytes(browser.screenshot())
+            entries.append({**state,'theme':theme,'file':p.name})
+            print('CAPTURED',p.name,p.stat().st_size)
     browser.navigate('admin')
     time.sleep(2.5)
     p=OUT/'admin-login.png';p.write_bytes(browser.screenshot())
