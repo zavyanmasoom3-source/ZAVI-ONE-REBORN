@@ -150,7 +150,8 @@
   }
   function refreshDualDateNodes(scope) {
     if (!scope || !scope.querySelectorAll) return 0;
-    const lang = normalizeLanguage(scope.ownerDocument?.documentElement?.lang || 'fa-AF');
+    const doc = scope.nodeType === 9 ? scope : scope.ownerDocument;
+    const lang = normalizeLanguage(doc?.documentElement?.lang || 'fa-AF');
     let count = 0;
     scope.querySelectorAll('[data-zds-dual-date]').forEach(node => {
       const value = node.getAttribute('data-zds-dual-date');
