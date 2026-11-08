@@ -33,7 +33,8 @@ with Session() as browser:
         "document.querySelector('[data-zavi-flow="+json.dumps(route)+"]')!==null",
         route+' real tab containers')
       result=browser.eval("""(()=>{
-        const flow=document.querySelector('[data-zavi-flow=%s]');
+        const route=%s;
+        const flow=document.querySelector('[data-zavi-flow="'+route+'"]');
         const tabs=[...flow.querySelectorAll('[role=tab]')];
         const panels=[...flow.querySelectorAll('[role=tabpanel]')];
         const checked={length:tabs.length,keys:tabs.map(x=>x.dataset.zaviFlowLabel),
