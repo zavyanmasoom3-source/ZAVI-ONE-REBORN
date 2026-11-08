@@ -174,6 +174,21 @@ jobs:
         run: ./gradlew :app:clean -PzaviApp=${{ matrix.app }} -PzaviBuildNumber=${{ github.run_number }} --no-build-cache
       - name: Assemble QA APK
         run: ./gradlew :app:assembleDebug -PzaviApp=${{ matrix.app }} -PzaviBuildNumber=${{ github.run_number }} --stacktrace
+      - name: Enforce all three signature schemes with the pinned, persistent QA key
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$ZAVI_QA_SIGNING_MODE" = stable
+          test -f "$ZAVI_QA_STORE_FILE"
+          apk=$(find android-build/app/build/outputs/apk/debug -maxdepth 1 -type f -name '*.apk' -print -quit)
+          test -n "$apk"
+          signer="$ANDROID_SDK_ROOT/build-tools/36.0.0/apksigner"
+          # On real CI AGP may emit v2+v3 while v1 remains false.
+          # Explicitly re-sign with the SAME pinned key; never generate a key.
+          output="$RUNNER_TEMP/zavi-qa-v123-resigned.apk"
+          "$signer" sign --ks "$ZAVI_QA_STORE_FILE" --ks-type PKCS12             --ks-key-alias "$ZAVI_QA_KEY_ALIAS"             --ks-pass env:ZAVI_QA_STORE_PASSWORD             --key-pass env:ZAVI_QA_KEY_PASSWORD             --v1-signing-enabled true --v2-signing-enabled true             --v3-signing-enabled true --v4-signing-enabled false             --out "$output" "$apk"
+          mv "$output" "$apk"
+          "$signer" verify --verbose --print-certs "$apk"
       - name: Check optimized Release compilation (unsigned, never distributed)
         shell: bash
         run: |
