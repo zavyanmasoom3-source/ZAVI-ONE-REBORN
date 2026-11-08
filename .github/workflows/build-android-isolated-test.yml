@@ -174,12 +174,22 @@ jobs:
           fi
           output=$(cat "$RUNNER_TEMP/isolated-apk-verify.txt")
           printf '%s\n' "$output"
-          for scheme in v1 v2 v3; do
+          # API 26+ default check may skip obsolete v1 even if it is present.
+          # Verify v2/v3 against the actual minSdk, then test v1 against API 23.
+          for scheme in v2 v3; do
             if ! grep -E "Verified using $scheme scheme.*: true" <<< "$output" >/dev/null; then
               echo "::error::Missing verified signing scheme $scheme"; exit 1
             fi
           done
-          grep -F "Signer #1 certificate SHA-256 digest:" <<< "$output"
+          legacy=$("$apksigner" verify --min-sdk-version 23 --verbose --print-certs "$apk")
+          if ! grep -E 'Verified using v1 scheme.*: true' <<< "$legacy" >/dev/null; then
+            echo "::error::JAR v1 signature missing or invalid under Android 23 verification"; exit 1
+          fi
+          default_cert=$(grep -F 'Signer #1 certificate SHA-256 digest:' <<< "$output")
+          legacy_cert=$(grep -F 'Signer #1 certificate SHA-256 digest:' <<< "$legacy")
+          test -n "$default_cert" && test "$default_cert" = "$legacy_cert"
+          printf 'PASS: v1 (API 23), v2 + v3 (declared minSDK) and same certificate\n'
+          printf '%s\n' "$default_cert"
           badging=$("$aapt" dump badging "$apk")
           package=$(sed -n '1p' <<< "$badging")
           echo "$package"
