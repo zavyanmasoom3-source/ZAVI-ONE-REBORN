@@ -167,14 +167,50 @@
     });
     return count;
   }
+  const visibilityLabels = Object.freeze({
+    'fa-AF':{show:'نمایش رمز',hide:'پنهان‌کردن رمز'},
+    'ps-AF':{show:'پټنوم ښکاره کړئ',hide:'پټنوم پټ کړئ'},
+    en:{show:'Show password',hide:'Hide password'}
+  });
+  function passwordVisibilityLabel(language, visible) {
+    return visibilityLabels[normalizeLanguage(language)][visible ? 'hide' : 'show'];
+  }
+  function syncPasswordToggleLabels(doc) {
+    const language = normalizeLanguage(doc.documentElement?.lang);
+    doc.querySelectorAll('[data-zds-password-toggle]').forEach(button => {
+      const id = button.getAttribute('data-zds-password-toggle');
+      const field = id && doc.getElementById(id);
+      if (!field) return;
+      const isVisible = field.type === 'text';
+      const label = passwordVisibilityLabel(language,isVisible);
+      button.textContent = isVisible ? '🙈' : '👁';
+      button.setAttribute('aria-label',label);
+      button.setAttribute('title',label);
+      button.setAttribute('aria-pressed',String(isVisible));
+      button.setAttribute('aria-controls',id);
+    });
+  }
   if (typeof document !== 'undefined') {
-    const update = () => refreshDualDateNodes(document);
+    const update = () => {
+      refreshDualDateNodes(document);
+      syncPasswordToggleLabels(document);
+    };
+    document.addEventListener('click', event => {
+      const button = event.target?.closest?.('[data-zds-password-toggle]');
+      if (!button) return;
+      const id = button.getAttribute('data-zds-password-toggle');
+      const field = id && document.getElementById(id);
+      if (!field || (field.type !== 'password' && field.type !== 'text')) return;
+      field.type = field.type === 'password' ? 'text' : 'password';
+      syncPasswordToggleLabels(document);
+      field.focus({preventScroll:true});
+    });
     document.addEventListener('zavi:language-change',update);
     document.addEventListener('DOMContentLoaded',update);
   }
   return Object.freeze({
     normalizeLanguage,direction,digits,formatDualDate,formatNumber,
     formatExchangeRate,normalizeAfghanPhone,whatsappDigits,setFieldError,
-    refreshDualDateNodes
+    refreshDualDateNodes,passwordVisibilityLabel
   });
 });
