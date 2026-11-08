@@ -19,6 +19,8 @@ jobs:
         run: python3 scripts/check-public-source-security.py
       - name: Verify migration completeness
         run: python3 scripts/check-migration-integrity.py
+      - name: Verify crash-safe cloud synchronization and full workspace acknowledgements
+        run: node scripts/test-cloud-sync-safety.cjs
       - name: Check complete offline bundles for both apps
         run: python3 scripts/check-offline-shell-assets.py
       - name: Verify service-worker installed asset cache in real browser
