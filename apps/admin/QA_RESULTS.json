@@ -1,0 +1,19 @@
+{
+  "version": "ZAVI ONE ADMIN V1.0",
+  "as_of": "2026-10-23",
+  "checks": {
+    "javascript_syntax_files": 26,
+    "javascript_syntax_errors": 0,
+    "css_files": 34,
+    "css_unbalanced_braces": 0,
+    "new_module_render_tests": 6,
+    "new_module_render_failures": 0,
+    "html_local_asset_refs": 57,
+    "html_missing_local_assets": 0,
+    "backend_admin_account_count": 1,
+    "backend_changes_made": 0,
+    "real_browser_test": "not completed: ERR_BLOCKED_BY_ADMINISTRATOR",
+    "real_multidevice_financial_test": "not performed"
+  },
+  "release_status": "staging candidate, not verified for production"
+}

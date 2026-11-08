@@ -1,0 +1,18 @@
+{
+  "release": "ZAVI ONE ADMIN V1.1",
+  "date": "2026-10-23",
+  "checks": {
+    "referenced_html_assets": "PASS",
+    "javascript_parse": "PASS",
+    "service_worker_files": "PASS",
+    "chart_unit_tests": "not applicable",
+    "theme_css_fixture": "PASS",
+    "theme_toggle_browser_fixture": "PASS",
+    "admin_view_render_unit_tests": "PASS",
+    "full_site_browser_tests": "NOT RUN — local web navigation blocked by environment",
+    "real_authenticated_transactions": "NOT RUN — no live account used"
+  },
+  "sw_declared_resource_count": 63,
+  "source_version_preserved": "ADMIN V1.0",
+  "database_changes": "none"
+}

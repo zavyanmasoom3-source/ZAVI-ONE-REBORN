@@ -1,0 +1,9 @@
+{
+  "source": "ADMIN",
+  "based_on": "user-uploaded-V65.41-and-ADMIN-V1.3",
+  "additional_curated_phrases": 37,
+  "english_dictionary_corrections": 9,
+  "translations_are_onscreen_ui_only": true,
+  "live_account_testing": "not_run",
+  "review_required": true
+}

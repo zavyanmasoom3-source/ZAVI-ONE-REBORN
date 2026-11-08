@@ -1,0 +1,12 @@
+{
+  "version": "1.2",
+  "js_checked": 28,
+  "js_parse_errors": [],
+  "linked_resources": 54,
+  "missing_resources": [],
+  "offline_core_files": 58,
+  "offline_core_missing": [],
+  "local_browser_full_app_test": "Blocked by browser security (ERR_BLOCKED_BY_ADMINISTRATOR); real user session not tested",
+  "store_data_mutation": "Not performed",
+  "test_notes": "Translation tested in synthetic browser DOM and 240x150-element stress rerender. No claims of full live app coverage."
+}
