@@ -31,6 +31,8 @@ jobs:
         run: python3 scripts/check-migration-integrity.py
       - name: Verify APK identity and signing safety checks
         run: python3 scripts/test-apk-update-gate.py
+      - name: Verify two consecutive APK certificates and monotonic versions (isolated vectors)
+        run: python3 scripts/test-verify-apk-pair.py
       - name: Verify crash-safe cloud synchronization and full workspace acknowledgements
         run: node scripts/test-cloud-sync-safety.cjs
       - name: Check complete offline bundles for both apps
