@@ -28,5 +28,7 @@ jobs:
           find apps -type f -name '*.js' -print0 | while IFS= read -r -d '' file; do node --check "$file"; done
       - name: Test restored barcode encoders
         run: node scripts/test-barcode-label.cjs
+      - name: Test WhatsApp message templates and scoped queues
+        run: node scripts/test-message-center.cjs
       - name: Smoke test 10 real routes in headless Chrome
         run: python3 scripts/test-navigation-browser.py
