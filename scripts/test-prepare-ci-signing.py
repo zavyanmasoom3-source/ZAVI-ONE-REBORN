@@ -71,6 +71,12 @@ class CiSigningGateTest(unittest.TestCase):
             self.assertFalse((root/'zavi-stable-one.keystore').exists())
             self.assertEqual(envfile.read_text(),'')
 
+    def test_preflight_needs_private_ci_paths(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            env={**KEY,'ZAVI_KEYSTORE_BASE64':mod.base64.b64encode(b'fake-keystore'*100).decode('ascii')}
+            with self.assertRaisesRegex(mod.SigningGateError, 'GITHUB_ENV'):
+                mod.prepare('one', env, '', '', Path(tmp)/'pins.json')
+
     def test_keytool_error_does_not_print_secret(self):
         with tempfile.TemporaryDirectory() as tmp:
             p=Path(tmp)/'placeholder.keystore';p.write_text('not a keystore')
