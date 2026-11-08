@@ -110,39 +110,17 @@ jobs:
       - name: Require persistent per-app QA certificate (no debug fallback)
         shell: bash
         env:
-          ZAVI_KEYSTORE_BASE64: ${{ matrix.app == 'one' && secrets.ZAVI_ONE_KEYSTORE_BASE64 || secrets.ZAVI_ADMIN_KEYSTORE_BASE64 }}
-          ZAVI_STORE_PASSWORD: ${{ matrix.app == 'one' && secrets.ZAVI_ONE_STORE_PASSWORD || secrets.ZAVI_ADMIN_STORE_PASSWORD }}
-          ZAVI_KEY_ALIAS: ${{ matrix.app == 'one' && secrets.ZAVI_ONE_KEY_ALIAS || secrets.ZAVI_ADMIN_KEY_ALIAS }}
-          ZAVI_KEY_PASSWORD: ${{ matrix.app == 'one' && secrets.ZAVI_ONE_KEY_PASSWORD || secrets.ZAVI_ADMIN_KEY_PASSWORD }}
+          # Accept both the owner-requested secret names and legacy aliases.
+          # Never fall back to a generated/debug signing key.
+          ZAVI_KEYSTORE_BASE64: ${{ matrix.app == 'one' && (secrets.ZAVI_KEYSTORE_BASE64 || secrets.ZAVI_ONE_KEYSTORE_BASE64) || (secrets.ADMIN_KEYSTORE_BASE64 || secrets.ZAVI_ADMIN_KEYSTORE_BASE64) }}
+          ZAVI_STORE_PASSWORD: ${{ matrix.app == 'one' && (secrets.ZAVI_KEYSTORE_PASSWORD || secrets.ZAVI_ONE_STORE_PASSWORD) || (secrets.ADMIN_KEYSTORE_PASSWORD || secrets.ZAVI_ADMIN_STORE_PASSWORD) }}
+          ZAVI_KEY_ALIAS: ${{ matrix.app == 'one' && (secrets.ZAVI_KEY_ALIAS || secrets.ZAVI_ONE_KEY_ALIAS) || (secrets.ADMIN_KEY_ALIAS || secrets.ZAVI_ADMIN_KEY_ALIAS) }}
+          ZAVI_KEY_PASSWORD: ${{ matrix.app == 'one' && (secrets.ZAVI_KEY_PASSWORD || secrets.ZAVI_ONE_KEY_PASSWORD) || (secrets.ADMIN_KEY_PASSWORD || secrets.ZAVI_ADMIN_KEY_PASSWORD) }}
         run: |
           set -euo pipefail
-          for field in ZAVI_KEYSTORE_BASE64 ZAVI_STORE_PASSWORD ZAVI_KEY_ALIAS ZAVI_KEY_PASSWORD; do
-            if [[ -z "${!field}" ]]; then
-              echo "::error::Missing $field for ${{ matrix.app }}. Persistent signing secrets required; debug signing is forbidden."
-              exit 1
-            fi
-          done
-          target="$RUNNER_TEMP/zavi-${{ matrix.app }}-stable-release.p12"
-          printf '%s' "$ZAVI_KEYSTORE_BASE64" | base64 --decode > "$target"
-          chmod 600 "$target"
-          keytool -list -storetype PKCS12 -keystore "$target" -storepass "$ZAVI_STORE_PASSWORD" -alias "$ZAVI_KEY_ALIAS" >/dev/null
-          expected=$(python3 -c 'import json,sys; print(json.load(open("signing/certificates.json"))[sys.argv[1]]["sha256"])' "${{ matrix.app }}")
-          actual=$(keytool -exportcert -rfc -alias "$ZAVI_KEY_ALIAS" -keystore "$target" -storepass "$ZAVI_STORE_PASSWORD" |
-            openssl x509 -noout -fingerprint -sha256 | cut -d= -f2 | tr -d ':' | tr '[:upper:]' '[:lower:]')
-          echo "Public, pinned certificate SHA-256: $actual"
-          if [[ "$actual" != "$expected" ]]; then
-            echo "::error::A different signing certificate was supplied; refusing an unupdatable APK."
-            exit 1
-          fi
-          {
-            echo "ZAVI_QA_STORE_FILE=$target"
-            echo "ZAVI_QA_STORE_PASSWORD=$ZAVI_STORE_PASSWORD"
-            echo "ZAVI_QA_KEY_ALIAS=$ZAVI_KEY_ALIAS"
-            echo "ZAVI_QA_KEY_PASSWORD=$ZAVI_KEY_PASSWORD"
-            echo "ZAVI_QA_SIGNING_MODE=stable"
-            echo "ZAVI_QA_EXPECTED_CERT_SHA256=$expected"
-          } >> "$GITHUB_ENV"
-          echo "PASS: persistent certificate matches the pinned ${{ matrix.app }} identity"
+          # Decodes to private RUNNER_TEMP, pins SHA-256, emits masked Gradle
+          # environment variables to GITHUB_ENV, never logs credential values.
+          python3 scripts/prepare-ci-signing.py --app "${{ matrix.app }}"
       - name: Stage app and shared assets
         shell: bash
         run: |
