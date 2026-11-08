@@ -63,6 +63,10 @@ def check_update(candidate,app,mode,expected_sha256=None,installed=None):
     if mode=='qa':
         if package!=qa:
             raise UnsafeUpdate('QA APK must use a distinct application ID and never replace production')
+        if expected_sha256:
+            pin=re.sub(r'[:\\s]','',expected_sha256).lower()
+            if not re.fullmatch(r'[0-9a-f]{64}',pin) or sha!=pin:
+                raise UnsafeUpdate('QA signer changed from the pinned stable certificate')
         if installed:
             old_package,old_code,old_sha=installed
             if old_package!=qa:
