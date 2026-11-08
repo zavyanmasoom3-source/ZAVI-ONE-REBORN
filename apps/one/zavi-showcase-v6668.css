@@ -1,0 +1,235 @@
+/* ZAVI ONE 66.68 — showroom design mapped to REAL existing modules.
+ * CSS ONLY. All original routes, forms, financial calculations and permissions stay.
+ * Colors: Light / Dark / Glass; no reliance on external images or fonts.
+ */
+html[data-zavi-theme="light"]{
+  --z68-canvas:#f4f7fc;--z68-surface:#ffffff;--z68-surface-2:#f8fbff;
+  --z68-ink:#142744;--z68-sub:#516781;--z68-line:#dce7f4;
+  --z68-brand:#146af6;--z68-brand-dark:#0955ca;
+  --z68-soft-shadow:0 8px 26px rgba(24,59,106,.065);
+  --z68-navigation:#112744;--z68-hero-start:#1757e4;--z68-hero-end:#06b5e5;
+}
+html[data-zavi-theme="dark"]{
+  --z68-canvas:#071427;--z68-surface:#101f35;--z68-surface-2:#142842;
+  --z68-ink:#f3f8ff;--z68-sub:#bfd1e5;--z68-line:#294563;
+  --z68-brand:#58b8ff;--z68-brand-dark:#2678df;
+  --z68-soft-shadow:0 12px 32px rgba(0,5,16,.22);
+  --z68-navigation:#071328;--z68-hero-start:#114baa;--z68-hero-end:#063c82;
+}
+html[data-zavi-appearance="glass"]{
+  --z68-canvas:#163b75;--z68-surface:rgba(23,58,105,.58);--z68-surface-2:rgba(40,87,144,.48);
+  --z68-ink:#fff;--z68-sub:#deebff;--z68-line:rgba(225,240,255,.29);
+  --z68-brand:#b5f0ff;--z68-brand-dark:#368adf;
+  --z68-soft-shadow:0 18px 42px rgba(4,22,62,.23);
+  --z68-navigation:rgba(13,49,95,.80);--z68-hero-start:rgba(25,101,214,.63);--z68-hero-end:rgba(116,84,220,.54);
+}
+html[data-zavi-theme] body{background:var(--z68-canvas)!important;color:var(--z68-ink)!important}
+html[data-zavi-appearance="glass"] body{
+ background:radial-gradient(ellipse at 9% 12%,rgba(89,155,251,.72),transparent 43%),
+ radial-gradient(ellipse at 94% 23%,rgba(139,108,238,.56),transparent 46%),
+ radial-gradient(ellipse at 54% 84%,rgba(46,187,214,.46),transparent 57%),#193f83!important;
+ background-attachment:fixed!important;
+}
+html[data-zavi-theme] .sidebar{
+ background:var(--z68-navigation)!important;
+ border-inline-end:1px solid var(--z68-line)!important;
+ box-shadow:none!important;
+}
+html[data-zavi-theme] .sidebar .brand{
+ margin-bottom:14px!important;
+ padding-bottom:10px!important;
+ border-bottom:1px solid rgba(215,236,255,.11);
+}
+html[data-zavi-theme] .sidebar .nav-btn{
+ min-height:41px!important;border-radius:11px!important;
+ box-shadow:none!important;margin-block:2px!important;
+}
+html[data-zavi-theme] .sidebar .nav-btn.active{
+ background:rgba(59,143,255,.24)!important;
+ color:#fff!important;
+ border-inline-start:3px solid #5ecaff;
+}
+html[data-zavi-theme] :is(.topbar,.zavi-topbar){
+ background:var(--z68-surface)!important;color:var(--z68-ink)!important;
+ border-bottom:1px solid var(--z68-line)!important;
+ box-shadow:none!important;min-height:58px;
+}
+html[data-zavi-theme] :is(.topbar-title,#pageTitle){color:var(--z68-ink)!important;font-weight:800!important}
+html[data-zavi-theme] #content{background:transparent!important;min-width:0}
+html[data-zavi-theme] #content.zrf-dashboard{
+ background:transparent!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard>.zrf-home{
+ max-width:1210px!important;margin-inline:auto!important;
+ padding-block-end:16px!important;
+}
+/* Reference concept's premium greeting/hero remains the existing functional sale control. */
+html[data-zavi-theme] body #content.zrf-dashboard .z62-hero{
+ isolation:isolate;min-height:124px!important;
+ padding:18px 20px!important;
+ background:linear-gradient(119deg,var(--z68-hero-start),var(--z68-hero-end))!important;
+ border:1px solid rgba(171,213,255,.35)!important;
+ border-radius:19px!important;box-shadow:0 13px 32px rgba(14,83,180,.18)!important;
+ color:#fff!important;
+}
+html[data-zavi-theme] body #content.zrf-dashboard .z62-hero .z62-title{
+ color:#fff!important;letter-spacing:-.012em!important;line-height:1.45!important;
+}
+html[data-zavi-theme] body #content.zrf-dashboard .z62-hero .z62-subtitle,
+html[data-zavi-theme] body #content.zrf-dashboard .z62-hero .z62-eyebrow{
+ color:#eef8ff!important;
+}
+html[data-zavi-theme] body #content.zrf-dashboard .z62-hero .z62-date{
+ background:rgba(8,43,119,.27)!important;border:1px solid rgba(255,255,255,.31)!important;
+ border-radius:10px!important;color:#fff!important;
+}
+html[data-zavi-theme] body #content.zrf-dashboard .z62-hero button.z62-sale{
+ min-height:44px!important;background:#fff!important;color:#1255bf!important;
+ border-radius:11px!important;border-color:rgba(255,255,255,.72)!important;
+ box-shadow:none!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard :is(.z63-quick-panel,.z63-finance-wrap){
+ min-width:0;max-width:100%!important;margin-block:12px!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .z63-quick-panel{
+ border:1px solid var(--z68-line)!important;border-radius:17px!important;
+ background:var(--z68-surface)!important;
+ padding:15px!important;box-shadow:var(--z68-soft-shadow)!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .z63-quick-panel :is(h2,h3,strong){
+ color:var(--z68-ink)!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .z63-quick-grid{
+ display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important;
+}
+/* Shortcut colors come from the original, already QA-proven theme-aware
+   zavi-mobile-cleanup-v6563.css. This layer changes layout only. */
+html[data-zavi-theme] #content.zrf-dashboard .z63-quick-tile:hover{
+ transform:translateY(-1px)!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .z63-quick-tile .z63-quick-glyph{
+ flex-shrink:0!important;width:34px!important;height:34px!important;border-radius:11px!important;
+ box-shadow:none!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard :is(.zrf-search-wrap,.zrf-usd-shell,.zrf-tile,.zrf-primary,.zrf-store-banner,.zrf-income-chart,.z63-finance-grid>*){
+ border-radius:15px!important;border:1px solid var(--z68-line)!important;
+ box-shadow:var(--z68-soft-shadow)!important;min-width:0!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard :is(.zrf-search-wrap,.zrf-usd-shell,.zrf-tile,.zrf-primary.zrf-contact,.z63-finance-grid>*){
+ background:var(--z68-surface)!important;color:var(--z68-ink)!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-search-wrap{
+ min-height:47px!important;max-width:none!important;
+ padding:3px 7px!important;margin:0 0 12px!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-search{
+ color:var(--z68-ink)!important;background:transparent!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-magnifier{
+ border-radius:11px!important;box-shadow:none!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-primary-row{
+ gap:9px!important;margin-bottom:12px!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-primary{
+ min-height:88px!important;padding:12px!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-primary.zrf-invoice{
+ background:linear-gradient(123deg,#1955ec,#058ddf)!important;
+ color:#fff!important;border:1px solid rgba(120,204,255,.36)!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-primary.zrf-invoice :is(span,b,small){
+ color:#fff!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-tiles{
+ gap:9px!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-tile{
+ padding:12px!important;min-height:69px!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-tile :is(.zrf-tile-copy,b,strong){
+ color:var(--z68-ink)!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-tile small,
+html[data-zavi-theme] #content.zrf-dashboard .z63-finance-grid :is(.stat-label,.top-label,small){
+ color:var(--z68-sub)!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-usd-shell{
+ min-height:65px!important;padding:10px 13px!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .z63-finance-grid{
+ gap:9px!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .z63-finance-grid>*{
+ padding:12px!important;min-height:92px!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .z63-finance-grid :is(.stat-value,strong){
+ color:var(--z68-ink)!important;font-weight:800!important;
+}
+html[data-zavi-theme] #content :is(.card,.panel,.stat,.settings-card,.report-card,.table-card,.form-card,.summary-card){
+ border:1px solid var(--z68-line)!important;border-radius:15px!important;
+ background:var(--z68-surface)!important;color:var(--z68-ink)!important;
+ box-shadow:var(--z68-soft-shadow)!important;
+}
+html[data-zavi-theme] #content :is(.page-head h2,.card h3,.panel h3,.report-card h3){
+ color:var(--z68-ink)!important;
+}
+html[data-zavi-theme] #content :is(input,textarea,select){
+ background:var(--z68-surface-2)!important;color:var(--z68-ink)!important;
+ border-color:var(--z68-line)!important;max-width:100%;
+}
+html[data-zavi-theme] #content :is(input,textarea)::placeholder{
+ color:var(--z68-sub)!important;
+}
+/* Mobile app bar: fixed ORIGINAL 5 actions, no new unrelated sections. */
+html[data-zavi-theme] .mobile-bottom{
+ background:var(--z68-surface)!important;color:var(--z68-ink)!important;
+ border-top:1px solid var(--z68-line)!important;
+ box-shadow:0 -8px 26px rgba(10,27,57,.075)!important;
+}
+html[data-zavi-theme] .mobile-bottom :is(button,a){
+ border-radius:12px!important;
+}
+html[data-zavi-theme] .mobile-bottom :is(button.active,a.active){
+ background:linear-gradient(124deg,#1767f8,#0c99d9)!important;color:#fff!important;
+}
+html[data-zavi-appearance="glass"] #content.zrf-dashboard .z63-quick-panel,
+html[data-zavi-appearance="glass"] #content.zrf-dashboard :is(.zrf-search-wrap,.zrf-usd-shell,.zrf-tile,.zrf-primary.zrf-contact,.z63-finance-grid>*),
+html[data-zavi-appearance="glass"] #content :is(.card,.panel,.stat,.settings-card,.report-card,.table-card,.form-card),
+html[data-zavi-appearance="glass"] :is(.topbar,.mobile-bottom){
+ background:var(--z68-surface)!important;
+ -webkit-backdrop-filter:blur(18px) saturate(145%);backdrop-filter:blur(18px) saturate(145%);
+}
+html[data-zavi-appearance="glass"] #content.zrf-dashboard .z62-hero{
+ background:linear-gradient(121deg,rgba(24,98,211,.68),rgba(120,98,218,.55))!important;
+ -webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);
+}
+html[data-zavi-appearance="glass"] .sidebar{
+ background:var(--z68-navigation)!important;
+ -webkit-backdrop-filter:blur(15px);backdrop-filter:blur(15px);
+}
+@media(max-width:760px){
+ html[data-zavi-theme] #content.zrf-dashboard>.zrf-home{padding:0 0 12px!important}
+ html[data-zavi-theme] body #content.zrf-dashboard .z62-hero{
+  min-height:122px!important;padding:13px!important;border-radius:17px!important;
+ }
+ html[data-zavi-theme] #content.zrf-dashboard .z63-quick-panel{padding:11px!important}
+ html[data-zavi-theme] #content.zrf-dashboard .zrf-primary{min-height:75px!important}
+ html[data-zavi-theme] #content.zrf-dashboard .zrf-tiles{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ html[data-zavi-theme] #content.zrf-dashboard .z63-finance-grid>*{min-height:82px!important}
+}
+@media(max-width:365px){
+ html[data-zavi-theme] #content.zrf-dashboard .z62-hero{gap:7px!important}
+ html[data-zavi-theme] #content.zrf-dashboard .zrf-primary{padding:9px!important}
+ html[data-zavi-theme] #content.zrf-dashboard .zrf-primary .zrf-primary-icon{width:37px!important;height:37px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-zavi-theme] #content.zrf-dashboard :is(.zrf-tile,.zrf-primary,.z63-quick-tile){
+  animation:none!important;transition:none!important;
+ }
+}
+@media print{
+ html[data-zavi-theme] #content :is(.card,.panel,.stat,.report-card){
+  background:#fff!important;color:#121212!important;box-shadow:none!important;
+ }
+}

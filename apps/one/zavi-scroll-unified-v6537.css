@@ -1,0 +1,126 @@
+/* ZAVI ONE V65.37 — Unified vertical scrolling and light-theme legibility.
+   Presentation-only. Financial and offline authority code unchanged. */
+html{
+  height:auto!important;min-height:100%!important;
+  overflow-x:hidden!important;overflow-y:auto!important;
+  scroll-behavior:auto!important;
+  -webkit-overflow-scrolling:touch;
+}
+body{
+  height:auto!important;min-height:100vh!important;min-height:100dvh!important;
+  max-height:none!important;overflow-x:hidden!important;overflow-y:visible!important;
+  overscroll-behavior-y:auto!important;
+  -webkit-overflow-scrolling:touch;
+}
+body .app{
+  height:auto!important;min-height:100vh!important;min-height:100dvh!important;
+  max-height:none!important;overflow-y:visible!important;overflow-x:clip!important;
+}
+body .main,body .content,body #content{
+  height:auto!important;min-height:0!important;max-height:none!important;
+  overflow-y:visible!important;overflow-x:clip!important;
+  overscroll-behavior-y:auto!important;
+}
+body #content>*,body .content>*,body .main>*{min-width:0}
+/* Sidebar: one independent scroll surface on desktop; one on mobile. */
+@media(min-width:1051px){
+  #side.sidebar{position:fixed!important;top:0!important;bottom:0!important;
+    height:100vh!important;height:100dvh!important;max-height:100dvh!important;
+    display:flex!important;flex-direction:column!important;
+    overflow:hidden!important;overscroll-behavior:contain!important;
+  }
+  #side.sidebar>.zavi-v6-menu-scroll{
+    flex:1 1 auto!important;min-height:0!important;
+    max-height:none!important;overflow-y:auto!important;overflow-x:hidden!important;
+    touch-action:pan-y!important;-webkit-overflow-scrolling:touch!important;
+    overscroll-behavior-y:contain!important;
+  }
+  #side.sidebar>.brand,#side.sidebar>.sidebar-footer{flex-shrink:0!important}
+}
+@media(max-width:1050px){
+  #side.sidebar:not(.mobile-drawer){display:none!important}
+  #side.sidebar.mobile-drawer{
+    position:fixed!important;inset-block:0!important;top:0!important;bottom:0!important;
+    height:100vh!important;height:100dvh!important;max-height:100dvh!important;
+    display:block!important;overflow-y:auto!important;overflow-x:hidden!important;
+    overscroll-behavior-y:contain!important;-webkit-overflow-scrolling:touch!important;
+    touch-action:pan-y!important;
+  }
+  #side.sidebar.mobile-drawer>.zavi-v6-menu-scroll{
+    display:block!important;height:auto!important;max-height:none!important;
+    overflow:visible!important;touch-action:pan-y!important;
+  }
+  /* Body scroll may be locked ONLY while drawer is actually open. */
+  body.z6536-drawer-open:has(#side.mobile-drawer){
+    overflow-y:hidden!important;overscroll-behavior-y:none!important;
+  }
+  body.z6536-drawer-open:not(:has(#side.mobile-drawer)){
+    overflow-y:visible!important;overscroll-behavior-y:auto!important;
+  }
+  #overlay .shade{z-index:20010!important}
+  #side.sidebar.mobile-drawer{z-index:20011!important}
+  .main,.content,#content{width:100%!important;max-width:100%!important}
+  .content{padding-bottom:calc(112px + env(safe-area-inset-bottom))!important}
+  .mobile-bottom{z-index:150!important}
+}
+/* Modals: scroll a defined panel region, keeping Save/Close reachable. */
+#overlay .modal-backdrop{max-height:100dvh!important;overflow-y:auto!important;overscroll-behavior-y:contain!important}
+#overlay .modal{
+  display:flex!important;flex-direction:column!important;min-height:0!important;
+  max-height:calc(100vh - 22px)!important;max-height:calc(100dvh - 22px)!important;
+  overflow:hidden!important;
+}
+#overlay .modal-head,#overlay .modal-foot{flex:0 0 auto!important}
+#overlay .modal #dialogForm{
+  display:flex!important;flex:1 1 auto!important;flex-direction:column!important;
+  min-height:0!important;overflow:hidden!important;
+}
+#overlay .modal .modal-body{
+  flex:1 1 auto!important;min-height:0!important;max-height:none!important;
+  overflow-y:auto!important;overflow-x:auto!important;touch-action:pan-y!important;
+  overscroll-behavior-y:contain!important;-webkit-overflow-scrolling:touch!important;
+}
+#overlay .modal .modal-foot{position:relative!important;bottom:auto!important;flex-wrap:wrap!important}
+/* Independent dialogs outside #overlay retain touch scroll. */
+:is(.z62-dialog,.z648-sheet,.z6525-dialog-body,.z6524-body,.z637-ai-messages){
+  min-height:0!important;overscroll-behavior-y:contain!important;
+  -webkit-overflow-scrolling:touch!important;touch-action:pan-y!important;
+}
+/* Horizontal movement is limited to tables rather than the whole window. */
+:is(.table-wrap,.z27-chart-scroll,#content .table-wrap){
+  max-width:100%!important;overflow-x:auto!important;
+  -webkit-overflow-scrolling:touch!important;touch-action:pan-x pan-y!important;
+}
+/* Better visibility of invoice studio and settings in light mode. */
+html[data-zavi-theme="light"] :is(.z6527-studio,.settings-card,.card,.stat,.account-box){
+  background-color:#fff!important;color:#183750!important;
+  border-color:#c6d6e6!important;
+}
+html[data-zavi-theme="light"] .z6527-studio :is(h2,h3,h4,label,small,p,.tiny-note),
+html[data-zavi-theme="light"] .settings-card :is(h2,h3,h4,label,small,p,.tiny-note){
+  color:#24445f!important;opacity:1!important;
+}
+html[data-zavi-theme="light"] .z6527-studio-form :is(input:not([type="checkbox"]),select,textarea),
+html[data-zavi-theme="light"] .settings-card :is(input:not([type="checkbox"]),select,textarea){
+  background:#fff!important;color:#193950!important;border-color:#9cb8d1!important;
+  -webkit-text-fill-color:currentColor;
+}
+html[data-zavi-theme="light"] .z6527-studio :is(.z6527-options label,.z6527-industry-badge){
+  background:#f5faff!important;border-color:#c1d8ea!important;color:#173b5c!important;
+}
+html[data-zavi-theme="light"] .z6527-preview-paper{background:#fff!important;color:#172e43!important}
+html[data-zavi-theme="light"] .z6527-preview-paper :is(.z6527-preview-title,.z6527-preview-row,.z6527-preview-table){color:#172e43!important}
+html[data-zavi-theme="light"] .z6527-studio .btn:not(.primary){
+  background:#f0f7ff!important;color:#13436b!important;border:1px solid #a7c6df!important;
+}
+html[data-zavi-theme="light"] .z6527-studio :is(input,select,textarea,button):focus-visible{outline:3px solid #137bd1!important;outline-offset:2px!important}
+@media(max-width:760px){
+  #overlay .modal-backdrop{align-items:flex-start!important;padding:6px!important}
+  #overlay .modal{max-height:calc(100dvh - 12px)!important;max-width:100%!important}
+  #overlay .modal .modal-body{padding-bottom:18px!important}
+  .z6527-studio,.settings-card{max-width:100%!important;min-width:0!important}
+  .z6527-studio-form{grid-template-columns:1fr!important}
+  .z6527-options{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .z6527-options label{min-width:0!important;white-space:normal!important}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}}

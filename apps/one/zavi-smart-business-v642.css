@@ -1,0 +1,29 @@
+/* Smart Business: clear RTL layouts, high-contrast tokenized surfaces, measured motion. */
+:root{--z642-blue:#2173df;--z642-violet:#7658ec;--z642-teal:#069b9c;--z642-ease:cubic-bezier(.16,1,.3,1)}
+.z642-smart{position:relative;overflow:hidden;padding:22px!important;border-radius:24px!important;border:1px solid var(--z638-line,#cbddef)!important;background:linear-gradient(135deg,color-mix(in srgb,var(--z638-surface,#fff) 94%,#3488e9 6%),var(--z638-surface,#fff))!important;color:var(--z638-ink,#163653)!important;box-shadow:0 20px 48px #072e6311;isolation:isolate}
+.z642-smart::before{content:'';position:absolute;width:220px;height:220px;left:-110px;top:-110px;background:radial-gradient(circle,#2a98d41b,transparent 72%);pointer-events:none}
+.z642-smart-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;position:relative}
+.z642-smart-head h3{margin:2px 0 4px!important;color:inherit!important;font-size:clamp(17px,2.3vw,22px);line-height:1.6}
+.z642-smart-head p{margin:0;color:var(--z638-muted,#51657a);font-size:13px;line-height:2}
+.z642-smart-chip{display:inline-flex;align-items:center;gap:7px;padding:7px 11px;background:color-mix(in srgb,var(--z639-glow,#287bd4) 12%,transparent);border:1px solid color-mix(in srgb,var(--z639-glow,#287bd4) 22%,transparent);border-radius:99px;font-size:12px;font-weight:800;color:var(--z638-ink,#193a51)!important;white-space:normal}
+.z642-smart-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:17px 0}
+.z642-smart-tile{display:flex;flex-direction:column;gap:6px;padding:13px;background:color-mix(in srgb,var(--z638-surface,#fff) 93%,var(--z639-glow,#44aacc) 7%);border:1px solid var(--z638-line,#cbddef);border-radius:15px;min-height:104px;color:var(--z638-ink,#173653)}
+.z642-smart-tile b{color:inherit!important;font-size:13px;line-height:1.65}.z642-smart-tile small{color:var(--z638-muted,#526d85)!important;font-size:11px;line-height:1.75}
+.z642-smart-controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.z642-smart-controls .btn{min-height:43px!important;border-radius:12px!important}.z642-smart small{line-height:1.9}
+.z642-smart-note{margin:12px 0 0;font-size:12px;color:var(--z638-muted,#45647a)!important}
+.z642-smart:focus-within{outline:2px solid color-mix(in srgb,var(--z639-glow,#1879ba) 55%,transparent);outline-offset:3px}
+html[data-zavi-theme=dark] .z642-smart{--z638-ink:#f2f8ff;--z638-muted:#c0d5eb;--z638-surface:#112940;--z638-line:#385776}
+html[data-zavi-theme=light] .z642-smart{--z638-ink:#142f48;--z638-muted:#436078;--z638-surface:#fff;--z638-line:#c8dce9}
+.z642-smart{animation:z642-arrive .55s var(--z642-ease) both}
+.z642-smart-tile{animation:z642-arrive .42s var(--z642-ease) both}.z642-smart-tile:nth-child(2){animation-delay:.06s}.z642-smart-tile:nth-child(3){animation-delay:.12s}
+@keyframes z642-arrive{from{opacity:.1;transform:translateY(11px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:760px){.z642-smart{padding:15px!important}.z642-smart-grid{grid-template-columns:1fr}.z642-smart-tile{min-height:0}.z642-smart-controls .btn{flex:1 1 150px}}
+@media(prefers-reduced-motion:reduce){.z642-smart,.z642-smart-tile{animation:none!important;transition:none!important}}
+html[data-z637-no-motion=true] .z642-smart,html[data-z637-no-motion=true] .z642-smart-tile{animation:none!important;transition:none!important}
+@media print{.z642-smart-controls{display:none!important}.z642-smart,.z642-smart-tile{animation:none!important;box-shadow:none!important}}
+/* Explicit button contrast inside the new panel; do not depend on legacy theme order. */
+.z642-smart .btn{border-radius:12px!important;padding:10px 14px!important;text-decoration:none!important;font-weight:750!important}
+html[data-zavi-theme=dark] .z642-smart .btn.subtle{color:#f3faff!important;background:#234a66!important;border:1px solid #6488a3!important}
+html[data-zavi-theme=dark] .z642-smart .btn.primary{color:#fff!important;background:linear-gradient(110deg,#226fca,#0b989d)!important;border:1px solid #5eb6d8!important}
+html[data-zavi-theme=light] .z642-smart .btn.subtle{color:#153a58!important;background:#edf6ff!important;border:1px solid #b0cee3!important}
+html[data-zavi-theme=light] .z642-smart .btn.primary{color:#fff!important;background:linear-gradient(110deg,#266fd1,#0c929d)!important;border:1px solid #1c809f!important}

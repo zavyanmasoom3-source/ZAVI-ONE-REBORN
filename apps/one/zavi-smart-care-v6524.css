@@ -1,0 +1,31 @@
+/* ZAVI ONE V65.24 — lightweight, mobile-first health center. No blur/translucent compositor layers. */
+.z6524-launch{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border:1px solid rgba(41,148,185,.3)!important;background:linear-gradient(120deg,#e8f6ff,#effbfa)!important;color:#133958!important;padding:15px 17px!important;border-radius:16px;margin:13px 0 17px;box-shadow:none!important}
+.z6524-launch h3{margin:0 0 4px;font-size:17px;color:inherit!important}.z6524-launch p{margin:0;font-size:12px;color:#3f6a82!important}
+.z6524-launch .btn{background:#086fbd!important;color:white!important;border-color:transparent!important}
+html[data-zavi-theme="dark"] .z6524-launch{background:linear-gradient(120deg,#102942,#10374b)!important;color:#e9f8ff!important;border-color:#276081!important}
+html[data-zavi-theme="dark"] .z6524-launch p{color:#bad8e9!important}
+.z6524-shade{position:fixed;inset:0;z-index:10050;display:grid;place-items:center;background:rgba(5,14,26,.82);padding:12px;overscroll-behavior:contain}
+.z6524-shade[hidden]{display:none!important}.z6524-open{overflow:hidden!important}
+.z6524-panel{background:#f4f9ff!important;color:#172e43!important;border-radius:22px;border:1px solid #add0e4;width:min(780px,100%);max-height:min(90dvh,900px);display:flex;flex-direction:column;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,.24);direction:rtl}
+.z6524-head{background:linear-gradient(110deg,#0961c2,#059cae);color:white!important;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex:none}
+.z6524-head b{font-size:19px;display:block;color:white!important}.z6524-head small{font-size:10px;letter-spacing:.04em;color:#defaff!important}
+.z6524-close{background:#ffffff22;border:1px solid #ffffff55;border-radius:11px;color:white!important;min-width:42px;min-height:42px;font-size:26px;cursor:pointer}
+.z6524-body{padding:18px;overflow-y:auto;min-height:0;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.z6524-body section{background:white!important;color:#1a3850!important;border:1px solid #d8e8f3;border-radius:16px;padding:16px;margin:0 0 15px}
+.z6524-body h3{margin:0 0 9px;font-size:17px;color:#164367!important}.z6524-body p{font-size:13px;line-height:1.75;color:#335c76!important;margin:5px 0 12px}
+.z6524-metrics,.z6524-totals{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0}
+.z6524-metric,.z6524-totals span{background:#eef6fc!important;border:1px solid #dce8f2;border-radius:12px;padding:12px;font-size:12px;display:flex;gap:4px;flex-direction:column;color:#37546c!important;min-width:0}
+.z6524-metric b,.z6524-totals b{font-size:16px;color:#123c60!important;overflow-wrap:anywhere}
+.z6524-finding{border:1px solid #dbe8f3;border-inline-start:4px solid #2587cc;background:#f7fbff!important;padding:12px;border-radius:12px;margin:8px 0}.z6524-finding b{color:#143752!important}
+.z6524-finding[data-level="danger"]{border-inline-start-color:#e36055}.z6524-finding[data-level="warning"]{border-inline-start-color:#ecad31}
+.z6524-actions{display:flex;flex-wrap:wrap;gap:8px}.z6524-action{margin:5px 4px!important;min-height:40px;font-size:12px!important}
+.z6524-ok{color:#146b53;background:#e2f9eb;padding:13px;border-radius:12px}
+.z6524-body .z6524-small{font-size:11px;color:#57738b!important}.z6524-disclaimer{font-size:11px;color:#607e96;padding:12px}
+html[data-zavi-theme="dark"] .z6524-panel{background:#081d30!important;color:#e8f7ff!important;border-color:#2e607e}
+html[data-zavi-theme="dark"] .z6524-body section{background:#102b42!important;color:#e8f7ff!important;border-color:#2a526d}
+html[data-zavi-theme="dark"] .z6524-body h3,html[data-zavi-theme="dark"] .z6524-finding b{color:#e8f7ff!important}
+html[data-zavi-theme="dark"] .z6524-body p{color:#c9e1ef!important}
+html[data-zavi-theme="dark"] .z6524-metric,html[data-zavi-theme="dark"] .z6524-totals span,html[data-zavi-theme="dark"] .z6524-finding{background:#17364c!important;border-color:#2d506a;color:#bcd6e7!important}
+html[data-zavi-theme="dark"] .z6524-metric b,html[data-zavi-theme="dark"] .z6524-totals b{color:#e8f9ff!important}
+@media(max-width:680px){.z6524-shade{padding:0;align-items:end}.z6524-panel{width:100%;max-height:94dvh;border-radius:19px 19px 0 0}.z6524-body{padding:12px}.z6524-metrics,.z6524-totals{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(prefers-reduced-motion:reduce){.z6524-shade *{animation:none!important;transition:none!important}}
