@@ -63,6 +63,14 @@ assert.equal(ds.normalizeAfghanPhone('+93 798 832 389'),'+93798832389');
 assert.equal(ds.whatsappDigits('۰۷۹۸۸۳۲۳۸۹'),'93798832389');
 assert.equal(ds.normalizeAfghanPhone('7777'),null);
 assert.equal(ds.normalizeAfghanPhone('++93798832389'),null);
+assert.equal(ds.passwordVisibilityLabel('fa-AF',false),'نمایش رمز');
+assert.equal(ds.passwordVisibilityLabel('fa-AF',true),'پنهان‌کردن رمز');
+assert.equal(ds.passwordVisibilityLabel('ps-AF',false),'پټنوم ښکاره کړئ');
+assert.equal(ds.passwordVisibilityLabel('en',true),'Hide password');
+assert.equal(ds.localizedLabel('serverSettings','fa-AF'),'تنظیمات اتصال سرور');
+assert.equal(ds.localizedLabel('serverSettings','en'),'Server connection settings');
+assert.equal(ds.localizedLabel('serverUrl','ps-AF'),'د مرکزي سرور پته');
+assert.throws(()=>ds.localizedLabel('unknown','en'),RangeError);
 assert.equal(ds.normalizeAfghanPhone('+447700900123'),'+447700900123');
 
 const css=fs.readFileSync(path.join(__dirname,'../packages/shared/ui/design-system-v1.css'),'utf8');
