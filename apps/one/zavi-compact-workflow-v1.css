@@ -36,3 +36,17 @@
 @media(prefers-reduced-motion:reduce){
  .zavi-flow-tab,.zavi-flow-panel {transition:none!important;animation:none!important}
 }
+
+/* Four real dashboard shortcuts; no mock stats or duplicated fake balances. */
+.zavi-dash-fast-actions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:10px;margin:0 0 15px;min-width:0}
+.zavi-dash-fast-button{display:flex;align-items:center;justify-content:center;
+  gap:8px;min-height:48px;padding:10px 8px;min-width:0;
+  border:1px solid var(--zds-border,#9aaec1);border-radius:12px;
+  background:var(--zds-surface,#fff);color:var(--zds-text,#152b43);
+  font:inherit;font-weight:650;cursor:pointer;text-align:center}
+.zavi-dash-fast-button svg{width:20px;height:20px;flex-shrink:0}
+.zavi-dash-fast-button span{min-width:0;overflow-wrap:anywhere}
+.zavi-dash-fast-button:focus-visible{outline:3px solid var(--zds-focus,#075fa6);outline-offset:2px}
+@media(max-width:720px){.zavi-dash-fast-actions{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.zavi-dash-fast-button{font-size:12px;min-height:48px}}
