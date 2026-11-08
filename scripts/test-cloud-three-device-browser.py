@@ -109,6 +109,19 @@ def configure(dev,name,bridge):
     assert dev.eval('window.zaviTenantIsBound?.()') is True
 
 def mutate(dev,js):
+    # Prove a fake unsigned login cannot change finances under the REAL policy.
+    # Substitute ONLY its entitlement boundary in this disposable QA browser;
+    # production source and server authorization are never changed.
+    entitlement=dev.eval("""(()=>{
+      const denied=window.zaviCloudCanEdit?.()===false;
+      const bound=window.zaviTenantIsBound?.()===true;
+      if(!denied||!bound)return {denied,bound};
+      window.__zaviQaEntitlementMocked=true;
+      window.zaviCloudCanEdit=()=>true;
+      return {denied,bound};
+    })()""")
+    assert entitlement=={'denied':True,'bound':True},(
+      'Fixture must prove unsigned access denied before mocking: '+str(entitlement))
     result=dev.eval("""(()=>{
        const ok=commit(n=>{%s});
        return {ok,tx:db.tx.length,updatedAt:db.updatedAt,
