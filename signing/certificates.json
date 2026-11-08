@@ -1,0 +1,12 @@
+{
+  "one": {
+    "sha256": "7e68bc0c0525785de756acc56a72c25fc171f1b01dd579e7a9b343133b29757c",
+    "alias": "zavi-one-release",
+    "qa_package": "com.zavione.one.rebornqa"
+  },
+  "admin": {
+    "sha256": "78395f24d3543bc5ac91ac268142ea849d79ef8efc0518ffeb878ac6980613de",
+    "alias": "zavi-admin-release",
+    "qa_package": "com.zavione.one.admin.rebornqa"
+  }
+}
