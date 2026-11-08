@@ -86,9 +86,14 @@ async function restore(id){if(busy||!records.some(x=>x.workspace_id===id&&x.reco
 }
 function refreshAccountControl(){const b=document.querySelector('#z24Root button[data-v24="refresh"]');if(b)b.click();const button=document.getElementById('refreshBtn');if(button)button.click();}
 async function trashOne(button){if(busy)return;const id=button.dataset.id;if(!/^[0-9a-f-]{36}$/i.test(id||''))return alert('شناسه حساب درست نیست.');
- const tr=button.closest('tr');const label=tr?.querySelector('td:first-child b')?.textContent||'';
+ const tr=button.closest('tr');const label=String(tr?.querySelector('td:first-child b')?.textContent||'').trim();
+ // Legacy Account Control formerly skipped the second confirmation. Require
+ // the exact workspace name (or UUID if the row has no trusted title).
+ const phrase=label||id;
  if(!confirm((label?'«'+label+'»\n\n':'')+t().trashConfirm))return;
- busy=true;try{const ok=await rpc('zavi_admin_trash_customer',{p_workspace_id:id,p_reason:'انتقال قابل بازیابی توسط مدیر'});if(ok!==true)throw Error('Server did not confirm moving the account');alert(t().trashDone);refreshAccountControl();}
+ const typed=prompt('تأیید دوم: '+(label?'نام فروشگاه':'شناسه حساب')+' را دقیق وارد کنید:\n'+phrase);
+ if(typed===null||String(typed).trim()!==phrase){alert('تأیید دوم مطابقت نداشت؛ هیچ تغییری انجام نشد.');return;}
+ busy=true;try{const ok=await rpc('zavi_admin_trash_customer',{p_workspace_id:id,p_reason:'حذف قابل بازیابی با دو تأیید مدیر'});if(ok!==true)throw Error('Server did not confirm moving the account');alert(t().trashDone);refreshAccountControl();}
  catch(e){alert(t().error+e.message)}finally{busy=false}}
 async function trashAll(){if(busy)return;if(!confirm(t().bulkAsk))return;const phrase=prompt(t().bulkCheck);
  if(phrase!=='TRASH ALL CUSTOMER ACCOUNTS')return;
