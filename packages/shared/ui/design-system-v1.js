@@ -157,7 +157,8 @@
       if (!value) return;
       const style = node.getAttribute('data-zds-digit-style') || undefined;
       try {
-        node.textContent = formatDualDate(value,{language:lang,digitStyle:style});
+        node.textContent = formatDualDate(value === 'today' ? new Date() : value,
+          {language:lang,digitStyle:style});
         count++;
       } catch (_) {
         node.textContent = ''; // Never show a made-up date on malformed data.
