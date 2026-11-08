@@ -18,3 +18,11 @@ with Session() as browser:
            bottom:css('.mobile-bottom'),panel:css('#content .zui-phase2-content'),form:css('#content input')};
         })()""")
 print(json.dumps(result,ensure_ascii=False,indent=2))
+for mode in ('light','dark','glass'):
+    row=result[mode]
+    assert row['localAppearance']==mode and row['appearance']==mode, f'Appearance selector mismatch: {mode}: {row}'
+    assert row['localTheme']==mode, f'Legacy theme persistence mismatch for {mode}'
+    assert row['theme']==('dark' if mode=='glass' else mode), f'CSS legacy theme mismatch for {mode}'
+assert result['light']['card']['background']=='rgb(255, 255, 255)', 'Light card background must be white'
+assert result['dark']['card']['background']!=result['light']['card']['background'], 'Light/Dark cards must differ'
+print('PASS: persisted and rendered appearances are consistent across three themes')
