@@ -1,0 +1,94 @@
+/* ZAVI ONE ADMIN: Matching V47 responsive neon theme. No logic modifications. */
+:root{--navy:#071b40;--navy2:#06142d;--cyan:#17d4eb;--line:#2c5184;--bg:#061127;--ink:#eff9ff;--muted:#a4bedf;--soft:#112e5a;--shadow:0 14px 46px #010a1f78;color-scheme:dark}
+body{background:radial-gradient(ellipse at 90% 6%,#104aab,transparent 34%),linear-gradient(155deg,#050c20,#071d43 57%,#061026) fixed!important;color:#eff7ff}
+.sidebar{background:linear-gradient(175deg,#0a1f49,#07162e 70%,#040d22)!important;border-inline-start:1px solid #2e5a91;box-shadow:-12px 0 35px #01081880}
+.brand strong{color:white}.brand span,.auth-logo span{color:#24d9ff!important}.brand small,.sidebar-caption,.sidebar-bottom small{color:#a4c1e1}
+.nav-item{color:#c2d7f5!important;border:1px solid transparent}.nav-item:hover,.nav-item.selected{background:linear-gradient(95deg,#084b95,#08a5d7)!important;color:white!important;border-color:#35c6fa83!important;box-shadow:0 6px 20px #038cee45}
+.workspace{background:transparent}.topbar{background:linear-gradient(95deg,#081b3c,#0c2754)!important;border-color:#2c5389!important;color:#e9f8ff;backdrop-filter:blur(12px);position:sticky;top:0;z-index:10}
+.breadcrumbs,.breadcrumbs b{color:#d7ebff!important}.live-status{background:#064f4c!important;color:#83ffd9!important;border:1px solid #178c82}.avatar{background:linear-gradient(140deg,#1bbce5,#0a55df)!important;color:#fff!important}.icon-btn,.mobile-menu{background:#113565!important;color:#e9f7ff!important;border-color:#365e90!important}
+main{color:#e9f7ff}
+.panel,.card,.metric,.fin-metric,.table-card,.form-card,.summary-card,.detail-card,.report-card,.auth-card,.modal-card,.finbar,.fin-date,.promo-stat,.security-note,.fin-help,.fin-chart-rail,.timeline-item{background:linear-gradient(135deg,#113262,#081b3b)!important;color:#eff9ff!important;border:1px solid #2b5a96!important;border-radius:20px!important;box-shadow:0 9px 32px #000c2480,inset 0 1px #ffffff12}
+.metric:nth-child(4n+1),.fin-metric:nth-child(4n+1){background:linear-gradient(120deg,#093d54,#0a2c5c)!important;border-color:#09c5bd84!important}
+.metric:nth-child(4n+2),.fin-metric:nth-child(4n+2){background:linear-gradient(120deg,#242056,#102b5c)!important;border-color:#7d5afa84!important}
+.metric:nth-child(4n+3),.fin-metric:nth-child(4n+3){background:linear-gradient(120deg,#383144,#102a50)!important;border-color:#c78c4884!important}
+.metric:nth-child(4n+4),.fin-metric:nth-child(4n+4){background:linear-gradient(120deg,#064075,#0d245b)!important;border-color:#0baeea84!important}
+.fin-metric span,.fin-metric strong,.fin-metric small,.metric .label,.metric strong,.metric .value,.panel-heading h2,h1,h2,h3{color:#f3fbff!important}.fin-metric.accent{background:linear-gradient(115deg,#0a4ab4,#0a92ba)!important}
+.small-muted,.subtle,.hint,.form-helper,.finbar small,.fin-help,.security-note,.fin-form label,.form-group label,.timeline-item strong,.metric .label{color:#b5ceeb!important}
+.button,.icon-btn,.logout-btn{background:linear-gradient(115deg,#15396f,#103062)!important;border:1px solid #356aa1!important;color:#f2fbff!important;border-radius:12px!important}.button.primary{background:linear-gradient(110deg,#1858ed,#06bcd7)!important;border:1px solid #2ca9fd!important;box-shadow:0 7px 19px #0469d953!important;color:white!important}.button.ghost,.button.link{background:#103364!important;color:#bdecff!important}.button.danger{background:#68344c!important;border-color:#bd6682!important;color:#ffd7df!important}
+input:not([type=checkbox]):not([type=radio]),textarea,select,.form-group input,.form-group textarea,.form-group select,.fin-form input,.fin-form select{background:#0d2b58!important;color:#f2faff!important;border:1px solid #36639a!important;border-radius:12px!important}select option{background:#0b2654;color:white}input::placeholder,textarea::placeholder{color:#99b9dc!important}input:focus,select:focus,textarea:focus,button:focus-visible,a:focus-visible{outline:2px solid #32ddf6!important;outline-offset:2px}
+.data-table th,table th{background:#0e3467!important;color:#d8efff!important;border-color:#2c5990!important}.data-table td,table td{background:transparent!important;color:#e8f6ff!important;border-color:#254b7f!important}table tr:nth-child(even){background:#0b2c5973!important}
+.fin-chart-rail{background:#0b3261!important;border-radius:12px 12px 4px 4px!important}.fin-chart-rail>div{background:linear-gradient(0deg,#1359e6,#05e4cf)!important;box-shadow:0 0 14px #00cef660}.fin-chart-col small,.fin-chart-col>span{color:#d1e7ff!important}
+.modal-bg{background:#02091bd9!important;backdrop-filter:blur(8px)}.modal-card{background:linear-gradient(135deg,#102e60,#081935)!important;border:1px solid #4076af!important;color:white}.modal-head{background:#0b2a55!important;border-color:#2c558b!important}
+.auth-wrapper{background:linear-gradient(145deg,#071a39,#071e4a)!important;color:white}.auth-card{background:linear-gradient(150deg,#0e2c5c,#071d3e)!important;box-shadow:none!important;border:0!important;border-radius:0!important;min-height:100vh}.auth-promo{background:radial-gradient(ellipse at 60% 14%,#1164ca 0,#063b88 32%,#041c40 80%)!important}.promo-stat{background:#ffffff0f!important;color:white!important;border-color:#79bbf258!important}.promo-footer,.auth-promo>p,.promo-stat small{color:#d4eaff!important}.security-note{background:#0c3157!important}.auth-card .hint{color:#c2d4f0!important}.auth-logo strong{color:#fff!important}
+[hidden]{display:none!important}
+@media(max-width:800px){main{padding:18px 12px}.fin-cards{gap:10px}.fin-metric{min-height:123px;padding:14px}.fin-metric strong{font-size:clamp(15px,3.8vw,21px)!important}.topbar{padding:10px 12px}.auth-card{min-height:auto}}
+@media print{body{background:white!important;color:black!important}main{color:black!important}.panel,.card,.metric,.fin-metric,.report-card{background:white!important;color:#132946!important;box-shadow:none!important}.sidebar,.topbar{display:none!important}}
+
+
+/* V49: deeper neon treatment for account control and service center */
+footer{color:#d9efff!important;border-top:1px solid #234a7a;background:linear-gradient(95deg,#081731,#0b2146)!important;box-shadow:0 -8px 24px #0007}
+#z24Root{background:radial-gradient(ellipse at 15% 10%,#123d74 0,transparent 38%),linear-gradient(155deg,#050c20,#071d43 57%,#061026)!important;color:#eff8ff!important}
+#z24Root .v24-box,#z24Root .v24-stat{background:linear-gradient(135deg,#113262,#081b3b)!important;color:#eff9ff!important;border:1px solid #2b5a96!important;box-shadow:0 9px 32px #000c2480,inset 0 1px #ffffff12!important}
+#z24Root .v24-btn{background:linear-gradient(110deg,#1858ed,#06bcd7)!important;color:#fff!important;border:1px solid #2ca9fd!important}
+#z24Root .v24-btn.subtle{background:#103364!important;color:#dff8ff!important;border:1px solid #356aa1!important}
+#z24Root .v24-btn.danger{background:#68344c!important;color:#ffd7df!important;border:1px solid #bd6682!important}
+#z24Root .v24-input,#z24Root input,#z24Root select,#z24Root textarea{background:#0d2b58!important;color:#f2faff!important;border:1px solid #36639a!important}
+#z24Root .v24-input::placeholder{color:#9cbce0!important}
+#z24Root .v24-table th{background:#0e3467!important;color:#d8efff!important;border-color:#2c5990!important}
+#z24Root .v24-table td{background:transparent!important;color:#e8f6ff!important;border-color:#254b7f!important}
+#z24Root .v24-table tr:nth-child(even){background:#0b2c5973!important}
+#z24Root .v24-table small,#z24Root .v24-muted{color:#b5ceeb!important}
+#z24Root .v24-alert{background:#3a2c12!important;border-color:#8f7430!important;color:#ffe9ac!important}
+#z24Root .v24-chip{background:#0b4f48!important;color:#94ffdb!important}
+#z24Root .v24-chip.block{background:#5b2235!important;color:#ffd7df!important}
+#z24Root .v24-chip.wait{background:#5d4311!important;color:#ffe2a0!important}
+#z23AdminPortal{background:radial-gradient(ellipse at 15% 10%,#123d74 0,transparent 38%),linear-gradient(155deg,#050c20,#071d43 57%,#061026)!important;color:#eff8ff!important}
+#z23AdminPortal .z23-card{background:linear-gradient(135deg,#113262,#081b3b)!important;color:#eff9ff!important;border:1px solid #2b5a96!important;box-shadow:0 9px 32px #000c2480,inset 0 1px #ffffff12!important}
+#z23AdminPortal .z23-btn{background:linear-gradient(110deg,#1858ed,#06bcd7)!important;color:#fff!important;border:1px solid #2ca9fd!important}
+#z23AdminPortal .z23-btn.light{background:#103364!important;color:#dff8ff!important;border:1px solid #356aa1!important}
+#z23AdminPortal .z23-table th{background:#0e3467!important;color:#d8efff!important;border-color:#2c5990!important}
+#z23AdminPortal .z23-table td{background:transparent!important;color:#e8f6ff!important;border-color:#254b7f!important}
+#z23AdminPortal .z23-table tr:nth-child(even){background:#0b2c5973!important}
+#z23AdminPortal .z23-muted,#z23AdminPortal small{color:#b5ceeb!important}
+#z23AdminPortal .z23-inp,#z23AdminPortal textarea,#z23AdminPortal input{background:#0d2b58!important;color:#f2faff!important;border:1px solid #36639a!important}
+#z23AdminPortal .z23-status{background:#0b4f48!important;color:#94ffdb!important}
+#z23AdminPortal .z23-chip{background:#103364!important;color:#dff8ff!important}
+#z23Fab{background:linear-gradient(110deg,#1858ed,#06bcd7)!important;border-color:#2ca9fd!important;color:#fff!important}
+.fin-chart{grid-template-columns:repeat(12,minmax(68px,1fr))!important;gap:10px!important;overflow-x:auto;padding-bottom:6px}
+.fin-chart-col small{white-space:nowrap}
+.page-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.tag{background:#113565!important;border:1px solid #356aa1!important;color:#e9f7ff!important}
+.notice{background:#12315d!important;border:1px solid #2f5c95!important;color:#def5ff!important}
+.notice.warn{background:#4a3a13!important;border-color:#9a8141!important;color:#fff1b5!important}
+
+
+/* V50 full-theme alignment for ZAVI ONE ADMIN: remove remaining pale sections */
+html,body,main,.workspace{color:#eff8ff!important}
+.receipt-preview,.mini-box,.demo-banner,.empty,.table-scroll,.toolbar,.page-head,.overview-cols,.steps,
+#z23AdminPortal .z23-tone,#z23AdminPortal article.z23-card,#z23AdminPortal .z23-wrap,
+#z24Root .v24-modal,#z24Root .v24-dialog,#z24Root .v24-pane,#z24Root .v24-form,
+#z24Root .v24-shell,#z24Root .v24-panel,#z24Root .v24-card,#z24Root .v24-top,
+[style*="background:#f8fcff"],[style*="background: #f8fcff"],[style*="background:#fff5de"],[style*="background: #fff5de"]{background:linear-gradient(135deg,#113262,#081b3b)!important;color:#eff9ff!important;border-color:#2b5a96!important;box-shadow:0 9px 32px #000c2480,inset 0 1px #ffffff12!important}
+.receipt-preview strong,.mini-box code,.empty strong,.demo-banner{color:#eff9ff!important}
+.receipt-preview,.mini-box,.demo-banner,.empty,.timeline-item small,.table-card small,.data-table td small{color:#b5ceeb!important}
+.z23-head p,.z23-muted,#z23AdminPortal small,#z24Root small,.subtle,.hint,.form-helper{color:#b5ceeb!important}
+#z23AdminPortal .z23-card textarea,#z23AdminPortal .z23-card input,#z23AdminPortal .z23-card select,
+#z24Root textarea,#z24Root input,#z24Root select{background:#0d2b58!important;color:#f2faff!important;border:1px solid #36639a!important}
+#z23AdminPortal .z23-card button,#z24Root .v24-btn,#z24Root .v24-chip{border-radius:12px!important}
+#z23AdminPortal .z23-card .z23-status{background:#103364!important;color:#dff8ff!important;border:1px solid #356aa1!important}
+#z23AdminPortal .z23-card .z23-chip{background:#0b4f48!important;color:#94ffdb!important;border:1px solid #178c82!important}
+.demo-banner{color:#fff1b5!important}
+
+/* V53 safely separate finance reports reset from irreversible customer deletion. */
+.z53-reset-center{border:1px solid #3866ad!important;background:linear-gradient(145deg,#101e42,#0a2752)!important;color:#f2faff!important}
+.z53-reset-center h2,.z53-reset-center h3{color:#f2faff!important}
+.z53-reset-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;margin-top:17px}
+.z53-reset-card{padding:18px;border:1px solid #2f609c;border-radius:18px;background:linear-gradient(135deg,#102f61,#081931);box-shadow:inset 0 1px #ffffff15}
+.z53-reset-card p{color:#d6e8ff!important;line-height:1.9}
+.z53-reset-card h3{margin:0 0 10px;font-size:17px}
+.z53-reset-card .z53-reset-note{font-size:13px;color:#aaccf0!important}
+.z53-reset-card button{margin-top:10px;min-height:44px}
+.z53-destructive{border-color:#a44b65!important;box-shadow:inset 0 1px #ffffff0a,0 0 0 1px #5e294448}
+.z53-destructive .button.danger{background:linear-gradient(110deg,#982b58,#e84e67)!important;color:white!important;border:1px solid #ef8ca1!important}
+.z53-reset-center button:disabled{opacity:.42;cursor:not-allowed}
+@media(max-width:760px){.z53-reset-grid{grid-template-columns:minmax(0,1fr)}}

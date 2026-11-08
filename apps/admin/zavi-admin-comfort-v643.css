@@ -1,0 +1,19 @@
+/* V64.3 ADMIN — preserve forms, data and access control; visual/readability only. */
+:root{--z643-admin-accent:#279bda}
+#appScreen .nav-item,#appScreen button,#modalBg button{transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
+#appScreen .nav-item:focus-visible,#appScreen button:focus-visible,#modalBg button:focus-visible,#authScreen :is(input,button,select):focus-visible{outline:3px solid #3ab8ee;outline-offset:2px}
+#appScreen .nav-item:not([disabled]):hover{transform:translateX(-2px)}
+#appScreen :is(.card,.stat-card,.kpi-card){border-radius:16px}
+#appScreen :is(input,select,textarea),#modalBg :is(input,select,textarea){line-height:1.65}
+#appScreen .table-wrap{overflow-x:auto}
+:root[data-zavi-theme="dark"] #appScreen :is(.card,.stat-card,.kpi-card) :is(h1,h2,h3,h4,b,strong),:root[data-zavi-theme="dark"] #modalBg :is(label,h2,h3){color:#f0f6ff}
+:root[data-zavi-theme="light"] #appScreen :is(.card,.stat-card,.kpi-card) :is(h1,h2,h3,h4,b,strong),:root[data-zavi-theme="light"] #modalBg :is(label,h2,h3){color:#182d46}
+@media(prefers-reduced-motion:reduce){#appScreen .nav-item,#appScreen button,#modalBg button{animation:none!important;transition:none!important;transform:none!important}}
+#appScreen .z643-update-open{white-space:nowrap;padding:8px 13px;font:inherit;font-size:12px;width:auto;min-width:95px}
+#appScreen .z643-update-panel{position:fixed;z-index:9000;top:80px;inset-inline-end:clamp(12px,4vw,52px);width:min(440px,calc(100vw - 24px));padding:24px;border:1px solid #6ca9cb77;border-radius:20px;background:#10253e;color:#f1f8ff;box-shadow:0 24px 64px #06152755;line-height:2}
+:root[data-zavi-theme="light"] #appScreen .z643-update-panel{background:#f8fcff;color:#153452;border-color:#9fc3de}
+#appScreen .z643-update-panel[hidden]{display:none!important}
+#appScreen .z643-update-panel h3{margin:0 0 9px;color:inherit}
+#appScreen .z643-update-panel p{font-size:13px;line-height:2;color:inherit}
+#appScreen .z643-update-panel button{margin-top:12px}
+@media(max-width:600px){#appScreen .z643-update-panel{top:68px;inset-inline-end:12px;padding:18px}}
