@@ -1,0 +1,7 @@
+/* V64.5 ADMIN: visual consistency only; payment and account control unchanged. */
+html[data-zavi-theme="light"] :is(.card,.settings-card,.modal-card,.modal,.panel){color:#183754!important}
+html[data-zavi-theme="light"] :is(.card,.settings-card,.modal-card,.modal,.panel) :is(label,h1,h2,h3,h4,b,strong){color:#183754!important}
+html[data-zavi-theme="dark"] :is(.card,.settings-card,.modal-card,.modal,.panel) :is(label,h1,h2,h3,h4){color:#edf6ff!important}
+html[data-zavi-theme="light"] :is(input:not([type=checkbox]),select,textarea){-webkit-text-fill-color:#19344e!important;color:#19344e!important;background:#f9fcff!important;border-color:#b1cadb!important}
+html[data-zavi-theme="dark"] :is(input:not([type=checkbox]),select,textarea){-webkit-text-fill-color:#edf6ff!important;color:#edf6ff!important;background:#153651!important;border-color:#6083a0!important}
+@media(prefers-reduced-motion:reduce){.card,.modal,.panel{transition:none!important;animation:none!important}}

@@ -1,0 +1,142 @@
+/* ZAVI ONE ADMIN 1.4.38 — iPad portrait+landscape navigation fix.
+ * The legacy drawer script and CSS disagreed: JS <=800px, layout <=1199px.
+ * Last stylesheet by design. Never change data, sign-in or stored layout sizes.
+ */
+:root {--z1438-admin-break:1199px;--z1438-drawer:clamp(274px,32vw,354px)}
+html.zavi-design-84 body #appScreen.app-shell:not([hidden]){
+ max-width:100%!important;min-width:0!important;box-sizing:border-box!important;
+}
+html.zavi-design-84 body #appScreen #view :is(.panel,.card,.admin-hero,.admin-kpi-grid,.zavi-clean-settings-hub,.z87-panel,.z88-panel){
+ min-width:0!important;max-width:100%!important;box-sizing:border-box!important;
+}
+html.zavi-design-84 body #appScreen #view :is(h1,h2,h3,p,button,span,label){
+ overflow-wrap:anywhere;
+}
+@media(min-width:1200px){
+ html.zavi-design-84 body #appScreen.app-shell:not([hidden]){
+   display:flex!important;flex-direction:row!important;min-height:100dvh!important;
+ }
+ html.zavi-design-84 body #appScreen .sidebar{
+   width:clamp(242px,19vw,296px)!important;max-width:none!important;
+   position:fixed!important;inset-block:0!important;inset-inline-start:0!important;
+   transform:none!important;visibility:visible!important;pointer-events:auto!important;
+   height:100dvh!important;z-index:130!important;
+ }
+ html.zavi-design-84 body #appScreen .workspace{
+   margin-inline-start:clamp(242px,19vw,296px)!important;margin-inline-end:0!important;
+   width:calc(100% - clamp(242px,19vw,296px))!important;
+   max-width:calc(100% - clamp(242px,19vw,296px))!important;
+   min-width:0!important;flex:1 1 auto!important;
+ }
+ html.zavi-design-84 body #appScreen #mobileMenu{display:none!important}
+ html.zavi-design-84 body #appScreen #view{width:100%!important}
+}
+@media(max-width:1199px){
+ html.zavi-design-84 body #appScreen.app-shell:not([hidden]){
+   display:block!important;grid-template-columns:unset!important;
+   position:relative!important;width:100%!important;max-width:100%!important;
+   min-width:0!important;margin:0!important;padding:0!important;
+   overflow:visible!important;transform:none!important;
+ }
+ html.zavi-design-84 body #appScreen .workspace{
+   display:block!important;position:relative!important;grid-column:1/-1!important;
+   width:100%!important;max-width:100%!important;min-width:0!important;
+   margin:0!important;margin-inline:0!important;inset:auto!important;
+   padding:0!important;flex:1 1 100%!important;
+   transform:none!important;zoom:1!important;
+ }
+ html.zavi-design-84 body #appScreen #view{
+   width:100%!important;min-width:0!important;max-width:100%!important;
+   height:auto!important;min-height:0!important;
+   margin:0!important;padding:clamp(12px,2.5vw,24px)!important;
+   overflow-x:clip!important;overflow-y:visible!important;
+ }
+ html.zavi-design-84 body #appScreen .topbar{
+   display:flex!important;flex-wrap:wrap!important;align-items:center!important;
+   gap:8px!important;width:100%!important;max-width:100%!important;
+   min-width:0!important;min-height:55px!important;height:auto!important;
+   padding:7px clamp(12px,2vw,24px)!important;
+ }
+ html.zavi-design-84 body #appScreen #mobileMenu{
+   display:inline-flex!important;align-items:center!important;justify-content:center!important;
+   position:relative!important;z-index:1330!important;
+   width:44px!important;height:44px!important;min-width:44px!important;
+   visibility:visible!important;opacity:1!important;pointer-events:auto!important;
+   touch-action:manipulation!important;
+   background:linear-gradient(135deg,#165dec,#02acd6)!important;color:#fff!important;
+   border:1px solid #76dfff!important;border-radius:12px!important;
+   box-shadow:0 5px 16px #004b9833!important;
+ }
+ html.zavi-design-84 body #appScreen .sidebar,
+ html.zavi-design-84 body #appScreen .sidebar.z426-is-closed{
+   position:fixed!important;box-sizing:border-box!important;
+   inset-block:0!important;inset-inline-start:0!important;inset-inline-end:auto!important;
+   width:min(var(--z1438-drawer),90vw)!important;
+   max-width:min(var(--z1438-drawer),90vw)!important;min-width:0!important;
+   height:100dvh!important;max-height:100dvh!important;min-height:0!important;
+   transform:translateX(108%)!important;visibility:hidden!important;pointer-events:none!important;
+   margin:0!important;z-index:2150!important;
+   display:flex!important;flex-direction:column!important;overflow-y:auto!important;
+   overflow-x:hidden!important;-webkit-overflow-scrolling:touch;
+   overscroll-behavior-y:contain!important;
+ }
+ html.zavi-design-84[lang^="en"] body #appScreen .sidebar,
+ html.zavi-design-84[dir="ltr"] body #appScreen .sidebar{
+   transform:translateX(-108%)!important;
+ }
+ html.zavi-design-84 body.mobile-drawer #appScreen .sidebar,
+ html.zavi-design-84 body #appScreen .sidebar.z426-is-open,
+ html.zavi-design-84[lang^="en"] body.mobile-drawer #appScreen .sidebar,
+ html.zavi-design-84[dir="ltr"] body.mobile-drawer #appScreen .sidebar{
+   transform:translateX(0)!important;visibility:visible!important;
+   pointer-events:auto!important;z-index:2150!important;
+   box-shadow:0 0 42px #0009!important;
+ }
+ html.zavi-design-84 body #z426-drawer-backdrop{
+   z-index:2140!important;background:rgba(2,13,35,.56)!important;
+ }
+ html.zavi-design-84 body.mobile-drawer #appScreen .workspace:before{
+   display:none!important;content:none!important;
+ }
+ html.zavi-design-84 body #appScreen .sidebar .zavi-v6-menu-scroll{
+   min-height:0!important;flex:1 1 auto!important;overflow-y:auto!important;
+ }
+ html.zavi-design-84 body #appScreen .sidebar .sidebar-bottom{flex-shrink:0!important}
+ html.zavi-design-84 body #appScreen #view :is(.admin-layout,.admin-analytics,.admin-secondary,.settings-grid){
+   width:100%!important;min-width:0!important;max-width:100%!important;
+   grid-template-columns:minmax(0,1fr)!important;
+ }
+ html.zavi-design-84 body #appScreen #view .z88-panel{width:100%!important}
+}
+@media(min-width:801px) and (max-width:1199px){
+ html.zavi-design-84 body #appScreen .sidebar .z426-close{display:none!important}
+ html.zavi-design-84 body #appScreen .sidebar{padding:20px 14px!important}
+}
+@media(max-width:800px){
+ html.zavi-design-84 body #appScreen .sidebar .z426-close{
+   display:inline-flex!important;position:relative!important;inset:auto!important;
+   width:auto!important;min-height:40px!important;align-self:start!important;
+   margin:0 0 8px!important;
+ }
+}
+@media(max-width:600px){
+ html.zavi-design-84 body #appScreen #view{padding:10px!important}
+ html.zavi-design-84 body #appScreen .topbar{padding-inline:9px!important}
+ html.zavi-design-84 body #appScreen #view :is(.admin-kpi-grid,.admin-grid-actions,.admin-quick-grid){
+   display:grid!important;grid-template-columns:minmax(0,1fr)!important;
+ }
+}
+html.zavi-design-84 body #appScreen #view :is(.panel,.card,.z88-panel){
+ border-radius:clamp(13px,1.5vw,21px)!important;
+ box-shadow:0 6px 26px #102a4b18!important;
+}
+html.zavi-design-84 body #appScreen .sidebar .nav-item:focus-visible,
+html.zavi-design-84 body #appScreen #mobileMenu:focus-visible{
+ outline:3px solid #0ec5f5!important;outline-offset:3px!important;
+}
+@media(prefers-reduced-motion:reduce){
+ html.zavi-design-84 body #appScreen .sidebar{transition:none!important}
+}
+
+/* Respect the auth gate even when vendor CSS defines a forced app-shell display. */
+html.zavi-design-84 body #appScreen.app-shell[hidden]{display:none!important;visibility:hidden!important;pointer-events:none!important}

@@ -1,0 +1,22 @@
+/* ZAVI ONE ADMIN V64.0 visual consistency — no changes to API or billing logic. */
+:root{--z640-admin-ease:cubic-bezier(.18,.8,.2,1)}
+html[data-zavi-theme=dark]{--z640-admin-text:#eff7ff;--z640-admin-muted:#c2d4e5;--z640-admin-field:#183956;--z640-admin-edge:#63819a}
+html[data-zavi-theme=light]{--z640-admin-text:#18324e;--z640-admin-muted:#436079;--z640-admin-field:#fff;--z640-admin-edge:#9fb9d1}
+body,.app-shell,button,input,textarea,select,table{font-family:'Estedad','Vazirmatn',Tahoma,system-ui,sans-serif!important}
+html[data-zavi-theme] .app-shell :is(.card,.panel,.table-card,.modal-card,.stat-card){border-radius:18px}
+/* Older light-mode sheets may leave white cards after switching to dark; set surfaces together with text. */
+html[data-zavi-theme=dark] .app-shell :is(.card,.panel,.table-card,.modal-card,.stat-card){background:#132b45!important;border-color:#496a86!important}
+html[data-zavi-theme=light] .app-shell :is(.card,.panel,.table-card,.modal-card,.stat-card){background:#fff!important;border-color:#c5d9e8!important}
+html[data-zavi-theme=dark] .app-shell .table-card :is(td,th){background:#183651!important;border-color:#496a86!important}
+html[data-zavi-theme=light] .app-shell .table-card :is(td,th){background:#fff!important;border-color:#c5d9e8!important}
+html[data-zavi-theme] .app-shell :is(.card,.panel,.table-card,.modal-card) :is(h1,h2,h3,h4,td,th,strong,b):not(.badge):not(.pill){color:var(--z640-admin-text)!important}
+html[data-zavi-theme] .app-shell :is(.card,.panel,.table-card,.modal-card) :is(.muted,small,label,p){color:var(--z640-admin-muted)!important;opacity:1!important}
+html[data-zavi-theme] .app-shell :is(input:not([type=checkbox]):not([type=radio]),textarea,select){color:var(--z640-admin-text)!important;-webkit-text-fill-color:var(--z640-admin-text)!important;background:var(--z640-admin-field)!important;border-color:var(--z640-admin-edge)!important}
+html[data-zavi-theme] .app-shell :is(input,textarea)::placeholder{color:var(--z640-admin-muted)!important;opacity:1}
+html[data-zavi-theme] .app-shell :is(.nav-item,button):focus-visible{outline:3px solid #11bfd0!important;outline-offset:3px!important}
+html[data-zavi-theme] .app-shell :is(.card,.panel,.stat-card):hover{box-shadow:0 12px 32px #08304a23}
+@keyframes z640-admin-highlight{from{opacity:.6;transform:translateY(9px)}to{opacity:1;transform:none}}
+.app-shell .modal-card{animation:z640-admin-highlight .35s var(--z640-admin-ease) both}
+@media(prefers-reduced-motion:reduce){.app-shell .modal-card{animation:none!important}.app-shell :is(.card,.panel,.stat-card):hover{transform:none!important}}
+@media(max-width:760px){.app-shell :is(.card,.panel,.stat-card):hover{transform:none!important}}
+@media print{.app-shell :is(.card,.panel,.stat-card){transform:none!important;box-shadow:none!important}}

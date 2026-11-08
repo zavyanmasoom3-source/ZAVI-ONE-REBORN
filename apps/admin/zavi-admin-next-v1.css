@@ -1,0 +1,190 @@
+/* ZAVI ONE ADMIN 1.0 — official Z1 ADMIN, responsive owner portal.
+   Presentation only: does not grant any access or alter financial records. */
+:root{--za-navy:#071d46;--za-royal:#0767e2;--za-cyan:#10cbe3;--za-bg:#edf5ff;--za-panel:#fff;--za-text:#122b58;--za-muted:#5c7395;--za-line:#dce9f9;--za-shadow:0 10px 32px rgba(22,65,138,.07);--za-radius:19px}
+html{scroll-behavior:smooth;color-scheme:light}
+html[data-zavi-theme="dark"]{--za-bg:#071b34;--za-panel:#0f2b4d;--za-text:#e9f4ff;--za-muted:#9db7d1;--za-line:#22446e;--za-shadow:0 8px 26px rgba(0,0,0,.2);color-scheme:dark}
+html,body{max-width:100%;overflow-x:clip}
+body{font-family:Estedad,Vazirmatn,Tahoma,Arial,sans-serif!important;background:var(--za-bg)!important;color:var(--za-text)!important;line-height:1.7}
+#appScreen.app-shell{min-height:100dvh;background:var(--za-bg)!important;overflow:visible!important}
+#appScreen .sidebar{width:258px!important;padding:21px 13px 16px!important;background:linear-gradient(165deg,#05163a 0%,#071f4c 46%,#042c63 100%)!important;color:#eaf5ff!important;box-shadow:-8px 0 30px #0416301a!important;min-height:100dvh!important;height:100dvh!important;position:fixed!important;right:0!important;top:0!important;left:auto!important;display:flex!important;flex-direction:column!important;z-index:600!important;transform:none!important;overflow:hidden!important}
+#appScreen .sidebar .brand{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px!important;padding:6px 10px 13px;margin:0 0 8px;border-bottom:1px solid #3d73a344}
+#appScreen .sidebar .brand img{width:80px!important;height:80px!important;border-radius:20px!important;object-fit:contain!important;box-shadow:0 0 16px #28c4ff25}
+#appScreen .sidebar .brand strong{font-size:17px!important;letter-spacing:.3px!important;color:#fff!important}
+#appScreen .sidebar .brand strong span{color:#30d9f8!important}
+#appScreen .sidebar .brand small{font-size:10px!important;text-align:center!important;color:#99bcdb!important}
+#appScreen .sidebar .zavi-v6-menu-scroll{flex:1!important;min-height:0!important;overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior:contain!important;-webkit-overflow-scrolling:touch!important;padding:5px 2px 22px!important;scrollbar-color:#347bb2 transparent}
+#appScreen .sidebar .sidebar-caption{font-size:11px!important;color:#a1c5e0!important;margin:6px 9px 10px!important;text-align:right!important}
+#appScreen .sidebar .nav{display:flex!important;flex-direction:column!important;gap:4px!important}
+#appScreen .sidebar .nav-item{width:100%!important;text-align:right!important;justify-content:flex-start!important;min-height:43px!important;max-height:none!important;height:auto!important;display:flex!important;align-items:center!important;gap:11px!important;white-space:normal!important;padding:9px 12px!important;font-size:12px!important;font-weight:700!important;border-radius:11px!important;background:transparent!important;border:1px solid transparent!important;color:#bfd7ee!important;opacity:1!important;line-height:1.55!important;transition:background .16s,color .16s,transform .16s!important;box-shadow:none!important}
+#appScreen .sidebar .nav-item span{display:inline-flex!important;align-items:center;justify-content:center!important;flex:0 0 22px!important;font-size:20px!important;color:#b9eaff!important;line-height:1!important;filter:none!important}
+#appScreen .sidebar .nav-item:hover{background:#1372bd55!important;color:#fff!important;transform:translateX(-2px)}
+#appScreen .sidebar .nav-item.selected{color:#fff!important;background:linear-gradient(105deg,#086bea,#1baeea)!important;border-color:#71d9ff80!important;box-shadow:0 7px 19px #003f9c40!important}
+#appScreen .sidebar .nav-item.selected span{color:#fff!important}
+#appScreen .sidebar .sidebar-bottom{flex:0 0 auto!important;padding:12px 4px 0!important;border-top:1px solid #95bfe634;max-height:155px!important;overflow:auto!important}
+#appScreen .sidebar .sidebar-bottom .zavi-side-secure{margin:0!important;padding:5px 0!important;max-height:62px!important}
+#appScreen .sidebar .role-badge{font-size:11px!important;color:#96f5ce!important}
+#appScreen .sidebar .logout-btn{padding:8px 10px!important;margin-top:4px!important;min-height:38px!important;border-radius:11px!important;font-size:12px!important;background:#122c54!important;color:#fff!important;border:1px solid #396a9955!important}
+#appScreen .workspace{margin-right:258px!important;width:calc(100% - 258px)!important;min-height:100dvh!important;min-width:0!important;background:var(--za-bg)!important;overflow:visible!important;display:flex!important;flex-direction:column!important}
+#appScreen .topbar{position:sticky!important;top:0!important;z-index:100!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:10px!important;flex-wrap:wrap!important;min-height:66px!important;height:auto!important;padding:11px 21px!important;background:var(--za-panel)!important;color:var(--za-text)!important;border-bottom:1px solid var(--za-line)!important;box-shadow:0 2px 12px #0a44820d!important}
+#appScreen .topbar .breadcrumbs,#appScreen .topbar .breadcrumbs b{color:var(--za-text)!important;font-size:13px!important}
+#appScreen .topbar .top-actions{display:flex;align-items:center;flex-wrap:wrap;gap:9px!important}
+#appScreen .topbar .live-status{color:var(--za-text)!important;font-size:12px!important;border:1px solid var(--za-line)!important;border-radius:999px!important;background:var(--za-bg)!important;padding:7px 12px!important}
+#appScreen .topbar .icon-btn{border:1px solid var(--za-line)!important;border-radius:12px!important;width:39px!important;height:39px!important;color:#067bdc!important;background:var(--za-bg)!important}
+#appScreen .topbar .avatar{background:linear-gradient(135deg,#0770ea,#11c8dc)!important;border-radius:11px!important}
+#appScreen .topbar select{color:var(--za-text)!important;background:var(--za-panel)!important;border:1px solid var(--za-line)!important}
+#view{width:100%!important;max-width:1750px!important;flex:1!important;padding:20px clamp(13px,2.1vw,30px) 36px!important;margin:0 auto!important;min-height:0!important;color:var(--za-text)!important;background:transparent!important;overflow:visible!important}
+#appScreen footer{padding:20px!important;margin-top:auto!important;border-top:1px solid var(--za-line)!important;background:var(--za-panel)!important;color:var(--za-muted)!important}
+#view .panel,#view .metric,#view .fin-metric,#view .receipt-preview,#view .mini-box,#view .admin-kpi{border:1px solid var(--za-line)!important;background:var(--za-panel)!important;color:var(--za-text)!important;box-shadow:var(--za-shadow)!important;border-radius:var(--za-radius)!important;filter:none!important;backdrop-filter:none!important;opacity:1!important}
+#view .panel{padding:20px!important;margin-bottom:16px!important}
+#view .panel h2,#view .panel h3,#view .page-head h1,#view .metric strong,#view .fin-metric strong{color:var(--za-text)!important}
+#view .panel .form-helper,#view .page-head p,#view .metric small,#view .metric .label,#view .small-muted,#view .panel p,#view .admin-muted{color:var(--za-muted)!important}
+#view .panel-heading{gap:9px!important;flex-wrap:wrap!important}
+#view .page-head{margin-bottom:16px!important;flex-wrap:wrap!important;gap:10px!important}
+#view .page-head h1{font-size:clamp(19px,2vw,25px)!important}
+#view .data-table{color:var(--za-text)!important;border-collapse:separate!important;border-spacing:0!important}
+#view .data-table thead,#view .data-table th{background:var(--za-bg)!important;color:var(--za-text)!important}
+#view .data-table tbody tr{background:var(--za-panel)!important}
+#view .data-table td{color:var(--za-text)!important;border-bottom:1px solid var(--za-line)!important}
+#view .data-table td small{color:var(--za-muted)!important}
+#view .table-scroll{max-width:100%!important;overflow-x:auto!important;overscroll-behavior-inline:contain!important;-webkit-overflow-scrolling:touch!important}
+#view input,#view select,#view textarea,#modalBg input,#modalBg select,#modalBg textarea{background:var(--za-panel)!important;color:var(--za-text)!important;border:1px solid var(--za-line)!important;max-width:100%!important}
+#view input::placeholder{color:var(--za-muted)!important}
+#view .button.primary,#appScreen .button.primary{background:linear-gradient(105deg,#0869e8,#1ebed8)!important;color:#fff!important;border:0!important;box-shadow:0 6px 16px #058cde30!important}
+#view .button.ghost{background:var(--za-bg)!important;color:var(--za-text)!important;border-color:var(--za-line)!important}
+#view .tag{background:var(--za-bg)!important;color:var(--za-text)!important;border:1px solid var(--za-line)!important}
+#view .notice{background:var(--za-bg)!important;border:1px solid var(--za-line)!important;color:var(--za-text)!important;border-radius:13px!important}
+#view .demo-banner{background:#fff2cd!important;color:#633b00!important;border:1px solid #f9d37b!important}
+#view .admin-hero{position:relative!important;display:flex;justify-content:space-between;align-items:center;gap:24px;overflow:hidden;padding:clamp(20px,3vw,36px)!important;margin-bottom:16px;border-radius:22px;background:radial-gradient(circle at 75% 15%,#147bff 0%,transparent 36%),linear-gradient(110deg,#07245b 0%,#06468c 56%,#007bca 100%)!important;color:#fff!important;min-height:210px;border:1px solid #1ac2fc7b;box-shadow:0 15px 34px #05569f25;isolation:isolate}
+.admin-hero:before,.admin-hero:after{content:"";position:absolute;inset:auto auto -125px -60px;width:420px;height:250px;border:2px solid #12d7fca8;border-radius:50%;transform:rotate(-18deg);pointer-events:none;z-index:-1}
+.admin-hero:after{inset:-160px -65px auto auto;width:400px;opacity:.5}
+#view .admin-hero h1{font-family:Arial,Tahoma,sans-serif!important;direction:ltr!important;text-align:right!important;font-weight:950!important;letter-spacing:1px!important;font-size:clamp(26px,3.2vw,44px)!important;margin:4px 0!important;color:white!important;line-height:1.15!important}
+#view .admin-hero h1 em{font-style:normal!important;color:#22daf5!important}
+#view .admin-hero h2{font-size:clamp(17px,2vw,26px)!important;color:#fff!important;margin:7px 0 0!important}
+#view .admin-hero p,#view .admin-hero-kicker{color:#d4eeff!important;font-size:13px!important}
+#view .admin-hero-art{display:flex!important;align-items:center;flex-direction:column;justify-content:center;gap:7px;min-width:170px}
+#view .admin-hero-art img{width:150px!important;height:150px!important;border-radius:32px!important;box-shadow:0 15px 30px #05102b55;object-fit:contain}
+#view .admin-hero-art span{color:#d5f6ff!important;font-size:12px!important}
+#view .admin-kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin:0 0 16px}
+#view .admin-kpi{min-height:145px;display:flex;flex-direction:column;align-items:flex-start;gap:3px;padding:16px;overflow:hidden;position:relative}
+#view .admin-kpi:after{content:"";position:absolute;height:70px;width:95px;left:-25px;bottom:-35px;border-radius:50%;background:var(--icon-halo);opacity:.7}
+#view .admin-kpi .kpi-ico{color:var(--icon-color)!important;background:var(--icon-halo)!important;width:34px;height:34px;border-radius:11px;display:grid;place-items:center;font-size:20px;font-weight:850;align-self:flex-start}
+#view .admin-kpi small{font-size:12px!important;color:var(--za-muted)!important;font-weight:700}
+#view .admin-kpi strong{font-size:26px!important;color:var(--za-text)!important;line-height:1.2!important}
+#view .admin-kpi .kpi-foot,#view .admin-kpi>span:last-child{font-size:10px!important;color:var(--za-muted)!important;line-height:1.7!important}
+#view .admin-kpi.blue{--icon-color:#086bdf;--icon-halo:#dcecff}
+#view .admin-kpi.green{--icon-color:#00966e;--icon-halo:#dbfaef}
+#view .admin-kpi.orange{--icon-color:#a86100;--icon-halo:#fff0d2}
+#view .admin-kpi.red{--icon-color:#da425f;--icon-halo:#ffe5eb}
+#view .admin-kpi.purple{--icon-color:#7f42ce;--icon-halo:#f0e5ff}
+#view .admin-analytics{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(260px,1fr);gap:14px;align-items:stretch}
+#view .admin-analytics .panel{margin-bottom:14px!important;min-width:0!important}
+#view .admin-bars{display:grid;gap:14px;margin:24px 0}
+#view .admin-bar-row{display:grid;grid-template-columns:88px minmax(0,1fr) 30px;align-items:center;gap:10px;font-size:12px;font-weight:700;color:var(--za-text)}
+#view .admin-bar-track{height:13px;border-radius:25px;background:var(--za-bg);overflow:hidden;border:1px solid var(--za-line)}
+#view .admin-bar-track i{display:block;height:100%;border-radius:25px;transition:width .4s}
+#view .admin-donut-wrap{display:flex;align-items:center;justify-content:center;gap:18px;margin:20px auto;flex-wrap:wrap}
+#view .admin-donut{width:170px;height:170px;flex:0 0 170px;display:grid;place-items:center;border-radius:50%;background:#daeafe;position:relative}
+#view .admin-donut>div{width:118px;height:118px;border-radius:50%;display:flex;flex-direction:column;justify-content:center;align-items:center;background:var(--za-panel);color:var(--za-text)}
+#view .admin-donut b{font-size:30px;line-height:1.2}
+#view .admin-donut small{font-size:12px;color:var(--za-muted)}
+#view .admin-legend{display:grid;gap:9px;min-width:120px}
+#view .admin-legend>div{display:flex;align-items:center;gap:8px;color:var(--za-text);font-size:12px}
+#view .admin-legend>div span{width:8px;height:8px;border-radius:50%}
+#view .admin-legend>div b{margin-right:auto;font-variant-numeric:tabular-nums}
+#view .admin-secondary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+#view .admin-secondary>.panel{min-width:0!important}
+#view .admin-list{display:grid;gap:3px}
+#view .admin-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 0;border-bottom:1px solid var(--za-line);min-width:0}
+#view .admin-item:last-child{border:0}
+#view .admin-item>div{min-width:0;flex:1}
+#view .admin-item b,#view .admin-item strong{font-size:12px;color:var(--za-text)!important;overflow-wrap:anywhere}
+#view .admin-item small{display:block;color:var(--za-muted)!important;font-size:10px}
+#view .admin-item .button{font-size:11px!important;padding:7px 9px!important}
+#view .admin-item .status{white-space:nowrap;font-size:10px!important}
+#view .admin-quick-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
+#view .admin-quick-grid button{border:1px solid var(--za-line);background:var(--za-bg);color:var(--za-text);border-radius:14px;padding:13px 5px;display:grid;place-items:center;gap:6px;font-weight:700;font-size:11px}
+#view .admin-quick-grid button span{display:grid;place-items:center;width:35px;height:35px;background:linear-gradient(120deg,#087be8,#11c9e9);color:#fff;border-radius:12px;font-size:19px}
+#view .admin-quick-grid button:hover{border-color:#39bfe4;transform:translateY(-2px)}
+#appScreen .admin-mobile-nav,#appScreen+.admin-mobile-nav,.admin-mobile-nav{display:none!important}
+#appScreen .mobile-menu{background:#106ae8!important;color:white!important;border:0!important;border-radius:11px!important;min-width:39px!important;height:39px!important}
+.admin-drawer-scrim{display:none;position:fixed;inset:0;background:rgba(2,10,29,.62);z-index:590;touch-action:auto}
+#modalBg:not([hidden]){z-index:1500!important;overflow-y:auto!important;overscroll-behavior:contain!important;-webkit-overflow-scrolling:touch!important;max-height:100dvh!important}
+#modalBg .modal-card{color:var(--za-text)!important;background:var(--za-panel)!important;border-radius:20px!important;max-height:calc(100dvh - 28px)!important;overflow-y:auto!important;overscroll-behavior:contain!important}
+#modalBg .modal-card .modal-head h2{color:var(--za-text)!important}
+#modalBg .modal-card .button.primary{background:linear-gradient(120deg,#0973ef,#12bfd8)!important;color:#fff!important}
+/* Secure login + official logo */
+#authScreen.auth-wrapper{background:#eaf4ff!important;min-height:100dvh!important}
+#authScreen .auth-card{background:#fff!important;color:#12305b!important;border-radius:24px!important;box-shadow:0 20px 58px #09285819!important;margin:clamp(14px,3vw,48px) auto!important;padding:clamp(24px,3.8vw,52px)!important;max-width:535px!important}
+#authScreen .auth-logo{justify-content:center!important;flex-direction:column!important;gap:8px!important}
+#authScreen .auth-logo img{width:106px!important;height:106px!important;border-radius:25px!important;object-fit:cover!important}
+#authScreen .auth-logo strong{font-size:24px!important;color:#073a78!important}
+#authScreen .auth-logo small{font-size:11px!important;color:#2085b5!important}
+#authScreen h1{color:#072d63!important;font-family:Arial,Tahoma,sans-serif!important;font-size:clamp(23px,3vw,31px)!important;direction:ltr!important;text-align:center!important}
+#authScreen input,#authScreen select{background:#f7fbff!important;color:#14365f!important;border-color:#c7dcec!important}
+#authScreen .hint,#authScreen .form-group label,#authScreen .security-note{color:#587291!important}
+#authScreen .auth-promo{background:radial-gradient(circle at 35% 25%,#129ce9 0%,transparent 38%),linear-gradient(132deg,#061a48 5%,#06438d 100%)!important}
+#authScreen .auth-promo h2{font-size:clamp(28px,3.7vw,50px)!important}
+#authScreen .auth-promo .capsule{background:#18c5ec20!important}
+/* Opening animation is short and transform-only; reduced motion is respected */
+.zavi-admin-splash{position:fixed;inset:0;z-index:4000;display:grid;place-items:center;overflow:hidden;background:radial-gradient(ellipse at 50% 25%,#106bd2 0%,#041d53 58%,#020c2a 100%);color:#fff;pointer-events:auto;opacity:1;transition:opacity .48s ease,visibility .48s ease}
+.zavi-admin-splash.is-hidden{opacity:0;visibility:hidden;pointer-events:none}
+.zavi-admin-splash .splash-glow{position:absolute;width:min(100vw,750px);height:min(100vw,750px);border-radius:50%;border:1px solid #25d9fd55;box-shadow:0 0 0 72px #07beed13,0 0 0 155px #1592ff0a;animation:adminPulse 1.8s ease-in-out infinite alternate;pointer-events:none}
+.zavi-admin-splash .splash-content{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:2;padding:20px;text-align:center;animation:adminReveal .65s ease both}
+.zavi-admin-splash img{object-fit:cover;width:min(30vw,128px);height:min(30vw,128px);border-radius:27px;box-shadow:0 0 30px #0ceaff70;border:1px solid #88f4ff8e}
+.zavi-admin-splash strong{font-size:clamp(22px,5vw,44px);letter-spacing:1px;direction:ltr;font-family:Arial,Tahoma,sans-serif!important;font-weight:950}
+.zavi-admin-splash strong em{font-style:normal;color:#20e8f2}
+.zavi-admin-splash span{font-size:clamp(15px,3vw,24px);font-weight:800}
+.zavi-admin-splash small{font-size:12px;color:#bddff7}
+.zavi-admin-splash .splash-progress{width:min(75vw,290px);height:5px;border-radius:50px;background:#f5ffff36;margin-top:18px;overflow:hidden}
+.zavi-admin-splash .splash-progress i{display:block;width:85%;height:100%;background:linear-gradient(90deg,#00a4fa,#24e2ef);border-radius:50px;transform:translateX(100%);animation:adminLoad 1.2s cubic-bezier(.25,.8,.25,1) forwards}
+@keyframes adminPulse{from{transform:scale(.91);opacity:.65}to{transform:scale(1.04);opacity:1}}
+@keyframes adminReveal{from{opacity:0;transform:translateY(16px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes adminLoad{to{transform:translateX(0)}}
+@media(max-width:1250px){#view .admin-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}#view .admin-quick-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:1000px){#appScreen .sidebar{width:225px!important}#appScreen .workspace{width:calc(100% - 225px)!important;margin-right:225px!important}#view .admin-analytics{grid-template-columns:1fr}#view .admin-secondary{grid-template-columns:1fr}}
+@media(max-width:760px){
+ body{overscroll-behavior-y:auto!important}
+ #appScreen .workspace{margin-right:0!important;width:100%!important;min-height:100dvh!important;padding-bottom:calc(69px + env(safe-area-inset-bottom))!important}
+ #appScreen .sidebar{width:min(305px,86vw)!important;right:0!important;transform:translateX(106%)!important;transition:transform .22s ease!important;z-index:605!important;padding:12px 12px max(16px,env(safe-area-inset-bottom))!important}
+ body.mobile-drawer #appScreen .sidebar{transform:translateX(0)!important}
+ body.mobile-drawer{overflow:hidden!important;touch-action:auto}
+ body.mobile-drawer #adminDrawerScrim{display:block!important}
+ #appScreen .sidebar .brand{flex-direction:row!important;justify-content:flex-start!important}
+ #appScreen .sidebar .brand img{width:53px!important;height:53px!important;border-radius:13px!important}
+ #appScreen .topbar{position:sticky!important;top:0!important;padding:10px 12px!important;min-height:57px!important;gap:8px!important}
+ #appScreen .topbar .breadcrumbs{font-size:11px!important;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+ #appScreen .topbar .breadcrumbs b{font-size:11px!important}
+ #appScreen .topbar .top-actions{gap:5px!important}
+ #appScreen .topbar .live-status{max-width:155px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10px!important;padding:4px 6px!important}
+ #appScreen .topbar .zavi-language-switch select{max-width:95px!important;font-size:11px!important;padding:5px!important}
+ #view{padding:13px 12px 25px!important}
+ #view .admin-hero{padding:17px 16px!important;min-height:175px!important;gap:4px!important;align-items:center!important}
+ #view .admin-hero h1{font-size:clamp(20px,4.7vw,30px)!important}
+ #view .admin-hero h2{font-size:17px!important}
+ #view .admin-hero p{font-size:11px!important}
+ #view .admin-hero-art{min-width:75px!important;gap:4px}
+ #view .admin-hero-art img{width:72px!important;height:72px!important;border-radius:17px!important}
+ #view .admin-hero-art span{font-size:10px!important}
+ #view .admin-hero .button.primary{font-size:11px!important;padding:9px 11px!important}
+ #view .admin-kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+ #view .admin-kpi{padding:13px!important;min-height:124px!important}
+ #view .admin-kpi strong{font-size:22px!important}
+ #view .admin-analytics{grid-template-columns:1fr}
+ #view .admin-secondary{grid-template-columns:1fr}
+ #view .admin-quick-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+ #view .panel{padding:14px!important;border-radius:15px!important}
+ #view .panel-heading h2{font-size:15px!important}
+ #view .page-head{display:flex!important;flex-direction:column!important;align-items:stretch!important}
+ #view .metric-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ #view .admin-donut{width:145px;height:145px;flex-basis:145px}
+ #view .admin-donut>div{width:100px;height:100px}
+ #appScreen .admin-mobile-nav,#appScreen+.admin-mobile-nav,.admin-mobile-nav{position:fixed!important;bottom:0!important;left:0!important;right:0!important;display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:0!important;z-index:550!important;background:#061f49f5!important;color:#e6f6ff!important;border-top:1px solid #35bdfa70!important;padding:6px 7px max(8px,env(safe-area-inset-bottom))!important;box-shadow:0 -8px 25px #0616342b!important}
+ .admin-mobile-nav button{border:0!important;background:transparent!important;color:#b2c9e8!important;border-radius:12px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:2px!important;min-width:0!important;min-height:52px!important;font-size:20px!important;line-height:1!important;font-weight:800!important}
+ .admin-mobile-nav button span{font-size:10px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;max-width:100%!important}
+ .admin-mobile-nav button.selected{background:linear-gradient(115deg,#0764db,#08b5d7)!important;color:#fff!important}
+ #modalBg .modal-card{max-height:calc(100dvh - 18px)!important;width:calc(100vw - 14px)!important;padding:13px!important}
+}
+@media(max-width:390px){#view .admin-hero-art{display:none!important}#view .admin-bar-row{grid-template-columns:75px minmax(0,1fr) 28px;gap:5px}#view .admin-item{flex-wrap:wrap}#view .admin-legend{min-width:100px}#appScreen .topbar .live-status{max-width:110px}}
+@media(prefers-reduced-motion:reduce){.zavi-admin-splash *,#appScreen .sidebar .nav-item,#view .admin-quick-grid button{animation:none!important;transition:none!important}}
+.admin-mobile-nav[hidden],#adminDrawerScrim[hidden]{display:none!important}
+@media (max-width:760px){#appScreen .sidebar-bottom{max-height:140px!important}#appScreen .sidebar .zavi-v6-menu-scroll{padding-bottom:42px!important}}
