@@ -19,27 +19,27 @@ const context={
  rows:[customer],archivedRows:[],lastActionBusy:false,mode:'live',
  navigator:{onLine:true},allowAdmin:true,promptName:customer.workspace_name,
  confirmAllowed:true,events:[],rpcCalls:[],serverArchived:false,
- isMainAdmin(){return this.allowAdmin},
- toast(t,bad){this.events.push({msg:t,error:!!bad})},
- confirm(){this.events.push('confirm');return this.confirmAllowed},
- prompt(){this.events.push('typed');return this.promptName},
+ isMainAdmin(){return context.allowAdmin},
+ toast(t,bad){context.events.push({msg:t,error:!!bad})},
+ confirm(){context.events.push('confirm');return context.confirmAllowed},
+ prompt(){context.events.push('typed');return context.promptName},
  async api(url,request){
-  this.rpcCalls.push({url,request});
+  context.rpcCalls.push({url,request});
   if(url.endsWith('/zavi_admin_trash_customer')){
    assert.equal(request.body.p_workspace_id,id);
-   assert.equal(request.method,'POST');this.serverArchived=true;return true;
+   assert.equal(request.method,'POST');context.serverArchived=true;return true;
   }
   if(url.endsWith('/zavi_admin_restore_trash_customer')){
    assert.equal(request.body.p_workspace_id,id);
-   this.serverArchived=false;return true;
+   context.serverArchived=false;return true;
   }
   throw Error('Unexpected RPC '+url);
  },
  async fetchRows(){
-  this.archivedRows=this.serverArchived?[customer]:[];
-  this.rows=this.serverArchived?[]:[customer];
+  context.archivedRows=context.serverArchived?[customer]:[];
+  context.rows=context.serverArchived?[]:[customer];
  },
- render(){this.events.push('render')}
+ render(){context.events.push('render')}
 };
 context.globalThis=context;
 const script=vm.createScript(handlers+'\nglobalThis.trashQa=archiveCustomer;globalThis.restoreQa=restoreCustomer;', {filename:'admin-trash-source.js'});
