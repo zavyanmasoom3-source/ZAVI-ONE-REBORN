@@ -54,6 +54,13 @@ html[data-zavi-appearance="glass"] {
   border-color:var(--zds-danger); outline:2px solid var(--zds-danger);
   outline-offset:0;
 }
+.zds-login-advanced {margin-block:8px;padding:8px 12px;
+  border:1px solid var(--zds-border);border-radius:var(--zds-radius-sm);
+  background:var(--zds-surface-alt);color:var(--zds-text)}
+.zds-login-advanced > summary {cursor:pointer;min-height:36px;
+  display:flex;align-items:center;font-size:12px;font-weight:650}
+.zds-login-advanced[open] > summary {margin-block-end:8px}
+.zds-login-advanced .form-group {min-width:0;max-width:100%}
 .zds-password-row {display:flex;gap:6px;align-items:center;min-width:0;max-width:100%}
 .zds-password-row > input {flex:1 1 0;width:0!important;min-width:0!important;max-width:100%;box-sizing:border-box}
 .zds-password-toggle {
