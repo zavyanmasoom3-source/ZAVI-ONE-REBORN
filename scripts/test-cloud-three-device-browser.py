@@ -111,7 +111,14 @@ def configure(dev,name,bridge):
 def mutate(dev,js):
     result=dev.eval("""(()=>{
        const ok=commit(n=>{%s});
-       return {ok,tx:db.tx.length,updatedAt:db.updatedAt};
+       return {ok,tx:db.tx.length,updatedAt:db.updatedAt,
+         cloudCanEdit:window.zaviCloudCanEdit?.(),
+         tenantBound:window.zaviTenantIsBound?.(),
+         cloud:window.zaviCloudRestoreInfo?.(),
+         accessDiagnostic:window.zaviAccessDiagnostic?.(),
+         key:typeof KEY==='string'?KEY:null,
+         storageBytes:JSON.stringify(db).length,
+         notice:document.getElementById('content')?.innerText.slice(-250)};
     })()"""%js)
     assert result['ok'] is True,result
 
