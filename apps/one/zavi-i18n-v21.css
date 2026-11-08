@@ -1,0 +1,20 @@
+/* v21: clearer Persian and Pashto in dark UI; system fonts only, no third-party fetching. */
+html[data-zavi-lang="fa-AF"],html[data-zavi-lang="ps-AF"]{direction:rtl}
+html[data-zavi-lang="fa-AF"] body,html[data-zavi-lang="fa-AF"] :is(button,input,select,textarea),html[data-zavi-lang="fa-AF"] :is(h1,h2,h3,h4,h5,p,label,span,a,th,td){font-family:'Noto Sans Arabic','Noto Naskh Arabic',Tahoma,'Segoe UI',Arial,sans-serif!important;font-feature-settings:'kern' 1;letter-spacing:0!important}
+html[data-zavi-lang="ps-AF"] body,html[data-zavi-lang="ps-AF"] :is(button,input,select,textarea),html[data-zavi-lang="ps-AF"] :is(h1,h2,h3,h4,h5,p,label,span,a,th,td){font-family:'Noto Naskh Arabic','Noto Sans Arabic',Tahoma,'Segoe UI',Arial,sans-serif!important;font-feature-settings:'kern' 1;letter-spacing:0!important}
+html[data-zavi-lang="fa-AF"] :is(button,input,select,textarea,p,label,span,th,td,a),html[data-zavi-lang="ps-AF"] :is(button,input,select,textarea,p,label,span,th,td,a){line-height:1.9!important}
+html[data-zavi-lang="fa-AF"] :is(input,select,textarea,button),html[data-zavi-lang="ps-AF"] :is(input,select,textarea,button){font-size:max(15px,1em)}
+html[data-zavi-lang="ps-AF"] :is(button,input,select,textarea,p,label,span,th,td,a){line-height:2!important}
+html[data-zavi-lang="en"] body,html[data-zavi-lang="en"] :is(button,input,select,textarea,h1,h2,h3,p,label,span,a,td,th){font-family:'Segoe UI',Inter,system-ui,Arial,sans-serif!important;letter-spacing:normal;line-height:1.55}
+html[data-zavi-lang="en"] {direction:ltr}
+/* Do not mirror actual financial values, account numbers, phone numbers or dates. */
+[dir="ltr"], input[type="tel"],input[type="email"],input[type="number"]{unicode-bidi:isolate}
+:is(.card,.panel,.settings-card,.stat,.summary-card,.report-stat,.zavi-phonebook){overflow-wrap:anywhere}
+.zavi-date-chip{display:flex;gap:6px;flex-wrap:wrap;align-items:center;max-width:100%;font-size:12px}
+.zavi-date-chip .zavi-date-part{display:flex;gap:6px;align-items:center;padding:5px 9px;border:1px solid rgba(88,203,250,.45);border-radius:10px;background:rgba(0,20,55,.35);white-space:nowrap}
+.zavi-date-chip .zavi-date-part b{color:#82d9f7}
+.zavi-date-settings{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding:14px;border:1px solid rgba(54,179,244,.32);border-radius:14px}
+.zavi-date-settings h3{margin:0 0 4px}
+.zavi-date-settings p{margin:0;max-width:650px}
+.zavi-date-settings select{display:block;min-height:40px;min-width:170px;border-radius:8px;padding:5px}
+@media(max-width:720px){html[data-zavi-lang="fa-AF"] body,html[data-zavi-lang="ps-AF"] body{font-size:15px}.zavi-date-chip{font-size:11px}}

@@ -1,0 +1,36 @@
+/* V22 readable RTL/LTR typography — no external requests, safe offline. */
+html[data-zavi-lang="fa-AF"],html[data-zavi-lang="ps-AF"]{direction:rtl}
+html[data-zavi-lang="fa-AF"] body,html[data-zavi-lang="fa-AF"] :is(button,input,select,textarea,h1,h2,h3,h4,h5,p,label,span,a,th,td){font-family:Tahoma,"Noto Sans Arabic","Segoe UI",Arial,sans-serif!important;font-size-adjust:from-font;letter-spacing:0!important}
+html[data-zavi-lang="ps-AF"] body,html[data-zavi-lang="ps-AF"] :is(button,input,select,textarea,h1,h2,h3,h4,h5,p,label,span,a,th,td){font-family:"Noto Naskh Arabic",Tahoma,"Noto Sans Arabic",Arial,sans-serif!important;letter-spacing:0!important}
+html[data-zavi-lang="fa-AF"] :is(button,input,select,textarea,p,label,span,th,td,a),html[data-zavi-lang="ps-AF"] :is(button,input,select,textarea,p,label,span,th,td,a){line-height:1.85!important}
+html[data-zavi-lang="fa-AF"] :is(button,input,select,textarea),html[data-zavi-lang="ps-AF"] :is(button,input,select,textarea){min-height:35px}
+html[data-zavi-lang="ps-AF"] :is(p,span,a,td,label,button){line-height:2.05!important}
+html[data-zavi-lang="en"] :is(button,input,select,textarea,h1,h2,h3,p,label,span,a,td,th){font-family:"Segoe UI",system-ui,Arial,sans-serif!important;line-height:1.55}
+html[data-zavi-lang="en"]{direction:ltr}
+html[data-zavi-lang="fa-AF"] .card,html[data-zavi-lang="ps-AF"] .card{word-break:normal;overflow-wrap:break-word}
+html[data-zavi-lang="ps-AF"] :is(.nav-item,.nav-btn,.btn,.button),html[data-zavi-lang="fa-AF"] :is(.nav-item,.nav-btn,.btn,.button){font-size:max(14px,1em)}
+.zavi-date-chip{display:flex;gap:6px;align-items:center;flex-wrap:wrap;max-width:100%;font-size:12px}
+.zavi-date-chip .zavi-date-part{display:flex;gap:6px;align-items:center;border-radius:10px;padding:5px 8px;border:1px solid rgba(88,203,250,.4);white-space:nowrap}
+.zavi-date-chip [dir="auto"]{unicode-bidi:isolate}
+@media(max-width:720px){.zavi-date-chip{font-size:11px;max-width:100%}html[data-zavi-lang="ps-AF"] body{font-size:15px}}
+
+/* V24 typography: prefer legible Arabic UI faces on supported devices. */
+html[data-zavi-lang="fa-AF"] body{font-family:"Noto Sans Arabic UI","Noto Sans Arabic",Tahoma,Arial,sans-serif!important;font-size:15px;}
+html[data-zavi-lang="ps-AF"] body{font-family:"Noto Naskh Arabic","Noto Sans Arabic",Tahoma,Arial,sans-serif!important;font-size:16px;}
+html[data-zavi-lang="fa-AF"] :is(button,select,input,textarea),html[data-zavi-lang="ps-AF"] :is(button,select,input,textarea){letter-spacing:normal!important;min-height:40px;}
+html[data-zavi-lang="fa-AF"] :is(p,button,label,td,th),html[data-zavi-lang="ps-AF"] :is(p,button,label,td,th){line-height:1.85!important;}
+html[data-zavi-lang="ps-AF"] :is(p,span,button,label,td,th){line-height:2!important;}
+html[data-zavi-lang="en"] body{font-family:Inter,"Segoe UI",Arial,system-ui,sans-serif!important;}
+
+/* International LTR and Pashto controls; scoped to the existing theme. */
+html[data-zavi-lang="en"] #z24Root{direction:ltr!important;text-align:left!important}
+html[data-zavi-lang="en"] #z24Root :is(.v24-table,th,td){text-align:left!important}
+html[data-zavi-lang="en"] :is(.zavi-date-chip,.zavi-date-settings){direction:ltr}
+html[data-zavi-lang="en"] :is(.card,.panel,.settings-card){text-align:start}
+html[data-zavi-lang="fa-AF"] #z24Root,html[data-zavi-lang="ps-AF"] #z24Root{direction:rtl!important}
+html[data-zavi-lang="en"] input:is([type="tel"],[type="email"],[type="url"],[type="number"]){direction:ltr}
+.zavi-dual-inline{display:inline-flex;gap:.4em;flex-wrap:wrap;align-items:center;unicode-bidi:isolate;max-width:100%}
+.zavi-dual-inline small{opacity:.78;font-size:.78em}
+.zavi-date-preview{display:block;font-size:12px;line-height:1.7;padding:5px 8px;margin-top:5px;border-radius:9px;color:inherit;border:1px solid rgba(88,203,250,.32);background:rgba(93,181,229,.07);direction:auto}
+.zavi-date-settings{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:12px}
+.zavi-date-settings p{margin:0}
