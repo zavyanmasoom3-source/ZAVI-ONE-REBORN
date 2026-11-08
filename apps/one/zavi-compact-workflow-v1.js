@@ -5,13 +5,13 @@
   const labels={
     fa:{accounts:'حساب‌ها',transactions:'تراکنش‌ها',more:'بیشتر',summary:'خلاصه',details:'جزئیات',output:'خروجی',
       products:'محصولات',customer:'مشتری',payment:'پرداخت',specs:'مشخصات',
-      required:'این فیلد ضروری است.',positive:'قیمت هر واحد باید بیشتر از صفر باشد.'},
+      required:'این فیلد ضروری است.',positive:'قیمت هر واحد باید بیشتر از صفر باشد.',badNumber:'یک عدد معتبر وارد کنید.',badFormat:'فرمت این فیلد معتبر نیست.'},
     ps:{accounts:'حسابونه',transactions:'معاملې',more:'نور',summary:'لنډیز',details:'جزئیات',output:'وتنه',
       products:'توکي',customer:'پېرودونکی',payment:'تادیه',specs:'معلومات',
-      required:'دا برخه اړینه ده.',positive:'د هر واحد بیه باید له صفر څخه لوړه وي.'},
+      required:'دا برخه اړینه ده.',positive:'د هر واحد بیه باید له صفر څخه لوړه وي.',badNumber:'سمه شمېره ولیکئ.',badFormat:'د دې برخې بڼه سمه نه ده.'},
     en:{accounts:'Accounts',transactions:'Transactions',more:'More',summary:'Summary',details:'Details',output:'Export',
       products:'Products',customer:'Customer',payment:'Payment',specs:'Details',
-      required:'This field is required.',positive:'Unit price must be greater than zero.'}
+      required:'This field is required.',positive:'Unit price must be greater than zero.',badNumber:'Enter a valid number.',badFormat:'Invalid field format.'}
   };
   const lang=()=>{
     const l=(document.documentElement.lang||'fa').toLowerCase();
@@ -206,6 +206,22 @@
     if(overlay)new MutationObserver(schedule).observe(overlay,{childList:true});
     document.addEventListener('zavi:language-change',schedule);
     document.addEventListener('zavi:language-changed',schedule);
+    // Field-local HTML5 error messages for every actual accounting modal.
+    // Form submission remains controlled by the original handlers and server.
+    document.addEventListener('invalid',event=>{
+      const field=event.target;
+      if(!isElement(field)||!field.matches('input,select,textarea')||
+         !field.closest('#dialogForm'))return;
+      const v=field.validity;
+      const reason=v?.valueMissing?'required':(v?.badInput||v?.rangeOverflow||
+        v?.rangeUnderflow||v?.stepMismatch)?'badNumber':'badFormat';
+      window.ZaviDesignSystemV1?.setFieldError(field,tr(reason));
+    },true);
+    document.addEventListener('input',event=>{
+      const field=event.target;
+      if(isElement(field)&&field.closest('#dialogForm')&&field.matches('input,select,textarea')&&field.validity?.valid)
+        window.ZaviDesignSystemV1?.setFieldError(field,'');
+    },true);
     schedule();
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});
