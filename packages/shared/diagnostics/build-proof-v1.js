@@ -15,7 +15,7 @@
    if(!data || !['one','admin'].includes(data.app)) return;
    snapshot = Object.freeze({
     app:safe(data.app),commit:safe(data.commit),run:safe(data.run),
-    version:safe(data.version),package:safe(data.package),kind:safe(data.kind)
+    version:safe(data.version),package:safe(data.package),kind:safe(data.kind),signing:safe(data.signing||'unknown')
    });
    document.documentElement.dataset.zaviVerifiedBuild=snapshot.commit.slice(0,12);
    // Mark QA installs unmistakably. Never change installed production identities.
@@ -24,13 +24,13 @@
    const chip = document.createElement('button');
    chip.id='zavi-build-proof-chip';
    chip.type='button';chip.textContent=buildLabel;
-   chip.title='Show source commit, APK version and package';
+   chip.title=snapshot.signing==='ephemeral'?'Independent QA install; tap to view update compatibility.':'Show source commit, APK version and package';
    chip.setAttribute('aria-label','ZAVI REBORN build details: '+buildLabel);
    chip.style.cssText='position:fixed;left:8px;bottom:calc(76px + env(safe-area-inset-bottom,0px));z-index:2147483000;max-width:180px;min-height:22px;padding:3px 7px;border:1px solid #94b2ca;border-radius:7px;background:#f5fbff;color:#16374e;font:10px/1.3 system-ui,sans-serif;box-shadow:0 1px 3px #0002;direction:ltr;opacity:.9';
    chip.addEventListener('click',()=>{
     const details=['ZAVI ONE REBORN — QA (not release)',
      'App: '+snapshot.app,'Version: '+snapshot.version,
-     'Package: '+snapshot.package,'Commit: '+snapshot.commit].join('\n');
+     'Package: '+snapshot.package,'Commit: '+snapshot.commit,'Signing: '+snapshot.signing+(snapshot.signing==='ephemeral'?' (different certificate on each CI build)':'')].join('\n');
     window.alert(details);
    });
    document.body.appendChild(chip);
