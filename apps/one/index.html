@@ -1566,11 +1566,11 @@ body{font-size:15px;line-height:1.9}button,input,select,textarea{font-size:14px;
 <section id="zawiPrivateGate" class="zawi-lock-screen" role="dialog" aria-modal="true" aria-labelledby="zawiGateTitle">
  <div class="zawi-auth-card">
   <div class="zawi-lock-emblem"><img src="./zavi-one-original-logo.png" alt="لوگوی زاوی وان" style="width:100%;height:100%;border-radius:22px;object-fit:cover"></div>
-  <div class="zawi-brand-latin">ZAVI ONE <span class="zawi-brand-dot">•</span> SECURE ACCOUNTING</div><div class="zavi-gate-eyebrow">حسابداری امن</div><div class="zavi-auth-language"><label for="zaviGateLanguage">🌐 <span data-zavi-lang-label>زبان</span></label><select id="zaviGateLanguage" class="zavi-language-picker" aria-label="Language"><option value="fa-AF">دری</option><option value="ps-AF">پښتو</option><option value="en">English</option></select></div>
+  <div class="zawi-brand-latin">ZAVI ONE</div><div class="zavi-auth-language"><label for="zaviGateLanguage">🌐 <span data-zavi-lang-label>زبان</span></label><select id="zaviGateLanguage" class="zavi-language-picker" aria-label="Language"><option value="fa-AF">دری</option><option value="ps-AF">پښتو</option><option value="en">English</option></select></div>
   <h2 id="zawiGateTitle">ورود به ZAVI ONE</h2>
   <p class="zawi-lock-description" id="zawiGateHelp">یک رمز ۶ تا ۱۲ رقمی بسازید.</p>
   <form id="zawiPinForm" autocomplete="off">
-   <div class="zawi-pin-field"><label id="zawiPinLabel" for="zawiPinOne">رمز خصوصی</label><input id="zawiPinOne" type="password" inputmode="numeric" pattern="[0-9۰-۹٠-٩]{6,12}" minlength="6" maxlength="12" autocomplete="off" required></div>
+   <div class="zawi-pin-field"><label id="zawiPinLabel" for="zawiPinOne">رمز خصوصی</label><div class="zds-password-row"><input id="zawiPinOne" type="password" inputmode="numeric" pattern="[0-9۰-۹٠-٩]{6,12}" minlength="6" maxlength="12" autocomplete="off" required><button type="button" class="zds-password-toggle" data-zds-password-toggle="zawiPinOne" aria-label="نمایش رمز">👁</button></div></div>
    <div class="zawi-pin-field" id="zawiPinRepeatRow"><label for="zawiPinRepeat">تکرار رمز</label><input id="zawiPinRepeat" type="password" inputmode="numeric" minlength="6" maxlength="12" autocomplete="off"></div>
    <div id="zawiPinError" class="zawi-lock-error" role="alert"></div>
    <button type="submit" class="zawi-pin-btn" id="zawiPinSubmit">ایجاد رمز و ورود</button>
