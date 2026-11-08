@@ -1,0 +1,16 @@
+/* ZAVI UI foundation v2 — unified design primitives, preserves all business handlers. */
+:root{--zui-space-1:4px;--zui-space-2:8px;--zui-space-3:12px;--zui-space-4:16px;--zui-space-5:24px;--zui-radius-sm:10px;--zui-radius-md:14px;--zui-radius-lg:18px}
+html[data-zavi-theme="light"]{--zui-bg:#f4f7fb;--zui-surface:#fff;--zui-surface-2:#f8fafc;--zui-fg:#152b43;--zui-muted:#53677d;--zui-line:#dce5ef;--zui-action:#1266bb;color-scheme:light}
+html[data-zavi-theme="dark"]{--zui-bg:#081728;--zui-surface:#10253a;--zui-surface-2:#172e44;--zui-fg:#eff6ff;--zui-muted:#c3d5e6;--zui-line:#355068;--zui-action:#8dccff;color-scheme:dark}
+html[data-zavi-appearance="glass"]{--zui-bg:#142d55;--zui-surface:rgba(28,59,94,.70);--zui-surface-2:rgba(37,73,110,.67);--zui-fg:#fff;--zui-muted:#d8e8fa;--zui-line:rgba(214,235,255,.28);--zui-action:#a8e3ff}
+html[data-zavi-theme] body{background:var(--zui-bg);color:var(--zui-fg)}
+html[data-zavi-theme] :is(#content,#view){min-width:0;max-width:100%;overflow-wrap:anywhere}
+html[data-zavi-theme] :is(#content,#view) :is(.card,.panel,.settings-card,.form-card,.table-card,.summary-card,.report-card,.admin-card){min-width:0;border-radius:var(--zui-radius-md)!important;border:1px solid var(--zui-line)!important;background:var(--zui-surface)!important;color:var(--zui-fg)!important;box-shadow:0 4px 16px rgba(0,0,0,.06)!important}
+html[data-zavi-theme] :is(#content,#view) :is(.muted,.hint,.subtitle,.small-info){color:var(--zui-muted)!important;opacity:1!important}
+html[data-zavi-theme] :is(#content,#view,#overlay,#modalBg) :is(input,select,textarea){background:var(--zui-surface-2)!important;color:var(--zui-fg)!important;border:1px solid var(--zui-line)!important;border-radius:var(--zui-radius-sm)!important;min-height:42px;max-width:100%;box-sizing:border-box}
+html[data-zavi-theme] :is(#content,#view,#overlay,#modalBg) :is(input,textarea)::placeholder{color:var(--zui-muted)!important;opacity:1}
+html[data-zavi-theme] :is(#content,#view) :is(.table-wrap,.table-container,.responsive-table){overflow-x:auto;max-width:100%}
+html[dir="rtl"] :is(#content,#view){direction:rtl}
+html[dir="ltr"] :is(#content,#view){direction:ltr}
+html[data-zavi-appearance="glass"] :is(#content,#view) :is(.card,.panel,.settings-card,.form-card,.table-card,.summary-card,.report-card,.admin-card){backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+@media(max-width:640px){html[data-zavi-theme] :is(#content,#view) :is(.card,.panel,.settings-card,.form-card,.table-card,.summary-card,.report-card,.admin-card){padding:12px!important;margin-block:8px!important}html[data-zavi-theme] :is(#content,#view,#overlay,#modalBg) :is(input,select,textarea){font-size:16px}html[data-zavi-theme] :is(#content,#view) :is(.grid,.stats-grid,.cards-grid){gap:10px}}

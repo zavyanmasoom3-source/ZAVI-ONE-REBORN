@@ -1,0 +1,9 @@
+/* V65.9 ADMIN: visual optimization, not an authorization change. */
+html[data-zavi-theme="dark"] :is(.admin-panel,.card,.panel,.modal,.stat,.z23-card){backdrop-filter:none!important;-webkit-backdrop-filter:none!important;filter:none!important;box-shadow:0 2px 14px rgba(0,0,0,.18)!important}
+html[data-zavi-theme="dark"] :is(.nav-btn[aria-current="page"]::after,.z23-card){animation:none!important}
+html[data-zavi-theme="light"] :is(input,textarea,select,.z23-card){color:#173c59!important}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+/* Clear Kabul dates and branded settings in both viewing modes. */
+html[data-zavi-theme="light"] #zaviDateBanner,html[data-zavi-theme="light"] #zaviDateBanner :is(span,b){background:#e8f4ff!important;color:#153d60!important;border-color:#bdd9ed!important}
+html[data-zavi-theme="dark"] #zaviDateBanner,html[data-zavi-theme="dark"] #zaviDateBanner :is(span,b){color:#eaf7ff!important}

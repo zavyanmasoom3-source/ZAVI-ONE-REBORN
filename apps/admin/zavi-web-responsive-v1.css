@@ -1,0 +1,53 @@
+/* ZAVI ONE ADMIN | Responsive Web Edition | desktop/tablet/mobile
+ * Scoped additive styling. Do not alter permissions, auth, invoices or API code.
+ * Desktop: optimized workspace. Mobile: horizontal overflow safeguards.
+ */
+html.zavi-web-responsive { --zw-accent:#1789ed; --zw-focus:#1cc5ed; }
+html.zavi-web-responsive,html.zavi-web-responsive body { max-width:100%;min-height:100%; }
+html.zavi-web-responsive body { overflow-x:clip; }
+html.zavi-web-responsive :where(button,a,input,select,textarea):focus-visible {
+ outline:3px solid var(--zw-focus)!important;outline-offset:2px;
+}
+html.zavi-web-responsive :where(.workspace,.topbar,#view,.form-group,.modal-card,.card,.grid,.admin-grid,.dashboard-grid) {min-width:0;}
+html.zavi-web-responsive #appScreen :where(.topbar,.top-actions,.top-right) {column-gap:clamp(7px,1vw,16px);}
+html.zavi-web-responsive #appScreen .topbar {padding-inline:clamp(12px,2.2vw,30px);}
+html.zavi-web-responsive #view {padding-inline:clamp(12px,2vw,30px);padding-bottom:clamp(40px,7vw,74px);}
+html.zavi-web-responsive #view :where(.button,.nav-item,.icon-btn) {touch-action:manipulation;}
+html.zavi-web-responsive :where(.modal-bg,.modal-card,#zaviServiceCenter) {overscroll-behavior:contain;}
+html.zavi-web-responsive .modal-card {max-height:min(93dvh,1000px);overflow:auto;}
+html.zavi-web-responsive #view :where(.table-wrap,.table-scroll,.zsvc-table-wrap,.zsvc-table-scroll,.v24-table-wrap){max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+html.zavi-web-responsive #view :where(h1,h2,h3,h4,p,small,label){overflow-wrap:break-word;}
+html.zavi-web-responsive #appScreen :where(.button,.nav-item,.icon-btn){transition:filter .18s ease,background-color .18s ease;}
+html.zavi-web-responsive #appScreen :where(.button,.nav-item,.icon-btn):not(:disabled):active{filter:brightness(.94);}
+html.zavi-web-responsive[data-zavi-theme="dark"] :where(#view .card,#view .panel,.modal-card) {border-color:rgba(91,171,235,.28);}
+html.zavi-web-responsive[data-zavi-theme="light"] :where(#view .card,#view .panel,.modal-card) {border-color:#d6e5f1;}
+@media(min-width:1450px){
+ html.zavi-web-responsive #view{max-width:1800px;margin-inline:auto;width:100%;box-sizing:border-box;}
+ html.zavi-web-responsive #appScreen .topbar{min-height:76px;}
+}
+@media(min-width:761px) and (max-width:1100px){
+ html.zavi-web-responsive #appScreen .workspace{min-width:0;}
+ html.zavi-web-responsive #view{padding-inline:16px;}
+ html.zavi-web-responsive #appScreen .top-actions{flex-wrap:wrap;justify-content:flex-end;}
+}
+@media(max-width:760px){
+ html.zavi-web-responsive #view{padding:clamp(10px,3vw,16px) clamp(10px,3vw,16px) max(105px,env(safe-area-inset-bottom,0px))!important;max-width:100%;box-sizing:border-box;}
+ html.zavi-web-responsive #appScreen .workspace{width:100%!important;max-width:100%!important;min-width:0!important;margin-inline:0!important;}
+ html.zavi-web-responsive #appScreen .topbar{height:auto;min-height:63px;max-width:100%;padding:10px 13px;gap:9px;flex-wrap:wrap;}
+ html.zavi-web-responsive #appScreen .top-actions{min-width:0;flex-wrap:wrap;row-gap:7px;justify-content:flex-end;}
+ html.zavi-web-responsive #view :where(input,textarea,select){max-width:100%;box-sizing:border-box;}
+ html.zavi-web-responsive #view :where(.card,.panel,.kpi-card,.zsvc-card){max-width:100%;box-sizing:border-box;border-radius:15px;}
+ html.zavi-web-responsive #modalBg .modal-card {width:min(100%,650px)!important;max-height:calc(100dvh - 26px);padding:clamp(12px,3.5vw,20px);box-sizing:border-box;}
+ html.zavi-web-responsive #zaviServiceCenter{max-width:100vw;overflow-x:hidden;}
+ html.zavi-web-responsive #zaviServiceCenter :where(.zsvc-page,.zsvc-shell){max-width:100%;box-sizing:border-box;}
+ html.zavi-web-responsive #view :where(table,.table){font-size:13px;}
+ html.zavi-web-responsive .admin-mobile-nav{padding-bottom:env(safe-area-inset-bottom,0px);}
+}
+@media(max-width:360px){
+ html.zavi-web-responsive #appScreen .topbar{padding-inline:9px;}
+ html.zavi-web-responsive #view{padding-inline:9px!important;}
+ html.zavi-web-responsive .modal-head{gap:8px;}
+ html.zavi-web-responsive .modal-head h2{font-size:18px;}
+}
+@media(prefers-reduced-motion:reduce){html.zavi-web-responsive *,html.zavi-web-responsive *::before,html.zavi-web-responsive *::after{animation-duration:.001ms!important;transition-duration:.001ms!important;scroll-behavior:auto!important;}}
+@media print{html.zavi-web-responsive body{overflow:visible!important}html.zavi-web-responsive #view{padding:0!important;max-width:100%!important}html.zavi-web-responsive :where(.sidebar,.topbar,.admin-mobile-nav,.zavi-web-noprint){display:none!important}}
