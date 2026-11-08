@@ -125,7 +125,16 @@ jobs:
           p.write_text(s,encoding='utf-8')
           print('staged shared modules:', list((Path('android-build/app/src/main/assets/packages/shared')).rglob('*'))[:20])
           PY
-          printf '{"commit":"%s","app":"%s","run":"%s"}\n' "$GITHUB_SHA" "${{ matrix.app }}" "$GITHUB_RUN_NUMBER" > android-build/app/src/main/assets/zavi-build-info.json
+          if [[ "${{ matrix.app }}" == "one" ]]; then
+            version="66.78-reborn.qa.$GITHUB_RUN_NUMBER"
+            package="com.zavione.one.rebornqa"
+          else
+            version="1.4.69-reborn.qa.$GITHUB_RUN_NUMBER"
+            package="com.zavione.one.admin.rebornqa"
+          fi
+          printf '{"commit":"%s","app":"%s","run":"%s","version":"%s","package":"%s","kind":"debug-qa"}\n' \
+            "$GITHUB_SHA" "${{ matrix.app }}" "$GITHUB_RUN_NUMBER" "$version" "$package" \
+            > android-build/app/src/main/assets/zavi-build-info.json
           test -s android-build/app/src/main/assets/zavi-build-info.json
           mkdir -p android-build/app/src/main/res/drawable-nodpi android-build/app/src/main/res/values android-build/app/src/main/res/xml
           cp "apps/${{ matrix.app }}/icon-192.png" android-build/app/src/main/res/drawable-nodpi/zavi_launcher_image.png

@@ -1,0 +1,8 @@
+{
+  "commit": "source-only",
+  "app": "admin",
+  "run": "source",
+  "version": "REBORN-development",
+  "package": "source-browser",
+  "kind": "web-source"
+}
