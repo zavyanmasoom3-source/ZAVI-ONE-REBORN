@@ -10,6 +10,8 @@ ROUTES=('dashboard','sales','purchases','products','money','debtors','settings')
 with Session() as browser:
     error=browser.unlock_one()
     if error:raise SystemExit('PIN setup failed: '+error)
+    # Wait for the one-time splash to finish before recording page designs.
+    time.sleep(2.5)
     entries=[]
     for route in ROUTES:
         state=browser.route(route)
@@ -21,7 +23,7 @@ with Session() as browser:
         entries.append({**state,'file':p.name})
         print('CAPTURED',p.name,p.stat().st_size)
     browser.navigate('admin')
-    time.sleep(.2)
+    time.sleep(2.5)
     p=OUT/'admin-login.png';p.write_bytes(browser.screenshot())
     entries.append({'route':'admin-login','file':p.name,'status':'anonymous login preview'})
     (OUT/'manifest.json').write_text(json.dumps(entries,ensure_ascii=False,indent=2)+'\n')
