@@ -21,12 +21,19 @@ internal static class Program
 internal sealed class ZaviDesktopWindow : Form
 {
     private const string Hostname = "zavi.internal";
+#if ZAVI_ADMIN
+    private const string AppVariant = "admin";
+    private const string AppName = "ZAVI ONE ADMIN";
+#else
+    private const string AppVariant = "one";
+    private const string AppName = "ZAVI ONE";
+#endif
     private readonly WebView2 browser = new() { Dock = DockStyle.Fill };
     private bool started;
 
     internal ZaviDesktopWindow()
     {
-        Text = "ZAVI ONE";
+        Text = AppName;
         Size = new Size(1280, 850);
         MinimumSize = new Size(620, 520);
         StartPosition = FormStartPosition.CenterScreen;
@@ -41,15 +48,15 @@ internal sealed class ZaviDesktopWindow : Form
         try
         {
             var webFolder = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "web"));
-            var entry = Path.Combine(webFolder, "apps", "one", "index.html");
+            var entry = Path.Combine(webFolder, "apps", AppVariant, "index.html");
             if (!File.Exists(entry))
-                throw new FileNotFoundException("ZAVI ONE packaged UI is missing.", entry);
+                throw new FileNotFoundException(AppName + " packaged UI is missing.", entry);
 
             // Stable profile, independent of the installer directory, preserves
             // WebView2 localStorage / IndexedDB across in-place Windows updates.
             var profile = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "ZAVI ONE", "WebView2");
+                AppName, "WebView2");
             Directory.CreateDirectory(profile);
             var env = await CoreWebView2Environment.CreateAsync(null, profile);
             await browser.EnsureCoreWebView2Async(env);
@@ -84,7 +91,7 @@ internal sealed class ZaviDesktopWindow : Form
                 {
                     popup = new Form
                     {
-                        Text = "ZAVI ONE — Receipt / Print",
+                        Text = AppName + " — Receipt / Print",
                         Size = new Size(820, 840),
                         MinimumSize = new Size(430, 360),
                         StartPosition = FormStartPosition.CenterParent
@@ -129,15 +136,15 @@ internal sealed class ZaviDesktopWindow : Form
                 if (!IsOwnOrigin(args.Uri))
                     args.State = CoreWebView2PermissionState.Deny;
             };
-            browser.Source = new Uri($"https://{Hostname}/apps/one/index.html");
+            browser.Source = new Uri($"https://{Hostname}/apps/{AppVariant}/index.html");
         }
         catch (Exception ex)
         {
             MessageBox.Show(
-                "ZAVI ONE could not start. Install Microsoft Edge WebView2 " +
+                AppName + " could not start. Install Microsoft Edge WebView2 " +
                 "Evergreen Runtime if it is missing, then try again.\n\n" +
                 ex.GetType().Name + ": " + ex.Message,
-                "ZAVI ONE", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                AppName, MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 
