@@ -81,6 +81,8 @@ def check_pin(app, actual, pinfile):
 
 def prepare(app, env, runner_temp, github_env, pins):
     data = load_credentials(env)
+    if not runner_temp or not github_env:
+        raise SigningGateError('RUNNER_TEMP و GITHUB_ENV باید در محیط امن GitHub Actions موجود باشند.')
     outdir = Path(runner_temp)
     if not outdir.is_dir():
         raise SigningGateError('RUNNER_TEMP موجود نیست.')
