@@ -1,0 +1,192 @@
+/* ZAVI ONE v65.64 — one clean dashboard, accessible settings, global full-page scrolling. */
+html[data-zavi-theme="light"]{--z64-bg:#f4f8ff;--z64-paper:#fff;--z64-muted:#536987;--z64-text:#142a47;--z64-edge:#dce7f5;--z64-wash:#eef6ff;--z64-elev:0 8px 20px rgba(29,76,137,.075)}
+html:not([data-zavi-theme="light"]){--z64-bg:#071a30;--z64-paper:#102740;--z64-muted:#bcd0e7;--z64-text:#eef7ff;--z64-edge:#345575;--z64-wash:#183553;--z64-elev:0 10px 22px rgba(0,9,25,.26)}
+/* Do not trap vertical scrolling in an inner fixed viewport. Fixed bottom navbar can
+ * overlap no content because scrollable page includes actual navbar measured by JS. */
+html,body{height:auto!important;min-height:100%!important;overflow-y:auto!important;overscroll-behavior-y:auto}
+body .app,body .main{height:auto!important;min-height:100dvh!important;overflow-y:visible!important}
+body #content.content{
+ height:auto!important;min-height:calc(100dvh - 74px)!important;
+ overflow-x:clip!important;overflow-y:visible!important;
+ padding-bottom:calc(var(--z64-bottom-nav,72px) + env(safe-area-inset-bottom,0px) + 95px)!important;
+ scroll-padding-bottom:calc(var(--z64-bottom-nav,72px) + 40px)!important
+}
+#mobileBottom{z-index:65!important}
+#mobileBottom .bottom-btn{min-width:0!important;overflow:hidden;text-overflow:ellipsis;line-height:1.4!important}
+#mobileBottom .bottom-btn span{max-width:100%;overflow-wrap:anywhere;text-align:center}
+body :is(#content,#sidebarLinks,#sidebarLinks2,.zavi-clean-settings-stack,.zrf-all-grid,.table-wrap){
+ -webkit-overflow-scrolling:touch
+}
+body .sidebar{overscroll-behavior-y:contain}
+body .sidebar :is(#sidebarLinks,#sidebarLinks2){overflow-x:hidden!important}
+body #content :is(.card,.panel,.table-wrap,.form-grid,.report-grid,.stat-grid){
+ box-sizing:border-box;min-width:0;max-width:100%
+}
+body #content :is(input,textarea,select){min-width:0;max-width:100%}
+/* One primary set of actions directly below the welcome banner, rather than
+   a tall empty block and the second repeated group at bottom. */
+#content.zrf-dashboard>.zrf-home .z64-single-actions{
+ display:block!important;margin:0 0 11px!important;max-width:100%;width:100%;
+ padding:11px!important;border:1px solid var(--z64-edge)!important;
+ border-radius:16px;background:var(--z64-paper)!important;
+ box-shadow:var(--z64-elev)!important
+}
+#content.zrf-dashboard .z64-single-actions h3{margin:0 0 8px!important;
+ font-size:14px!important;font-weight:850!important;color:var(--z64-text)!important}
+#content.zrf-dashboard .z64-single-actions .z63-quick-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+#content.zrf-dashboard .z64-single-actions .z63-quick-tile{
+ min-height:52px!important;border-radius:12px!important;
+ font-size:12px!important;padding:8px!important;box-shadow:none!important
+}
+#content.zrf-dashboard .z64-single-actions .z63-quick-glyph{
+ width:31px!important;height:31px!important;font-size:15px!important;border-radius:9px!important
+}
+#content.zrf-dashboard>.zrf-legacy-dashboard.zavi-reference-quick,
+#content.zrf-dashboard>.zrf-legacy-dashboard.z649-dashboard-extras,
+#content.zrf-dashboard>.z64-hide-home,
+#content.zrf-dashboard :is(.zrf-details-toggle,.z6524-launch){display:none!important}
+/* One rate editor: the real original form is reparented into this slim panel. */
+#content.zrf-dashboard .z64-rate-card{
+ padding:11px 13px!important;margin:12px 0!important;border-radius:14px!important;
+ background:linear-gradient(115deg,var(--z64-paper),var(--z64-wash))!important;
+ border:1px solid var(--z64-edge)!important;color:var(--z64-text)!important;
+ box-shadow:var(--z64-elev)!important;min-width:0!important;max-width:100%!important
+}
+#content.zrf-dashboard .z64-rate-title{display:flex;align-items:center;gap:9px;margin-bottom:7px}
+#content.zrf-dashboard .z64-rate-icon{display:grid;place-items:center;flex:none;width:35px;height:35px;border-radius:11px;
+ background:linear-gradient(135deg,#1d71ee,#09bce5);color:#fff!important;font-weight:900}
+#content.zrf-dashboard .z64-rate-heading{margin:0!important;font-size:14px!important;font-weight:850!important;color:var(--z64-text)!important}
+#content.zrf-dashboard .z64-rate-form,#content.zrf-dashboard .z64-rate-form form{
+ display:flex!important;flex-wrap:wrap!important;align-items:center!important;
+ justify-content:flex-start!important;gap:8px!important;width:100%!important;
+ background:transparent!important;color:var(--z64-text)!important
+}
+#content.zrf-dashboard .z64-rate-form :is(input,button,select){min-height:38px!important;max-width:100%!important}
+#content.zrf-dashboard .z64-rate-form input{
+ width:min(100%,160px)!important;min-width:90px!important;flex:1 1 105px;
+ background:var(--z64-paper)!important;color:var(--z64-text)!important;
+ border:1px solid var(--z64-edge)!important;border-radius:10px!important;font-size:14px!important;
+ -webkit-text-fill-color:var(--z64-text)!important
+}
+#content.zrf-dashboard .z64-rate-form button{
+ border-radius:10px!important;padding:7px 11px!important;
+ font-size:12px!important;white-space:normal!important
+}
+#content.zrf-dashboard .z64-rate-form :is(label,p,small,span){color:var(--z64-muted)!important;font-size:11px!important;line-height:1.5!important}
+#content.zrf-dashboard .z64-rate-form :is(button.primary,.btn.primary){
+ background:linear-gradient(120deg,#1669e8,#02c0e6)!important;color:#fff!important
+}
+#content.zrf-dashboard .z64-rate-form :is(button.primary,.btn.primary) :is(span,svg){
+ color:#fff!important
+}
+/* Native finance and source charts. No fabricated data. */
+#content.zrf-dashboard .z64-charts{margin:12px 0!important;max-width:100%}
+#content.zrf-dashboard .z64-charts-heading{margin:0 0 10px!important;color:var(--z64-text)!important;
+ font-size:16px!important;font-weight:900!important}
+#content.zrf-dashboard .z64-charts-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important;align-items:start}
+#content.zrf-dashboard .z64-chart-card{display:block!important;min-width:0!important;max-width:100%!important;
+ width:100%!important;margin:0!important;border-radius:16px!important;padding:14px!important;
+ border:1px solid var(--z64-edge)!important;background:var(--z64-paper)!important;
+ color:var(--z64-text)!important;box-shadow:var(--z64-elev)!important;overflow:visible!important
+}
+#content.zrf-dashboard .z64-chart-card h3{font-size:14px!important;font-weight:850!important;color:var(--z64-text)!important;line-height:1.5!important}
+#content.zrf-dashboard .z64-chart-card :is(p,small,.muted,.tiny-note){color:var(--z64-muted)!important;line-height:1.6!important}
+#content.zrf-dashboard .z64-chart-card :is(select,button){
+ max-width:100%;min-width:0;overflow-wrap:anywhere
+}
+#content.zrf-dashboard .z64-chart-card .panel-body{padding:8px 0!important;overflow-x:auto!important;-webkit-overflow-scrolling:touch}
+#content.zrf-dashboard .z64-chart-card :is(.bar-chart,.zavi-monthly-chart,.chart-bars){min-width:0!important;max-width:100%!important}
+#content.zrf-dashboard .z64-inventory-panels{display:grid!important;grid-template-columns:1fr!important;gap:9px!important;
+ margin:12px 0!important;max-width:100%!important}
+#content.zrf-dashboard .z64-inventory-panels>.card{min-width:0!important;max-width:100%!important}
+/* Settings: polished compact accordion, all real options accessible, high contrast. */
+#content.z64-settings .zavi-clean-settings-hub{
+ padding:11px!important;border-radius:17px!important;background:var(--z64-paper)!important;
+ color:var(--z64-text)!important;border:1px solid var(--z64-edge)!important;
+ box-shadow:var(--z64-elev)!important
+}
+#content.z64-settings .zavi-clean-settings-title{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:9px}
+#content.z64-settings .zavi-clean-settings-title strong{font-size:17px!important;line-height:1.6!important;color:var(--z64-text)!important}
+#content.z64-settings .zavi-clean-settings-title span{font-size:11px!important;color:var(--z64-muted)!important}
+#content.z64-settings #zaviCleanSettingsSearch{
+ min-height:43px!important;width:100%!important;padding:9px 11px!important;
+ border-radius:12px!important;background:var(--z64-wash)!important;
+ color:var(--z64-text)!important;border:1px solid var(--z64-edge)!important;
+ -webkit-text-fill-color:var(--z64-text)!important
+}
+#content.z64-settings #zaviCleanSettingsSearch::placeholder{color:var(--z64-muted)!important;-webkit-text-fill-color:var(--z64-muted)!important}
+#content.z64-settings .zavi-clean-search-help{font-size:11px!important;color:var(--z64-muted)!important;margin:6px 0 9px!important}
+#content.z64-settings .z64-setting-section{margin:7px 0!important;
+ border-radius:13px!important;box-shadow:none!important;overflow:visible!important;
+ border:1px solid var(--z64-edge)!important;background:var(--z64-paper)!important}
+#content.z64-settings .z64-setting-section>summary{
+ min-height:49px!important;padding:10px 11px!important;
+ display:flex!important;gap:6px!important;align-items:center!important;
+ color:var(--z64-text)!important;background:var(--z64-paper)!important;font-weight:850!important;
+ font-size:13px!important;border-radius:12px!important
+}
+#content.z64-settings .z64-setting-section>summary :is(span,small){
+ font-size:12px!important;color:var(--z64-text)!important;line-height:1.5!important
+}
+#content.z64-settings .z64-setting-section>summary small{font-size:10px!important;color:var(--z64-muted)!important}
+#content.z64-settings .z64-setting-section[open]>summary{background:var(--z64-wash)!important}
+#content.z64-settings .zavi-clean-settings-stack{display:grid;grid-template-columns:1fr;gap:8px!important;padding:8px!important}
+#content.z64-settings .settings-card{padding:11px!important;margin:0!important;
+ border:1px solid var(--z64-edge)!important;border-radius:12px!important;
+ background:var(--z64-paper)!important;color:var(--z64-text)!important;box-shadow:none!important}
+#content.z64-settings .settings-card :is(h2,h3,strong,label){color:var(--z64-text)!important;line-height:1.5!important}
+#content.z64-settings .settings-card :is(p,small,.muted){color:var(--z64-muted)!important;font-size:11px!important;line-height:1.6!important}
+#content.z64-settings .settings-card :is(input,textarea,select){
+ background:var(--z64-wash)!important;color:var(--z64-text)!important;
+ border:1px solid var(--z64-edge)!important;-webkit-text-fill-color:var(--z64-text)!important;
+ max-width:100%!important
+}
+#content.z64-settings .settings-card :is(input,textarea)::placeholder{color:var(--z64-muted)!important}
+#content.z64-settings :is(button,a.btn){white-space:normal!important;max-width:100%!important;min-width:0!important;overflow-wrap:anywhere}
+#content.z64-settings .z652-card,#content.z64-settings .z652-item{min-width:0;max-width:100%;
+ padding:9px!important;border-radius:12px!important;background:var(--z64-paper)!important;
+ border:1px solid var(--z64-edge)!important;color:var(--z64-text)!important;
+ box-shadow:none!important}
+#content.z64-settings .z652-actions{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important}
+#content.z64-settings .z652-actions button{font-size:11px!important;min-height:37px!important;
+ width:100%!important;padding:6px!important;white-space:normal!important}
+#content.z64-settings .z652-meta{font-size:10px!important;color:var(--z64-muted)!important;line-height:1.5!important}
+#content.z64-settings .zavi-clean-settings-group:focus-within{border-color:#46a2f4!important}
+/* Consistent taps and visual contrast on true light or dark; no overlay on app data. */
+html[data-zavi-theme="light"] body #content:not(.zrf-dashboard) :is(.card,.panel){
+ color:var(--z64-text)
+}
+html:not([data-zavi-theme="light"]) body #content:not(.zrf-dashboard) :is(.card,.panel){
+ color:var(--z64-text)
+}
+#content :is(.table-wrap,.products-grid,.debt-cards,.z652-devices,.z652-list){overflow-x:auto;scrollbar-width:thin}
+#content .table-wrap{touch-action:pan-x pan-y!important}
+#content :is(.page-head,.form-grid,.table-bar,.report-grid){flex-wrap:wrap!important}
+#content :is(.page-head,.form-grid,.table-bar,.report-grid)>*{max-width:100%;min-width:0}
+#content :is(.empty,.record-card,.product-card,.debt-card){scroll-margin-bottom:calc(var(--z64-bottom-nav,72px) + 25px)}
+/* Scroll to last bottom item on Android and display tap targets in viewport. */
+@media(max-width:1050px){
+ body #content.content{
+  padding:12px 12px calc(var(--z64-bottom-nav,75px) + env(safe-area-inset-bottom,0px) + 80px)!important;
+ }
+ body .sidebar.mobile-drawer{overflow-y:auto!important;max-height:100dvh!important;
+  padding-bottom:calc(35px + env(safe-area-inset-bottom,0px))!important}
+ body #content.zrf-dashboard .z64-charts-grid{grid-template-columns:minmax(0,1fr)!important;gap:10px!important}
+ body #content.zrf-dashboard .z64-chart-card{padding:11px!important}
+ body #content.zrf-dashboard .z64-chart-card .panel-body{min-width:0!important;overflow-x:auto!important}
+ body #content.zrf-dashboard .z64-inventory-panels{grid-template-columns:1fr!important}
+ body #content.zrf-dashboard .z64-rate-card{padding:10px!important}
+ body #content.zrf-dashboard .z64-single-actions{padding:9px!important}
+}
+@media(max-width:360px){
+ #content.z64-settings .z652-actions{grid-template-columns:1fr!important}
+ body #content.zrf-dashboard .z64-single-actions .z63-quick-tile{font-size:11px!important;gap:4px!important}
+ body #content.zrf-dashboard .z64-single-actions .z63-quick-glyph{width:27px!important;height:27px!important}
+}
+@media(orientation:landscape) and (max-height:520px){
+ body #content.zrf-dashboard .z64-charts-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ body #content.content{padding-bottom:calc(var(--z64-bottom-nav,55px) + 50px)!important}
+}
+@media(prefers-reduced-motion:reduce){
+ body #content.zrf-dashboard .z64-chart-card{animation:none!important;transition:none!important}
+}

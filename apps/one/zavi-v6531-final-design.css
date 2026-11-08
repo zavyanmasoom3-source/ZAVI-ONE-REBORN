@@ -1,0 +1,117 @@
+/* ZAVI ONE V65.31 — readable professional finish with lightweight rendering.
+   Non-financial presentation only; existing owner controls and brand settings preserved. */
+:root{
+ --z6531-radius:16px;
+ --z6531-focus:#19b7d5;
+ --z6531-glass:none;
+}
+html,body{overflow-x:clip;min-width:0}
+body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+:where(button,input,select,textarea){font-size:inherit}
+:where(button,a,input,select,textarea,summary):focus-visible{outline:3px solid var(--z6531-focus)!important;outline-offset:2px!important}
+:where(button,a,summary){-webkit-tap-highlight-color:transparent}
+:where(input,textarea){min-width:0}
+/* Keep brand illustration recognizable on every screen; image is bundled offline. */
+.brand-logo{background:#ecf6ff url('./zavi-one-original-logo.png') center/cover no-repeat!important;font-size:0!important;box-shadow:0 4px 14px rgba(17,86,147,.18)!important;border:1px solid rgba(110,183,238,.26)!important}
+.brand-name{font-weight:900;letter-spacing:0}
+.sidebar .section-nav{font-weight:700;letter-spacing:0;opacity:.9}
+#side.sidebar .nav-btn{border:1px solid transparent!important;border-radius:12px!important;line-height:1.6!important;min-height:43px!important;padding-block:9px!important}
+#side.sidebar .nav-btn.active{border-color:rgba(76,166,215,.22)!important}
+.topbar{gap:13px}
+.topbar-actions{min-width:0;flex-wrap:wrap;justify-content:flex-end;row-gap:5px}
+.content{padding-bottom:max(85px,env(safe-area-inset-bottom))}
+.page-head{gap:12px}
+.page-head h2{letter-spacing:0;line-height:1.45!important;font-size:clamp(21px,2.2vw,29px)!important}
+.card,.panel,.settings-card,.stat,.account-box,.record-card,.debt-card,.z6527-studio,.z6530-trade-panel{border-radius:var(--z6531-radius)!important}
+:is(.card,.settings-card,.panel) h3{letter-spacing:0;font-weight:800;line-height:1.55}
+:is(.card,.panel,.settings-card) :is(p,small,.tiny-note,.field-hint){line-height:1.8}
+.btn,.zawi-personal-action{border-radius:11px!important;font-weight:750;min-height:42px;line-height:1.5}
+.btn.primary{box-shadow:0 3px 10px rgba(24,124,199,.17)!important}
+.btn:disabled{opacity:.56!important;filter:none!important}
+.btn:not(:disabled):active{transform:translateY(1px)}
+.field label,.z20-label{font-weight:750;line-height:1.55}
+:is(.field input,.field select,.field textarea,.z20-input,.searchbox input,.z6527-studio-form input,.z6527-studio-form select){min-height:43px;max-width:100%;border-radius:10px!important;line-height:1.6;box-shadow:none!important}
+:is(.field textarea,textarea.z20-input){resize:vertical;min-height:86px}
+:is(.modal,.z62-dialog,.z645-order-dialog){border-radius:19px!important}
+:is(.modal,.z62-dialog) :is(.modal-head,.modal-foot){flex-shrink:0}
+#overlay .modal:not(.z645-order-dialog){max-width:min(720px,calc(100vw - 24px));box-shadow:0 12px 34px rgba(0,15,35,.19)!important}
+#overlay .z645-order-dialog{max-width:min(940px,calc(100vw - 24px))!important}
+#overlay .modal-body{scrollbar-width:thin;overscroll-behavior:contain}
+#overlay .modal-foot{gap:8px;flex-wrap:wrap}
+/* Colleague permissions should not occupy the whole tablet screen. */
+#z62TeamDialog .z62-dialog{width:min(590px,calc(100vw - 24px))!important;max-height:calc(100dvh - 24px)!important;overflow-y:auto!important}
+#z62TeamDialog :is(input,select,button){min-height:40px}
+/* Order entry: no tiny tap targets, excessive columns, or layout shift. */
+.order-line,.z6529-spec-panel{border-radius:14px!important}
+.order-line .order-row{align-items:start}
+.order-line :is(input,select){min-height:43px}
+.order-line .remove-line{min-height:43px}
+.order-line .extras-grid{gap:10px}
+/* Subtle, sharp surface hierarchy. No blur/glass effects on long business pages. */
+html[data-zavi-theme="dark"]{
+ --z6531-surface:#10263b;--z6531-surface-2:#152e47;
+ --z6531-line:#31536e;--z6531-text:#eef6ff;--z6531-muted:#bbd0e2;
+ color-scheme:dark;
+}
+html[data-zavi-theme="dark"] body,html[data-zavi-theme="dark"] .app{background:#091a2c!important;color:var(--z6531-text)!important}
+html[data-zavi-theme="dark"] #side.sidebar{background:#0c2035!important;border-inline-start:1px solid #27445f!important;box-shadow:none!important}
+html[data-zavi-theme="dark"] #side.sidebar .nav-btn{color:#c5dbef!important}
+html[data-zavi-theme="dark"] #side.sidebar .nav-btn.active{color:#fff!important;background:#1a3854!important}
+html[data-zavi-theme="dark"] .topbar{background:#0e263e!important;border-color:#2a4a68!important;box-shadow:0 1px 0 rgba(226,243,255,.04)!important}
+html[data-zavi-theme="dark"] :is(.card,.settings-card,.panel,.stat,.account-box,.record-card,.debt-card,.hawala-record,.z6527-studio,.z644-suite,.z644-alert-card,.z6529-spec-panel){background:var(--z6531-surface)!important;background-image:none!important;border-color:var(--z6531-line)!important;color:var(--z6531-text)!important;box-shadow:0 2px 8px rgba(0,0,0,.13)!important}
+html[data-zavi-theme="dark"] :is(.card,.settings-card,.panel,.stat,.record-card,.debt-card,.z6527-studio) :is(p,small,.tiny-note,.field-hint){color:var(--z6531-muted)!important}
+html[data-zavi-theme="dark"] :is(.field input,.field select,.field textarea,.z20-input,.searchbox input,.searchbox,.z6527-studio-form input,.z6527-studio-form select){background:#142f49!important;border-color:#41617d!important;color:#f5fbff!important}
+html[data-zavi-theme="dark"] :is(input,textarea)::placeholder{color:#adc6da!important;opacity:1}
+html[data-zavi-theme="dark"] :is(select option){color:#eef8ff;background:#15344f}
+html[data-zavi-theme="dark"] :is(.btn:not(.primary),.icon-button){background:#15324e!important;border-color:#3a5b77!important;color:#f1f9ff!important}
+html[data-zavi-theme="dark"] :is(.btn.subtle){background:#174b68!important}
+html[data-zavi-theme="dark"] #overlay .modal{background:#10283f!important;border:1px solid #3c607d!important;color:#eff8ff!important}
+html[data-zavi-theme="dark"] #overlay :is(.modal-head,.modal-foot){background:#122c45!important;border-color:#355873!important}
+html[data-zavi-theme="dark"] .transaction-table tbody tr:hover{background:#173753!important}
+html[data-zavi-theme="dark"] .z6527-preview-paper{background:white!important;color:#183958!important}
+html[data-zavi-theme="dark"] :is(.card,.panel,.settings-card,.modal,.topbar,.sidebar,.z644-suite,.z644-alert-card){backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+html[data-zavi-theme="light"]{--z6531-ink:#163451;--z6531-muted:#506a80;color-scheme:light}
+html[data-zavi-theme="light"] body,html[data-zavi-theme="light"] .app{background:#f3f7fb!important;color:var(--z6531-ink)!important}
+html[data-zavi-theme="light"] .topbar{background:#fff!important;border-color:#d7e4ef!important;box-shadow:none!important}
+html[data-zavi-theme="light"] :is(.card,.settings-card,.panel,.stat,.account-box,.record-card,.debt-card,.hawala-record,.z6527-studio,.z644-suite,.z644-alert-card){background:#fff!important;background-image:none!important;border:1px solid #d7e3ed!important;color:#183550!important;box-shadow:0 2px 12px rgba(20,73,118,.045)!important}
+html[data-zavi-theme="light"] :is(.card,.settings-card,.panel,.stat,.record-card,.debt-card) :is(p,small,.tiny-note,.field-hint){color:#536b80!important}
+html[data-zavi-theme="light"] :is(.field input,.field select,.field textarea,.z20-input,.searchbox,.searchbox input,.z6527-studio-form select){background:#f9fcff!important;border-color:#b8cfdf!important;color:#173852!important}
+html[data-zavi-theme="light"] :is(input,textarea)::placeholder{color:#59738b!important;opacity:1}
+html[data-zavi-theme="light"] :is(.btn:not(.primary),.icon-button){background:#f3f8fc!important;border-color:#c4d8e8!important;color:#184463!important}
+html[data-zavi-theme="light"] #overlay .modal{background:white!important;color:#163752!important;border:1px solid #d2dfec!important}
+html[data-zavi-theme="light"] #overlay :is(.modal-head,.modal-foot){background:#f6faff!important;border-color:#d5e3ef!important}
+html[data-zavi-theme="light"] .transaction-table tbody tr:hover{background:#eff7ff!important}
+/* Screens below desktop retain natural scrolling, friendly spacing and tappable buttons. */
+@media(max-width:1050px){
+ .content{padding:18px 15px max(100px,env(safe-area-inset-bottom))!important}
+ #overlay .modal{max-width:calc(100vw - 16px)!important}
+ #overlay .modal .modal-body{overscroll-behavior:contain!important;-webkit-overflow-scrolling:touch!important}
+}
+@media(max-width:700px){
+ .content{padding-inline:12px!important}
+ .page-head h2{font-size:21px!important}
+ .topbar{min-height:66px;height:auto!important;padding-block:8px!important}
+ .topbar-actions{gap:5px!important}
+ :is(.card,.panel,.settings-card){padding:14px!important}
+ #overlay .modal{border-radius:14px!important;max-height:calc(100dvh - 12px)!important}
+ #overlay :is(.modal-head,.modal-foot){padding:10px 13px!important}
+ #overlay .modal .modal-body{max-height:calc(100dvh - 140px)!important;padding:12px!important}
+ .form-grid{gap:11px!important}
+ .z6527-options{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .z6527-studio-form{grid-template-columns:1fr!important}
+ .z6527-studio{padding:14px!important}
+ .order-line{padding:10px!important}
+ .btn{white-space:normal;text-align:center}
+ #side.sidebar.mobile-drawer{width:min(320px,88vw)!important;max-width:88vw!important;overflow-y:auto!important}
+}
+@media(max-width:380px){
+ .order-line .extras-grid,.form-grid{grid-template-columns:1fr!important}
+ .order-line .order-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 36px!important}
+ .order-line .order-row [data-field="productName"]{grid-column:1/-1}
+}
+/* Performance: avoid gratuitous long-lived composited layers. */
+html[data-z6513-low-gpu="true"] :is(.card,.panel,.settings-card,.stat,.record-card,.debt-card,.btn){box-shadow:none!important;will-change:auto!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+html[data-z6513-low-gpu="true"] :is(.card,.panel,.settings-card,.stat,.record-card,.debt-card){animation:none!important;transform:none!important}
+html[data-z637-no-motion="true"] :is(.btn,.card,.panel,.settings-card,.stat){transition:none!important;animation:none!important}
+@media(prefers-reduced-motion:reduce){:is(.btn,.card,.panel,.settings-card,.stat){transition:none!important;animation:none!important;transform:none!important}}
+@media print{#side.sidebar,.topbar,.z6512-splash,.z6513-splash{display:none!important}.content{padding:0!important}body{background:#fff!important;color:#000!important}}

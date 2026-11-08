@@ -1,0 +1,86 @@
+/* ZAVI ONE 65.67 — fix actual All Sections menu overflow at narrow Android widths.
+   No navigation or accounting changes. Entire long module names remain accessible. */
+html[data-zavi-theme="light"] #zrf-all{
+ --z67-surface:#fff;--z67-ink:#142a46;--z67-edge:#dbe8fa;--z67-bg:#f3f8ff;
+}
+html:not([data-zavi-theme="light"]) #zrf-all{
+ --z67-surface:#122b48;--z67-ink:#f1f8ff;--z67-edge:#355479;--z67-bg:#081c32;
+}
+#zrf-all.zrf-all-overlay{width:100vw;max-width:100%;height:100dvh;overflow:hidden!important;
+ background:var(--z67-bg)!important;isolation:isolate}
+#zrf-all .zrf-all-panel{padding:calc(env(safe-area-inset-top,0px) + 6px) 12px
+ calc(env(safe-area-inset-bottom,0px) + 8px)!important;min-width:0!important;max-width:100%!important;
+ background:var(--z67-bg)!important;overflow:hidden!important}
+#zrf-all .zrf-all-brand{flex:none;min-height:53px!important;margin-bottom:9px!important}
+#zrf-all .zrf-all-hero{min-height:86px!important;padding:15px!important;
+ margin-bottom:11px!important;border-radius:16px!important;overflow:hidden!important}
+#zrf-all .zrf-all-hero b{font-size:clamp(19px,5.5vw,25px)!important;line-height:1.35!important}
+#zrf-all .zrf-all-hero small{font-size:11px!important;line-height:1.55!important}
+#zrf-all .zrf-all-grid{
+ flex:1 1 0!important;min-height:0!important;max-height:100%!important;
+ display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ grid-auto-rows:minmax(75px,auto)!important;gap:9px!important;
+ align-content:start!important;align-items:stretch!important;
+ overflow-x:hidden!important;overflow-y:auto!important;
+ padding:4px 1px calc(44px + env(safe-area-inset-bottom,0px))!important;
+ scrollbar-gutter:stable;overscroll-behavior-y:contain!important;
+ -webkit-overflow-scrolling:touch!important;
+}
+#zrf-all .zrf-all-item{
+ box-sizing:border-box!important;min-width:0!important;max-width:100%!important;
+ width:100%!important;min-height:75px!important;height:auto!important;
+ display:flex!important;align-items:center!important;justify-content:flex-start!important;
+ flex-direction:row!important;gap:7px!important;
+ padding:9px 7px!important;margin:0!important;position:relative!important;
+ border-radius:15px!important;border:1px solid var(--z67-edge)!important;
+ background:var(--z67-surface)!important;color:var(--z67-ink)!important;
+ text-align:start!important;white-space:normal!important;overflow:visible!important;
+ box-shadow:0 3px 11px rgba(12,62,148,.065)!important;
+}
+#zrf-all .zrf-all-icon{
+ flex:0 0 34px!important;width:34px!important;height:34px!important;
+ border-radius:10px!important;font-size:18px!important;min-width:0!important
+}
+#zrf-all .zrf-all-name{
+ display:block!important;position:static!important;float:none!important;
+ flex:1 1 0!important;min-width:0!important;width:auto!important;max-width:100%!important;
+ margin:0!important;padding:0!important;height:auto!important;
+ line-height:1.7!important;font-size:12px!important;font-weight:800!important;
+ color:var(--z67-ink)!important;opacity:1!important;letter-spacing:0!important;
+ text-align:start!important;word-break:normal!important;overflow-wrap:anywhere!important;
+ white-space:normal!important;text-overflow:clip!important;-webkit-line-clamp:unset!important;
+ overflow:visible!important;
+}
+#zrf-all .zrf-all-chevron{
+ flex:0 0 10px!important;font-size:17px!important;max-width:10px!important;align-self:center!important;
+ line-height:1!important;margin:0!important
+}
+#zrf-all .zrf-all-item.z67-long{
+ grid-column:span 2!important;min-height:68px!important;
+}
+#zrf-all .zrf-all-item.z67-long .zrf-all-name{font-size:13px!important;line-height:1.55!important}
+#zrf-all .zrf-all-item:focus-visible{
+ outline:3px solid #05bdec!important;outline-offset:2px!important
+}
+@media(max-width:375px){
+ #zrf-all .zrf-all-grid{grid-template-columns:minmax(0,1fr)!important;grid-auto-rows:auto!important;gap:7px!important}
+ #zrf-all .zrf-all-item{min-height:60px!important;padding:9px!important}
+ #zrf-all .zrf-all-name{font-size:13px!important;line-height:1.55!important}
+ #zrf-all .zrf-all-item.z67-long{grid-column:1/-1!important}
+}
+@media(min-width:700px){
+ #zrf-all .zrf-all-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+ #zrf-all .zrf-all-item.z67-long{grid-column:span 1!important}
+}
+@media(prefers-reduced-motion:reduce){
+ #zrf-all,.zrf-all-item{animation:none!important;transition:none!important}
+}
+
+#zrf-all .zrf-all-empty{
+  grid-column:1/-1!important;min-height:95px!important;display:flex!important;
+  align-items:center!important;justify-content:center!important;text-align:center!important;
+  padding:15px!important;margin:0!important;border:1px dashed var(--z67-edge)!important;
+  border-radius:15px!important;background:var(--z67-surface)!important;
+  color:var(--z67-ink)!important;font-size:13px!important;line-height:1.7!important;
+  overflow-wrap:anywhere!important
+}

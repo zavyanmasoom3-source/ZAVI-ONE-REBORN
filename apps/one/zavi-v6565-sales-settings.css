@@ -1,0 +1,128 @@
+/* v65.65 — remove duplicate sales CTA, fix apparent empty settings page and compact device loading. */
+html[data-zavi-theme="light"]{
+ --z65-pane:#fff;--z65-pane2:#edf5ff;--z65-ink:#192d48;--z65-secondary:#506986;--z65-stroke:#dae7f7;
+}
+html:not([data-zavi-theme="light"]){
+ --z65-pane:#0e263f;--z65-pane2:#1b3857;--z65-ink:#f1f7ff;--z65-secondary:#bdd0e7;--z65-stroke:#345876;
+}
+#content.zrf-dashboard .zrf-primary.zrf-invoice{
+ background:linear-gradient(118deg,#1653e8,#07aee5)!important;color:#fff!important;
+ border:1px solid rgba(22,162,238,.5)!important;
+}
+#content.zrf-dashboard .zrf-primary.zrf-invoice :is(b,small,.zrf-forward,.zrf-primary-icon){color:#fff!important}
+#content.zrf-dashboard .zrf-primary.zrf-contact{
+ background:var(--z65-pane)!important;color:var(--z65-ink)!important;
+ border:1px solid var(--z65-stroke)!important;
+}
+#content.zrf-dashboard .zrf-primary.zrf-contact b{color:var(--z65-ink)!important;font-weight:850!important}
+#content.zrf-dashboard .zrf-primary.zrf-contact small{color:var(--z65-secondary)!important}
+#content.zrf-dashboard .zrf-tile[data-z65-route],#content.zrf-dashboard .zrf-primary[data-z65-route]{
+ touch-action:manipulation!important;min-width:0!important
+}
+#content.zrf-dashboard .z63-quick-tile[data-z65-route]{
+ border-color:var(--z65-stroke)!important;color:var(--z65-ink)!important;
+ background:var(--z65-pane)!important;
+}
+#content.zrf-dashboard .z63-quick-tile[data-z65-route]>.z63-quick-glyph{
+ background:linear-gradient(130deg,#30d0bd,#057cce)!important;color:#fff!important
+}
+#content.zrf-dashboard .zrf-primary-row{
+ gap:9px!important;margin-bottom:10px!important
+}
+#content.zrf-dashboard .zrf-primary{
+ min-height:75px!important;padding:11px!important
+}
+#content.zrf-dashboard .zrf-tiles{
+ row-gap:9px!important;margin-bottom:5px!important
+}
+/* The previous settings aggregator sometimes appears after a tall blank predecessor.
+   Put the actual searchable controls first and remove only verified empty predecessors. */
+#content.z65-settings-page{
+ display:block!important;align-content:start!important;align-items:stretch!important;
+ justify-content:flex-start!important;gap:0!important;
+ min-height:0!important;height:auto!important;
+ padding-top:9px!important;color:var(--z65-ink)!important
+}
+#content.z65-settings-page>.zavi-clean-settings-hub{
+ order:-10!important;position:relative!important;inset:auto!important;
+ transform:none!important;min-height:0!important;height:auto!important;
+ margin:0 0 12px!important;padding:12px!important;
+ background:var(--z65-pane)!important;color:var(--z65-ink)!important;
+ border:1px solid var(--z65-stroke)!important;border-radius:16px!important;
+ box-shadow:0 7px 24px rgba(20,83,159,.09)!important;
+}
+#content.z65-settings-page>.z65-empty-spacer{display:none!important}
+#content.z65-settings-page .zavi-clean-settings-groups{
+ display:grid!important;grid-template-columns:1fr!important;
+ gap:7px!important;align-content:start!important;min-height:0!important;
+ margin:0!important;padding:0!important
+}
+#content.z65-settings-page .zavi-clean-settings-group{
+ width:100%!important;min-height:0!important;max-width:100%!important;
+ margin:0!important;border:1px solid var(--z65-stroke)!important;
+ border-radius:13px!important;background:var(--z65-pane)!important;
+ overflow:visible!important
+}
+#content.z65-settings-page .zavi-clean-settings-group[hidden]{
+ display:none!important
+}
+#content.z65-settings-page .zavi-clean-settings-group>summary{
+ min-height:47px!important;font-size:13px!important;
+ color:var(--z65-ink)!important;background:var(--z65-pane)!important;
+ cursor:pointer!important;align-items:center!important
+}
+#content.z65-settings-page .zavi-clean-settings-group[open]>summary{
+ background:var(--z65-pane2)!important;border-radius:12px!important
+}
+#content.z65-settings-page .zavi-clean-settings-group .zavi-clean-settings-stack{
+ min-height:0!important;max-width:100%!important;
+ padding:8px!important;gap:8px!important;background:transparent!important
+}
+#content.z65-settings-page :is(.settings-card,.z652-card){
+ min-height:0!important;height:auto!important;margin:0 0 8px!important;
+ background:var(--z65-pane)!important;color:var(--z65-ink)!important;
+ border:1px solid var(--z65-stroke)!important;border-radius:12px!important;
+ padding:10px!important;box-shadow:none!important
+}
+#content.z65-settings-page :is(.settings-card,.z652-card) :is(h2,h3,h4,b,strong,label){
+ color:var(--z65-ink)!important;opacity:1!important;line-height:1.5!important
+}
+#content.z65-settings-page :is(.settings-card,.z652-card) :is(p,small,.muted){
+ color:var(--z65-secondary)!important;opacity:1!important;line-height:1.6!important
+}
+#content.z65-settings-page .zavi-clean-search-help{color:var(--z65-secondary)!important;opacity:1!important}
+#content.z65-settings-page :is(input,select,textarea){
+ color:var(--z65-ink)!important;background:var(--z65-pane2)!important;
+ border:1px solid var(--z65-stroke)!important;
+ -webkit-text-fill-color:var(--z65-ink)!important
+}
+#content.z65-settings-page :is(input,textarea)::placeholder{
+ color:var(--z65-secondary)!important;-webkit-text-fill-color:var(--z65-secondary)!important
+}
+/* Devices: status occupies only its content height; timeout note remains helpful but small. */
+#content .z65-device-hint{
+ width:100%;min-height:0;margin:9px 0;padding:10px 12px!important;
+ background:var(--z65-pane2);border:1px solid var(--z65-stroke);
+ color:var(--z65-secondary)!important;font-size:12px!important;
+ line-height:1.6!important;border-radius:11px
+}
+#content .z652-card,#content .z652-devices,#content .z652-panel{
+ min-height:0!important;max-height:none!important
+}
+#content .z652-status,#content .z652-loading{
+ min-height:0!important;padding-block:9px!important;margin-block:8px!important
+}
+body #content:not(.zrf-dashboard) :is(.settings-card,.z652-card,.panel){
+ scroll-margin-top:15px;scroll-margin-bottom:calc(var(--z64-bottom-nav,70px) + 25px)
+}
+@media(max-width:650px){
+ #content.z65-settings-page{padding:9px 10px calc(var(--z64-bottom-nav,70px) + 55px)!important}
+ #content.z65-settings-page>.zavi-clean-settings-hub{padding:9px!important}
+ #content.z65-settings-page .zavi-clean-settings-group>summary{padding:9px!important}
+ #content.zrf-dashboard .zrf-primary{min-height:71px!important}
+ #content.zrf-dashboard .zrf-primary b{font-size:13px!important}
+ #content.zrf-dashboard .zrf-primary small{font-size:10px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ #content.z65-settings-page .zavi-clean-settings-group{scroll-behavior:auto!important}
+}

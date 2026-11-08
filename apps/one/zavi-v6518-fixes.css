@@ -1,0 +1,25 @@
+/* V65.18: explicit user preference wins over visual effects on all screens. */
+html[data-z637-no-motion="true"] *,
+html[data-z637-no-motion="true"] *::before,
+html[data-z637-no-motion="true"] *::after{
+ animation-duration:0.001ms!important;
+ animation-delay:0ms!important;
+ animation-iteration-count:1!important;
+ transition-duration:0.001ms!important;
+ transition-delay:0ms!important;
+ scroll-behavior:auto!important;
+}
+html[data-z637-no-motion="true"] .z6512-splash,
+html[data-z637-no-motion="true"] .z6513-splash{display:none!important}
+html[data-z637-no-motion="true"] :is(.z6513-page-ready .welcome,.z6513-page-ready .stat,.z6513-page-ready .card,.z6513-page-ready .panel,.z6513-page-ready .settings-card,.z6513-page-ready .debt-card){
+ opacity:1!important;transform:none!important;will-change:auto!important
+}
+/* Keep layout readable in either direction without stressing GPU */
+.z637-design-motion{display:flex;gap:10px;align-items:center;min-height:40px;cursor:pointer}
+.z637-design-motion input{min-width:19px;min-height:19px;flex:none}
+html[dir="ltr"] .z637-customize :is(label,p,output){text-align:start}
+html[dir="ltr"] .form-grid .field{text-align:start}
+@media(prefers-reduced-motion:reduce){
+ .z6512-splash,.z6513-splash{display:none!important}
+ .z6513-page-ready :is(.card,.panel,.stat,.settings-card,.welcome){opacity:1!important;transform:none!important}
+}

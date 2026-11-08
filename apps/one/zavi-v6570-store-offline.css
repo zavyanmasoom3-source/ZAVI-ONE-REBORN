@@ -1,0 +1,18 @@
+/* ZAVI ONE V65.70: real signed offline licence status, accessible light + dark */
+html[data-zavi-theme="light"]{--z70-card:#fff;--z70-soft:#eaf5ff;--z70-ink:#15304e;--z70-muted:#52718d;--z70-border:#d5e7f7}
+html:not([data-zavi-theme="light"]){--z70-card:#132942;--z70-soft:#1b3957;--z70-ink:#f1f8ff;--z70-muted:#b8d1e8;--z70-border:#315877}
+#content #z70-store-status{box-sizing:border-box;max-width:100%;min-width:0;display:flex;flex-direction:column;gap:10px;padding:13px 14px;margin:0 0 11px;border:1px solid var(--z70-border);border-radius:16px;background:var(--z70-card);color:var(--z70-ink)!important;box-shadow:0 4px 15px rgba(18,73,156,.06)}
+#content #z70-store-status .z70-store-title{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+#content #z70-store-status .z70-store-title strong{display:block;font-size:15px;line-height:1.5;font-weight:900;color:var(--z70-ink)!important}
+#content #z70-store-status .z70-store-title small{display:block;font-size:11px;line-height:1.7;color:var(--z70-muted)!important}
+#content #z70-store-status button{min-height:37px;max-width:100%;padding:7px 13px;border-radius:10px;background:linear-gradient(120deg,#2863e9,#01aedc);color:#fff!important;border:1px solid #2086e2;font-weight:850;cursor:pointer;font-size:12px;white-space:normal}
+#content #z70-store-status button:focus-visible{outline:3px solid #02d0ed;outline-offset:2px}
+#content #z70-store-status button:disabled{opacity:.6;cursor:wait}
+#content #z70-store-status .z70-store-details{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:7px}
+#content #z70-store-status .z70-field{display:flex;justify-content:space-between;align-items:center;gap:9px;padding:9px 10px;border:1px solid var(--z70-border);border-radius:10px;min-width:0;background:var(--z70-soft);font-size:12px;line-height:1.5;color:var(--z70-ink)!important}
+#content #z70-store-status .z70-field span{color:var(--z70-muted)!important;overflow-wrap:anywhere}
+#content #z70-store-status .z70-field strong{color:var(--z70-ink)!important;font-weight:900;overflow-wrap:anywhere;flex:0 1 auto;text-align:end}
+#content #z70-store-status .z70-store-message{font-size:12px;line-height:1.7;color:var(--z70-ink)!important;background:var(--z70-soft);border-radius:10px;padding:9px 10px;margin:0}
+#content #z70-store-status .z70-store-notice{font-size:11px;line-height:1.8;color:var(--z70-muted)!important;margin:0;padding:9px 10px;border-inline-start:3px solid #f0a131}
+#content #z70-store-status .z70-muted{font-size:12px;line-height:1.7;color:var(--z70-muted)!important}
+@media(max-width:430px){#content #z70-store-status{padding:11px}#content #z70-store-status .z70-store-details{grid-template-columns:1fr}}
