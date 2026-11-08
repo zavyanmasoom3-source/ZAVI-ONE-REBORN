@@ -78,3 +78,22 @@
 .zavi-journal-tab-panels:not([data-zavi-journal-active="inventory"]) > .zv18-insight{display:none!important}
 .zavi-journal-tab-panels[data-zavi-journal-active="inventory"] > section.card{display:none!important}
 .zavi-journal-tab-panels[data-zavi-journal-active="inventory"] > .zv-feature-row{display:none!important}
+
+.zavi-dash-cash-card{padding:14px 16px;margin:0 0 16px;
+  border-color:var(--zds-border,#9aaec1);color:var(--zds-text,#152b43)}
+.zavi-dash-cash-header{display:flex;align-items:center;
+  justify-content:space-between;flex-wrap:wrap;gap:10px}
+.zavi-dash-cash-header>div{display:grid;gap:4px;min-width:0}
+.zavi-dash-cash-header small,.zavi-dash-cash-details small{
+  color:var(--zds-muted,#485f75);font-size:11px}
+.zavi-dash-cash-balance{font-size:21px;line-height:1.35;overflow-wrap:anywhere}
+.zavi-dash-cash-card details{margin-top:9px;padding-top:8px;
+  border-top:1px solid var(--zds-border,#9aaec1)}
+.zavi-dash-cash-card summary{cursor:pointer;min-height:40px;display:flex;align-items:center;
+  color:var(--zds-text,#152b43);font-weight:600}
+.zavi-dash-cash-details{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.zavi-dash-cash-details>div{display:grid;gap:4px;padding:10px;
+  border:1px solid var(--zds-border,#9aaec1);
+  background:var(--zds-surface-alt,#f8fafc);border-radius:10px;min-width:0}
+.zavi-dash-cash-details strong{font-size:14px;overflow-wrap:anywhere}
+@media(max-width:600px){.zavi-dash-cash-details{grid-template-columns:1fr}}
