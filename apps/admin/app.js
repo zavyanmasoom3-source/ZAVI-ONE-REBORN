@@ -1,7 +1,7 @@
 (()=>{'use strict';
 const $=s=>document.querySelector(s), el=id=>document.getElementById(id), escapeHTML=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const ADMIN_SESSION_KEY='zavi_admin_session', ADMIN_PERSIST_KEY='zavi_admin_persistent_session_v23_1';
-let config={url:'',key:''},session=null,mode='login',page='overview',rows=[],selected=null,filter='all',search='',lastActionBusy=false;
+let config={url:'',key:''},session=null,mode='login',page='overview',rows=[],archivedRows=[],selected=null,filter='all',search='',lastActionBusy=false;
 const faDigits=x=>String(x).replace(/\d/g,c=>'۰۱۲۳۴۵۶۷۸۹'[Number(c)]);
 const money=(n,c='AFN')=>new Intl.NumberFormat('en-US',{maximumFractionDigits:2}).format(+n||0)+' '+c;
 const AF_MONTHS=['حمل','ثور','جوزا','سرطان','اسد','سنبله','میزان','عقرب','قوس','جدی','دلو','حوت'];
@@ -115,7 +115,8 @@ async function fetchRows(){
  // Archived accounts stay on the server; the ordinary customer list excludes them.
  const archived=await api('/rest/v1/rpc/zavi_admin_v24_accounts',{method:'POST',body:{}});
  if(!Array.isArray(archived))throw Error('وضعیت بایگانی حساب‌ها دریافت نشد.');
- const hidden=new Set(archived.filter(r=>r.archived).map(r=>r.workspace_id));
+ archivedRows=archived.filter(r=>r.archived===true&&r.workspace_id);
+ const hidden=new Set(archivedRows.map(r=>r.workspace_id));
  rows=result.filter(r=>!hidden.has(r.workspace_id));
  try{adminFinancePeriodStart=await api('/rest/v1/rpc/zavi_admin_get_report_period',{method:'POST',body:{}})}catch(e){console.warn('Report period unavailable',e)}
  el('connectionStatus').textContent='متصل به سرور مرکزی';document.dispatchEvent(new Event('zavi-admin-data-updated'));
@@ -124,7 +125,7 @@ function showApp(){closeModal();el('resumeBtn').hidden=true;el('authScreen').hid
 function status(r){if(r.status==='suspended')return ['suspended','بسته / معلق'];if(r.plan==='none')return ['pending','در انتظار فعال‌سازی'];if(r.plan==='lifetime')return ['active','فعال'];const expiry=Date.parse(r.expires_at||'');if(!Number.isFinite(expiry)||expiry<=Date.now())return ['expired','پایان‌یافته'];const days=daysLeft(r.expires_at);if(days<=30)return ['warning','نزدیک ختم'];return ['active','فعال']}
 const statLabel=r=>{let [cls,t]=status(r);return `<span class="status ${cls}">${escapeHTML(t)}</span>`};
 const until=r=>r.plan==='lifetime'&&r.status==='active'?'بدون تاریخ انقضا':r.expires_at?formatSubscriptionBoth(r.expires_at):'هنوز فعال نشده';
-function customerRows(list,max){const arr=max?list.slice(0,max):list;return arr.length?`<div class="table-scroll"><table class="data-table"><thead><tr><th>نام فروشگاه</th><th>نوع اشتراک</th><th>وضعیت</th><th>تاریخ پایان</th><th>روز باقی‌مانده</th><th>آخرین تمدید / پرداخت</th><th>مدیریت</th></tr></thead><tbody>${arr.map(r=>`<tr><td><b>${escapeHTML(r.workspace_name)}</b><small>${escapeHTML(r.owner_email||'')}</small></td><td><span class="tag">${planTag(r)}</span></td><td>${statLabel(r)}</td><td>${until(r)}</td><td><span class="tag">${r.plan==='lifetime'?'بدون محدودیت':r.expires_at?faDigits(Math.max(0,daysLeft(r.expires_at)))+' روز':'—'}</span></td><td>${r.last_paid_at?formatSubscriptionBoth(r.last_paid_at):'—'}</td><td><div class="action-cell"><button class="button ghost" data-renew="${escapeHTML(r.workspace_id)}">${r.plan==='lifetime'?'جزئیات':'تمدید'}</button>${r.plan!=='none'&&r.plan!=='lifetime'?`<button class="button ${r.status==='suspended'?'ghost':'danger'}" data-substatus="${escapeHTML(r.workspace_id)}">${r.status==='suspended'?'✓ بازکردن':'⏸ توقف اشتراک'}</button>`:''}<button class="button ghost" data-archive="${escapeHTML(r.workspace_id)}" title="بدون حذف اطلاعات، از فهرست پنهان می‌شود">بایگانی</button></div></td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">هیچ مشتری با این مشخصات پیدا نشد.</div>'}
+function customerRows(list,max){const arr=max?list.slice(0,max):list;return arr.length?`<div class="table-scroll"><table class="data-table"><thead><tr><th>نام فروشگاه</th><th>نوع اشتراک</th><th>وضعیت</th><th>تاریخ پایان</th><th>روز باقی‌مانده</th><th>آخرین تمدید / پرداخت</th><th>مدیریت</th></tr></thead><tbody>${arr.map(r=>`<tr><td><b>${escapeHTML(r.workspace_name)}</b><small>${escapeHTML(r.owner_email||'')}</small></td><td><span class="tag">${planTag(r)}</span></td><td>${statLabel(r)}</td><td>${until(r)}</td><td><span class="tag">${r.plan==='lifetime'?'بدون محدودیت':r.expires_at?faDigits(Math.max(0,daysLeft(r.expires_at)))+' روز':'—'}</span></td><td>${r.last_paid_at?formatSubscriptionBoth(r.last_paid_at):'—'}</td><td><div class="action-cell"><button class="button ghost" data-renew="${escapeHTML(r.workspace_id)}">${r.plan==='lifetime'?'جزئیات':'تمدید'}</button>${r.plan!=='none'&&r.plan!=='lifetime'?`<button class="button ${r.status==='suspended'?'ghost':'danger'}" data-substatus="${escapeHTML(r.workspace_id)}">${r.status==='suspended'?'✓ بازکردن':'⏸ توقف اشتراک'}</button>`:''}<button class="button ghost" data-archive="${escapeHTML(r.workspace_id)}" title="معلومات حفظ می‌شود و مشتری به سطل بازیابی منتقل می‌شود">حذف قابل بازیابی</button></div></td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">هیچ مشتری با این مشخصات پیدا نشد.</div>'}
 function heading(title,subtitle,buttons=''){return `<div class="page-head"><div><div class="eyebrow">ZAVI ONE · ADMIN CENTER</div><h1>${title}</h1><p>${subtitle}</p></div><div class="page-actions"><span class="tag">امروز: ${todayAfghanText()}</span>${buttons}</div></div>`}
 function refreshFooterDate(){const x=document.getElementById('footerDate');if(x)x.textContent=window.ZaviDualDate?.formatBoth?.(new Date())||todayAfghanText()}
 function stats(){let a=rows.filter(r=>['annual','semiannual'].includes(r.plan)&&r.status==='active'&&Number.isFinite(Date.parse(r.expires_at||''))&&Date.parse(r.expires_at)>Date.now()).length;let ex=rows.filter(r=>status(r)[0]==='expired').length;let soon=rows.filter(r=>status(r)[0]==='warning').length;let rev=rows.filter(r=>r.last_amount).reduce((s,r)=>s+(+r.last_amount||0),0);return `<div class="metric-grid"><section class="metric"><span class="metric-icon">♧</span><div class="label">تمام فروشگاه‌ها</div><strong>${faDigits(rows.length)}</strong><small>ثبت‌شده در دیتابیس</small></section><section class="metric"><span class="metric-icon">✓</span><div class="label">اشتراک فعال ۱۸۰ و ۳۶۵ روزه</div><strong>${faDigits(a)}</strong><small>دارای اعتبار</small></section><section class="metric warn"><span class="metric-icon">◷</span><div class="label">نزدیک ختم</div><strong>${faDigits(soon)}</strong><small>۳۰ روز یا کمتر</small></section><section class="metric alert"><span class="metric-icon">!</span><div class="label">اشتراک پایان‌یافته</div><strong>${faDigits(ex)}</strong><small>منتظر تمدید</small></section></div>`}
@@ -163,7 +164,21 @@ function renderSupport(){return heading('پشتیبانی مشتریان','پا�
 function renderActivity(){const a=[...rows].filter(r=>r.last_paid_at).sort((x,y)=>new Date(y.last_paid_at)-new Date(x.last_paid_at));return heading('پیگیری و فعالیت‌ها','تاریخ آخرین تمدیدها و فهرست مشتریان نیازمند پیگیری')+`<section class="panel"><h2>آخرین تمدیدهای دریافت‌شده</h2><div class="admin-list">${a.length?a.map(r=>`<div class="admin-item"><b>${escapeHTML(r.workspace_name)}</b><small>${escapeHTML(shortDate(r.last_paid_at))}</small><b>${r.last_amount!=null?escapeHTML(money(r.last_amount,r.last_currency||'AFN')):'—'}</b></div>`).join(''):'<div class="empty">هنوز سابقه تمدیدی دریافت نشده است.</div>'}</div><p class="form-helper">این بخش فقط فعالیت‌های پرداخت موجود در فهرست را نشان می‌دهد؛ برای گزارش ممیزی کامل باید سرویس Audit سرور پیکربندی شود.</p></section>`}
 function renderHealth(){return heading('سلامت و وضعیت سیستم','وضعیت سرور از روی اتصال واقعی بررسی می‌شود؛ درصد پایداری ساختگی نمایش داده نمی‌شود')+`<section class="panel admin-health"><h2>بررسی اتصال امن</h2><p>برای تأیید دسترسی به سرور مرکزی و معتبر بودن نشست مالک، دکمه زیر را بزنید.</p><button class="button primary" type="button" id="adminCheckHealth">بررسی سرور و هویت مالک</button><div id="adminHealthResult" role="status" class="notice">هنوز بررسی نشده است.</div></section><section class="panel"><h2>اصول محافظت از اطلاعات</h2><p>بخش مدیریت مرکزی برای ثبت پرداخت و مدیریت مشتری نیازمند اینترنت و احراز هویت سرور است. داده‌های حسابداری مشتریان از پنل مدیریتی حذف یا پاک نمی‌شود مگر با دستور جداگانه و مجوز معتبر.</p></section>`}
 function renderSecurity(){return heading('امنیت و دسترسی','کنترل دسترسی اختصاصی مالک اصلی و ابزارهای مدیریت حساب')+`<div class="admin-secondary"><section class="panel"><h2>🔒 دسترسی فقط برای مالک اصلی</h2><p>ورود نیاز به ایمیل مجاز، رمز صحیح، نشست معتبر و مجوز سرور دارد. ظاهر پنهان یا منوی مخفی جایگزین کنترل دسترسی سمت سرور نیست.</p><p class="notice">${mode==='live'?'نشست سرور تأیید شده است.':'پیش‌نمایش آزمایشی محلی؛ هیچ عملیات مدیریتی واقعی مجاز نیست.'}</p><button class="button ghost" data-nav="settings">تنظیمات و تغییر رمز</button></section><section class="panel"><h2>📋 کنترل حساب‌ها</h2><p>بایگانی، بازیابی و عملیات حساس در بخش مدیریت برند یا تنظیمات و با تأیید جداگانه انجام می‌شوند.</p><button class="button ghost" data-nav="brand">مدیریت برند</button></section></div>`}
-function renderCustomers(){let list=rows.filter(r=>{let text=(r.workspace_name+' '+r.owner_email).toLowerCase();return text.includes(search.toLowerCase())&&(filter==='all'||status(r)[0]===filter)});return heading('مشتریان و اشتراک‌ها','هر فروشگاه حساب جداگانه دارد؛ تنها مدیر برند اجازه تمدید، بازکردن یا بستن اشتراک را دارد.',`<button class="button ghost" id="exportBtn">خروجی CSV</button>`)+`<section class="panel"><div class="panel-heading"><h2>فهرست فروشگاه‌ها <small class="small-muted">(${faDigits(list.length)})</small></h2></div><div class="toolbar"><input id="customerSearch" placeholder="نام فروشگاه یا ایمیل مشتری" value="${escapeHTML(search)}"><select id="customerFilter"><option value="all" ${filter==='all'?'selected':''}>همه وضعیت‌ها</option><option value="active" ${filter==='active'?'selected':''}>فعال</option><option value="warning" ${filter==='warning'?'selected':''}>نزدیک ختم</option><option value="expired" ${filter==='expired'?'selected':''}>پایان‌یافته</option><option value="pending" ${filter==='pending'?'selected':''}>بدون اشتراک</option><option value="suspended" ${filter==='suspended'?'selected':''}>بسته / معلق</option></select></div></section><section class="panel">${customerRows(list)}</section>`}
+function renderRecoverableTrash(){
+ if(mode!=='live'||!isMainAdmin())return '';
+ const safe=archivedRows.slice(0,150);
+ return '<section class="panel" data-zavi-trash-list="1">'+
+ '<div class="panel-heading"><h2>سطل بازیابی مشتریان <small class="small-muted">('+faDigits(archivedRows.length)+')</small></h2></div>'+
+ '<p class="form-helper">این حساب‌ها پنهان شده‌اند؛ فاکتورها و موجودی حذف نمی‌شوند.</p>'+
+ (safe.length?'<div class="admin-list">'+safe.map(c=>
+ '<div class="admin-item"><div><b>'+escapeHTML(c.workspace_name||'فروشگاه')+'</b>'+
+ '<small>'+escapeHTML(c.owner_email||'')+'</small></div>'+
+ '<button type="button" class="button ghost" data-restore="'+escapeHTML(c.workspace_id)+'">بازگردانی</button></div>'
+ ).join('')+'</div>':'<div class="empty">سطل بازیابی خالی است.</div>')+
+ (archivedRows.length>safe.length?'<p class="form-helper">بقیهٔ حساب‌ها از سرور باید صفحه‌بندی شوند.</p>':'')+
+ '</section>';
+}
+function renderCustomers(){let list=rows.filter(r=>{let text=(r.workspace_name+' '+r.owner_email).toLowerCase();return text.includes(search.toLowerCase())&&(filter==='all'||status(r)[0]===filter)});return heading('مشتریان و اشتراک‌ها','هر فروشگاه حساب جداگانه دارد؛ تنها مدیر برند اجازه تمدید، بازکردن یا بستن اشتراک را دارد.',`<button class="button ghost" id="exportBtn">خروجی CSV</button>`)+`<section class="panel"><div class="panel-heading"><h2>فهرست فروشگاه‌ها <small class="small-muted">(${faDigits(list.length)})</small></h2></div><div class="toolbar"><input id="customerSearch" placeholder="نام فروشگاه یا ایمیل مشتری" value="${escapeHTML(search)}"><select id="customerFilter"><option value="all" ${filter==='all'?'selected':''}>همه وضعیت‌ها</option><option value="active" ${filter==='active'?'selected':''}>فعال</option><option value="warning" ${filter==='warning'?'selected':''}>نزدیک ختم</option><option value="expired" ${filter==='expired'?'selected':''}>پایان‌یافته</option><option value="pending" ${filter==='pending'?'selected':''}>بدون اشتراک</option><option value="suspended" ${filter==='suspended'?'selected':''}>بسته / معلق</option></select></div></section><section class="panel" data-zavi-customer-table="1">${customerRows(list)}</section>${renderRecoverableTrash()}`}
 function renderPayments(){return heading('سوابق تمدید و پرداخت','تاریخچه پرداخت هر مشتری به‌طور جداگانه و با امکان پیگیری رسید ثبت می‌شود.')+`<section class="panel"><div class="panel-heading"><h2>فروشگاه موردنظر را انتخاب کنید</h2></div><div class="form-group"><select id="historyWorkspace"><option value="">انتخاب فروشگاه</option>${rows.map(r=>`<option value="${escapeHTML(r.workspace_id)}" ${selected===r.workspace_id?'selected':''}>${escapeHTML(r.workspace_name)}</option>`).join('')}</select></div><div id="historyArea">${selected?'در حال دریافت سوابق...':'برای دیدن سابقه، فروشگاه را انتخاب کنید.'}</div></section>`}
 function renderBrand(){
  const customerOptions=rows.map(r=>`<option value="${escapeHTML(r.workspace_id)}">${escapeHTML(r.workspace_name)} — ${escapeHTML(r.owner_email||'')}</option>`).join('');
@@ -459,14 +474,41 @@ async function changeSubscriptionStatus(id){
  }catch(e){toast('عملیات اشتراک انجام نشد: '+e.message,true)}finally{lastActionBusy=false}
 }
 async function archiveCustomer(id){
- if(lastActionBusy||mode!=='live')return;
- const r=rows.find(row=>row.workspace_id===id);if(!r)return;
- if(!confirm(`«${r.workspace_name}» از فهرست روزمره پنهان و بایگانی شود؟
-اطلاعات مشتری حذف نخواهد شد.
-بازگردانی از «کنترول حساب‌های مشتریان» امکان دارد.`))return;
+ if(lastActionBusy||mode!=='live'||!isMainAdmin())return toast('فقط مالک اصلی و آنلاین اجازه حذف قابل بازیابی دارد.',true);
+ if(!navigator.onLine)return toast('حذف مشتری نیازمند اتصال انترنت و تأیید سرور است.',true);
+ const customer=rows.find(row=>row.workspace_id===id);if(!customer)return;
+ const name=String(customer.workspace_name||'').trim();
+ if(!name)return toast('نام مشتری از سرور معتبر نیست؛ تغییری انجام نشد.',true);
+ if(!confirm('حساب «'+name+'» به سطل بازیابی منتقل شود؟\nمعلومات مالی حذف نمی‌شوند.'))return;
+ const typed=prompt('تأیید دوم: نام فروشگاه را دقیق بنویسید:\n'+name);
+ if(String(typed||'').trim()!==name)return toast('نام واردشده درست نیست؛ عملیات لغو شد.',true);
  lastActionBusy=true;
- try{await api('/rest/v1/rpc/zavi_admin_v24_archive',{method:'POST',body:{p_workspace_id:id,p_archive:true,p_reason:'بایگانی توسط مدیر برند'}});await fetchRows();render();toast('حساب بدون حذف اطلاعات از فهرست پنهان شد.');}
- catch(e){toast('بایگانی انجام نشد: '+e.message,true)}finally{lastActionBusy=false}
+ try{
+  const done=await api('/rest/v1/rpc/zavi_admin_trash_customer',{
+   method:'POST',body:{p_workspace_id:id,p_reason:'حذف قابل بازیابی با دو تأیید مدیر'}
+  });
+  if(done!==true)throw Error('سرور انتقال را تأیید نکرد.');
+  await fetchRows();
+  if(!archivedRows.some(x=>x.workspace_id===id))throw Error('سطل بازیابی هنوز نتیجه را نشان نمی‌دهد؛ فهرست را تازه کنید.');
+  render();toast('مشتری به سطل بازیابی منتقل شد؛ اسناد مالی محفوظ است.');
+ }catch(e){toast('حذف قابل بازیابی انجام نشد یا نیاز به بررسی دارد: '+e.message,true)}
+ finally{lastActionBusy=false}
+}
+async function restoreCustomer(id){
+ if(lastActionBusy||mode!=='live'||!isMainAdmin())return toast('فقط مالک اصلی اجازه بازگردانی دارد.',true);
+ if(!navigator.onLine)return toast('بازگردانی نیازمند انترنت است.',true);
+ const customer=archivedRows.find(row=>row.workspace_id===id);if(!customer)return;
+ if(!confirm('حساب «'+String(customer.workspace_name||'فروشگاه')+'» از سطل بازیابی برگردد؟'))return;
+ lastActionBusy=true;
+ try{
+  const done=await api('/rest/v1/rpc/zavi_admin_restore_trash_customer',{method:'POST',body:{p_workspace_id:id}});
+  if(done!==true)throw Error('سرور بازگردانی را تأیید نکرد.');
+  await fetchRows();
+  if(archivedRows.some(x=>x.workspace_id===id)||!rows.some(x=>x.workspace_id===id))
+   throw Error('نتیجه بازگردانی هنوز در فهرست عادی نیست؛ فهرست را تازه کنید.');
+  render();toast('حساب مشتری و دسترسی به سوابق آن بازگردانده شد.');
+ }catch(e){toast('بازگردانی انجام نشد یا نیاز به بررسی دارد: '+e.message,true)}
+ finally{lastActionBusy=false}
 }
 function confirmStatus(){if(selected)changeSubscriptionStatus(selected)}
 async function loadHistory(){let place=el('historyArea');if(!place||!selected)return;let result=mode==='demo'?demoPayments:await api('/rest/v1/rpc/zavi_admin_billing_history',{method:'POST',body:{p_workspace_id:selected}});if(!Array.isArray(result)||!result.length){place.innerHTML='<div class="empty">هنوز پرداخت یا تمدیدی برای این فروشگاه ثبت نشده است.</div>';return}place.innerHTML=`<div class="table-scroll"><table class="data-table"><thead><tr><th>تاریخ ثبت (شمسی / عیسوی)</th><th>نوع عملیات</th><th>مبلغ</th><th>روش پرداخت</th><th>شماره رسید</th><th>یادداشت</th></tr></thead><tbody>${result.map(t=>`<tr><td>${formatSubscriptionBoth(t.recorded_at)}</td><td>${t.event_type==='annual_payment'?'تمدید سالانه':t.event_type==='semiannual_payment'?'تمدید شش‌ماهه':t.event_type==='lifetime_payment'?'طرح ویژه قدیمی':'تغییر وضعیت'}</td><td dir="ltr">${t.amount!=null?money(t.amount,t.currency):'—'}</td><td>${escapeHTML(t.payment_method||'—')}</td><td>${escapeHTML(t.receipt_reference||'—')}</td><td>${escapeHTML(t.notes||'—')}</td></tr>`).join('')}</tbody></table></div>`}
@@ -480,7 +522,7 @@ async function logout(){
  if(token){try{await fetch(config.url+'/auth/v1/logout',{method:'POST',headers:{'apikey':config.key,'Authorization':'Bearer '+token}})}catch{}}
  toast('از حساب خارج شدید. برای ورود دوباره رمز لازم است.');
 }
-document.addEventListener('click',async e=>{let t=e.target.closest('button');if(!t)return;if(t.dataset.nav){page=t.dataset.nav;render()}if(t.dataset.page){page=t.dataset.page;document.body.classList.remove('mobile-drawer');render();if(page==='finance'){try{await fetchFinance();render()}catch(e){finance=null;render();toast('فایل SQL حسابداری درآمد را نصب کنید: '+e.message,true)}}}if(t.dataset.renew){let r=rows.find(x=>x.workspace_id===t.dataset.renew);if(r)openModal(r)}if(t.dataset.substatus)await changeSubscriptionStatus(t.dataset.substatus);if(t.dataset.archive)await archiveCustomer(t.dataset.archive);if(t.id==='z32BrandAccounts')document.getElementById('z24NavOpen')?.click();if(t.id==='mobileMenu')document.body.classList.toggle('mobile-drawer');if(t.id==='modalClose')closeModal();if(t.id==='renewConfirm')await confirmRenew(false);if(t.id==='lifetimeConfirm')await confirmRenew(true);if(t.id==='revokeLifetime')await revokeLifetime();if(t.id==='statusConfirm')await confirmStatus();if(t.id==='historyBtn'){page='payments';closeModal();render()}if(t.id==='logoutBtn'||t.dataset.logout)logout();if(t.id==='exportBtn')downloadCsv()});
+document.addEventListener('click',async e=>{let t=e.target.closest('button');if(!t)return;if(t.dataset.nav){page=t.dataset.nav;render()}if(t.dataset.page){page=t.dataset.page;document.body.classList.remove('mobile-drawer');render();if(page==='finance'){try{await fetchFinance();render()}catch(e){finance=null;render();toast('فایل SQL حسابداری درآمد را نصب کنید: '+e.message,true)}}}if(t.dataset.renew){let r=rows.find(x=>x.workspace_id===t.dataset.renew);if(r)openModal(r)}if(t.dataset.substatus)await changeSubscriptionStatus(t.dataset.substatus);if(t.dataset.archive)await archiveCustomer(t.dataset.archive);if(t.dataset.restore)await restoreCustomer(t.dataset.restore);if(t.id==='z32BrandAccounts')document.getElementById('z24NavOpen')?.click();if(t.id==='mobileMenu')document.body.classList.toggle('mobile-drawer');if(t.id==='modalClose')closeModal();if(t.id==='renewConfirm')await confirmRenew(false);if(t.id==='lifetimeConfirm')await confirmRenew(true);if(t.id==='revokeLifetime')await revokeLifetime();if(t.id==='statusConfirm')await confirmStatus();if(t.id==='historyBtn'){page='payments';closeModal();render()}if(t.id==='logoutBtn'||t.dataset.logout)logout();if(t.id==='exportBtn')downloadCsv()});
 document.addEventListener('submit',async e=>{
  if(e.target.id!=='z32OfflinePolicyForm')return;e.preventDefault();
  if(mode!=='live')return toast('در حالت نمایشی امکان تغییر وجود ندارد.',true);
@@ -493,14 +535,14 @@ document.addEventListener('submit',async e=>{
  try{await api('/rest/v1/rpc/zavi_v269_set_offline_policy',{method:'POST',body:{p_workspace_id:ws,p_offline_days:days,p_enabled:enabled}});toast('سیاست آفلاین برای مشتری انتخاب‌شده ثبت شد.');}
  catch(err){toast('ذخیره سیاست آفلاین انجام نشد: '+err.message,true)}finally{btn.disabled=false}
 });
-document.addEventListener('input',e=>{if(e.target.id==='customerSearch'){search=e.target.value;let elTable=el('view').querySelector('.panel:last-child');if(elTable){let list=rows.filter(r=>(r.workspace_name+' '+r.owner_email).toLowerCase().includes(search.toLowerCase())&&(filter==='all'||status(r)[0]===filter));elTable.innerHTML=customerRows(list)}}});document.addEventListener('change',e=>{if(e.target.id==='customerFilter'){filter=e.target.value;render()}if(e.target.id==='historyWorkspace'){selected=e.target.value;loadHistory().catch(x=>toast(x.message,true))}});
+document.addEventListener('input',e=>{if(e.target.id==='customerSearch'){search=e.target.value;let elTable=el('view').querySelector('[data-zavi-customer-table]');if(elTable){let list=rows.filter(r=>(r.workspace_name+' '+r.owner_email).toLowerCase().includes(search.toLowerCase())&&(filter==='all'||status(r)[0]===filter));elTable.innerHTML=customerRows(list)}}});document.addEventListener('change',e=>{if(e.target.id==='customerFilter'){filter=e.target.value;render()}if(e.target.id==='historyWorkspace'){selected=e.target.value;loadHistory().catch(x=>toast(x.message,true))}});
 async function resumeSavedSession(){if(!session?.access_token||!ZAVI_ADMIN_ALLOWED_EMAILS.has(String(session?.user?.email||'').toLowerCase()))return toast('دسترسی مخصوص مالک اصلی است.',true);
  const btn=el('resumeBtn');btn.disabled=true;
  try{await refreshSession();await fetchRows();mode='live';showApp();toast('اتصال قبلی دوباره برقرار شد.');}
  catch(e){toast('اتصال به سرور برقرار نشد: '+e.message,true)}finally{btn.disabled=false}
 }
 el('resumeBtn').addEventListener('click',resumeSavedSession);
-el('loginBtn').addEventListener('click',login);el('authPassword').addEventListener('keydown',e=>{if(e.key==='Enter')login()});el('refreshBtn').addEventListener('click',async()=>{if(mode==='demo')return toast('این یک پیش‌نمایش نمایشی است.');try{await fetchRows();if(page==='finance')await fetchFinance();render();toast('اطلاعات تازه شد.')}catch(e){toast(e.message,true)}});if(['localhost','127.0.0.1'].includes(location.hostname))el('demoBtn').hidden=false;el('demoBtn').addEventListener('click',()=>{mode='demo';session=null;rows=demoRows;showApp();toast('نسخه نمایشی بدون دسترسی به سرور باز شد.')});el('modalBg').addEventListener('click',e=>{if(e.target===el('modalBg'))closeModal()});
+el('loginBtn').addEventListener('click',login);el('authPassword').addEventListener('keydown',e=>{if(e.key==='Enter')login()});el('refreshBtn').addEventListener('click',async()=>{if(mode==='demo')return toast('این یک پیش‌نمایش نمایشی است.');try{await fetchRows();if(page==='finance')await fetchFinance();render();toast('اطلاعات تازه شد.')}catch(e){toast(e.message,true)}});if(['localhost','127.0.0.1'].includes(location.hostname))el('demoBtn').hidden=false;el('demoBtn').addEventListener('click',()=>{mode='demo';session=null;rows=demoRows;archivedRows=[];showApp();toast('نسخه نمایشی بدون دسترسی به سرور باز شد.')});el('modalBg').addEventListener('click',e=>{if(e.target===el('modalBg'))closeModal()});
 document.addEventListener('zavi-admin-open-renew',async event=>{
  if(mode!=='live')return toast('ابتدا وارد حساب مدیر شوید.',true);
  const ws=event.detail?.workspace_id;if(!ws)return toast('مشتری برای تمدید انتخاب نشده است.',true);
