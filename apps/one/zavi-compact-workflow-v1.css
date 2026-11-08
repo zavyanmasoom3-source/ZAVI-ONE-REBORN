@@ -50,3 +50,15 @@
 .zavi-dash-fast-button:focus-visible{outline:3px solid var(--zds-focus,#075fa6);outline-offset:2px}
 @media(max-width:720px){.zavi-dash-fast-actions{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 .zavi-dash-fast-button{font-size:12px;min-height:48px}}
+
+/* Inventory has one actual warehouse editor and a read-only view of its loaded
+ * stock movement report. Never synthesize server balances. */
+.zavi-stock-history-projection{padding:14px 16px;min-width:0}
+.zavi-stock-history-projection .zavi-history-title{display:block;font-size:14px;margin-block-end:10px;
+  color:var(--zds-text,#152b43)}
+.zavi-stock-history-projection .zavi-history-rows{display:grid;gap:6px;min-width:0}
+.zavi-stock-history-projection .zv-wh-stock-row{min-width:0;display:flex;
+  justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;
+  padding:9px 11px;border:1px solid var(--zds-border,#9aaec1);
+  border-radius:10px;color:var(--zds-text,#152b43)}
+.zavi-stock-history-projection .zv-wh-stock-row>*{overflow-wrap:anywhere;max-width:100%}
