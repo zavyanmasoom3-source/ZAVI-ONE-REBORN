@@ -97,14 +97,14 @@ with Session() as browser:
        const projected=panels[2].querySelector('.zavi-history-rows');
        return {keys:tabs.map(x=>x.dataset.zaviFlowLabel),
            first,second,third,manager:!!real,
-           sameOriginalManager:real?.id==='zvWarehouseManager',
+           sameOriginalManager:real?.id==='zaviWarehouseManagerV1',
            formPreserved:!!real?.querySelector('form[data-wh-add]'),
            historySource:!!source,projection:!!projected&&!!projected.textContent.trim(),
            projectionReadOnly:!projected?.querySelector('form,input,button')};
     })()""")
     assert warehouse['keys']==['products','warehouses','movements'],warehouse
     assert all(warehouse[k] for k in ['first','second','third','manager',
-       'formPreserved','historySource','projection','projectionReadOnly']),warehouse
+       'sameOriginalManager','formPreserved','historySource','projection','projectionReadOnly']),warehouse
     (out/'inventory-warehouses-stock-history.png').write_bytes(browser.screenshot())
     print('PASS: three inventory tabs preserve the live warehouse editor and read-only actual server history')
     browser.route('purchases')
