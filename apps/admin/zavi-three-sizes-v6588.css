@@ -1,0 +1,214 @@
+/* ZAVI ONE 65.88 / ADMIN 1.4.34 — independent size sliders.
+   Loaded after v65.86 viewport fixes; NEVER zoom html/body or resize viewport. */
+html.zavi-design-84{
+ --z87-text-scale:1;
+ --z87-system-scale:1;
+ --z87-icon-scale:1;
+ --z87-font:clamp(12px,calc(14px * var(--z87-text-scale)),21px);
+ --z87-caption:clamp(11px,calc(12px * var(--z87-text-scale)),18px);
+ --z87-head:clamp(16px,calc(21px * var(--z87-text-scale)),32px);
+ --z87-control:clamp(12px,calc(14px * var(--z87-text-scale)),21px);
+ --z87-pad:clamp(9px,calc(13px * var(--z87-system-scale)),22px);
+ --z87-gap:clamp(8px,calc(12px * var(--z87-system-scale)),18px);
+ --z87-icon:clamp(14px,calc(21px * var(--z87-icon-scale)),33px);
+ --z86-readable:var(--z87-font);
+ --z86-button:var(--z87-control);
+ --z86-title:var(--z87-head);
+ --z86-pad:var(--z87-pad);
+}
+/* Text alone: labels and headlines scale without any change to screen width. */
+html.zavi-design-84 body #content{
+ font-size:var(--z87-font)!important;
+}
+html.zavi-design-84 body #content :is(p,label,li,td,th,summary,dd,dt,blockquote){
+ font-size:var(--z87-font)!important;
+ line-height:1.5!important;
+ overflow-wrap:anywhere;
+}
+html.zavi-design-84 body #content :is(h1,h2,h3,h4){
+ font-size:var(--z87-head)!important;
+ line-height:1.3!important;
+ overflow-wrap:anywhere;
+}
+html.zavi-design-84 body #content :is(small,.help,.hint,.muted,.caption){
+ font-size:var(--z87-caption)!important;
+ line-height:1.5!important;
+}
+html.zavi-design-84 body #content :is(button,.btn,.button,input,select,textarea){
+ font-size:var(--z87-control)!important;
+}
+/* Interface alone: panel and button padding change; never change root zoom. */
+html.zavi-design-84 body #content :is(.card,.panel,.settings-card,.z76-settings-group,.z76-group-body,.z78-device-compact){
+ padding:var(--z87-pad)!important;
+ min-width:0!important;
+ max-width:100%!important;
+ box-sizing:border-box!important;
+}
+html.zavi-design-84 body #content :is(.z74-link-grid,.quick-actions,.quick-grid,.dashboard-grid,.dashboard-shortcuts,.settings-grid,.form-grid){
+ gap:var(--z87-gap)!important;
+ min-width:0!important;
+ max-width:100%!important;
+}
+html.zavi-design-84 body #content :is(button,.button,.btn):not(.bottom-btn){
+ padding-block:clamp(5px,calc(9px * var(--z87-system-scale)),15px)!important;
+ padding-inline:clamp(8px,calc(12px * var(--z87-system-scale)),19px)!important;
+ min-height:clamp(34px,calc(40px * var(--z87-system-scale)),60px);
+}
+/* Icon scale is limited to navigation/action icons: no chart or logo resizing. */
+html.zavi-design-84 body :is(#content,.bottom-nav,.bottom-bar,#navBottom,#bottomNav)
+ :is(button,a,.z74-link-grid>*)
+ :is(svg,.lucide,.icon:not(.z87-decorative)){
+ width:var(--z87-icon)!important;
+ height:var(--z87-icon)!important;
+ max-width:var(--z87-icon)!important;
+ max-height:var(--z87-icon)!important;
+ flex-shrink:0;
+}
+html.zavi-design-84 body #content :is(button,a) > :is(i[class^="fa"],i[class*=" fa-"],i[class^="ri-"]){
+ font-size:var(--z87-icon)!important;
+}
+/* Slider card: high contrast across light/dark, minimum 44px hit targets. */
+html.zavi-design-84 #z88-size-settings{
+ --z87-panel-bg:#ecf4ff;
+ --z87-row-bg:#fff;
+ --z87-ink:#112e54;
+ --z87-secondary:#3c587c;
+ --z87-line:#9bb8e5;
+ --z87-cta:#095fdc;
+ --z87-cta-text:#fff;
+ display:block!important;
+ position:relative!important;
+ isolation:isolate;
+ width:100%!important;
+ max-width:100%!important;
+ min-width:0!important;
+ grid-column:1/-1!important;
+ padding:clamp(12px,2.5vw,20px)!important;
+ margin:10px 0 16px!important;
+ background:var(--z87-panel-bg)!important;
+ border:1px solid var(--z87-line)!important;
+ border-radius:18px!important;
+ box-shadow:0 6px 21px #02092f15!important;
+ color:var(--z87-ink)!important;
+ box-sizing:border-box!important;
+ direction:inherit;
+ text-align:start;
+ overflow:hidden;
+}
+html.zavi-design-84:not([data-zavi-theme="light"]) #z88-size-settings,
+html.zavi-design-84 body.dark #z88-size-settings,
+html.zavi-design-84[data-theme="dark"] #z88-size-settings{
+ --z87-panel-bg:#111f45;
+ --z87-row-bg:#1c315f;
+ --z87-ink:#f1f6ff;
+ --z87-secondary:#d5e4ff;
+ --z87-line:#5376b9;
+ --z87-cta:#186bfb;
+ --z87-cta-text:#fff;
+}
+html.zavi-design-84 #z88-size-settings *{box-sizing:border-box!important}
+html.zavi-design-84 #z88-size-settings .z87-head{
+ display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;
+ gap:8px;margin:0 0 8px;
+}
+html.zavi-design-84 #z88-size-settings .z87-heading{
+ color:var(--z87-ink)!important;font-size:clamp(16px,calc(19px * var(--z87-text-scale)),27px)!important;
+ font-weight:850;margin:0!important;
+}
+html.zavi-design-84 #z88-size-settings .z87-summary{
+ color:var(--z87-secondary)!important;font-size:clamp(12px,calc(13px * var(--z87-text-scale)),19px)!important;
+ margin:0 0 14px!important;line-height:1.6!important;
+}
+html.zavi-design-84 #z88-size-settings .z87-body[hidden]{display:none!important}
+html.zavi-design-84 #z88-size-settings .z87-body{
+ display:grid!important;grid-template-columns:minmax(0,1fr)!important;
+ gap:12px!important;min-width:0!important;
+}
+html.zavi-design-84 #z88-size-settings .z87-row{
+ padding:clamp(12px,1.8vw,18px)!important;
+ background:var(--z87-row-bg)!important;
+ border:1px solid var(--z87-line)!important;
+ border-radius:15px!important;
+ min-width:0!important;
+}
+html.zavi-design-84 #z88-size-settings .z87-label-line{
+ display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:0 0 10px;
+}
+html.zavi-design-84 #z88-size-settings .z87-title{
+ display:block;color:var(--z87-ink)!important;font-size:clamp(14px,calc(16px * var(--z87-text-scale)),23px)!important;
+ font-weight:850!important;
+}
+html.zavi-design-84 #z88-size-settings .z87-hint{
+ color:var(--z87-secondary)!important;font-size:clamp(11px,calc(12px * var(--z87-text-scale)),18px)!important;
+ margin:3px 0 0!important;line-height:1.5!important;
+}
+html.zavi-design-84 #z88-size-settings .z87-value{
+ min-width:66px;padding:4px 8px;border-radius:10px;background:var(--z87-cta);color:#fff!important;
+ text-align:center;direction:ltr;unicode-bidi:isolate;
+ font-size:18px!important;font-weight:850!important;
+}
+html.zavi-design-84 #z88-size-settings .z87-slider{
+ width:100%!important;min-width:0!important;max-width:100%!important;
+ display:block!important;margin:0!important;
+ padding:8px 0!important;height:45px!important;
+ cursor:pointer!important;
+ accent-color:#1388fa!important;
+ background:transparent!important;
+ touch-action:pan-y;
+}
+html.zavi-design-84 #z88-size-settings .z87-ticks{
+ display:flex;justify-content:space-between;gap:5px;direction:ltr;
+ color:var(--z87-secondary)!important;font-size:12px!important;margin:0 0 8px;
+}
+html.zavi-design-84 #z88-size-settings :is(.z87-toggle,.z87-reset-one,.z87-reset-all){
+ cursor:pointer!important;
+ border:1px solid var(--z87-line)!important;
+ border-radius:11px!important;
+ color:var(--z87-ink)!important;
+ background:var(--z87-row-bg)!important;
+ font-weight:750!important;font-size:13px!important;
+ padding:8px 13px!important;min-height:44px!important;
+ white-space:normal!important;overflow-wrap:anywhere;
+}
+html.zavi-design-84 #z88-size-settings .z87-reset-one{
+ min-height:36px!important;padding:6px 13px!important;
+}
+html.zavi-design-84 #z88-size-settings .z87-reset-all{
+ width:100%!important;min-height:46px!important;background:var(--z87-cta)!important;
+ color:var(--z87-cta-text)!important;border-color:transparent!important;
+}
+html.zavi-design-84 #z88-size-settings :is(button,input):focus-visible{
+ outline:3px solid #33bcf3!important;outline-offset:2px!important;
+}
+@media(max-width:460px){
+ html.zavi-design-84 #z88-size-settings{padding:11px!important;border-radius:14px!important}
+ html.zavi-design-84 #z88-size-settings .z87-label-line{align-items:start}
+ html.zavi-design-84 #z88-size-settings .z87-title{font-size:15px!important}
+}
+@media(orientation:landscape) and (max-height:550px){
+ html.zavi-design-84 #z88-size-settings .z87-body{gap:8px!important}
+ html.zavi-design-84 #z88-size-settings .z87-row{padding:10px!important}
+}
+@media print{
+ html.zavi-design-84 #z88-size-settings{display:none!important}
+}
+
+/* Keep old one-control panel inaccessible, while preserving its stored preference for migration. */
+html.zavi-design-84 #zavi-display-settings-v6545{display:none!important}
+html.zavi-design-84 #z88-size-settings .z87-actions{display:flex!important;gap:9px!important;justify-content:space-between!important;align-items:center!important;flex-wrap:wrap!important;margin-top:8px}
+html.zavi-design-84 #z88-size-settings .z87-actions .z87-step{width:47px!important;min-width:47px!important;height:44px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;font-size:23px!important;border:1px solid var(--z87-line)!important;background:var(--z87-row-bg)!important;color:var(--z87-ink)!important;border-radius:10px!important;cursor:pointer!important}
+html.zavi-design-84 #z88-size-settings .z87-actions .z87-reset-one{flex:1 1 90px!important;min-height:44px!important}
+html.zavi-design-84 #z88-size-settings .z87-ticks span{color:var(--z87-secondary)!important;font-weight:700!important}
+html.zavi-design-84 body :is(#appScreen #view,#appScreen .sidebar,#za67-menu,#zrf-all,#side,.bottom-nav,.bottom-bar,#navBottom,#bottomNav)
+ :is(button,a,.nav-item,.menu-item) :is(svg.lucide,svg.icon,.lucide,.icon:not(.z87-decorative),.nav-icon){
+  width:var(--z87-icon)!important;height:var(--z87-icon)!important;
+  max-width:var(--z87-icon)!important;max-height:var(--z87-icon)!important;
+  font-size:var(--z87-icon)!important;flex-shrink:0!important
+}
+html.zavi-design-84 body :is(#appScreen #view,#appScreen .sidebar,#side,.bottom-nav,.bottom-bar)
+ :is(button,a,.nav-item,.menu-item) > :is(i[class^="fa"],i[class*=" fa-"],i[class^="ri-"]){font-size:var(--z87-icon)!important}
+html.zavi-design-84 #z88-size-settings .z87-slider{touch-action:pan-y!important}
+@media(max-width:460px){
+ html.zavi-design-84 #z88-size-settings .z87-label-line{align-items:flex-start!important}
+ html.zavi-design-84 #z88-size-settings .z87-value{font-size:18px!important}
+}

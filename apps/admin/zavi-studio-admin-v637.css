@@ -1,0 +1,15 @@
+/* ZAVI ONE ADMIN STUDIO V63.7 — presentation only, preserve auth/finance logic */
+:root{--z637-font:'Estedad','Vazirmatn','Noto Sans Arabic','Segoe UI',Tahoma,sans-serif}
+html,body,button,input,select,textarea,table{font-family:var(--z637-font)!important;text-rendering:optimizeLegibility}
+:where(button,a,input,select,textarea,[tabindex]):focus-visible{outline:3px solid #19ceda!important;outline-offset:3px!important}
+:where(button,.btn,.button,.card,.panel,.stat,.metric){transition:transform .2s cubic-bezier(.22,1,.36,1),box-shadow .24s,border-color .24s}
+:where(button,.btn,.button):hover:not(:disabled){filter:brightness(1.04)}
+:where(button,.btn,.button):active:not(:disabled){transform:scale(.98)}
+:where(.card,.panel,.stat,.metric){border-radius:17px}
+:where(.card,.panel,.stat,.metric):hover{box-shadow:0 12px 35px #062c4c28}
+:where(input,select,textarea):focus{box-shadow:0 0 0 3px #19c4db33!important}
+:where(h1,h2,h3,h4){letter-spacing:0;font-weight:850}
+:where(.sidebar,.side-menu,.sidepanel){background-image:linear-gradient(155deg,#07182d,#0b2d58 65%,#063b4a)}
+html[data-zavi-theme=light] :where(.sidebar,.side-menu,.sidepanel){background-image:linear-gradient(145deg,#fff,#e6f2ff)}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+@media print{button{box-shadow:none!important}}

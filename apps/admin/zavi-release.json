@@ -1,0 +1,67 @@
+{
+  "name": "ZAVI ONE ADMIN V53 / WEB V18",
+  "released_at": "2026-10-23",
+  "web_version": "1.3",
+  "design": "Dark Executive (original) + Light Studio V34",
+  "languages": [
+    "fa-AF",
+    "ps-AF",
+    "en"
+  ],
+  "pwa_safe_auto_update": true,
+  "backend_schema_changed": false,
+  "production_verified": false,
+  "release_changes": [
+    "Expanded English/Dari/Pashto localized UI phrases with curated glossary and existing dictionaries",
+    "Preserved performance improvements and offline client data",
+    "Bumped offline asset cache to load current translation files",
+    "Extended locale dictionaries and fixed prominent mixed-language labels in both interfaces",
+    "Shortened verbose nonessential helper text in all three languages, retaining important warnings",
+    "Solar Hijri and Gregorian dates continue to render using Asia/Kabul local time",
+    "Solar chart filter offers a rolling next Solar Hijri year without a static final-year cap",
+    "Gregorian chart filter continues through the next year and advances automatically each new year",
+    "Missing dates no longer display the Unix epoch placeholder 1970",
+    "Updated PWA cache version to load corrected translations after deployment",
+    "Preserved accounts, subscriptions, ledgers, data storage, and database schema",
+    "Light Studio V34: white business cards and readable dark typography",
+    "Densely styled light sidebars and accessible navigation in ZAVI ONE and Admin",
+    "Dari/Pashto text switched to Vazirmatn with offline-safe system fallback",
+    "A5 invoice light-mode screen and printable paper refinement (ZAVI ONE)",
+    "Updated service-worker cache to V34 and included complete replacement files",
+    "V41.2: fixed subscription status pill text fill for dark/light mobile cards and desktop; status badges now compact and high contrast."
+  ],
+  "language_qa": "Validated en/fa/ps dictionary parity, JavaScript syntax, and isolated chart/calendar tests. Full authenticated device/server E2E remains unverified.",
+  "contacts_whatsapp_action": false,
+  "dual_calendar_display": true,
+  "data_migration_required": false,
+  "admin_ui_patch": "V41.2 — visible mobile/desktop status labels",
+  "staging_version": "64.4-qa",
+  "studio_revision": "64.3-qa",
+  "staging_test_date": "2026-10-22",
+  "qa_only": true,
+  "production_deployed": false,
+  "v640_changes": [
+    "Correct dark/light admin card and table surfaces with readable text",
+    "Improved input text and focus contrast",
+    "Reduced-motion friendly admin visual finish"
+  ],
+  "staging_security_migration_applied": false,
+  "v642_changes": [
+    "Admin visual consistency and accessible interactions",
+    "SQL instruction guide removed from public navigation and offline cache; retained in QA source"
+  ],
+  "version": "64.4-qa",
+  "label": "ZAVI ONE ADMIN V64.3 — 7-Phase QA Milestone",
+  "ai_backend_deployed": false,
+  "v643_changes": [
+    "Authenticated admin app receives local release metadata viewer",
+    "Scoped form navigation/focus and visual contrast improvements",
+    "No subscription, payment or API logic changed"
+  ],
+  "status": "QA_ONLY",
+  "production_ready": false,
+  "release_date": "2026-10-22",
+  "release": "V64.4 — QUICK START / CSV VALIDATION / THERMAL 58-80 / ALERTS / LOCAL AUDIT / TRAINING — QA ONLY",
+  "v644_note": "ADMIN release viewer remains read-only; no billing or role changes and no deployment.",
+  "locale_release": "Verified trilingual UI glossary + English consistency pass"
+}
