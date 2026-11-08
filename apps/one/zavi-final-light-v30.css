@@ -1,0 +1,168 @@
+/* ZAVI ONE / ADMIN — V30 production theme layer.
+   Isolated to LIGHT mode. Original DARK artwork, financial data and print output unchanged.
+   Loaded LAST, after original styles. WCAG-oriented ink/surface tokens. */
+html[data-zavi-theme="light"] {
+  color-scheme:light;
+  --z30-page:#f3f7fd; --z30-paper:#fff; --z30-ink:#0f172a;
+  --z30-sub:#334155; --z30-muted:#475569; --z30-line:#cbd5e1;
+  --z30-soft:#f8fafc; --z30-accent:#0969ba; --z30-focus:#0284c7;
+  --z30-shadow:0 4px 18px rgba(15,23,42,.09);
+}
+html[data-zavi-theme="light"] body {background:var(--z30-page)!important;color:var(--z30-ink)!important}
+/* Surfaces: no dark background may survive under dark text. */
+html[data-zavi-theme="light"] :is(.workspace,.main,.content,#view,.main-content,.page-container,.dashboard,.layout-main,.page-body){color:var(--z30-ink)!important}
+html[data-zavi-theme="light"] :is(.card,.panel,.settings-card,.zsh-card,.zsvc-page,.zsvc-card,.z23-card,
+ .stat,.stat-card,.stat-box,.metric,.metric-card,.summary-card,.finance-stat,.finance-card,.fin-card,
+ .finance-kpi,.kpi-card,.dashboard-card,.balance-card,.report-card,.chart-card,.mini-box,.form-card,
+ .table-card,.table-wrap,.table-container,.empty,.empty-state,.notice,.alert,.alert-card,
+ .inventory-card,.product-card,.customer-card,.receipt-card,.zavi-custom-card,.z20-card,
+ .report-stat,.stock-card,.stock-box,.zavi-grid-card,.zsvc-extra-card,.zsvc-tools,
+ .zsvc-results-head,.zsvc-servicegrid,.zsvc-shortcuts,.zsvc-table-scroll,.zsvc-forecast,
+ .zsvc-timeline,.zsvc-follow,.zsvc-shortcut,.zsvc-help,.zsvc-line,.zsh-note,
+ .modal-card,.dialog,.dialog-content,.dropdown-menu,.popover,.z24-box,.v24-box) {
+  background:var(--z30-paper)!important;
+  color:var(--z30-ink)!important;
+  border-color:var(--z30-line)!important;
+  box-shadow:var(--z30-shadow)!important;
+}
+/* Content typography: account for nested legacy text with hardcoded white colors. */
+html[data-zavi-theme="light"] :is(.card,.panel,.settings-card,.stat,.metric,.summary-card,.report-stat,.zsh-card,
+ .table-card,.form-card,.kpi-card,.dashboard-card,.balance-card,.finance-stat,.fin-card,
+ .zsvc-card,.zsvc-extra-card,.z24-box,.v24-box,.v24-stat) :is(h1,h2,h3,h4,h5,h6,p,small,
+ label,.label,.title,.name,.description,.stat-label,.stat-value,.stat-foot,.amount,
+ .tiny-note,.form-helper,.hint,.muted,.help,.rec-detail,.zavi-help) {
+  color:var(--z30-ink)!important; text-shadow:none!important;
+}
+html[data-zavi-theme="light"] :is(.card,.panel,.settings-card,.stat,.metric,.summary-card,.report-stat,.zsh-card,
+ .table-card,.form-card,.dashboard-card,.zsvc-extra-card,.z24-box,.v24-box,.v24-stat)
+ :is(.muted,.hint,.tiny-note,.form-helper,.help,.description,small,.stat-foot,.stat-label,.zavi-help) {
+  color:var(--z30-muted)!important;
+}
+html[data-zavi-theme="light"] :is(.card,.panel,.stat,.metric,.summary-card,.report-stat,.settings-card,.v24-stat)
+ :is(strong,b,.value,.amount,.stat-value,.stat-number,.metric-value){color:var(--z30-ink)!important;text-shadow:none!important}
+html[data-zavi-theme="light"] :is(.sidebar,.side-nav,.app-sidebar,.topbar,.navbar,.nav-bar,.toolbar,.page-header,.top-actions,.mobile-bottom){background:var(--z30-paper)!important;color:var(--z30-ink)!important;border-color:var(--z30-line)!important}
+html[data-zavi-theme="light"] :is(.sidebar,.side-nav,.app-sidebar,.topbar,.navbar,.nav-bar)
+ :is(.brand,.brand-name,.brand-sub,.sidebar-caption,.sidebar-footer,.nav-section,.menu-heading,.top-label){color:var(--z30-ink)!important}
+html[data-zavi-theme="light"] :is(.sidebar,.side-nav,.app-sidebar)
+ :is(a,button,.nav-item,.nav-btn,.menu-item):not(.active):not(.selected){color:var(--z30-sub)!important}
+html[data-zavi-theme="light"] :is(.sidebar,.side-nav,.app-sidebar)
+ :is(a,button,.nav-item,.nav-btn,.menu-item):is(.active,.selected){background:#0968b4!important;color:#fff!important}
+html[data-zavi-theme="light"] :is(.sidebar,.side-nav,.app-sidebar)
+ :is(.active,.selected) :is(span,i,svg,b,small){color:#fff!important}
+/* Form control overrides, including custom controls outside common wrappers. */
+html[data-zavi-theme="light"] :is(input:not([type="checkbox"]):not([type="radio"]),textarea,select,
+ .search-field,.searchbox,.filter-input,.form-control,.v24-input,.z23-inp,.dropdown-trigger){
+  background:#fff!important;color:var(--z30-ink)!important;border:1px solid #94a3b8!important;
+  box-shadow:none!important;opacity:1!important;
+}
+html[data-zavi-theme="light"] :is(input,textarea)::placeholder{color:#475569!important;opacity:1!important}
+html[data-zavi-theme="light"] :is(select,option){color:var(--z30-ink)!important;background:#fff!important}
+html[data-zavi-theme="light"] :is(input,select,textarea,button,a,[tabindex]):focus-visible{
+  outline:3px solid var(--z30-focus)!important;outline-offset:2px!important;
+}
+html[data-zavi-theme="light"] :is(input[type="checkbox"],input[type="radio"]){accent-color:#0369a1;opacity:1!important}
+/* Tables: headings and cells retain a clear contrast on both striped backgrounds. */
+html[data-zavi-theme="light"] :is(table,.data-table,.zsvc-table,.z23-table,.v24-table,.z24-table){background:#fff!important;color:var(--z30-ink)!important;border-color:var(--z30-line)!important}
+html[data-zavi-theme="light"] :is(table,.data-table,.zsvc-table,.z23-table,.v24-table,.z24-table)
+ :is(th,thead td){background:#e9f1f9!important;color:#0f172a!important;border-color:#cbd5e1!important;font-weight:700!important}
+html[data-zavi-theme="light"] :is(table,.data-table,.zsvc-table,.z23-table,.v24-table,.z24-table) tbody tr{background:#fff!important}
+html[data-zavi-theme="light"] :is(table,.data-table,.zsvc-table,.z23-table,.v24-table,.z24-table) tbody tr:nth-child(even){background:#f1f5f9!important}
+html[data-zavi-theme="light"] :is(table,.data-table,.zsvc-table,.z23-table,.v24-table,.z24-table)
+ tbody :is(td,th,small,span,b,strong){color:#1e293b!important;border-color:#d5dee9!important}
+/* Buttons, statuses, icons. A vivid active/primary control must preserve white ink. */
+html[data-zavi-theme="light"] :is(button,.button,.btn,.z23-btn,.v24-btn,.zsvc-btn,.zsh-btn,
+ .icon-btn,.icon-button,.nav-btn,.nav-item){opacity:1}
+html[data-zavi-theme="light"] :is(button,.button,.btn,.z23-btn,.v24-btn,.zsvc-btn,.zsh-btn):not(.primary):not(.danger):not(.current):not(.active):not(.selected):not([aria-pressed="true"]){
+ background:#eaf2fb!important;color:#123b59!important;border-color:#a6bfd7!important;
+}
+html[data-zavi-theme="light"] :is(.button.primary,.btn.primary,.btn-primary,button.primary,.z23-btn:not(.light),.v24-btn:not(.subtle):not(.danger)){
+ background:#0969b8!important;color:#fff!important;border-color:#0969b8!important;
+}
+html[data-zavi-theme="light"] :is(.button.primary,.btn.primary,.btn-primary,button.primary,.z23-btn:not(.light),.v24-btn:not(.subtle):not(.danger)) :is(span,small,b,i,svg){color:#fff!important}
+html[data-zavi-theme="light"] :is(.button.danger,.btn.danger,.v24-btn.danger,button[data-danger]){background:#fee2e2!important;color:#991b1b!important;border-color:#fca5a5!important}
+html[data-zavi-theme="light"] :is(.badge,.pill,.chip,.tag,.status-tag,.status-chip,.zsvc-chip,.z23-chip,.v24-chip){background:#dbeafe!important;color:#1e3a5f!important;border-color:#93c5fd!important}
+html[data-zavi-theme="light"] :is(.badge.success,.pill.green,.status-chip.active,.v24-chip:not(.wait):not(.block)) {background:#dcfce7!important;color:#166534!important;border-color:#86efac!important}
+html[data-zavi-theme="light"] :is(.badge.warning,.pill.amber,.v24-chip.wait){background:#fef3c7!important;color:#854d0e!important;border-color:#fcd34d!important}
+html[data-zavi-theme="light"] :is(.badge.danger,.pill.red,.v24-chip.block){background:#fee2e2!important;color:#991b1b!important;border-color:#fca5a5!important}
+/* Financial chart styles: bars can remain dark, but every label must be readable. */
+html[data-zavi-theme="light"] :is(.chart-card,.chart-wrap,.chart-container,.monthly-chart,.zavi-sales-chart,.bar-chart){background:#fff!important;color:#0f172a!important}
+html[data-zavi-theme="light"] :is(.bar-col .label,.bar-col .tip,.bar-month,.bar-year,.month-label,
+ .chart-label,.chart-title,.chart-axis,.zavi-chart-month,.zavi-chart-submonth){color:#0f172a!important;text-shadow:none!important}
+html[data-zavi-theme="light"] :is(.chart-legend,.chart-caption,.chart-hint){color:#334155!important}
+/* Distinct branded banners ARE intentionally blue; restore white-on-blue only here. */
+html[data-zavi-theme="light"] :is(.welcome,.zsh-hero,.zavi-hero,.hero-banner,.dashboard-hero,.v24-hero,.z23-top-banner){
+ background:linear-gradient(115deg,#0c4a8a,#075f9e 55%,#047a8a)!important;color:#fff!important;border-color:#0284c7!important;
+}
+html[data-zavi-theme="light"] :is(.welcome,.zsh-hero,.zavi-hero,.hero-banner,.dashboard-hero,.v24-hero,.z23-top-banner)
+ :is(h1,h2,h3,h4,p,small,b,strong,span,.label,.title,.description){color:#fff!important}
+html[data-zavi-theme="light"] :is(.welcome,.zsh-hero,.zavi-hero,.hero-banner,.dashboard-hero,.v24-hero,.z23-top-banner)
+ :is(.btn,.button):not(.primary){background:#fff!important;color:#164e77!important}
+/* Overlay portals: the account-control feature has injected high-specificity dark rules. */
+html[data-zavi-theme="light"] #z24Root{background:#f3f7fd!important;color:#0f172a!important;direction:inherit!important}
+html[data-zavi-theme="light"] #z24Root :is(.v24-box,.v24-stat){background:#fff!important;color:#0f172a!important;border-color:#cbd5e1!important;box-shadow:var(--z30-shadow)!important}
+html[data-zavi-theme="light"] #z24Root .v24-table{background:#fff!important}
+html[data-zavi-theme="light"] #z24Root .v24-table thead th{background:#e2eaf3!important;color:#0f172a!important}
+html[data-zavi-theme="light"] #z24Root .v24-table td{background:transparent!important;color:#0f172a!important;border-color:#d1dce9!important}
+html[data-zavi-theme="light"] #z24Root .v24-table :is(small,.v24-muted){color:#475569!important}
+html[data-zavi-theme="light"] #z24Root .v24-input{background:#fff!important;color:#0f172a!important;border:1px solid #94a3b8!important}
+html[data-zavi-theme="light"] #z24Root .v24-alert{background:#fffbeb!important;color:#78350f!important;border-color:#fcd34d!important}
+html[data-zavi-theme="light"] #z24Root .v24-btn.subtle{background:#e2e8f0!important;color:#164e63!important;border-color:#94a3b8!important}
+html[data-zavi-theme="light"] #z24Root .v24-btn.danger{background:#fee2e2!important;color:#991b1b!important;border-color:#fca5a5!important}
+html[data-zavi-theme="light"] #z24Root .v24-hero{color:#fff!important}
+html[data-zavi-theme="light"] #z24Root .v24-hero :is(h1,p,span){color:#fff!important}
+html[data-zavi-theme="light"] #z24Root .v24-hero .v24-btn.subtle{background:#e2f2ff!important;color:#164e63!important}
+html[data-zavi-theme="light"] #z23AdminPortal{background:#f3f7fd!important;color:#0f172a!important;direction:inherit!important}
+html[data-zavi-theme="light"] #z23AdminPortal :is(.z23-card,.z23-wrap,.z23-tabs){color:#0f172a!important}
+html[data-zavi-theme="light"] #z23AdminPortal .z23-card{background:#fff!important;border-color:#cbd5e1!important}
+html[data-zavi-theme="light"] #z23AdminPortal :is(.z23-head p,.z23-muted,.z23-card p,.z23-card small){color:#334155!important}
+/* Align embedded service-portal controls in English and RTL; do not invert account numbers. */
+html[dir="ltr"] :is(#z24Root,#z23AdminPortal,#zaviServiceCenter){direction:ltr!important;text-align:left!important}
+html[dir="ltr"] :is(#z24Root,#z23AdminPortal) :is(th,td,.v24-table,.z23-table){text-align:left!important}
+html[dir="rtl"] :is(#z24Root,#z23AdminPortal,#zaviServiceCenter){direction:rtl!important}
+/* Keep legacy modals a usable size on iPad and prevent oversized empty margins. */
+#z24Root .v24-shell,#z23AdminPortal .z23-wrap{width:min(100%,1480px);max-width:1480px;padding-inline:clamp(14px,3vw,32px)}
+#z24Root .v24-table,#z23AdminPortal .z23-table{font-size:clamp(13px,.9vw,15px)}
+#z24Root .v24-table th,#z24Root .v24-table td{padding:clamp(10px,1vw,15px)}
+/* No invisible text in panels loaded through older inline style templates. */
+html[data-zavi-theme="light"] :is(.zsvc-kpis article,.zsvc-shortcut,.zsvc-forecast,.zsvc-follow,
+ .zsvc-internet,.zsvc-help,.zsvc-timeline,.z23-scroll,.v24-statgrid>.v24-stat){background:#fff!important;color:#0f172a!important}
+html[data-zavi-theme="light"] :is(.zsvc-kpis article,.zsvc-shortcut,.zsvc-forecast,.zsvc-follow,
+ .zsvc-internet,.zsvc-help,.zsvc-timeline,.z23-scroll,.v24-statgrid>.v24-stat)
+ :is(h1,h2,h3,h4,p,small,span,b,strong,.value,.label){color:#0f172a!important}
+html[data-zavi-theme="light"] :is(.zsvc-kpis article,.zsvc-shortcut,.zsvc-forecast,.zsvc-follow,
+ .zsvc-internet,.zsvc-help,.zsvc-timeline,.z23-scroll,.v24-statgrid>.v24-stat)
+ :is(.muted,.zsvc-muted,small){color:#475569!important}
+/* Subtle elevations and usability on tablet and phone. */
+@media (max-width:1100px){#z24Root .v24-shell,#z23AdminPortal .z23-wrap{padding-inline:16px}}
+@media (max-width:720px){html[data-zavi-theme="light"] .card,html[data-zavi-theme="light"] .panel{min-width:0}
+ #z24Root .v24-statgrid{grid-template-columns:1fr!important}
+ #z24Root .v24-tabs{gap:7px!important}
+ #z24Root :is(.v24-btn,.v24-input){min-height:44px}
+}
+/* Invoice PAPER must always be white when shown or printed, independent of selected theme. */
+html[data-zavi-theme="light"] .paper{background:#fff!important;color:#111827!important}
+@media print{html[data-zavi-theme="light"] :is(.paper,.page,.invoice-page){background:#fff!important;color:#111!important;box-shadow:none!important}}
+/* Financial admin cards previously inherited background:#071a34 !important. */
+html[data-zavi-theme="light"] :is(.fin-grid,.fin-cards,.overview-cols,.metric-grid,.stat-grid,.report-grid){background:transparent!important;color:#0f172a!important;box-shadow:none!important}
+html[data-zavi-theme="light"] :is(.fin-metric,.fin-form,.finbar,.fin-chart,.fin-chart-rail){background:#fff!important;color:#0f172a!important;border:1px solid #cbd5e1!important;box-shadow:0 5px 18px #0f172a17!important}
+html[data-zavi-theme="light"] :is(.fin-metric,.fin-form,.finbar,.fin-chart)
+ :is(span,b,strong,p,small,label,h2,.value,.fin-money,.fin-amount){color:#0f172a!important;text-shadow:none!important}
+html[data-zavi-theme="light"] :is(.fin-metric,.fin-form,.finbar,.fin-chart) :is(small,.fin-help,.muted){color:#475569!important}
+html[data-zavi-theme="light"] .fin-chart-col{background:#0d5ea5!important;border-color:#0d5ea5!important}
+html[data-zavi-theme="light"] :is(.fin-chart-month,.fin-chart-value,.fin-chart-year,.fin-date){color:#0f172a!important}
+html[data-zavi-theme="light"] .fin-metric.accent{background:#e6f7ff!important;border-color:#7dd3fc!important}
+/* Avoid the nested dark legacy headers appearing with white ink on white when light. */
+html[data-zavi-theme="light"] :is(.panel-heading,.report-title,.card-heading,.section-heading,.list-head,.table-head,.fin-head,
+ .data-head,.settings-head,.form-head){background:#eff6ff!important;color:#0f172a!important;border-color:#cbd5e1!important}
+html[data-zavi-theme="light"] :is(.panel-heading,.report-title,.card-heading,.section-heading,.list-head,.table-head,.fin-head,.data-head,.settings-head,.form-head)
+ :is(h1,h2,h3,h4,span,b,strong,small,p){color:#0f172a!important}
+/* Colored notices should have dark ink on a pastel backdrop. */
+html[data-zavi-theme="light"] :is(.notice,.warning,.warn,.notification,.z53-reset-note){background:#fff7e6!important;color:#78350f!important;border-color:#f9d88b!important}
+html[data-zavi-theme="light"] :is(.notice,.warning,.warn,.notification,.z53-reset-note) :is(span,p,strong,small,b){color:#78350f!important}
+/* Some compact labels have hard-coded navy backgrounds and no associated readable text. */
+html[data-zavi-theme="light"] :is(.stat-period,.stat-chip,.metric-caption,.stock-hint,.summary-hint,.invoice-count,.chart-year-label){background:#edf5ff!important;color:#1e3a5f!important;border-color:#bdd2e8!important}
+html[data-zavi-theme="light"] :is(.stat-period,.stat-chip,.metric-caption,.stock-hint,.summary-hint,.invoice-count,.chart-year-label) *{color:inherit!important}
+/* High contrast in light-mode invoice editor even when parent document has a dark style. */
+html[data-zavi-theme="light"] .paper :is(.inputline,.section,.notes,.summary,.sumrow,.title){color:#0f172a!important}
+html[data-zavi-theme="light"] .paper :is(input,textarea){background:#fff!important;color:#111827!important;border-color:#64748b!important}
+html[data-zavi-theme="light"] .paper :is(th,td){color:#111827!important;border-color:#64748b!important}

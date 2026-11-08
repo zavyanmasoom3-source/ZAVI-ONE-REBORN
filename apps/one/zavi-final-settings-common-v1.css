@@ -1,0 +1,35 @@
+/* Shared ZAVI ONE/ADMIN clean settings: only existing visual layout, no data/API changes. */
+:root{--zc-surface:#fff;--zc-soft:#f1f6fc;--zc-text:#162b49;--zc-muted:#62768e;--zc-line:#d9e5f2;--zc-primary:#127be8}
+html:not([data-zavi-theme="light"]){--zc-surface:#10253b;--zc-soft:#0d1c2d;--zc-text:#eff7ff;--zc-muted:#bacadc;--zc-line:#2b4663;--zc-primary:#62b2ff}
+#content .zavi-clean-settings-hub,#view .zavi-clean-settings-hub{max-width:100%;min-width:0;margin:0 0 20px;color:var(--zc-text)!important}
+.zavi-clean-settings-title{display:flex;gap:8px 17px;align-items:center;flex-wrap:wrap;margin-bottom:13px}
+.zavi-clean-settings-title strong{font-weight:900;font-size:clamp(20px,2vw,27px);color:var(--zc-text)!important}
+.zavi-clean-settings-title span{font-size:13px;color:var(--zc-muted)!important}
+.zavi-clean-search-label{display:block;font-size:13px;font-weight:800;margin-bottom:8px;color:var(--zc-text)!important}
+#content #zaviCleanSettingsSearch,#view #zaviCleanAdminSearch{width:100%;min-height:46px;max-width:100%;box-sizing:border-box;background:var(--zc-surface)!important;border:1px solid var(--zc-line)!important;border-radius:12px!important;color:var(--zc-text)!important;padding:11px 15px;font-size:14px;outline-offset:2px}
+.zavi-clean-search-help{margin:5px 0 13px!important;color:var(--zc-muted)!important;font-size:12px!important;line-height:1.7!important}
+.zavi-clean-settings-groups{display:grid;grid-template-columns:minmax(0,1fr);gap:10px}
+.zavi-clean-settings-group{min-width:0;max-width:100%;border:1px solid var(--zc-line);border-radius:14px;box-shadow:0 3px 13px rgba(15,60,110,.055);background:var(--zc-surface);overflow:clip}
+.zavi-clean-settings-group[hidden],.zavi-clean-settings-hub [hidden]{display:none!important}
+.zavi-clean-settings-group>summary{display:grid;position:relative;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto;align-items:center;gap:3px 10px;min-height:60px;padding:12px 17px 12px 33px;background:var(--zc-surface)!important;color:var(--zc-text)!important;cursor:pointer;list-style:none;outline-offset:-3px}
+.zavi-clean-settings-group>summary::-webkit-details-marker{display:none}
+.zavi-clean-settings-group>summary::before{content:'⌄';position:absolute;inset-inline-end:12px;top:16px;font-size:21px;color:var(--zc-primary)}
+.zavi-clean-settings-group>summary>span:first-child{grid-column:1;grid-row:1;font-size:15px;line-height:1.55;font-weight:850;color:var(--zc-text)!important}
+.zavi-clean-settings-group>summary small{grid-column:1;grid-row:2;color:var(--zc-muted)!important;font-size:12px;line-height:1.5}
+.zavi-clean-count{grid-column:2;grid-row:1/span 2;background:var(--zc-soft);color:var(--zc-primary)!important;border-radius:9px;min-width:28px;min-height:28px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:850}
+.zavi-clean-settings-group[open]>summary{border-bottom:1px solid var(--zc-line)}
+.zavi-clean-settings-stack{padding:11px;display:grid;gap:10px;min-width:0;grid-template-columns:minmax(0,1fr)}
+#content .zavi-clean-settings-stack>.settings-card,#view .zavi-clean-settings-stack>.panel{width:100%!important;max-width:100%!important;min-width:0!important;box-sizing:border-box;margin:0!important;padding:clamp(13px,2vw,19px)!important;border-radius:11px!important;border:1px solid var(--zc-line)!important;background:var(--zc-soft)!important;box-shadow:none!important;color:var(--zc-text)!important}
+.zavi-clean-settings-stack :is(h2,h3,h4){font-size:clamp(15px,1.25vw,18px)!important;line-height:1.5!important;margin-top:0!important;color:var(--zc-text)!important}
+.zavi-clean-settings-stack :is(p,.tiny-note,.form-helper){font-size:12.5px!important;color:var(--zc-muted)!important;line-height:1.85!important;overflow-wrap:anywhere}
+.zavi-clean-settings-stack :is(input,select,textarea){max-width:100%;min-width:0;box-sizing:border-box}
+.zavi-clean-settings-stack :is(button,.btn){max-width:100%;white-space:normal;overflow-wrap:anywhere}
+.zavi-clean-settings-stack .zavi-module-grid{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr))!important;gap:8px!important}
+.zavi-clean-settings-stack .action-group{display:flex;flex-wrap:wrap;gap:8px}
+.zavi-clean-settings-group[data-group="advanced"],.zavi-clean-settings-group[data-group="security"]{border-inline-start:3px solid #c88042}
+#content h1,#content h2,#content h3,#view h1,#view h2,#view h3{overflow-wrap:anywhere}
+#content .panel,#content .card,#view .panel{min-width:0}
+#content .table-wrap,#view .table-wrap{max-width:100%;overflow-x:auto}
+#content button,#view button{line-height:1.45}
+@media(max-width:740px){.zavi-clean-settings-title{display:block}.zavi-clean-settings-title strong{display:block}.zavi-clean-settings-groups{gap:8px}.zavi-clean-settings-stack{padding:8px}.zavi-clean-settings-group>summary{padding:12px 13px 12px 31px}.zavi-clean-settings-stack .zavi-module-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}.zavi-clean-settings-stack .form-grid{grid-template-columns:minmax(0,1fr)!important}}
+@media print{.zavi-clean-settings-hub{display:none!important}}

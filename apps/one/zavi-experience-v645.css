@@ -1,0 +1,77 @@
+/* ZAVI ONE V64.5: targeted cash-register usability and contrast fixes.
+   No financial record, role or subscription logic is changed by this stylesheet. */
+:root{--z645-ease:cubic-bezier(.2,.75,.2,1)}
+/* The legacy modal has overflow:hidden and a long form. Its middle must scroll,
+   while close and save remain reachable even on a short phone or on-screen keyboard. */
+#overlay .modal.z645-order-dialog{
+ display:flex!important;flex-direction:column!important;min-height:0!important;
+ height:min(92dvh,910px)!important;max-height:calc(100dvh - 24px)!important;
+ width:min(94vw,880px)!important;max-width:880px!important;
+ overflow:hidden!important;overscroll-behavior:contain!important;
+}
+#overlay .z645-order-dialog .modal-head{flex:0 0 auto!important;position:relative!important;z-index:1!important;padding:11px 18px!important}
+#overlay .z645-order-dialog #dialogForm{display:flex!important;flex-direction:column!important;flex:1 1 auto!important;min-height:0!important;overflow:hidden!important}
+#overlay .z645-order-dialog .modal-body{
+ flex:1 1 auto!important;min-height:0!important;max-height:none!important;
+ overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior-y:contain!important;
+ -webkit-overflow-scrolling:touch!important;touch-action:pan-y!important;
+ scrollbar-width:thin;scrollbar-color:#5f97c6 transparent;scroll-padding-bottom:26px;
+}
+#overlay .z645-order-dialog .modal-foot{
+ flex:0 0 auto!important;position:relative!important;inset:auto!important;
+ z-index:2!important;padding:9px 16px max(10px,env(safe-area-inset-bottom))!important;
+ display:flex!important;gap:9px!important;justify-content:flex-start!important;flex-wrap:wrap;
+ box-shadow:0 -7px 23px rgba(7,30,56,.11)
+}
+/* Barcode is useful, but must not swallow half the invoice page. */
+#overlay .z645-order-dialog .zavi-barcode-box{padding:9px 12px!important;margin:9px 0 5px!important;border-radius:12px!important}
+#overlay .z645-order-dialog .zavi-barcode-box>label{font-size:13px!important;margin:0 0 6px!important}
+#overlay .z645-order-dialog .zavi-barcode-actions{display:flex!important;align-items:center;gap:8px!important;flex-wrap:nowrap!important}
+#overlay .z645-order-dialog #zaviBarcodeScan{min-width:0!important;flex:1 1 auto!important;height:39px!important;min-height:39px!important;padding:7px 10px!important;font-size:13px!important}
+#overlay .z645-order-dialog .zavi-barcode-actions .btn{flex:0 0 auto!important;min-height:38px!important;padding:7px 11px!important;font-size:12px!important;white-space:nowrap}
+#overlay .z645-order-dialog .z641-invoice-preview{margin:6px 0!important;padding:7px 10px!important;min-height:28px!important;font-size:12px!important;gap:2px!important}
+#overlay .z645-order-dialog .z645-barcode-help{margin:0!important;font-size:11px;line-height:1.65;color:inherit}
+#overlay .z645-order-dialog .z645-barcode-help summary{cursor:pointer;display:list-item;list-style:disclosure-closed inside;opacity:.9;padding:3px 0}
+#overlay .z645-order-dialog .z645-barcode-help[open] summary{list-style:disclosure-open inside}
+#overlay .z645-order-dialog .z645-barcode-help small{display:block;padding:4px 0;font-size:11px!important}
+#overlay .z645-order-dialog .zawi-inline-tip{font-size:11px!important;margin:6px 0 8px!important;padding:8px 10px!important}
+#overlay .z645-order-dialog .order-items{gap:7px!important}
+#overlay .z645-order-dialog .order-line :is(input,select){min-height:38px!important}
+/* Preserve true theme colors for fields and labels, including long settings cards. */
+html[data-zavi-theme="light"] :is(.zavi-custom-card,.settings-card,.zavi-module-grid,.z20-grid){color:#163754!important}
+html[data-zavi-theme="light"] .settings-card :is(label,h3,h4,.tiny-note,.field-hint){color:#24445f!important}
+html[data-zavi-theme="dark"] .settings-card :is(label,h3,h4){color:#edf7ff!important}
+html[data-zavi-theme="dark"] .settings-card :is(.tiny-note,.field-hint){color:#bdd3e9!important}
+html[data-zavi-theme="light"] #overlay .modal .modal-body :is(.totals,.zawi-inline-tip,.z641-invoice-preview){color:#17334d!important}
+html[data-zavi-theme="dark"] #overlay .modal .modal-body :is(.totals,.zawi-inline-tip,.z641-invoice-preview){color:#edf7ff!important}
+/* Keep content scrollable when virtual keyboard opens. */
+@media(max-width:760px){
+ #overlay .modal-backdrop:has(.z645-order-dialog){padding:0!important;align-items:flex-end!important}
+ #overlay .modal.z645-order-dialog{width:100vw!important;max-width:100vw!important;height:calc(100dvh - 8px)!important;max-height:calc(100dvh - 8px)!important;border-radius:18px 18px 0 0!important}
+ #overlay .z645-order-dialog .modal-body{padding:10px 12px 18px!important}
+ #overlay .z645-order-dialog .modal-head{padding:10px 14px!important}
+ #overlay .z645-order-dialog .zavi-barcode-actions .btn{font-size:11px!important;padding:6px 9px!important}
+}
+/* Avoid expensive full-screen filters/animations on slow devices. */
+#overlay .z645-order-dialog{animation:z645-rise .21s var(--z645-ease) both!important}
+@keyframes z645-rise{from{opacity:.72;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){#overlay .z645-order-dialog{animation:none!important}#overlay .z645-order-dialog .modal-body{scroll-behavior:auto!important}}
+html[data-z637-no-motion="true"] #overlay .z645-order-dialog{animation:none!important}
+@media print{#overlay .z645-order-dialog{animation:none!important}}
+
+.z645-design-preview{display:block;margin-block-start:9px;color:inherit!important;font-size:12px;line-height:1.85;opacity:.85}
+html[data-zavi-theme="light"] .z637-customize .btn.primary{background:var(--z637-accent,#1478d7)!important;color:#fff!important;border-color:transparent!important}
+html[data-zavi-theme="dark"] .z637-customize .btn.primary{background:var(--z637-accent,#1478d7)!important;color:#fff!important;border-color:transparent!important}
+/* Backdrop blur on full viewport is costly on entry-level Android tablets. */
+#overlay .modal-backdrop:has(.z645-order-dialog){-webkit-backdrop-filter:none!important;backdrop-filter:none!important;background:rgba(4,18,39,.76)!important}
+@media(prefers-reduced-motion:reduce){#overlay .modal-backdrop{backdrop-filter:none!important}}
+/* All standard detail and settings dialogs must be navigable, not only invoices. */
+#overlay .modal:not(.z645-order-dialog){
+ display:flex!important;flex-direction:column!important;min-height:0!important;
+ max-height:calc(100dvh - 28px)!important;overflow:hidden!important;
+}
+#overlay .modal:not(.z645-order-dialog) #dialogForm{display:flex!important;flex:1 1 auto!important;flex-direction:column!important;min-height:0!important;overflow:hidden!important}
+#overlay .modal:not(.z645-order-dialog) .modal-head{flex:0 0 auto!important}
+#overlay .modal:not(.z645-order-dialog) .modal-body{flex:1 1 auto!important;min-height:0!important;overflow-y:auto!important;overscroll-behavior:contain!important;-webkit-overflow-scrolling:touch!important;touch-action:pan-y!important}
+#overlay .modal:not(.z645-order-dialog) .modal-foot{flex:0 0 auto!important;position:relative!important;bottom:auto!important}
+@media(max-width:760px){#overlay .modal:not(.z645-order-dialog){max-height:calc(100dvh - 12px)!important}}

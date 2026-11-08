@@ -1,0 +1,19 @@
+/* v20: readable RTL text without including or distributing font files. */
+:root{--zavi-text-leading:1.75}
+html[data-zavi-lang="fa-AF"],html[data-zavi-lang="ps-AF"]{font-family: "Noto Sans Arabic", "Noto Naskh Arabic", "Vazirmatn", "Tahoma", "Segoe UI", sans-serif!important}
+html[data-zavi-lang="fa-AF"] body,html[data-zavi-lang="ps-AF"] body {font-family:inherit!important;line-height:var(--zavi-text-leading);letter-spacing:0!important}
+html[data-zavi-lang="fa-AF"] :is(button,input,select,textarea,label,p,span,td,th,a,h1,h2,h3,h4),html[data-zavi-lang="ps-AF"] :is(button,input,select,textarea,label,p,span,td,th,a,h1,h2,h3,h4){font-family:inherit!important;line-height:1.7}
+html[data-zavi-lang="fa-AF"] :is(input,select,textarea),html[data-zavi-lang="ps-AF"] :is(input,select,textarea){font-size:max(14px,1em)}
+html[data-zavi-lang="ps-AF"]{--zavi-text-leading:1.9}
+html[data-zavi-lang="ps-AF"] :is(button,input,select,textarea,label,p,span,td,th,a,h1,h2,h3,h4){line-height:1.85}
+html[data-zavi-lang="en"]{font-family: "Segoe UI",Inter,system-ui,Arial,sans-serif;direction:ltr}
+html[data-zavi-lang="en"] body{font-family:inherit!important;line-height:1.5}
+html[data-zavi-lang="en"] :is(input,select,textarea,button){font-family:inherit!important}
+html[data-zavi-lang="en"] [dir="rtl"]:not([data-force-rtl]){direction:ltr}
+html[data-zavi-lang="fa-AF"] [data-zavi-ui],html[data-zavi-lang="ps-AF"] [data-zavi-ui]{direction:rtl}
+html[data-zavi-lang="en"] [data-zavi-ui]{direction:ltr}
+:is(.card,.panel,.settings-card,.stat,.summary-card,.report-stat){overflow-wrap:break-word}
+:is(.card,.panel,.settings-card,.stat,.summary-card,.report-stat) p {max-width:100%}
+html[data-zavi-lang="en"] :is(.sidebar,.topbar,.content,.main,.card,.panel),html[data-zavi-lang="en"] :is(.sidebar,.topbar,.content,.main,.card,.panel) :is(h1,h2,h3,p){text-align:start}
+html[data-zavi-lang="fa-AF"] :is(.sidebar,.topbar,.content,.main,.card,.panel),html[data-zavi-lang="ps-AF"] :is(.sidebar,.topbar,.content,.main,.card,.panel){text-align:start}
+@media(max-width:720px){html[data-zavi-lang="fa-AF"] body,html[data-zavi-lang="ps-AF"] body{font-size:15px}}
