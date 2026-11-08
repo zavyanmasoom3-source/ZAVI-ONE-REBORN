@@ -58,7 +58,9 @@ class Handler(SimpleHTTPRequestHandler):
             html=(ROOT/'apps/one/index.html').read_text(encoding='utf-8')
             if '</body>' not in html:
                 self.send_error(500,'No body to instrument');return
-            html=html.replace('</body>',probe+'</body>',1)
+            # The source also contains printable HTML in JavaScript strings.
+            # Inject only at the last, actual document-closing body tag.
+            html=html.rsplit('</body>',1)[0]+probe+'</body>'+html.rsplit('</body>',1)[1]
             body=html.encode('utf-8')
             self.send_response(200)
             self.send_header('Content-Type','text/html; charset=utf-8')
