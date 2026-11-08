@@ -23,6 +23,17 @@ with Session() as browser:
     })()""")
     assert nav['ids']==['dashboard','sales','products','purchases','more'],nav
     print('PASS: exact five mobile destinations:',nav['ids'])
+    quick=browser.eval("""(()=>{
+      const root=document.querySelector('.zavi-dash-fast-actions');
+      if(!root)return {present:false};
+      const actual=[...root.querySelectorAll('[data-zavi-fast-action]')]
+        .map(el=>el.dataset.zaviFastAction);
+      const expected=['sales','purchases','debtors','products'].filter(id=>zaviModuleEnabled(id));
+      const date=document.querySelector('.zui-dashboard-page .zv-today')?.textContent||'';
+      return {present:true,actual,expected,dualDate:date.includes('|')};
+    })()""")
+    assert quick['present'] and quick['actual']==quick['expected'] and quick['dualDate'],quick
+    print('PASS: permission-filtered dashboard actions link to live routes; compact dual date rendered')
     for route,keys in [
       ('money',['accounts','transactions','more']),
       ('reports',['summary','details','output'])
