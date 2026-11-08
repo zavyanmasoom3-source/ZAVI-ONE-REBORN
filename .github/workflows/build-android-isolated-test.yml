@@ -156,16 +156,53 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          echo 'Isolated APK output directory:'
+          find android-build/app/build/outputs/apk -maxdepth 3 -type f -name '*.apk' -print
           apk=$(find android-build/app/build/outputs/apk/isolatedTestOnly -maxdepth 1 -type f -name '*.apk' -print -quit)
-          test -n "$apk"
+          if [[ -z "$apk" ]]; then echo "::error::Expected isolated-test-only APK not found"; exit 1; fi
           apksigner="$ANDROID_SDK_ROOT/build-tools/36.0.0/apksigner"
           aapt="$ANDROID_SDK_ROOT/build-tools/36.0.0/aapt"
-          output=$("$apksigner" verify --verbose --print-certs "$apk")
+          if ! "$apksigner" verify --verbose --print-certs "$apk" > "$RUNNER_TEMP/isolated-apk-verify.txt" 2>&1; then
+            cat "$RUNNER_TEMP/isolated-apk-verify.txt"
+            echo "::error::APK cryptographic signature failed verification"
+            exit 1
+          fi
+          output=$(cat "$RUNNER_TEMP/isolated-apk-verify.txt")
+          printf '%s\n' "$output"
           for scheme in v1 v2 v3; do
-            grep -E "Verified using $scheme scheme.*: true" <<< "$output" >/dev/null
+            if ! grep -E "Verified using $scheme scheme.*: true" <<< "$output" >/dev/null; then
+              echo "::error::Isolated APK missing verified $scheme signature scheme"
+              exit 1
+            fi
           done
           grep -F "Signer #1 certificate SHA-256 digest:" <<< "$output"
-          package=$("$aapt" dump badging "$apk" | head -n 1)
+          badging=$("$aapt" dump badging "$apk")
+          package=${badging%%          echo "$package"
+          if [[ "${{ matrix.app }}" == one ]]; then
+            grep -F "name='com.zavione.one.testnotforrelease'" <<< "$package"
+          else
+            grep -F "name='com.zavione.one.admin.testnotforrelease'" <<< "$package"
+          fi
+          grep -F 'TEST-NOT-FOR-RELEASE' <<< "$package"
+          "$aapt" dump xmltree "$apk" AndroidManifest.xml | grep -F "testOnly" >/dev/null
+          unzip -p "$apk" assets/zavi-build-info.json | grep -F '"kind":"TEST-NOT-FOR-RELEASE"'
+          test -s "$apk"
+          mkdir -p testonly-output
+          cp "$apk" "testonly-output/ZAVI_${{ matrix.app }}_TEST-NOT-FOR-RELEASE.apk"
+          (cd testonly-output && sha256sum *.apk > SHA256SUMS.txt)
+          cat testonly-output/SHA256SUMS.txt
+          echo "::warning::Only for disposable devices: adb install -t; never a Release or an update to an existing ZAVI app."
+      - uses: actions/upload-artifact@v4
+        with:
+          name: TEST-NOT-FOR-RELEASE-Android-${{ matrix.app }}
+          path: testonly-output/
+          retention-days: 2
+          if-no-files-found: error
+      - name: Destroy isolated signing material
+        if: always()
+        shell: bash
+        run: rm -f "$RUNNER_TEMP/zavi-${{ matrix.app }}-isolated-testonly.p12"
+\n'*}
           echo "$package"
           if [[ "${{ matrix.app }}" == one ]]; then
             grep -F "name='com.zavione.one.testnotforrelease'" <<< "$package"
