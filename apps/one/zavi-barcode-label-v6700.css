@@ -1,0 +1,15 @@
+/* ZAVI ONE barcode label builder — affects label dialog only. */
+.zavi-label-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.zavi-label-grid label{display:flex;flex-direction:column;gap:5px;font-size:12px;min-width:0}
+.zavi-label-grid label:first-child{grid-column:1/-1}
+.zavi-label-grid input,.zavi-label-grid select{width:100%;min-height:40px;border:1px solid #cbd5e1;border-radius:9px;padding:7px;background:var(--reborn-surface,#fff);color:var(--reborn-ink,#182a40)}
+.zavi-label-toggles{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.zavi-label-toggles label{flex-direction:row;align-items:center}
+.zavi-label-toggles input{width:auto;min-height:auto}
+#z-label-error{color:#b42318;margin:8px 0}
+#z-label-preview{display:flex;justify-content:center;padding:12px;border:1px solid #cdd6e2;border-radius:12px}
+.zavi-label-sheet{width:50mm;min-height:30mm;border:1px dashed #bcc9d3;border-radius:4px;padding:2mm;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#111;background:#fff;gap:3px;box-sizing:border-box;font:9pt Arial,sans-serif;overflow:hidden}
+.zavi-label-sheet[data-size="60x40"]{width:60mm;min-height:40mm}.zavi-label-sheet[data-size="58x30"]{width:58mm;min-height:30mm}
+.zavi-label-sheet strong{font-size:9pt;overflow:hidden;max-width:100%;white-space:nowrap;text-overflow:ellipsis}
+.zavi-label-bars{width:96%;height:13mm}.zavi-label-sheet span{font:8pt monospace}
+@media(max-width:480px){.zavi-label-grid{grid-template-columns:1fr}.zavi-label-grid label:first-child{grid-column:auto}}
