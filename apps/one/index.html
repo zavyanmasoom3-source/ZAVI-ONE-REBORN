@@ -2002,10 +2002,23 @@ function renderNav(){
  const subscription=available.find(([id])=>id==='subscription');
  document.getElementById('sidebarLinks').innerHTML=menuItems.slice(0,5).map(renderLink).join('');
  document.getElementById('sidebarLinks2').innerHTML=menuItems.slice(5).map(renderLink).join('')+(subscription?renderLink(subscription):'');
- const industryPriority=db.uiIndustry?.focusedNav===false?['sales','debtors','products']:(window.ZaviIndustryFocus?.plan(type)?.primary||['sales','debtors','products']);
- const bottomIds=[...new Set([...industryPriority,'sales','debtors','products'])].filter(id=>zaviModuleEnabled(id)&&nav.some(n=>n[0]===id)).slice(0,3);
- const mobileItems=[['dashboard','خانه','home'],...bottomIds.map(id=>{const item=nav.find(n=>n[0]===id);return [id,db.uiIndustry?.focusedNav===false?item[1]:(window.ZaviIndustryFocus?.menuLabel(type,id,item[1])||item[1]),item[2]];}),['more','بیشتر','menu']];
- document.getElementById('mobileBottom').innerHTML=mobileItems.map(([id,title,ico])=>`<button type="button" class="bottom-btn ${page===id?'active':''}" data-go="${id}" ${page===id?'aria-current="page"':''} aria-label="${escapeHtml(title)}">${icon(ico)}<span>${escapeHtml(title)}</span></button>`).join('');
+ // Five stable navigation slots on mobile. Disabled industry modules remain
+ // visible, not silently replaced; other features remain in the More drawer.
+ const currentLanguage=(document.documentElement.lang||'fa-AF').toLowerCase();
+ const mobileLanguage=currentLanguage.startsWith('en')?'en':currentLanguage.startsWith('ps')?'ps':'fa';
+ const labels={
+  fa:['خانه','فروش','محصولات','خرید','بیشتر'],
+  ps:['کور','پلور','توکي','پېرود','نور'],
+  en:['Home','Sales','Products','Purchases','More']
+ }[mobileLanguage];
+ const mobileIds=['dashboard','sales','products','purchases','more'];
+ const mobileIcons=['home','sale','product','purchase','menu'];
+ const moreSelected=!mobileIds.slice(0,4).includes(page);
+ document.getElementById('mobileBottom').innerHTML=mobileIds.map((id,i)=>{
+  const title=labels[i],active=id==='more'?moreSelected:page===id;
+  const blocked=!['dashboard','more'].includes(id)&&!zaviModuleEnabled(id);
+  return `<button type="button" class="bottom-btn ${active?'active':''}" data-go="${id}" ${active?'aria-current="page"':''} ${blocked?'disabled aria-disabled="true"':''} aria-label="${escapeHtml(title)}">${icon(mobileIcons[i])}<span>${escapeHtml(title)}</span></button>`;
+ }).join('');
  document.getElementById('pageTitle').textContent=page==='waste'?wasteTxt('nav'):(nav.find(n=>n[0]===page)?.[1]||'داشبورد');
  document.getElementById('pageSub').textContent=configuredShopName()+' · '+(window.ZaviIndustryFocus?.plan(type)?.title||'ZAVI ONE');
  document.getElementById('todayStamp').textContent=window.ZaviDesignSystemV1?.formatDualDate(nowISO(),{language:document.documentElement.lang})||fmtDate(nowISO());
