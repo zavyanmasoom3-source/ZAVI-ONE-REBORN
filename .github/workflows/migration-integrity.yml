@@ -12,6 +12,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Reject signing secrets committed anywhere in Git history
+        run: python3 scripts/check-signing-history.py
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
