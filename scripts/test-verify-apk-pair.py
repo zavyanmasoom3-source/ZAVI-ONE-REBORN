@@ -107,14 +107,14 @@ class ApkPairTests(unittest.TestCase):
         try:
             def mocked(args):
                 if args[0]=='aapt':
-                    return "package: name='com.zavione.one.rebornqa' versionCode='667802' versionName='66.78'\\n"
+                    return "package: name='com.zavione.one.rebornqa' versionCode='667802' versionName='66.78'\n"
                 if '--min-sdk-version' in args:
-                    return ('Verified using v1 scheme (JAR signing): false\\n'
-                            'Signer #1 certificate SHA-256 digest: '+QA_SHA+'\\n')
-                return ('Verified using v1 scheme (JAR signing): false\\n'
-                        'Verified using v2 scheme (APK Signature Scheme v2): true\\n'
-                        'Verified using v3 scheme (APK Signature Scheme v3): true\\n'
-                        'Signer #1 certificate SHA-256 digest: '+QA_SHA+'\\n')
+                    return ('Verified using v1 scheme (JAR signing): false\n'
+                            'Signer #1 certificate SHA-256 digest: '+QA_SHA+'\n')
+                return ('Verified using v1 scheme (JAR signing): false\n'
+                        'Verified using v2 scheme (APK Signature Scheme v2): true\n'
+                        'Verified using v3 scheme (APK Signature Scheme v3): true\n'
+                        'Signer #1 certificate SHA-256 digest: '+QA_SHA+'\n')
             mod.command=mocked
             with self.assertRaisesRegex(mod.VerificationError, 'v1 signature'):
                 mod.read_apk(apk,'aapt','apksigner')
@@ -127,14 +127,14 @@ class ApkPairTests(unittest.TestCase):
         try:
             def mocked(args):
                 if args[0]=='aapt':
-                    return "package: name='com.zavione.one.rebornqa' versionCode='667802' versionName='66.78'\\n"
+                    return "package: name='com.zavione.one.rebornqa' versionCode='667802' versionName='66.78'\n"
                 if '--min-sdk-version' in args:
-                    return ('Verified using v1 scheme (JAR signing): true\\n'
-                            'Signer #1 certificate SHA-256 digest: '+ADMIN_SHA+'\\n')
-                return ('Verified using v1 scheme (JAR signing): false\\n'
-                        'Verified using v2 scheme (APK Signature Scheme v2): true\\n'
-                        'Verified using v3 scheme (APK Signature Scheme v3): true\\n'
-                        'Signer #1 certificate SHA-256 digest: '+QA_SHA+'\\n')
+                    return ('Verified using v1 scheme (JAR signing): true\n'
+                            'Signer #1 certificate SHA-256 digest: '+ADMIN_SHA+'\n')
+                return ('Verified using v1 scheme (JAR signing): false\n'
+                        'Verified using v2 scheme (APK Signature Scheme v2): true\n'
+                        'Verified using v3 scheme (APK Signature Scheme v3): true\n'
+                        'Signer #1 certificate SHA-256 digest: '+QA_SHA+'\n')
             mod.command=mocked
             with self.assertRaisesRegex(mod.VerificationError,'Signer identity changed'):
                 mod.read_apk(apk,'aapt','apksigner')
