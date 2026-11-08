@@ -6,6 +6,7 @@ import datetime
 import json
 import re
 p=argparse.ArgumentParser()
+p.add_argument('--app',choices=('one','admin'),default='one')
 p.add_argument('--assets',required=True)
 p.add_argument('--run',required=True,type=int)
 p.add_argument('--commit',required=True)
@@ -14,10 +15,12 @@ if a.run<1 or not re.fullmatch('[0-9a-f]{40}',a.commit):
     raise SystemExit('Invalid CI build identity')
 folder=Path(a.assets)
 assert folder.is_dir() and (folder/'index.html').is_file()
-version=f'66.78-reborn.qa.{a.run}'
+version=(f'66.78-reborn.qa.{a.run}' if a.app=='one'
+         else f'1.4.69-reborn.qa.{a.run}')
 today=datetime.datetime.now(datetime.timezone.utc).date().isoformat()
-stamp={'commit':a.commit,'app':'one','run':str(a.run),
-       'version':version,'package':'com.zavione.one.desktop',
+stamp={'commit':a.commit,'app':a.app,'run':str(a.run),
+       'version':version,'package':('com.zavione.one.desktop' if a.app=='one'
+                  else 'com.zavione.one.admin.desktop'),
        'kind':'desktop-qa','signing':'unsigned-windows-qa'}
 (folder/'zavi-build-info.json').write_text(json.dumps(stamp,indent=2)+'\n',encoding='utf8')
 for name in ('zavi-release.json','edition.json','deployment-info.json'):
