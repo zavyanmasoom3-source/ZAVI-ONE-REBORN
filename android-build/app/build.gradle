@@ -26,8 +26,8 @@ android {
         minSdk 26
         targetSdk 36
         // Explicitly advance each product's base version by one. The CI run number makes every artifact unique.
-        versionCode ((admin ? 146701 : 667601) + ciBuildNumber)
-        versionName ((admin ? '1.4.68-rc' : '66.77-rc') + '.' + ciBuildNumber)
+        versionCode ((admin ? 146900 : 667800) + ciBuildNumber)
+        versionName ((admin ? '1.4.69-reborn.qa' : '66.78-reborn.qa') + '.' + ciBuildNumber)
         resValue 'string', 'app_name', admin ? 'ZAVI ONE ADMIN' : 'ZAVI ONE'
     }
     signingConfigs {
