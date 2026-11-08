@@ -1,0 +1,114 @@
+/* ZAVI ONE 65.90 / ADMIN 1.4.36 — mobile visual rescue, 27 Oct 2026.
+ * High-priority repair after device photos: avoid blank tall canvases, clipped
+ * cards and floating-assistant sheets that cover or hide working areas.
+ * Does not resize browser viewport, modify zoom, or touch business data.
+ */
+:root{--z90-vh:100dvh;--z90-vw:100vw;--z90-bottom:env(safe-area-inset-bottom,0px);}
+html.zavi-design-84,html.zavi-design-84 body{
+ box-sizing:border-box!important;max-width:100%!important;min-width:0!important;overflow-x:clip!important;
+}
+html.zavi-design-84 body :is(#content,#appScreen #view,.content,.workspace,.main){
+ box-sizing:border-box!important;min-width:0!important;max-width:100%!important;
+ overflow-wrap:anywhere;
+}
+html.zavi-design-84 body :is(.card,.panel,.settings-card,.z76-settings-group,.z88-panel,.daily-card,.admin-kpi,.form-row,.form-grid){
+ box-sizing:border-box!important;min-width:0!important;max-width:100%!important;
+}
+html.zavi-design-84 body :is(#content,#appScreen #view) :is(p,h1,h2,h3,button,textarea,label,summary,small){
+ overflow-wrap:anywhere;word-break:normal;white-space:normal;
+}
+/* Store settings and all large documents must scroll, never cut off the end. */
+html.zavi-design-84 body :is(#content,#appScreen #view) :is(.table-wrap,.table-responsive,.table-scroll,.data-table-wrap,pre,code){
+ max-width:100%!important;overflow-x:auto;overscroll-behavior-x:contain;
+}
+html.zavi-design-84 body :is(.modal,.modal-card,.z62-dialog,.z648-sheet,[role="dialog"]:not(.z637-ai-panel)){
+ max-width:calc(100vw - 14px)!important;
+ max-height:calc(var(--z90-vh) - 18px)!important;
+ overflow-y:auto!important;overflow-x:hidden;
+ -webkit-overflow-scrolling:touch;
+}
+/* ZAVI AI itself used a narrow 440px fixed desktop popup, leaving a giant empty
+ * background on wide phones/landscape. On touch screens make it a bounded sheet. */
+@media(pointer:coarse) and (max-width:1199px), (orientation:landscape) and (max-height:700px){
+ html.zavi-design-84 body #z637AiPanel.z637-ai-panel{
+  position:fixed!important;box-sizing:border-box!important;
+  left:0!important;right:0!important;top:0!important;bottom:0!important;
+  width:100%!important;max-width:100%!important;
+  height:var(--z90-vh)!important;max-height:var(--z90-vh)!important;
+  border-radius:0!important;margin:0!important;
+  display:none;flex-direction:column!important;
+  overflow:hidden!important;overscroll-behavior:contain;
+  z-index:2147482100!important;
+ }
+ html.zavi-design-84 body #z637AiPanel.z637-ai-panel[aria-hidden="false"]{display:flex!important}
+ html.zavi-design-84 body #z637AiPanel .z637-ai-head{
+  flex:0 0 auto!important;padding:8px 12px!important;min-height:48px!important;
+ }
+ html.zavi-design-84 body #z637AiPanel .z637-ai-logo{width:34px!important;height:34px!important}
+ html.zavi-design-84 body #z637AiPanel .z637-ai-modes{flex-shrink:0!important;padding:6px 10px!important}
+ html.zavi-design-84 body #z637AiPanel .z637-ai-note{flex:0 0 auto!important;padding:5px 10px!important}
+ html.zavi-design-84 body #z637AiPanel .z637-ai-messages{
+  flex:1 1 0!important;min-height:0!important;max-height:none!important;
+  overflow-y:auto!important;overflow-x:hidden!important;
+  padding:10px 12px 22px!important;-webkit-overflow-scrolling:touch;
+  scroll-behavior:auto!important;
+ }
+ html.zavi-design-84 body #z637AiPanel :is(.z637-ai-msg,.z637-ai-examples){
+  min-width:0!important;max-width:100%!important;overflow-wrap:anywhere;
+ }
+ html.zavi-design-84 body #z637AiPanel .z637-ai-examples{
+  flex:0 0 auto!important;max-height:52px!important;overflow-y:auto!important;
+  padding:3px 10px!important;
+ }
+ html.zavi-design-84 body #z637AiPanel .z637-ai-form{
+  flex-shrink:0!important;min-height:55px!important;
+  padding:6px 10px max(6px,var(--z90-bottom))!important;
+ }
+ html.zavi-design-84 body #z637AiPanel .z637-ai-input{
+  flex:1!important;min-width:0!important;max-height:66px!important;
+ }
+ html.zavi-design-84 body #z637AiBackdrop{z-index:2147482000!important}
+ html.zavi-design-84 body #z637AiButton{
+  position:fixed!important;left:clamp(12px,2vw,20px)!important;
+  bottom:calc(68px + var(--z90-bottom))!important;
+  width:52px!important;height:52px!important;z-index:2147481000!important;
+ }
+}
+/* Do not show a blue empty section from an inadvertently fixed 100dvh layout.
+ * The content itself should size to its entries, while the outer shell scrolls. */
+@media(max-width:1199px){
+ html.zavi-design-84 body :is(.app,.main,.workspace,#appScreen){
+  box-sizing:border-box!important;min-width:0!important;max-width:100%!important;
+  width:100%!important;
+ }
+ html.zavi-design-84 body :is(#content,#appScreen #view){
+  position:relative!important;height:auto!important;min-height:0!important;
+  min-width:0!important;width:100%!important;max-width:100%!important;
+  overflow-x:clip!important;overflow-y:visible!important;
+  padding-bottom:max(72px,calc(60px + var(--z90-bottom)))!important;
+ }
+ html.zavi-design-84 body :is(.bottom-nav,.bottom-bar,#mobileBottom,.mobile-bottom){
+  box-sizing:border-box!important;max-width:100%!important;
+ }
+}
+@media(max-width:1199px) and (orientation:landscape) and (max-height:650px){
+ html.zavi-design-84 body .app,html.zavi-design-84 body .main,
+ html.zavi-design-84 body #appScreen,html.zavi-design-84 body #appScreen .workspace{
+  height:auto!important;min-height:0!important;overflow-y:visible!important;
+ }
+ html.zavi-design-84 body :is(#content,#appScreen #view){
+  height:auto!important;min-height:0!important;
+  overflow-y:visible!important;overflow-x:clip!important;
+  padding-top:8px!important;padding-bottom:calc(64px + var(--z90-bottom))!important;
+ }
+ html.zavi-design-84 body :is(.settings-grid,.form-grid,.z76-settings-groups){
+  grid-template-columns:minmax(0,1fr)!important;
+ }
+ html.zavi-design-84 body :is(#content,#appScreen #view) :is(button,.btn,input,textarea,select){
+  min-width:0;max-width:100%;box-sizing:border-box;
+ }
+}
+/* Light & dark text must not disappear when legacy styles give pale contrast. */
+html.zavi-design-84 #z88-size-settings .z87-summary,
+html.zavi-design-84 #z88-size-settings .z87-hint{opacity:1!important;}
+@media print{html.zavi-design-84 body #z637AiButton,html.zavi-design-84 body #z637AiPanel{display:none!important}}

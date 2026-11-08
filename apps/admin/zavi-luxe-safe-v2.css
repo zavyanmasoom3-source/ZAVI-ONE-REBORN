@@ -1,0 +1,43 @@
+/* ZAVI ONE | ZAVI ONE ADMIN — SAFE premium visual system v2.0
+   Does not modify app visibility, page positioning, data markup, or JS render lifecycle. */
+html.zavi-luxe-safe {
+  --zl-blue:#1a7bf6;--zl-cyan:#09c7ea;--zl-border-dark:rgba(91,174,252,.25);
+  --zl-border-light:#d9e7f5;--zl-shadow-dark:0 8px 24px rgba(1,12,35,.18);
+  --zl-shadow-light:0 8px 24px rgba(29,82,151,.10);
+}
+html.zavi-luxe-safe[data-zavi-theme="dark"] {--zl-surface:#132b53;--zl-ink:#f5faff;--zl-muted:#b9cde5;--zl-line:var(--zl-border-dark);--zl-shadow:var(--zl-shadow-dark)}
+html.zavi-luxe-safe[data-zavi-theme="light"] {--zl-surface:#fff;--zl-ink:#132e50;--zl-muted:#587492;--zl-line:var(--zl-border-light);--zl-shadow:var(--zl-shadow-light)}
+/* Restrict backgrounds to page canvas, do not override content or modal containers. */
+html.zavi-luxe-safe[data-zavi-theme="dark"] body {background-color:#071932}
+html.zavi-luxe-safe[data-zavi-theme="light"] body {background-color:#f1f7ff}
+/* Modest color and border uplift. Do not use !important, especially not on dynamic panels. */
+html.zavi-luxe-safe :where(.stat,.report-card,.settings-card,.zsvc-extra-card,.z23-card,.summary-card) {
+  border-radius:16px;border-color:var(--zl-line);box-shadow:var(--zl-shadow);
+}
+html.zavi-luxe-safe :where(.zavi-v37-action,.zsvc-shortcut) {border-radius:15px;transition:filter .2s ease,box-shadow .2s ease}
+html.zavi-luxe-safe :where(.zavi-v37-action,.zsvc-shortcut):active {filter:brightness(.94)}
+html.zavi-luxe-safe :where(.btn.primary,.button.primary,.zsvc-btn.primary) {
+  background-image:linear-gradient(115deg,#1c73eb,#05a9d9);border-radius:11px;color:#fff;
+}
+html.zavi-luxe-safe :where(.nav-btn.active,.nav-item.selected,.bottom-btn.active) {border-radius:11px}
+html.zavi-luxe-safe :where(.welcome,.zavi-hero,.zsh-hero) {
+  border-radius:18px;border-color:rgba(80,187,255,.34);
+}
+/* Nonanimated SVG feature decoration: purely graphical, has no overlay on controls. */
+html.zavi-luxe-safe :where(.welcome,.zavi-hero,.zsh-hero){background-image:linear-gradient(115deg,#14336c,#115cac 78%,#0b96b7);background-size:cover}
+html.zavi-luxe-safe :where(.welcome,.zavi-hero,.zsh-hero) :where(h1,h2,h3) {letter-spacing:-.01em}
+html.zavi-luxe-safe :where(.zavi-v37-sale) {background-image:linear-gradient(110deg,#137af2,#365ae6)}
+html.zavi-luxe-safe :where(.zavi-v37-purchase) {background-image:linear-gradient(110deg,#7953e5,#5440bf)}
+html.zavi-luxe-safe :where(.zavi-v37-receive) {background-image:linear-gradient(110deg,#0b9e9b,#0ba980)}
+html.zavi-luxe-safe :where(.zavi-v37-pay) {background-image:linear-gradient(110deg,#ec7837,#da5460)}
+/* Accessibility independent of UI scaling. */
+html.zavi-luxe-safe :where(button,a,input,select,textarea):focus-visible {outline:2px solid #08c7ed;outline-offset:2px}
+@media (max-width:760px) {
+ html.zavi-luxe-safe :where(.zavi-v37-action,.zsvc-shortcut) {min-height:70px}
+ html.zavi-luxe-safe :where(.nav-btn,.nav-item) {min-height:42px}
+ html.zavi-luxe-safe :where(.table-wrap,.zsvc-table-scroll) {max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+}
+@media (prefers-reduced-motion:reduce) {
+ html.zavi-luxe-safe *,html.zavi-luxe-safe *::before,html.zavi-luxe-safe *::after {animation:none!important;transition-duration:0ms!important}
+}
+@media print {html.zavi-luxe-safe body{background:#fff!important}html.zavi-luxe-safe :where(.stat,.settings-card,.report-card){box-shadow:none!important}}
