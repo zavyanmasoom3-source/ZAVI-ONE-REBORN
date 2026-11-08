@@ -266,6 +266,21 @@ with Session() as browser:
     })()""")
     assert sale['keys']==['products','customer','payment'] and sale['rows']>=1,sale
     assert all(sale[k] for k in ['product','customer','payment','savePresent']),sale
+    saleReject=browser.eval("""(()=>{
+      const form=document.getElementById('dialogForm');
+      const price=form.querySelector('#orderItems [data-field="price"]');
+      price.value='0';
+      const before=db.tx.length;
+      const event=new Event('submit',{cancelable:true,bubbles:true});
+      const dispatched=form.dispatchEvent(event);
+      return {blocked:!dispatched&&event.defaultPrevented,
+        transactionsUnchanged:db.tx.length===before,
+        fieldInvalid:price.getAttribute('aria-invalid')==='true',
+        localError:!!price.nextElementSibling?.classList.contains('zds-field-error'),
+        paymentHandlerSkipped:db.tx.length===before};
+    })()""")
+    assert all(saleReject.values()),saleReject
+    print('PASS: zero-price sale submission is blocked at its field; no accounting document posted')
     (out/'sale-form-no-transactions.png').write_bytes(browser.screenshot())
     print('PASS: three-tab sales form keeps actual item, customer, payment and submit controls')
 
