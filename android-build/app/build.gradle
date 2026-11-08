@@ -41,6 +41,12 @@ android {
         }
     }
     buildTypes {
+        // Install QA side-by-side with existing signed production apps.
+        // A debug key MUST NEVER overwrite or require uninstalling accounting data.
+        debug {
+            applicationIdSuffix '.rebornqa'
+            resValue 'string', 'app_name', admin ? 'ZAVI ONE ADMIN REBORN QA' : 'ZAVI ONE REBORN QA'
+        }
         release {
             minifyEnabled true
             shrinkResources true
