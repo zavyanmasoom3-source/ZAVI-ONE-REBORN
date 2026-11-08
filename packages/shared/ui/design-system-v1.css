@@ -54,6 +54,9 @@ html[data-zavi-appearance="glass"] {
   border-color:var(--zds-danger); outline:2px solid var(--zds-danger);
   outline-offset:0;
 }
+/* Respect genuine HTML hidden state on the owner login. Some legacy
+   .button rules set display and accidentally exposed hidden demo controls. */
+#authScreen [hidden] {display:none!important}
 .zds-login-advanced {margin-block:8px;padding:8px 12px;
   border:1px solid var(--zds-border);border-radius:var(--zds-radius-sm);
   background:var(--zds-surface-alt);color:var(--zds-text)}
