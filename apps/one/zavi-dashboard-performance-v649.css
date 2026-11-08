@@ -1,0 +1,13 @@
+/* ZAVI ONE V64.9 | Low-cost dashboard enhancements without removing any reports. */
+.z649-dashboard-extras{margin-block:24px 30px;padding-block:12px;border-top:1px solid var(--z638-line, #a4b8ce);contain:layout style}
+.z649-extras-header{padding:10px 4px 18px}
+.z649-extras-header h3{margin:0 0 3px;font-size:clamp(1rem,2.5vw,1.25rem);line-height:1.5}
+.z649-extras-header p{margin:0;opacity:.83;line-height:1.8}
+.z649-dashboard-extras > :is(.z638-business-ribbon,.z639-focus-card,.z643-workflow,.z644-alert-card,.z642-smart){margin-block:0 15px;animation-duration:.15s!important}
+/* Keep animated transitions on composited properties only; avoid full-page blur/repaint. */
+html:not(.zawi-locked) .main{animation:none!important;filter:none!important}
+#content :is(.transaction-table,.list-mobile,.stat-grid){animation:none!important}
+#content .table-wrap{overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+@media(min-width:700px){.z649-dashboard-extras{margin-block:30px 36px}}
+@media(prefers-reduced-motion:reduce){.z649-dashboard-extras *{animation:none!important;scroll-behavior:auto!important}}
+html[data-z637-no-motion="true"] .z649-dashboard-extras *{animation:none!important}

@@ -1,0 +1,199 @@
+/* ZAVI ONE 65.62 – photo-confirmed contrast and compact mobile dashboard.
+   Accessibility: legible controls in both light/dark, animations use transform/opacity only. */
+html{
+ --z62-blue:#176ef4;--z62-cyan:#19c5ed;
+}
+body #content.zrf-dashboard .z62-hero{
+ position:relative;isolation:isolate;overflow:hidden;
+ margin:0 0 12px;padding:17px 17px 14px;
+ display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px;
+ min-height:126px;border:1px solid rgba(92,164,239,.25)!important;border-radius:19px;
+ background:radial-gradient(circle at 87% 16%,rgba(11,199,242,.17),transparent 44%),
+ linear-gradient(123deg,#1139b9 0%,#1c71f2 58%,#04b9ea 100%)!important;
+ box-shadow:0 12px 24px rgba(25,94,223,.18)!important;color:#fff!important;
+}
+body #content.zrf-dashboard .z62-hero::before{
+ content:"";position:absolute;left:-40px;bottom:-95px;width:210px;height:210px;border-radius:50%;
+ border:1px solid rgba(255,255,255,.15);box-shadow:0 0 0 25px rgba(255,255,255,.03),
+ 0 0 0 55px rgba(255,255,255,.024);pointer-events:none;
+ animation:z62-orbit 12s ease-in-out infinite alternate;
+}
+body #content.zrf-dashboard .z62-hero-copy{min-width:0;position:relative}
+body #content.zrf-dashboard .z62-eyebrow{
+ font-size:12px!important;font-weight:800!important;color:#dcf9ff!important;
+ line-height:1.65!important;letter-spacing:0!important;
+}
+body #content.zrf-dashboard .z62-title{
+ color:#fff!important;font-size:clamp(19px,2.15vw,27px)!important;
+ line-height:1.48!important;font-weight:900!important;margin:3px 0!important;
+ text-shadow:none!important;overflow-wrap:anywhere;
+}
+body #content.zrf-dashboard .z62-subtitle{
+ font-size:12px!important;line-height:1.6!important;color:#e5f4ff!important;
+ font-weight:600!important;margin:2px 0 0!important;max-width:60ch!important;
+}
+body #content.zrf-dashboard .z62-hero-tools{
+ display:grid;grid-auto-flow:row;justify-items:stretch;gap:8px;min-width:154px;
+ position:relative;
+}
+body #content.zrf-dashboard .z62-date{
+ display:block;width:100%;padding:8px 10px;border-radius:11px;
+ font-size:11px!important;line-height:1.4!important;font-weight:800!important;
+ background:rgba(3,37,132,.34)!important;color:#fff!important;
+ border:1px solid rgba(255,255,255,.22);text-align:center;
+ overflow-wrap:anywhere;font-variant-numeric:tabular-nums;
+}
+body #content.zrf-dashboard button.z62-sale{
+ display:flex!important;align-items:center;justify-content:center;gap:9px;
+ min-width:0;min-height:42px;padding:8px 13px!important;border:1px solid rgba(255,255,255,.9)!important;
+ border-radius:11px!important;background:#fff!important;color:#115aca!important;
+ font-size:13px!important;font-weight:900!important;line-height:1.4!important;
+ box-shadow:0 6px 12px rgba(3,36,99,.13)!important;
+ transition:transform .2s ease,box-shadow .2s ease!important;
+}
+body #content.zrf-dashboard button.z62-sale span,
+body #content.zrf-dashboard button.z62-sale .z62-sale-label{
+ color:#115aca!important;font-weight:900!important;
+}
+body #content.zrf-dashboard button.z62-sale:hover{transform:translateY(-2px)}
+body #content.zrf-dashboard button.z62-sale:focus-visible{outline:3px solid #7ef5fb!important;outline-offset:3px!important}
+body #content.zrf-dashboard button.z62-sale>span:first-child{
+ display:grid;place-items:center;background:#e2efff;width:25px;height:25px;border-radius:8px;font-size:20px!important;
+}
+/* Actual contrast defects visible in customer screenshots: white-on-white on gradient controls. */
+html[data-zavi-theme="light"] body #content.zrf-dashboard .zrf-primary.zrf-invoice,
+html:not([data-zavi-theme="light"]) body #content.zrf-dashboard .zrf-primary.zrf-invoice,
+html[data-zavi-theme="light"] body #content.zrf-dashboard .zrf-store-banner,
+html:not([data-zavi-theme="light"]) body #content.zrf-dashboard .zrf-store-banner{
+ background:#1768f6!important;
+ background-image:linear-gradient(112deg,#184af0 0%,#1688f6 63%,#00c0e8 100%)!important;
+ border-color:rgba(69,197,250,.72)!important;
+ color:#fff!important;
+ opacity:1!important;filter:none!important;
+}
+body #content.zrf-dashboard .zrf-primary.zrf-invoice :is(b,small,span),
+body #content.zrf-dashboard .zrf-store-banner :is(b,small,span){
+ color:#fff!important;opacity:1!important;text-shadow:none!important;
+}
+body #content.zrf-dashboard .zrf-primary.zrf-invoice .zrf-primary-icon,
+body #content.zrf-dashboard .zrf-store-banner .zrf-store-icon{
+ background:rgba(255,255,255,.15)!important;color:#fff!important;
+}
+body #content.zrf-dashboard .zrf-primary.zrf-contact,
+body #content.zrf-dashboard .zrf-tile{
+ opacity:1!important;filter:none!important;
+ color:var(--zrf-text)!important;
+}
+body #content.zrf-dashboard :is(.zrf-primary.zrf-contact,.zrf-tile)
+ :is(.zrf-tile-copy b,.zrf-tile-copy small,.zrf-arrow,.zrf-primary-icon,b,small){
+ opacity:1!important;
+}
+body #content.zrf-dashboard .zrf-primary.zrf-contact b,
+body #content.zrf-dashboard .zrf-tile-copy b{
+ color:var(--zrf-text)!important;font-weight:850!important;
+}
+body #content.zrf-dashboard .zrf-primary.zrf-contact small,
+body #content.zrf-dashboard .zrf-tile-copy small{
+ color:var(--zrf-muted)!important;font-weight:650!important;
+}
+html[data-zavi-theme="light"] body #content.zrf-dashboard{
+ --zrf-text:#101d3b;--zrf-muted:#4e6589;--zrf-paper:#fff;
+ --zrf-border:rgba(70,127,207,.20);--zrf-paper2:#edf6ff;
+}
+html:not([data-zavi-theme="light"]) body #content.zrf-dashboard{
+ --zrf-text:#f3f8ff;--zrf-muted:#c1d0e8;--zrf-paper:#10253d;
+ --zrf-paper2:#1a3756;--zrf-border:rgba(103,161,236,.30);
+}
+body #content.zrf-dashboard .zrf-dollar-copy b,
+body #content.zrf-dashboard .zrf-dollar-current,
+body #content.zrf-dashboard .zrf-section-head b{color:var(--zrf-text)!important}
+body #content.zrf-dashboard .zrf-dollar-copy small{color:var(--zrf-muted)!important}
+body #content.zrf-dashboard .zrf-all-trigger{font-weight:850!important}
+body #content.zrf-dashboard .zrf-search-wrap input.zrf-search{
+ color:var(--zrf-text)!important;background:transparent!important;
+ -webkit-text-fill-color:var(--zrf-text)!important;
+}
+body #content.zrf-dashboard .zrf-search-wrap input.zrf-search::placeholder{
+ color:var(--zrf-muted)!important;opacity:1!important;
+ -webkit-text-fill-color:var(--zrf-muted)!important;
+}
+/* Suppress duplicated welcome and HEALTH when native analytics are expanded, without touching other pages. */
+#content.zrf-dashboard > .zrf-legacy-dashboard.welcome,
+#content.zrf-dashboard > .zrf-legacy-dashboard.z6524-launch,
+#content.zrf-dashboard.zrf-details-open > .zrf-legacy-dashboard.welcome,
+#content.zrf-dashboard.zrf-details-open > .zrf-legacy-dashboard.z6524-launch,
+#content.zrf-dashboard.zrf-details-open > .zrf-legacy-dashboard.zavi-reference-quick{
+ display:none!important;
+}
+body #content.zrf-dashboard .z6524-launch{display:none!important;visibility:hidden!important}
+#content.zrf-dashboard.zrf-details-open > .zrf-legacy-dashboard.stat-grid{
+ display:grid!important;grid-template-columns:repeat(auto-fit,minmax(min(100%,175px),1fr))!important;
+ gap:11px!important;align-items:stretch!important;
+}
+#content.zrf-dashboard.zrf-details-open > .zrf-legacy-dashboard.layout-2{
+ display:grid!important;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr))!important;
+ gap:13px!important;
+}
+#content.zrf-dashboard.zrf-details-open > .zrf-legacy-dashboard.zv-feature-row{
+ display:grid!important;grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr))!important;gap:11px!important;
+}
+body #content.zrf-dashboard.zrf-details-open > .zrf-legacy-dashboard :is(.card,.panel){
+ max-width:100%;min-width:0;
+}
+body #content.zrf-dashboard.zrf-details-open > .zrf-legacy-dashboard :is(.stat-grid,.layout-2,.card,.panel){
+ overflow-wrap:anywhere;
+}
+/* Fix viewport crop in landscape and all mobile pages, without changing accounting forms. */
+html,html body{max-width:100%!important}
+body .app,body .main,body #content{min-width:0!important;max-width:100%!important}
+body #content :is(.layout-2,.stat-grid,.zavi-card,.card,.panel){min-width:0!important;max-width:100%}
+body #content .table-wrap{max-width:100%;overflow-x:auto!important;-webkit-overflow-scrolling:touch}
+body #content :is(input,select,textarea){max-width:100%;min-width:0}
+body .mobile-bottom{padding-bottom:env(safe-area-inset-bottom)!important}
+@keyframes z62-orbit{from{transform:translate3d(-8px,6px,0) scale(.96)}to{transform:translate3d(12px,-8px,0) scale(1.04)}}
+@media(max-width:700px){
+ body #content.zrf-dashboard .z62-hero{
+  display:flex!important;flex-direction:column!important;align-items:stretch!important;
+  gap:11px!important;min-height:0!important;margin-bottom:11px!important;
+  padding:15px 14px 13px!important;border-radius:18px!important;
+ }
+ body #content.zrf-dashboard .z62-hero-tools{
+  display:grid!important;grid-template-columns:minmax(0,1fr) minmax(112px,.8fr)!important;
+  gap:9px!important;min-width:0!important;align-items:center!important;
+ }
+ body #content.zrf-dashboard .z62-title{font-size:21px!important;line-height:1.4!important}
+ body #content.zrf-dashboard .z62-eyebrow{font-size:12px!important}
+ body #content.zrf-dashboard .z62-subtitle{font-size:11px!important}
+ body #content.zrf-dashboard .z62-date{display:flex;align-items:center;justify-content:center;min-height:41px!important}
+ body #content.zrf-dashboard .zrf-search-wrap{min-height:44px!important;margin-bottom:11px!important}
+ body #content.zrf-dashboard .zrf-primary-row{margin-bottom:11px!important}
+ body #content.zrf-dashboard .zrf-primary{min-height:81px!important}
+ body #content.zrf-dashboard .zrf-usd-shell{min-height:62px!important;margin-bottom:12px!important}
+ body #content.zrf-dashboard .zrf-section-head{margin-top:11px!important}
+ body #content.zrf-dashboard .zrf-tile{min-height:91px!important}
+ body #content.zrf-dashboard .zrf-store-banner{min-height:72px!important}
+ body #content.zrf-dashboard.zrf-details-open > .zrf-legacy-dashboard.stat-grid{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ }
+}
+@media(max-width:380px){
+ body #content.zrf-dashboard .z62-hero-tools{grid-template-columns:minmax(0,1fr) minmax(96px,.75fr)!important}
+ body #content.zrf-dashboard .z62-sale{padding-inline:6px!important;font-size:11px!important}
+ body #content.zrf-dashboard .z62-date{font-size:10px!important}
+}
+@media (max-height:500px) and (orientation:landscape){
+ body #content.zrf-dashboard .z62-hero{
+  display:grid!important;grid-template-columns:minmax(0,1fr) minmax(180px,.5fr)!important;
+  min-height:86px!important;padding:11px 15px!important;
+ }
+ body #content.zrf-dashboard .z62-hero-tools{
+  display:grid!important;grid-template-columns:1fr!important;
+ }
+ body #content.zrf-dashboard .zrf-tiles{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+ body #content.zrf-dashboard .zrf-tiles>.zrf-tile:nth-child(5){grid-column:auto!important}
+}
+@media (prefers-reduced-motion:reduce){
+ body #content.zrf-dashboard .z62-hero::before{animation:none!important}
+}
+html.zx-lite body #content.zrf-dashboard .z62-hero::before{animation:none!important}
+@media print{body #content.zrf-dashboard .z62-hero::before{display:none!important}}
