@@ -2503,7 +2503,8 @@ function zaviUsdRateDashboardCard(){
  const usdBase=cur==='USD';
  const rate=usdBase?1:Number(db.usdRate);
  const valid=Number.isFinite(rate)&&rate>0;
- const current=valid?'<strong dir="ltr" class="zavi-usd-rate-value">1 USD = '+fmt(money(rate))+' '+escapeHtml(cur)+'</strong>':'<strong class="zavi-usd-rate-missing">'+empty+'</strong>';
+ const rateDisplay=valid?(usdBase?(en?'1 USD = 1 USD':'۱ USD = ۱ USD'):(window.ZaviDesignSystemV1?.formatExchangeRate(rate,'USD',cur,{language:l})||((en?'1':'۱')+' USD = '+fmt(money(rate))+' '+cur))):'';
+ const current=valid?'<strong dir="auto" class="zavi-usd-rate-value">'+escapeHtml(rateDisplay)+'</strong>':'<strong class="zavi-usd-rate-missing">'+empty+'</strong>';
  const dateObject=db.usdRateUpdatedAt?new Date(db.usdRateUpdatedAt):null;
  const date=dateObject&&!Number.isNaN(dateObject.getTime())?dateObject.toLocaleDateString(en?'en-GB':ps?'ps-AF':'fa-AF'):unknown;
  const canEdit=!window.zaviCloudCanEdit||window.zaviCloudCanEdit();
