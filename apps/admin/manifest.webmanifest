@@ -1,0 +1,20 @@
+{
+  "name": "ZAVI ONE ADMIN",
+  "short_name": "ZAVI ADMIN",
+  "description": "ZAVI ONE ADMIN — مدیریت مرکزی، تقویم پیگیری مشتریان، اشتراک‌ها و گزارش‌ها",
+  "lang": "fa-AF",
+  "dir": "rtl",
+  "display": "standalone",
+  "scope": "./",
+  "start_url": "./",
+  "background_color": "#061127",
+  "theme_color": "#081d43",
+  "icons": [
+    {
+      "src": "./icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

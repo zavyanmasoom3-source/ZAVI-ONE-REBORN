@@ -1,0 +1,44 @@
+{
+  "id": "./index.html",
+  "name": "ZAVI ONE",
+  "short_name": "ZAVI ONE",
+  "description": "حسابداری آنلاین فروشگاه، فاکتور، رسید اشتراک و پشتیبانی فارسی، پشتو و انگلیسی",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": [
+    "standalone",
+    "minimal-ui"
+  ],
+  "background_color": "#061127",
+  "theme_color": "#092e60",
+  "lang": "fa-AF",
+  "dir": "auto",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "categories": [
+    "business",
+    "finance"
+  ],
+  "prefer_related_applications": false,
+  "version": "65.33"
+}
