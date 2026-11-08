@@ -3,7 +3,11 @@ on:
   push:
     branches: [dev]
     paths:
+      - 'apps/one/**'
+      - 'apps/admin/**'
+      - 'packages/shared/**'
       - 'android-build/**'
+      - 'scripts/check-public-source-security.py'
       - '.github/workflows/build-android-isolated-test.yml'
   workflow_dispatch:
 permissions:
