@@ -74,6 +74,8 @@ html[data-zavi-appearance="glass"] {
   border-color:var(--zds-border); background:var(--zds-surface-alt); font-weight:700}
 .zds-dual-date {direction:inherit; color:var(--zds-muted); font-size:12px;
   line-height:1.45; font-variant-numeric:tabular-nums; unicode-bidi:plaintext}
+.zds-header-date {display:inline-flex;max-width:100%;align-items:center;
+  white-space:nowrap;flex-shrink:1;min-width:0}
 .zds-empty {text-align:center; padding:var(--zds-gap-lg);
   color:var(--zds-muted); background:var(--zds-surface-alt);
   border:1px dashed var(--zds-border); border-radius:var(--zds-radius-md)}
