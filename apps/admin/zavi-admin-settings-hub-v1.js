@@ -31,6 +31,7 @@
    return value.startsWith('en')?'en':value.startsWith('ps')?'ps':'fa';
  };
  function classify(panel){
+   if(panel.classList.contains('zui-preferences'))return 'appearance';
    const title=(panel.querySelector('h2,h3')?.textContent||'').toLowerCase();
    const full=(title+' '+(panel.id||'')+' '+panel.className).toLowerCase();
    if(/ظاهر|theme|بڼه|language|ژبه/.test(full))return 'appearance';
