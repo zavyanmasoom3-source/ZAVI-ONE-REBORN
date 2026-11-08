@@ -50,11 +50,23 @@ def parse_signers(output):
     return value
 
 def inspect(apk,aapt,apksigner):
-    # apksigner verify also checks cryptographic signing integrity.
-    signers=run_command([apksigner,'verify','--print-certs',apk])
+    # Check v2/v3 for supported API26+ and *also* force API23 to prove v1.
+    # Default apksigner output can report v1=false for minSdk26 even when
+    # the APK has a valid JAR signature, so never infer it from default output.
+    signing=run_command([apksigner,'verify','--verbose','--print-certs',apk])
+    for scheme in ('v2','v3'):
+        if not re.search(r'(?m)^Verified using '+scheme+r' scheme.*?: true\\s*$', signing):
+            raise UnsafeUpdate('APK lacks a verified '+scheme+' signature')
+    legacy=run_command([apksigner,'verify','--min-sdk-version','23',
+                        '--verbose','--print-certs',apk])
+    if not re.search(r'(?m)^Verified using v1 scheme.*?: true\\s*$',legacy):
+        raise UnsafeUpdate('APK lacks a verified JAR v1 signature under API23')
+    signer=parse_signers(signing)
+    if signer!=parse_signers(legacy):
+        raise UnsafeUpdate('Different certificate identities across v1 and v2/v3')
     badging=run_command([aapt,'dump','badging',apk])
     package,version=parse_badging(badging)
-    return package,version,parse_signers(signers)
+    return package,version,signer
 
 def check_update(candidate,app,mode,expected_sha256=None,installed=None):
     legacy=TARGETS[app]['legacy']
