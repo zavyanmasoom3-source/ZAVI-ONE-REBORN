@@ -1,0 +1,24 @@
+/* ZAVI ONE ADMIN V18: matching Dark Executive appearance; no server permission changes. */
+:root{--navy:#05152e;--navy2:#061126;--cyan:#1fd6f4;--line:#214b7e;--bg:#061026;--ink:#f1faff;--muted:#aecae5;--soft:#12345c;--shadow:0 14px 36px #0006;color-scheme:dark}
+body{background:radial-gradient(ellipse at 80% 0%,#124b8c66,transparent 45%),linear-gradient(155deg,#030b1d,#081f3f 65%,#06132c)!important;color:#eff8ff!important}
+.sidebar{background:linear-gradient(180deg,#07172e,#07162a 65%,#040c1d)!important;border-inline-start:1px solid #23507b}
+.topbar{background:#081f40f5!important;backdrop-filter:blur(14px);border-color:#234d83!important}
+.nav-item.selected,.nav-item:hover{background:linear-gradient(100deg,#0752b2,#0785c1)!important;border-color:#1abfe4!important;color:#fff!important}
+.panel,.metric,.card,.auth-card,.table-card,.form-card,.summary-card,.detail-card,.report-card,.modal-card,.fin-metric{background:linear-gradient(135deg,#102c55,#091a34)!important;border:1px solid #255384!important;color:#eff9ff!important;border-radius:18px!important;box-shadow:0 10px 32px #0006!important}
+input,textarea,select{color:#f7fbff;background:#0b2547;border:1px solid #376494;border-radius:10px}
+input::placeholder,textarea::placeholder{color:#a5bed8}
+button.btn-primary,.primary-btn,.btn.primary{background:linear-gradient(108deg,#0b5bdd,#0bbfcf)!important;color:#fff!important}
+button:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid #2ae3ed;outline-offset:3px}
+.zavi-language-switch{display:inline-flex;align-items:center;gap:6px;max-width:155px;border:1px solid #2b6286;border-radius:12px;padding:4px 7px;background:#0a2b50}
+.zavi-language-switch select{max-width:110px;background:transparent!important;border:0!important;color:#e8f9ff;padding:2px;min-width:70px}
+.zavi-auth-lang{position:fixed;top:10px;inset-inline-end:10px;z-index:2;font-size:10px;color:#a5bdd5;pointer-events:none}
+html[dir=ltr] .sidebar{left:0!important;right:auto!important;border-right:1px solid #23507b!important;border-left:0!important}
+html[dir=ltr] .topbar,html[dir=ltr] .nav-item{text-align:left}
+html[dir=ltr] .workspace{margin-inline-start:0}
+@media(max-width:700px){.zavi-language-switch{max-width:104px}.zavi-language-switch select{max-width:72px;font-size:12px}.topbar{gap:5px}}
+.zavi-auth-lang{position:absolute;top:12px;right:12px;pointer-events:auto;z-index:65;display:flex;align-items:center;gap:6px}
+.zavi-auth-lang select{border:1px solid #22658d;border-radius:10px;background:#09284d;color:#effbff;padding:5px 8px}
+html[dir=ltr] .zavi-auth-lang{right:auto;left:12px}
+@media(min-width:911px){html[dir=ltr] .workspace{margin-left:246px!important;margin-right:0!important}}
+@media(max-width:910px){html[dir=ltr] .workspace{margin-left:0!important;margin-right:0!important}}
+body:has(#appScreen:not([hidden])) .zavi-auth-lang{display:none}

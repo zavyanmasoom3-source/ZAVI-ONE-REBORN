@@ -1,0 +1,41 @@
+/* V23 Dark Executive: production UI contrast and font clarity; printing remains paper-white. */
+:root{--z23-surface:#0a2041;--z23-surface2:#0e2c54;--z23-foreground:#ebf7ff;--z23-muted:#a9cce5;--z23-outline:#285b88}
+html:not([data-print-mode]) body{color:#eef9ff}
+html:not([data-print-mode]) :is(.zsvc-page,.zsvc-extra-card,.zsvc-tools,.zsvc-timeline,.zsvc-follow,.zsvc-forecast,.zsvc-shortcut,.zsvc-help,.zsvc-line,.zsvc-results-head,.fin-grid,.fin-metric,.fin-form,.mini-box,.receipt-preview,.table-card,.data-table,.report-card,.auth-card,.form-card,.panel,.card,.summary-card,.metric,.detail-card,.empty,.timeline-item){background:linear-gradient(145deg,#0e2c54,#071a34)!important;color:var(--z23-foreground)!important;border-color:var(--z23-outline)!important;box-shadow:0 8px 24px #0003}
+html:not([data-print-mode]) :is(.zsvc-page,.zsvc-extra-card,.zsvc-help,.zsvc-line,.receipt-preview,.data-table,.table-card,.panel,.card) :is(h1,h2,h3,h4,strong,b){color:#f6fcff}
+html:not([data-print-mode]) :is(.data-table,.zsvc-table,.table-card) :is(th,td){color:#e9f7ff;border-color:#2e5981;background:transparent}
+html:not([data-print-mode]) :is(.data-table,.zsvc-table) tr:nth-child(even){background:#0d2b4b}
+html:not([data-print-mode]) :is(.data-table,.zsvc-table) tbody tr:hover{background:#125285}
+html:not([data-print-mode]) :is(.zsvc-empty,.empty,.mini-box){border-color:#355e8d!important}
+html:not([data-print-mode]) :is(.table-scroll,.zsvc-table-scroll){background:#0b2040;border-radius:12px}
+html:not([data-print-mode]) :is(.modal-card,.modal-bg .card){background:#0b2141!important;color:#ecf9ff!important;border:1px solid #33658f!important}
+html:not([data-print-mode]) :is(input,select,textarea){background:#071c36!important;color:#f0f9ff!important;border-color:#4377a4!important}
+html:not([data-print-mode]) :is(input,textarea)::placeholder{color:#a7c8e2!important;opacity:1}
+html:not([data-print-mode]) :is(.tag,.label,.status,.zsvc-chip){max-width:100%;overflow-wrap:anywhere}
+html:not([data-print-mode]) :is(.button,.btn,button):focus-visible{outline:2px solid #25f3eb!important;outline-offset:2px}
+html[data-zavi-lang="en"] body{font-family:system-ui,'Segoe UI',Arial,sans-serif!important;font-size:14px}
+html[data-zavi-lang="fa-AF"] body{font-family:'Noto Sans Arabic','Segoe UI',Tahoma,Arial,sans-serif!important;font-size:15px;line-height:1.85!important;text-rendering:optimizeLegibility}
+html[data-zavi-lang="ps-AF"] body{font-family:'Noto Naskh Arabic','Noto Sans Arabic',Tahoma,Arial,sans-serif!important;font-size:16px;line-height:2!important;text-rendering:optimizeLegibility}
+html[data-zavi-lang="fa-AF"] :is(button,input,textarea,select,label,td,th,p,h1,h2,h3,.nav-item),html[data-zavi-lang="ps-AF"] :is(button,input,textarea,select,label,td,th,p,h1,h2,h3,.nav-item){font-family:inherit!important;letter-spacing:0!important;line-height:inherit!important}
+html[data-zavi-lang="ps-AF"] :is(.nav-item,button,select){min-height:44px}
+html[data-zavi-lang="en"] :is(.topbar,.sidebar,.workspace,.zsvc-page){direction:ltr;text-align:left}
+html[data-zavi-lang="fa-AF"] :is(.topbar,.sidebar,.workspace,.zsvc-page),html[data-zavi-lang="ps-AF"] :is(.topbar,.sidebar,.workspace,.zsvc-page){direction:rtl;text-align:right}
+@media(max-width:800px){.zsvc-page,.table-scroll,.modal-card{max-width:100%}:is(h1,h2,h3){overflow-wrap:anywhere}}
+@media print{body{background:white!important;color:#102f49!important} .zrv-sheet,.sheet,.invoice-page{print-color-adjust:exact;-webkit-print-color-adjust:exact} input,select,textarea{color:black!important;background:white!important}}
+
+/* Fix white independent admin portals (their dynamically inserted style tags used light backgrounds). */
+#z23AdminPortal,#zaviServiceCenter{background:radial-gradient(ellipse at 100% 0%,#144a8d,#06142c 65%)!important;color:#f1faff!important}
+#z23AdminPortal .z23-wrap,#zaviServiceCenter .zsvc-page{color:#eaf7ff!important;background:transparent!important}
+#z23AdminPortal .z23-card,#zaviServiceCenter :is(.zsvc-kpis article,.zsvc-shortcuts,.zsvc-follow,.zsvc-help,.zsvc-shortcut,.zsvc-internet,.zsvc-timeline,.zsvc-forecast,.zsvc-extra-card,.zsvc-servicegrid,.zsvc-table-scroll){background:linear-gradient(145deg,#102c54,#071a35)!important;color:#e9f8ff!important;border:1px solid #285985!important;box-shadow:0 8px 24px #0004!important}
+#z23AdminPortal :is(.z23-head p,.z23-muted,.z23-chip,.z23-status),#zaviServiceCenter :is(.zsvc-line p,.zsvc-controls label,.zsvc-results-head,.zsvc-help,.zsvc-muted){color:#b6d7ee!important}
+#z23AdminPortal .z23-table th,#zaviServiceCenter .zsvc-table th{background:#0d365e!important;color:#e5f9ff!important;border-color:#316395!important}
+#z23AdminPortal .z23-table td,#zaviServiceCenter .zsvc-table td{background:transparent!important;color:#f1faff!important;border-color:#2d537c!important}
+#z23AdminPortal .z23-btn.light,#zaviServiceCenter :is(.zsvc-tools button,.zsvc-filters button){background:#123b6d!important;color:#def7ff!important;border:1px solid #3d82b1!important}
+#z23AdminPortal .z23-chip,#z23AdminPortal .z23-status{background:#0d455f!important;color:#c1fcff!important;border:1px solid #257b91!important}
+#zaviServiceCenter :is(.zsvc-shortcut b,.zsvc-kpis strong,.zsvc-top h1,.zsvc-line h2,.zsvc-help h2,.zsvc-shortcut small){color:#f0fbff!important}
+#zaviServiceCenter .zsvc-shortcut:hover{background:#13578d!important}
+#z23AdminPortal .z23-table tr:nth-child(even),#zaviServiceCenter .zsvc-table tr:nth-child(even){background:#0c3157!important}
+#z23AdminPortal :is(input,textarea,select),#zaviServiceCenter :is(input,textarea,select){background:#0a2444!important;color:#fff!important;border:1px solid #42769d!important}
+html[data-zavi-lang="en"] :is(#z23AdminPortal,#zaviServiceCenter){direction:ltr!important;text-align:left!important}
+html[data-zavi-lang="fa-AF"] :is(#z23AdminPortal,#zaviServiceCenter),html[data-zavi-lang="ps-AF"] :is(#z23AdminPortal,#zaviServiceCenter){direction:rtl!important;text-align:right!important}
+@media print{#z23AdminPortal,#zaviServiceCenter{background:#fff!important;color:#10253d!important}}

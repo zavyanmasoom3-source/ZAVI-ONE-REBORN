@@ -1,0 +1,179 @@
+/* ZAVI ONE ADMIN 1.4.58 · restrained owner portal.
+ * Presentation only. Retains every original owner gate, nav route and button.
+ */
+html[data-zavi-theme="light"]{
+ --za58-bg:#f5f7fb;--za58-card:#fff;--za58-field:#fbfcff;
+ --za58-ink:#1a2e49;--za58-muted:#516881;--za58-line:#dde6ef;
+ --za58-focus:#1764bc;--za58-shadow:0 5px 20px rgba(30,56,90,.06);
+ --za58-side:#102136;--za58-side-muted:#d0dfed;
+ color-scheme:light;
+}
+html[data-zavi-theme="dark"]{
+ --za58-bg:#091727;--za58-card:#10253d;--za58-field:#142d47;
+ --za58-ink:#f0f6fc;--za58-muted:#c2d3e4;--za58-line:#334b62;
+ --za58-focus:#8acfff;--za58-shadow:0 5px 20px rgba(0,0,0,.17);
+ --za58-side:#09192d;--za58-side-muted:#c9dcef;
+ color-scheme:dark;
+}
+html[data-zavi-appearance="glass"]{
+ --za58-bg:#0a1c30;--za58-card:rgba(22,47,74,.62);
+ --za58-field:rgba(34,62,88,.54);--za58-ink:#f2f8ff;
+ --za58-muted:#d0e0ee;--za58-line:rgba(177,215,244,.25);
+ --za58-focus:#a7e3ff;--za58-shadow:0 15px 36px rgba(2,10,25,.16);
+}
+html[data-zavi-theme] body{
+ background:var(--za58-bg)!important;color:var(--za58-ink)!important;
+ -webkit-font-smoothing:antialiased;
+}
+html[data-zavi-theme] #appScreen.app-shell,
+html[data-zavi-theme] #appScreen .workspace{
+ background:var(--za58-bg)!important;color:var(--za58-ink)!important;
+}
+html[data-zavi-theme] #appScreen .sidebar{
+ background:var(--za58-side)!important;
+ box-shadow:none!important;
+ border-inline-start:1px solid var(--za58-line)!important;
+}
+html[data-zavi-theme] #appScreen .sidebar .nav-item{
+ min-height:43px!important;
+ margin-block:2px!important;
+ border-radius:10px!important;
+ box-shadow:none!important;
+ color:var(--za58-side-muted)!important;
+}
+html[data-zavi-theme] #appScreen .sidebar .nav-item.selected{
+ color:#fff!important;background:rgba(99,165,242,.20)!important;
+ border-color:rgba(151,195,246,.22)!important;box-shadow:none!important;
+}
+html[data-zavi-theme] #appScreen .sidebar .nav-item:hover{
+ color:#fff!important;background:rgba(105,163,225,.16)!important;
+ transform:none!important;
+}
+html[data-zavi-theme] #appScreen .sidebar .brand{
+ gap:5px!important;padding-block:8px!important;margin-bottom:8px!important;
+}
+html[data-zavi-theme] #appScreen .sidebar .brand img{
+ width:56px!important;height:56px!important;border-radius:13px!important;
+ box-shadow:none!important;
+}
+html[data-zavi-theme] #appScreen .sidebar .brand strong{
+ font-size:15px!important;letter-spacing:0!important;
+}
+html[data-zavi-theme] #appScreen .topbar{
+ background:var(--za58-card)!important;border-color:var(--za58-line)!important;
+ box-shadow:none!important;
+}
+html[data-zavi-theme] #view{
+ color:var(--za58-ink)!important;
+ min-width:0;max-width:100%;
+}
+html[data-zavi-theme] #view :is(.card,.panel,.stat,.metric,.fin-metric,.admin-card,.admin-kpi,.report-card,.service-card,.status-card,.table-card,.toolbar,.mini-box,.receipt-preview){
+ min-width:0;
+ border-radius:16px!important;
+ border:1px solid var(--za58-line)!important;
+ background:var(--za58-card)!important;
+ color:var(--za58-ink)!important;
+ box-shadow:var(--za58-shadow)!important;
+ text-shadow:none!important;
+}
+html[data-zavi-theme] #view :is(.card,.panel,.stat,.metric,.report-card,.service-card,.status-card) :is(h1,h2,h3,h4,strong,b){
+ color:var(--za58-ink)!important;text-shadow:none!important;
+}
+html[data-zavi-theme] #view :is(.muted,.hint,.subtitle,.small-info,.admin-muted,.kpi-foot,.eyebrow){
+ color:var(--za58-muted)!important;
+}
+html[data-zavi-theme] :is(#view,#modalBg,#authScreen) :is(input,select,textarea){
+ max-width:100%;min-width:0;
+ border-radius:11px!important;
+ background:var(--za58-field)!important;
+ color:var(--za58-ink)!important;
+ border:1px solid var(--za58-line)!important;
+ box-shadow:none!important;
+}
+html[data-zavi-theme] :is(#view,#modalBg,#authScreen) :is(input,textarea)::placeholder{
+ color:var(--za58-muted)!important;opacity:1!important;
+}
+html[data-zavi-theme] :is(#view,#modalBg,#authScreen) :is(input,select,textarea):focus-visible{
+ outline:2px solid var(--za58-focus)!important;outline-offset:2px;
+}
+html[data-zavi-theme] :is(#view,#modalBg,#authScreen) :is(.button,button){
+ border-radius:11px!important;
+ text-shadow:none!important;
+}
+html[data-zavi-theme] :is(#view,#modalBg,#authScreen,#appScreen .sidebar) :is(button,a):focus-visible{
+ outline:3px solid var(--za58-focus)!important;outline-offset:2px;
+}
+html[data-zavi-theme] :is(#modalBg .modal-card,.modal-card){
+ max-width:min(94vw,760px);
+ border:1px solid var(--za58-line)!important;
+ border-radius:18px!important;
+ color:var(--za58-ink)!important;
+ background:var(--za58-card)!important;
+ box-shadow:var(--za58-shadow)!important;
+}
+html[data-zavi-theme] :is(#modalBody,#view) :is(table,.data-table){max-width:100%}
+html[data-zavi-theme] #view :is(.table-wrap,.table-scroll,.zsvc-table-scroll,.data-table-wrap){
+ overflow-x:auto;max-width:100%;overscroll-behavior-x:contain;
+}
+html[data-zavi-theme] #authScreen .auth-wrapper{
+ background:var(--za58-bg)!important;
+}
+html[data-zavi-theme] #authScreen .auth-card{
+ width:min(94vw,420px)!important;max-width:420px!important;
+ padding:clamp(16px,3vw,26px)!important;
+ margin:clamp(12px,4vh,26px) auto!important;
+ background:var(--za58-card)!important;
+ color:var(--za58-ink)!important;
+ border:1px solid var(--za58-line)!important;
+ border-radius:20px!important;box-shadow:var(--za58-shadow)!important;
+}
+html[data-zavi-theme] #authScreen .auth-card :is(h1,h2){
+ font-size:clamp(20px,4vw,25px)!important;
+ margin-block:9px!important;line-height:1.35!important;
+}
+html[data-zavi-theme] #authScreen .auth-card .hint{
+ color:var(--za58-muted)!important;line-height:1.7!important;margin-bottom:15px!important;
+}
+html[data-zavi-theme] #authScreen .auth-card .form-group{margin-bottom:12px!important}
+html[data-zavi-theme] #authScreen .auth-card .eyebrow{margin-top:12px!important}
+html[data-zavi-theme] #authScreen .auth-card :is(input,select){min-height:42px!important}
+html[data-zavi-theme] #authScreen .auth-card .button.full{min-height:44px!important;padding:10px 14px!important}
+html[data-zavi-appearance="glass"] body{
+ background:radial-gradient(ellipse at 7% 2%,#244d72,transparent 45%),
+ radial-gradient(ellipse at 90% 94%,#244464,transparent 45%),var(--za58-bg)!important;
+}
+html[data-zavi-appearance="glass"] #view :is(.card,.panel,.stat,.metric,.fin-metric,.admin-card,.admin-kpi,.report-card,.service-card,.status-card,.table-card,.toolbar,.mini-box),
+html[data-zavi-appearance="glass"] :is(#appScreen .topbar,#authScreen .auth-card,.modal-card){
+ background:var(--za58-card)!important;
+ border-color:var(--za58-line)!important;
+ -webkit-backdrop-filter:blur(17px) saturate(130%);
+ backdrop-filter:blur(17px) saturate(130%);
+}
+html[data-zavi-appearance="glass"] #appScreen .sidebar{
+ background:rgba(9,24,43,.82)!important;
+ -webkit-backdrop-filter:blur(17px);backdrop-filter:blur(17px);
+}
+@media(max-width:800px){
+ html[data-zavi-theme] #view{padding-inline:clamp(10px,3vw,18px)!important}
+ html[data-zavi-theme] #appScreen .topbar{padding-inline:12px!important}
+ html[data-zavi-theme] #view :is(.card,.panel,.metric,.stat,.report-card){border-radius:14px!important}
+ html[data-zavi-theme] #authScreen .auth-card{margin-block:12px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-zavi-theme] #view :is(button,.card,.panel){transition:none!important;animation:none!important}
+}
+@media print{
+ html[data-zavi-theme] body{background:#fff!important;color:#111!important}
+ html[data-zavi-theme] #view :is(.card,.panel,.stat,.report-card){background:#fff!important;color:#111!important;box-shadow:none!important}
+}
+
+
+/* Owner-panel light contrast: login, modal, financial cards and primary actions.
+   Only light mode; no change to privileges, data or dark/glass presentation. */
+html[data-zavi-theme="light"]:not([data-zavi-appearance="glass"]) :is(#view,#authScreen,#modalBg) :is(.muted,.hint,.subtitle,.small-info,.admin-muted,.kpi-foot,.eyebrow,label,.form-label){color:#344861!important;opacity:1!important;text-shadow:none!important}
+html[data-zavi-theme="light"]:not([data-zavi-appearance="glass"]) :is(#view,#authScreen,#modalBg) :is(input,select,textarea){background:#fff!important;color:#172b46!important;border-color:#8fa7be!important}
+html[data-zavi-theme="light"]:not([data-zavi-appearance="glass"]) :is(#view,#authScreen,#modalBg) :is(input,textarea)::placeholder{color:#52647a!important;opacity:1!important}
+html[data-zavi-theme="light"]:not([data-zavi-appearance="glass"]) #view :is(.card,.panel,.stat,.metric,.fin-metric,.admin-card,.admin-kpi,.report-card,.service-card,.status-card,.table-card){background:#fff!important;color:#172b46!important}
+html[data-zavi-theme="light"]:not([data-zavi-appearance="glass"]) #authScreen .auth-card{background:#fff!important;color:#172b46!important}
+html[data-zavi-theme="light"]:not([data-zavi-appearance="glass"]) #view :is(.button.primary,.btn-primary,button.primary){background:#12579b!important;color:#fff!important;border-color:#12579b!important}
+html[data-zavi-theme="light"]:not([data-zavi-appearance="glass"]) #view :is(.button.primary,.btn-primary,button.primary) :is(span,strong,b,small){color:#fff!important}
