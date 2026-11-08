@@ -13,11 +13,11 @@ from chrome_cdp import Session
 
 UID='00000000-0000-4000-8000-000000000001'
 WID='00000000-0000-4000-8000-000000000002'
-BASE='https://qa.invalid'
+BASE='https://zavi-disposable-qa.supabase.co'
 KEY='qa-publishable-key-this-is-not-a-real-credential'
 TOKEN='qa-access-token-this-is-not-a-real-credential'
 lock=Lock()
-server_state={'workspace':None,'patches':[],'drop_for':None}
+server_state={'workspace':None,'patches':[],'drop_for':None,'entitlement_checks':0}
 
 def json_reply(handler,code,body):
     raw=json.dumps(body,separators=(',',':')).encode()
@@ -41,8 +41,25 @@ class MockSupabase(BaseHTTPRequestHandler):
             current=json.loads(json.dumps(server_state['workspace']))
         return json_reply(self,200,[current])
     def do_POST(self):
-        # Guarded unrelated license/device RPCs must not mutate the mock ledger.
-        return json_reply(self,403,{'message':'Mock disallows unrelated RPCs'})
+        # The disposable server supplies a checked online subscription, instead
+        # of bypassing the real client-side license guard.
+        parsed=urlparse(self.path)
+        if parsed.path=='/rest/v1/rpc/zavi_my_entitlement':
+            if self.headers.get('Authorization')!='Bearer '+TOKEN:
+                return json_reply(self,401,{'message':'QA server: unauthorized'})
+            length=int(self.headers.get('Content-Length','0'))
+            try:body=json.loads(self.rfile.read(length))
+            except ValueError:return json_reply(self,400,{'message':'Invalid JSON'})
+            if body.get('p_workspace_id')!=WID:
+                return json_reply(self,403,{'message':'Wrong workspace'})
+            with lock:server_state['entitlement_checks']+=1
+            return json_reply(self,200,[{
+                'plan':'annual','status':'active','can_write':True,
+                'expires_at':'2099-01-01T00:00:00Z',
+                'server_time':'2026-11-08T12:00:00Z'
+            }])
+        # This browser fixture deliberately does not issue offline leases.
+        return json_reply(self,403,{'message':'QA server: unrelated RPC denied'})
     def do_PATCH(self):
         parsed=urlparse(self.path)
         if parsed.path!='/rest/v1/zavi_workspaces':
@@ -109,31 +126,22 @@ def configure(dev,name,bridge):
     assert dev.eval('window.zaviTenantIsBound?.()') is True
 
 def mutate(dev,js):
-    # Prove a fake unsigned login cannot change finances under the REAL policy.
-    # Substitute ONLY its entitlement boundary in this disposable QA browser;
-    # production source and server authorization are never changed.
-    entitlement=dev.eval("""(()=>{
-      const denied=window.zaviCloudCanEdit?.()===false;
-      const bound=window.zaviTenantIsBound?.()===true;
-      if(!denied||!bound)return {denied,bound};
-      window.__zaviQaEntitlementMocked=true;
-      window.zaviCloudCanEdit=()=>true;
-      return {denied,bound};
-    })()""")
-    assert entitlement=={'denied':True,'bound':True},(
-      'Fixture must prove unsigned access denied before mocking: '+str(entitlement))
+    # The real client must accept the mock server's online entitlement before
+    # a financial write is attempted; no permission function is monkey-patched.
+    until(lambda:dev.eval('window.zaviCloudCanEdit?.()') is True,
+          'server-confirmed online subscription',seconds=35)
     result=dev.eval("""(()=>{
-       const ok=commit(n=>{%s});
-       return {ok,tx:db.tx.length,updatedAt:db.updatedAt,
-         cloudCanEdit:window.zaviCloudCanEdit?.(),
-         tenantBound:window.zaviTenantIsBound?.(),
-         cloud:window.zaviCloudRestoreInfo?.(),
-         accessDiagnostic:window.zaviAccessDiagnostic?.(),
-         key:typeof KEY==='string'?KEY:null,
-         storageBytes:JSON.stringify(db).length,
-         notice:document.getElementById('content')?.innerText.slice(-250)};
+        const ok=commit(n=>{%s});
+        return {ok,tx:db.tx.length,updatedAt:db.updatedAt,
+          cloudCanEdit:window.zaviCloudCanEdit?.(),
+          tenantBound:window.zaviTenantIsBound?.(),
+          cloud:window.zaviCloudRestoreInfo?.(),
+          key:typeof KEY==='string'?KEY:null,
+          storageBytes:JSON.stringify(db).length};
     })()"""%js)
     assert result['ok'] is True,result
+    assert result['cloudCanEdit'] is True,result
+    assert result['tenantBound'] is True,result
 
 with ExitStack() as stack:
     a=stack.enter_context(Session())
@@ -156,6 +164,11 @@ with ExitStack() as stack:
     b=stack.enter_context(Session());assert not b.unlock_one()
     c=stack.enter_context(Session());assert not c.unlock_one()
     for name,dev in [('a',a),('b',b),('c',c)]:configure(dev,name,bridge)
+    for name,dev in [('a',a),('b',b),('c',c)]:
+        until(lambda:dev.eval('window.zaviCloudCanEdit?.()') is True,
+              'fixture server entitlement '+name,seconds=40)
+    assert server_state['entitlement_checks'] >= 3, (
+        'Each device must obtain its own server-confirmed online permission')
 
     # Case 1: same invoice edited on two devices: CAS rejects the loser,
     # preserves its local invoice and explicitly marks an unresolved conflict.
