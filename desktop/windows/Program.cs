@@ -68,10 +68,59 @@ internal sealed class ZaviDesktopWindow : Form
                 args.Cancel = true;
                 OpenExternalHttps(args.Uri);
             };
-            core.NewWindowRequested += (_, args) =>
+            core.NewWindowRequested += async (_, args) =>
             {
-                args.Handled = true;
-                OpenExternalHttps(args.Uri);
+                // Receipts and print previews often use window.open('', '_blank')
+                // and document.write(). Cancelling that popup broke printing.
+                if (!IsOwnPopupUri(args.Uri))
+                {
+                    args.Handled = true;
+                    OpenExternalHttps(args.Uri);
+                    return;
+                }
+                var deferred = args.GetDeferral();
+                Form? popup = null;
+                try
+                {
+                    popup = new Form
+                    {
+                        Text = "ZAVI ONE — Receipt / Print",
+                        Size = new Size(820, 840),
+                        MinimumSize = new Size(430, 360),
+                        StartPosition = FormStartPosition.CenterParent
+                    };
+                    var child = new WebView2 { Dock = DockStyle.Fill };
+                    popup.Controls.Add(child);
+                    popup.Show(this);
+                    await child.EnsureCoreWebView2Async(env);
+                    var popupCore = child.CoreWebView2;
+                    popupCore.Settings.AreDevToolsEnabled = false;
+                    popupCore.Settings.IsWebMessageEnabled = false;
+                    popupCore.SetVirtualHostNameToFolderMapping(
+                        Hostname, webFolder, CoreWebView2HostResourceAccessKind.DenyCors);
+                    popupCore.NavigationStarting += (_, nav) =>
+                    {
+                        if (IsOwnPopupUri(nav.Uri)) return;
+                        nav.Cancel = true;
+                        OpenExternalHttps(nav.Uri);
+                    };
+                    popupCore.PermissionRequested += (_, perm) =>
+                    {
+                        if (!IsOwnOrigin(perm.Uri))
+                            perm.State = CoreWebView2PermissionState.Deny;
+                    };
+                    popupCore.WindowCloseRequested += (_, _) => popup.Close();
+                    args.NewWindow = popupCore;
+                }
+                catch (Exception)
+                {
+                    args.Handled = true;
+                    popup?.Close();
+                }
+                finally
+                {
+                    deferred.Complete();
+                }
             };
             core.PermissionRequested += (_, args) =>
             {
@@ -98,6 +147,14 @@ internal sealed class ZaviDesktopWindow : Form
             parsed.Scheme == Uri.UriSchemeHttps &&
             string.Equals(parsed.Host, Hostname, StringComparison.OrdinalIgnoreCase) &&
             parsed.IsDefaultPort;
+    }
+
+    private static bool IsOwnPopupUri(string uri)
+    {
+        return string.IsNullOrWhiteSpace(uri) ||
+            uri.Equals("about:blank", StringComparison.OrdinalIgnoreCase) ||
+            uri.StartsWith("blob:https://zavi.internal/", StringComparison.OrdinalIgnoreCase) ||
+            IsOwnOrigin(uri);
     }
 
     private static void OpenExternalHttps(string url)
