@@ -258,6 +258,15 @@
     const main=document.getElementById('content'),overlay=document.getElementById('overlay');
     if(main)new MutationObserver(schedule).observe(main,{childList:true});
     if(overlay)new MutationObserver(schedule).observe(overlay,{childList:true});
+    document.addEventListener('click',event=>{
+      const button=event.target.closest?.('[data-zavi-journal-tab]');
+      if(!button)return;
+      const next=button.dataset.zaviJournalTab;
+      if(!['transactions','notes','inventory'].includes(next)||typeof z659JournalTab==='undefined')return;
+      z659JournalTab=next;
+      z659JournalPage=0;
+      if(typeof render==='function')render();
+    });
     document.addEventListener('zavi:language-change',schedule);
     document.addEventListener('zavi:language-changed',schedule);
     // Field-local HTML5 error messages for every actual accounting modal.
