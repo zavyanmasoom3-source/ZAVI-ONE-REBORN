@@ -345,7 +345,13 @@ async function choose(id,created=false){
   if(local&&Array.isArray(local.tx)&&Array.isArray(local.products)&&Array.isArray(local.contacts)&&
      Number(local.updatedAt||0)>Number(item.payload.updatedAt||0)){
    const meta=readStorage(localStorage,OFFLINE_WORKSPACE_KEY+id);
-   const safeRevision=Number(meta?.revision||serverRevision);
+   // Do not infer the base revision from the current cloud revision.
+   // Unknown base => conflict, never automatic overwrite of other devices.
+   const cachedRev=Number(meta?.revision);
+   const knownBase=meta?.id===id&&meta?.owner_uid===identity&&
+     meta?.user_uid===identity&&meta?.revision!==undefined&&
+     Number.isSafeInteger(cachedRev)&&cachedRev>=0;
+   const safeRevision=knownBase?cachedRev:-1;
    waiting={workspace_id:id,owner_uid:identity,revision:safeRevision,source:'v43_recovered'};
    writeStorage(localStorage,tenantPendingKey(identity,id),waiting);
   }
@@ -354,7 +360,7 @@ async function choose(id,created=false){
  const pendingRevision=Number(waiting?.revision||0);
  // The owner's explicit maintenance reset supersedes obsolete pending snapshots.
  // Quarantine previous local records before clearing the per-tenant pending flag.
- const resetIsNewer=!!item.payload.zaviMaintenanceResetAt&&validWaiting&&serverRevision>pendingRevision;
+ const resetIsNewer=!!item.payload.zaviMaintenanceResetAt&&validWaiting&&pendingRevision>=0&&serverRevision>pendingRevision;
  if(resetIsNewer){
   const key='zavi_v34_tenant_'+identity+'_'+id;
   try{
@@ -468,9 +474,28 @@ async function reloadCloud(force=false){if(!workspace||polling||(!force&&(pendin
  }else if(force){revision=Number(item.revision);window.zaviTenantActivate(session.user.id,item.id,item.payload,false);workspace=item;pending=false;conflict=false;render();changeInfo('معلومات سرور تازه شد.');}
  if(role==='owner'&&!pending&&!conflict&&workspace?.id===loadedWorkspace){lastSync=new Date().toLocaleTimeString();window.dispatchEvent(new CustomEvent('zavi-cloud-sync-confirmed',{detail:{workspace:loadedWorkspace,source:'verified-cloud-refresh'}}));}
  }catch(e){changeInfo(e.message,true)}finally{polling=false;}}
+// Exact JSON value comparison for ambiguous server acknowledgements.
+// JSONB may reorder object keys; string comparison cannot establish equality.
+// An iterative walk avoids recursion overflow on large accounting ledgers.
+function zaviCloudSamePayload(left,right){
+ const stack=[[left,right]];
+ while(stack.length){
+  const [a,b]=stack.pop();
+  if(a===b)continue;
+  if(a===null||b===null||typeof a!=='object'||typeof b!=='object')return false;
+  if(Array.isArray(a)!==Array.isArray(b))return false;
+  const keys=Object.keys(a);
+  if(keys.length!==Object.keys(b).length)return false;
+  for(const key of keys){
+   if(!Object.prototype.hasOwnProperty.call(b,key))return false;
+   stack.push([a[key],b[key]]);
+  }
+ }
+ return true;
+}
 function afterSave(){if(role!=='owner'||!workspace)return;pending=true;writePending({workspace_id:workspace.id,revision,owner_uid:session?.user?.id});changeInfo(navigator.onLine?'تغییرات محلی محفوظ شد؛ تلاش برای ارسال به ابر...':'📴 خرید و فروش در همین دستگاه ذخیره شد؛ با وصل شدن انترنت همگام می‌شود.',false);clearTimeout(syncTimer);if(navigator.onLine)syncTimer=setTimeout(push,150)}
 async function push(){if(!pending||!workspace||role!=='owner'||pushing||conflict||navigator.onLine===false)return;
- pushing=true;const snapshotJSON=JSON.stringify(db);const snapshot=JSON.parse(snapshotJSON);const at=Number(snapshot.updatedAt||0);const oldRev=revision;
+ pushing=true;const snapshotJSON=JSON.stringify(db);const snapshot=JSON.parse(snapshotJSON);const oldRev=revision;
  // V65.11: compare the WHOLE saved payload after a request: equal timestamps do not prove equal ledgers.
  // Only a deliberate store-name edit may change the cloud/ADMIN workspace title.
  const renameName=snapshot.zaviRenameRequested===true&&typeof snapshot.storeName==='string'&&snapshot.storeName.trim().length>=2&&snapshot.storeName.trim().length<=65?snapshot.storeName.trim():null;
@@ -484,7 +509,8 @@ async function push(){if(!pending||!workspace||role!=='owner'||pushing||conflict
   try{const latest=await request('/rest/v1/zavi_workspaces?select=id,name,revision,payload&id=eq.'+workspace.id);
    if(!workspace||workspace.id!==uploadWorkspace||session?.user?.id!==uploadOwner||window.zaviTenantKey?.()!==uploadTenantKey)return;
    const current=latest?.[0];
-   if(current&&Number(current.revision)===oldRev+1&&JSON.stringify(current.payload?.tx||[])===JSON.stringify(snapshot.tx||[])&&Number(current.payload?.updatedAt||0)===at&&(!renameName||current.name===renameName)){
+   // Require entire ledger, catalog, preferences and audit to match before ack.
+   if(current&&Number(current.revision)===oldRev+1&&zaviCloudSamePayload(current.payload,snapshot)&&(!renameName||current.name===renameName)){
     revision=Number(current.revision);workspace={...workspace,name:current.name,revision};saveOfflineWorkspace(workspace);
     pending=JSON.stringify(db)!==snapshotJSON;writePending(pending?{workspace_id:workspace.id,revision,owner_uid:session?.user?.id}:null);
     lastSync=new Date().toLocaleTimeString();changeInfo('سرور قبلاً همین تغییرات را دریافت کرده است.');if(!pending&&!conflict)window.dispatchEvent(new CustomEvent('zavi-cloud-sync-confirmed',{detail:{workspace:uploadWorkspace,source:'server-confirmed-upload'}}));return;
