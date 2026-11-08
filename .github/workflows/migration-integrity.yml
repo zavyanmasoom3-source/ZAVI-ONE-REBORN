@@ -23,6 +23,8 @@ jobs:
         run: node scripts/test-cloud-sync-safety.cjs
       - name: Check complete offline bundles for both apps
         run: python3 scripts/check-offline-shell-assets.py
+      - name: Regression for recovered offline sale against newer mock server
+        run: python3 scripts/test-cloud-sync-browser.py
       - name: Verify service-worker installed asset cache in real browser
         run: python3 scripts/test-offline-shell-browser.py
       - name: Verify route navigation and settings design
