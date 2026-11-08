@@ -13,6 +13,14 @@
     'Hamal', 'Sawr', 'Jawza', 'Saratan', 'Asad', 'Sonbola',
     'Mizan', 'Aqrab', 'Qaws', 'Jadi', 'Dalw', 'Hoot'
   ]);
+  // Intl language packs for ps-AF may ignore the Persian calendar extension.
+  // Calendar extraction MUST be language-neutral, then localize Afghan names.
+  const monthsSolar = Object.freeze({
+    'fa-AF': ['حمل','ثور','جوزا','سرطان','اسد','سنبله',
+              'میزان','عقرب','قوس','جدی','دلو','حوت'],
+    'ps-AF': ['وری','غویی','غبرګولی','چنګاښ','زمری','وږی',
+              'تله','لړم','لیندۍ','مرغومی','سلواغه','کب']
+  });
   const monthsGregorian = Object.freeze({
     'fa-AF': ['جنوری','فبروری','مارچ','اپریل','می','جون','جولای','آگست','سپتمبر','اکتوبر','نوامبر','دسمبر'],
     'ps-AF': ['جنوري','فبروري','مارچ','اپرېل','مې','جون','جولای','اګست','سپتمبر','اکتوبر','نومبر','دسمبر']
@@ -60,14 +68,14 @@
     const style = normalizeDigitStyle(opts.digitStyle, language);
     const timezone = opts.timezone || 'Asia/Kabul';
     const date = toDate(value);
-    const solar = parts(date, language === 'en' ? 'en' : language, 'persian', timezone, 'numeric');
+    const solar = parts(date, 'en-US', 'persian', timezone, 'numeric');
     const solarNumber = Number(digits(solar.month, 'latn', 'en'));
     if (!Number.isInteger(solarNumber) || solarNumber < 1 || solarNumber > 12) {
       throw new RangeError('Unsupported Afghan Solar Hijri month');
     }
     const solarMonth = language === 'en'
       ? monthsEn[solarNumber - 1]
-      : parts(date, language, 'persian', timezone, 'long').month;
+      : monthsSolar[language][solarNumber - 1];
     const greg = parts(date, 'en', 'gregory', timezone, 'numeric');
     const gregNumber = Number(greg.month);
     if (!Number.isInteger(gregNumber) || gregNumber < 1 || gregNumber > 12) {
