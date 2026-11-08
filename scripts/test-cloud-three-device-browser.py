@@ -161,7 +161,23 @@ with ExitStack() as stack:
     # preserves its local invoice and explicitly marks an unresolved conflict.
     mutate(a,"n.tx.find(x=>x.id==='invoice-1').paid=7;")
     mutate(b,"n.tx.find(x=>x.id==='invoice-1').paid=9;")
-    until(lambda:server_state['workspace']['revision']>=11,'first invoice PATCH')
+    try:
+        until(lambda:server_state['workspace']['revision']>=11,'first invoice PATCH')
+    except AssertionError:
+        for name,dev in [('a',a),('b',b)]:
+            diagnostic=dev.eval("""(()=>{
+              const id=window.zaviCloudRestoreInfo?.()||{};
+              const keys=Object.keys(localStorage).filter(x=>x.includes('pending'));
+              const notices=[...document.querySelectorAll('#z20CloudStatus,[role="status"]')]
+                .map(x=>x.innerText||'').filter(Boolean).slice(-6);
+              return {id,online:navigator.onLine,entitlementMocked:window.__zaviQaEntitlementMocked,
+                afterSave:typeof window.zaviCloudAfterSave,
+                pendingKeys:keys.map(key=>({key,value:localStorage.getItem(key)})),
+                notices};
+            })()""")
+            print('FIRST-PATCH DEBUG',name,json.dumps(diagnostic,ensure_ascii=False),flush=True)
+        print('SERVER PATCHES:',server_state['patches'],flush=True)
+        raise
     until(lambda:info(b).get('conflict') or info(a).get('conflict'),
           'simultaneous invoice conflict',35)
     conflict_device=b if info(b).get('conflict') else a
