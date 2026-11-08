@@ -79,6 +79,34 @@ with Session() as browser:
       (out/(route+'.png')).write_bytes(browser.screenshot())
       print('PASS:',route,'live account/report controls remain connected across all three tabs')
 
+    # Synthetic memory-only ledger documents: never call commit()/save()/RPC.
+    journal=browser.eval("""(()=>{
+      db.journalNotes.push({id:'qa-local-note',date:'2026-11-09',
+         text:'QA_UNSAVED_NOTE',created:'2026-11-09T12:00:00Z'});
+      db.tx.push({id:'qa-local-expense',date:'2026-11-09',
+         type:'expense',amount:1,paid:1,note:'QA_UNSAVED_TRANSACTION',
+         created:'2026-11-09T12:01:00Z'});
+      go('journal');
+      const labels=[...document.querySelectorAll('[data-zavi-journal-tab]')]
+         .map(x=>x.dataset.zaviJournalTab);
+      const trans=document.querySelector('.zv-journal-list')?.textContent||'';
+      const dual=!!document.querySelector('.zv-journal-item small')?.textContent.includes('|');
+      document.querySelector('[data-zavi-journal-tab="notes"]').click();
+      const notes=document.querySelector('.zv-journal-list')?.textContent||'';
+      const state=typeof z659JournalTab!=='undefined'?z659JournalTab:'missing';
+      document.querySelector('[data-zavi-journal-tab="inventory"]').click();
+      const inv=document.querySelector('.zv18-insight');
+      const display=inv&&getComputedStyle(inv).display!=='none';
+      return {labels,transactionsOnly:trans.includes('QA_UNSAVED_TRANSACTION') &&
+           !trans.includes('QA_UNSAVED_NOTE'),notesOnly:notes.includes('QA_UNSAVED_NOTE') &&
+           !notes.includes('QA_UNSAVED_TRANSACTION'),noteState:state,
+           visibleInventory:!!display,dual};
+    })()""")
+    assert journal['labels']==['transactions','notes','inventory'],journal
+    assert journal['transactionsOnly'] and journal['notesOnly'] and journal['dual'],journal
+    assert journal['noteState']=='notes' and journal['visibleInventory'],journal
+    (out/'journal-inventory.png').write_bytes(browser.screenshot())
+    print('PASS: journal transactions/notes independently filter actual in-memory records; inventory and dual date render')
     browser.route('products')
     browser.until("!!document.querySelector('[data-zavi-flow=\"products\"]')",
                   'inventory product warehouse movement tabs mounted')
