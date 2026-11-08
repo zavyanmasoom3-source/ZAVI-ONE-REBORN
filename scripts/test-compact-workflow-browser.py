@@ -79,6 +79,30 @@ with Session() as browser:
       (out/(route+'.png')).write_bytes(browser.screenshot())
       print('PASS:',route,'live account/report controls remain connected across all three tabs')
 
+    browser.route('purchases')
+    purchaseActions=browser.eval("""(()=>{
+      const container=document.querySelector('[data-module="purchases"]');
+      return [...container.querySelectorAll('.page-head [data-action]')].map(x=>x.dataset.action);
+    })()""")
+    assert purchaseActions==['purchase','local_purchase','foreign_purchase','purchase_return'],purchaseActions
+    browser.eval("document.querySelector('[data-action=\"local_purchase\"]').click()")
+    browser.until("!!document.querySelector('#dialogForm [name=purchaseOrigin]')",
+                  'domestic purchase form opened')
+    domestic=browser.eval("document.querySelector('#dialogForm [name=purchaseOrigin]').value")
+    assert domestic=='AF',domestic
+    browser.eval("document.getElementById('cancelModal').click()")
+    browser.eval("document.querySelector('[data-action=\"foreign_purchase\"]').click()")
+    browser.until("!!document.querySelector('#dialogForm [name=purchaseOrigin]')",
+                  'foreign purchase form opened')
+    international=browser.eval("""(()=>{
+      const f=document.getElementById('dialogForm');
+      return {origin:f.elements.namedItem('purchaseOrigin').value,
+        required:f.elements.namedItem('purchaseOrigin').required,
+        productRows:f.querySelectorAll('.order-line').length};
+    })()""")
+    assert international['origin']=='' and international['required'] and international['productRows']>=1,international
+    browser.eval("document.getElementById('cancelModal').click()")
+    print('PASS: four purchase actions, domestic AF default and foreign free-text country required')
     browser.eval("openOrder('purchase')")
     browser.until("!!document.querySelector('[data-zavi-flow=\"order\"]')",
                   'real purchase three-step modal')
