@@ -71,14 +71,16 @@ with Session() as browser:
         incoming:document.querySelector('[data-zavi-cash-received]')?.textContent,
         outgoing:document.querySelector('[data-zavi-cash-paid]')?.textContent,
         balance:cashBalances().a_cash,
-        liveMoneyButton:!!document.querySelector('.zavi-dash-cash-card [data-go=money]')
+        liveMoneyButton:!!document.querySelector('.zavi-dash-cash-card [data-go=money]'),
+        expected:{current:currency(198),opening:currency(200),
+          incoming:currency(50),outgoing:currency(52)}
       };
       db.tx.length=origLength;account.opening=initial;go('dashboard');
       return got;
     })()""")
     assert cash['balance']==198 and cash['liveMoneyButton'],cash
-    assert cash['current'] and '۱۹۸' in cash['current'],cash
-    assert '۲۰۰' in cash['opening'] and '۵۰' in cash['incoming'] and '۵۲' in cash['outgoing'],cash
+    for key in ['current','opening','incoming','outgoing']:
+        assert cash[key]==cash['expected'][key],cash
     print('PASS: dashboard cash = opening 200 + receipts 50 - outgoing 52 = 198 (disposable in-memory only)')
     for route,keys in [
       ('money',['accounts','transactions','more']),
