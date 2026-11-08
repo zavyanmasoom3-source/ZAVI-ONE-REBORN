@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """ADMIN settings DOM smoke in disposable Chrome, with NO authenticated server.
 
-Renders only the static settings template from app.js in a throwaway browser,
-without invoking login, RPCs, real customer data or privileged handlers.
+Opens the application's built-in localhost-only demo and clicks the real
+Settings navigation in a throwaway browser. No live RPC, auth or billing writes.
 This is not an authorization or authenticated visual acceptance test.
 """
 from chrome_cdp import Session, ROOT
@@ -14,14 +14,16 @@ out.mkdir(exist_ok=True)
 
 with Session() as browser:
     browser.navigate('admin')
-    browser.until("typeof render==='function'&&!!document.getElementById('view')",
-                  'admin static render function ready')
-    prepared=browser.eval("""(()=>{
-      page='settings';
-      render();
-      return !!document.getElementById('zaviChangePasswordForm');
-    })()""")
-    assert prepared,'original admin password form did not render'
+    # localhost-only demo is an existing read-only preview; it never gains an
+    # authenticated account or access to real customer billing data.
+    browser.until("!!document.getElementById('demoBtn')&&!!document.querySelector('.nav-item[data-page=\"settings\"]')",
+                  'admin local demo and settings navigation ready')
+    browser.eval("document.getElementById('demoBtn').click()")
+    browser.until("!document.getElementById('appScreen').hidden",
+                  'admin local preview opened without live credentials')
+    browser.eval("document.querySelector('.nav-item[data-page=\"settings\"]').click()")
+    browser.until("!!document.getElementById('zaviChangePasswordForm')",
+                  'original settings content rendered by real admin navigation')
     browser.until("!!document.querySelector('#view [data-zavi-admin-settings-hub]')",
                   'ADMIN native settings grouped')
     state=browser.eval("""(()=>{
@@ -47,15 +49,11 @@ with Session() as browser:
     assert all(state[k] for k in [
       'passwordForm','supportButton','receiptButton','logoutButton','filtered','restored'
     ]),state
-    # Render preview only; never claim admin authorization was completed.
-    browser.eval("""(()=>{
-       document.getElementById('authScreen').hidden=true;
-       document.getElementById('appScreen').hidden=false;
-       document.querySelector('[data-zah-group="security"]').open=true;
-    })()""")
+    # Real local demo workflow, not a manually unhidden unauthorized screen.
+    browser.eval("document.querySelector('[data-zah-group=\"security\"]').open=true")
     (out/'admin-settings-template-only.png').write_bytes(browser.screenshot())
     (out/'report.json').write_text(json.dumps({
-      'test':'disposable unauthenticated settings template only',
+      'test':'localhost-only demo, real settings navigation, no server authorization',
       'result':state,'server_authorization_tested':False,'customer_data_accessed':False
     },ensure_ascii=False,indent=2)+'\n',encoding='utf8')
     print('PASS: ADMIN five active compact settings groups + advanced fallback; original forms and buttons survive')
