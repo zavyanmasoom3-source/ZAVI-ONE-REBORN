@@ -172,6 +172,16 @@
     document.querySelectorAll('[data-zavi-flow-label]').forEach(el=>{
       el.textContent=tr(el.dataset.zaviFlowLabel);
     });
+    const quick={
+      fa:{sales:'ثبت فروش',purchases:'ثبت خرید',debtors:'حساب مشتریان',products:'گدام'},
+      ps:{sales:'پلور ثبتول',purchases:'پېرود ثبتول',debtors:'د پېرودونکو حسابونه',products:'ګدام'},
+      en:{sales:'New sale',purchases:'New purchase',debtors:'Customer accounts',products:'Warehouse'}
+    }[lang()];
+    document.querySelectorAll('[data-zavi-fast-action]').forEach(el=>{
+      const span=el.querySelector('span');
+      if(span && quick[el.dataset.zaviFastAction])
+        span.textContent=quick[el.dataset.zaviFastAction];
+    });
   }
   function update(){
     const root=document.getElementById('content');
