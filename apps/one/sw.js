@@ -5,7 +5,7 @@
  */
 'use strict';
 const APK_ORIGIN='https://appassets.androidplatform.net';
-const CACHE_NAME='zavi-one-shell-reborn-20261108-r3';
+const CACHE_NAME='zavi-one-shell-reborn-20261109-r4';
 const SHELL_PROTOCOL='zavi-shell-v2';
 const CACHE_PREFIX='zavi-one-';
 const CORE=[
@@ -235,6 +235,8 @@ const CORE=[
   "../../packages/shared/database/supabase-config.js",
   "../../packages/shared/security/access-contract.js",
   "../../packages/shared/i18n/language-core.js",
+  "../../packages/shared/ui/design-system-v1.css",
+  "../../packages/shared/ui/design-system-v1.js",
   "../../packages/shared/diagnostics/build-proof-v1.js"
 ];
 const OPTIONAL=["manifest.webmanifest", "icon-180.png", "icon-192.png", "icon-512.png", "icon-maskable-512.png", "install.html", "invoice-a5.html", "404.html", "health.html", "connectivity-check.html", "zavi-one-original-logo.png"];
