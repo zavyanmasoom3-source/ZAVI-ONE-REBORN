@@ -26,6 +26,9 @@ permissions:
 jobs:
   android-qa:
     name: QA Android ${{ matrix.app }}
+    # Secrets are never supplied to untrusted forks. PRs are validated by the
+    # independent migration-integrity workflow without building signed APKs.
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -104,33 +107,42 @@ jobs:
           sed -i "s#^distributionUrl=.*#distributionUrl=file://$zip#" gradle/wrapper/gradle-wrapper.properties
           chmod +x ./gradlew
           ./gradlew --version --no-daemon
-      - name: Configure optional stable QA signing from GitHub Secrets
+      - name: Require persistent per-app QA certificate (no debug fallback)
         shell: bash
         env:
-          ZAVI_QA_KEYSTORE_BASE64: ${{ secrets.ZAVI_QA_KEYSTORE_BASE64 }}
-          ZAVI_QA_STORE_PASSWORD: ${{ secrets.ZAVI_QA_STORE_PASSWORD }}
-          ZAVI_QA_KEY_ALIAS: ${{ secrets.ZAVI_QA_KEY_ALIAS }}
-          ZAVI_QA_KEY_PASSWORD: ${{ secrets.ZAVI_QA_KEY_PASSWORD }}
+          ZAVI_KEYSTORE_BASE64: ${{ matrix.app == 'one' && secrets.ZAVI_ONE_KEYSTORE_BASE64 || secrets.ZAVI_ADMIN_KEYSTORE_BASE64 }}
+          ZAVI_STORE_PASSWORD: ${{ matrix.app == 'one' && secrets.ZAVI_ONE_STORE_PASSWORD || secrets.ZAVI_ADMIN_STORE_PASSWORD }}
+          ZAVI_KEY_ALIAS: ${{ matrix.app == 'one' && secrets.ZAVI_ONE_KEY_ALIAS || secrets.ZAVI_ADMIN_KEY_ALIAS }}
+          ZAVI_KEY_PASSWORD: ${{ matrix.app == 'one' && secrets.ZAVI_ONE_KEY_PASSWORD || secrets.ZAVI_ADMIN_KEY_PASSWORD }}
         run: |
           set -euo pipefail
-          if [[ -n "$ZAVI_QA_KEYSTORE_BASE64" ]]; then
-            for key in ZAVI_QA_STORE_PASSWORD ZAVI_QA_KEY_ALIAS ZAVI_QA_KEY_PASSWORD; do
-              if [[ -z "${!key}" ]]; then echo "::error::Incomplete stable QA signing secrets: $key"; exit 1; fi
-            done
-            target="$RUNNER_TEMP/zavi-reborn-qa.keystore"
-            printf '%s' "$ZAVI_QA_KEYSTORE_BASE64" | base64 --decode > "$target"
-            chmod 600 "$target"
-            keytool -list -keystore "$target" -storepass "$ZAVI_QA_STORE_PASSWORD" -alias "$ZAVI_QA_KEY_ALIAS" >/dev/null
-            echo "ZAVI_QA_STORE_FILE=$target" >> "$GITHUB_ENV"
-            echo "ZAVI_QA_STORE_PASSWORD=$ZAVI_QA_STORE_PASSWORD" >> "$GITHUB_ENV"
-            echo "ZAVI_QA_KEY_ALIAS=$ZAVI_QA_KEY_ALIAS" >> "$GITHUB_ENV"
-            echo "ZAVI_QA_KEY_PASSWORD=$ZAVI_QA_KEY_PASSWORD" >> "$GITHUB_ENV"
-            echo "ZAVI_QA_SIGNING_MODE=stable" >> "$GITHUB_ENV"
-            echo "Stable QA certificate configured; no private key is placed in Git."
-          else
-            echo "ZAVI_QA_SIGNING_MODE=ephemeral" >> "$GITHUB_ENV"
-            echo "::warning::Ephemeral debug signing: this QA APK cannot upgrade prior independently built QA APKs."
+          for field in ZAVI_KEYSTORE_BASE64 ZAVI_STORE_PASSWORD ZAVI_KEY_ALIAS ZAVI_KEY_PASSWORD; do
+            if [[ -z "${!field}" ]]; then
+              echo "::error::Missing $field for ${{ matrix.app }}. Persistent signing secrets required; debug signing is forbidden."
+              exit 1
+            fi
+          done
+          target="$RUNNER_TEMP/zavi-${{ matrix.app }}-stable-release.p12"
+          printf '%s' "$ZAVI_KEYSTORE_BASE64" | base64 --decode > "$target"
+          chmod 600 "$target"
+          keytool -list -storetype PKCS12 -keystore "$target" -storepass "$ZAVI_STORE_PASSWORD" -alias "$ZAVI_KEY_ALIAS" >/dev/null
+          expected=$(python3 -c 'import json,sys; print(json.load(open("signing/certificates.json"))[sys.argv[1]]["sha256"])' "${{ matrix.app }}")
+          actual=$(keytool -exportcert -rfc -alias "$ZAVI_KEY_ALIAS" -keystore "$target" -storepass "$ZAVI_STORE_PASSWORD" |
+            openssl x509 -noout -fingerprint -sha256 | cut -d= -f2 | tr -d ':' | tr '[:upper:]' '[:lower:]')
+          echo "Public, pinned certificate SHA-256: $actual"
+          if [[ "$actual" != "$expected" ]]; then
+            echo "::error::A different signing certificate was supplied; refusing an unupdatable APK."
+            exit 1
           fi
+          {
+            echo "ZAVI_QA_STORE_FILE=$target"
+            echo "ZAVI_QA_STORE_PASSWORD=$ZAVI_STORE_PASSWORD"
+            echo "ZAVI_QA_KEY_ALIAS=$ZAVI_KEY_ALIAS"
+            echo "ZAVI_QA_KEY_PASSWORD=$ZAVI_KEY_PASSWORD"
+            echo "ZAVI_QA_SIGNING_MODE=stable"
+            echo "ZAVI_QA_EXPECTED_CERT_SHA256=$expected"
+          } >> "$GITHUB_ENV"
+          echo "PASS: persistent certificate matches the pinned ${{ matrix.app }} identity"
       - name: Stage app and shared assets
         shell: bash
         run: |
@@ -197,8 +209,6 @@ jobs:
           echo "PASS: R8-optimized unsigned release compilation (not installable, not published)"
       - name: Verify unique identity, commit provenance and PDF assets
         shell: bash
-        env:
-          ZAVI_QA_EXPECTED_CERT_SHA256: ${{ secrets.ZAVI_QA_EXPECTED_CERT_SHA256 }}
         run: |
           set -euo pipefail
           apk=$(find android-build/app/build/outputs/apk/debug -maxdepth 1 -type f -name '*.apk' -print -quit)
@@ -214,14 +224,21 @@ jobs:
           fi
           AAPT="$ANDROID_SDK_ROOT/build-tools/36.0.0/aapt"
           APKSIGNER="$ANDROID_SDK_ROOT/build-tools/36.0.0/apksigner"
-          if [[ "$ZAVI_QA_SIGNING_MODE" == "stable" && -z "$ZAVI_QA_EXPECTED_CERT_SHA256" ]]; then
-            echo "::error::A stable QA keystore requires secret ZAVI_QA_EXPECTED_CERT_SHA256 to prevent key drift"
-            exit 1
-          fi
+          test "$ZAVI_QA_SIGNING_MODE" = stable
+          test -n "$ZAVI_QA_EXPECTED_CERT_SHA256"
           python3 scripts/verify-apk-update.py --app "${{ matrix.app }}" --mode qa \
             --apk "$apk" --aapt "$AAPT" --apksigner "$APKSIGNER" \
             --expected-sha256 "$ZAVI_QA_EXPECTED_CERT_SHA256"
-          "$APKSIGNER" verify --print-certs "$apk"
+          signer_report=$("$APKSIGNER" verify --verbose --print-certs "$apk")
+          printf '%s\n' "$signer_report"
+          for scheme in "v1 scheme" "v2 scheme" "v3 scheme"; do
+            printf '%s\n' "$signer_report" | grep -E "Verified using $scheme.*: true" >/dev/null || {
+              echo "::error::Required signing scheme $scheme failed verification"; exit 1;
+            }
+          done
+          printf '%s\n' "$signer_report" | grep -Fi "$ZAVI_QA_EXPECTED_CERT_SHA256" >/dev/null || {
+            echo "::error::Signer does not match pinned fingerprint"; exit 1;
+          }
           badging=$("$AAPT" dump badging "$apk")
           printf '%s\\n' "$badging"
           # Android 8.0 (API 26) through Android 16 (API 36) build contract.
@@ -247,4 +264,4 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
-# Private-repository QA builds only; never publish as final or create a release.
+# Public-repository QA build: signatures are mandatory, never upload debug-signed APKs.
