@@ -1,0 +1,47 @@
+/* ZAVI ONE V65.27: manual A5/A4 invoice is trade-aware and style-configurable. */
+:root{--z6527-accent:#1262bc;--z6527-dark:#081a35;--z6527-soft:#dbeeff;--z6527-ink:#183958;--z6527-panel:#10315b}
+.paper{background:#fff!important;color:var(--z6527-ink)!important}
+.paper .masthead{background:linear-gradient(105deg,var(--z6527-dark),var(--z6527-accent))!important;color:#fff!important}
+.paper .stripe{background:var(--z6527-accent)!important}
+.paper .table th{background:var(--z6527-dark)!important;color:white!important}
+.paper .table tbody tr:nth-child(even){background:var(--z6527-soft)!important}
+.paper .section{background:#fff!important;border-color:#c6d9e3!important}
+.paper .section .title{color:var(--z6527-accent)!important}
+.paper .sumrow:last-child{background:var(--z6527-dark)!important}
+.paper .foot{border-color:var(--z6527-accent)!important}
+.paper .mark{overflow:hidden;display:grid;place-items:center;letter-spacing:normal}
+.paper .mark img{width:100%;height:100%;object-fit:contain}
+.z6527-manual-extras{border:1px solid #c6d9e3;background:white;border-radius:11px;padding:7px 9px;margin-top:8px}
+.z6527-manual-extras strong{display:block;color:var(--z6527-accent);font-size:11px;margin-bottom:5px}
+.z6527-manual-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.z6527-manual-grid label{display:flex;flex-direction:column;font:10px Tahoma;color:var(--z6527-ink);gap:3px;min-width:0}
+.z6527-manual-grid input{width:100%;min-width:0;border:1px solid #bbd3e2!important;border-radius:5px;background:#fff!important;color:var(--z6527-ink)!important;font:10px Tahoma;padding:4px}
+.z6527-manual-footer{text-align:center;font:10px Tahoma;color:var(--z6527-accent);padding-top:5px}
+.z6527-manual-selector{color:#fff;display:flex;align-items:center;gap:6px;padding:5px 8px;border-radius:9px;background:#154777}
+.z6527-manual-selector select{background:#fff;color:#183958;border:1px solid #bfd6e5;border-radius:8px;padding:8px;font:inherit}
+.paper[data-z6527-template="minimal"]{border:1px solid #bdcbd3}.paper[data-z6527-template="minimal"] .masthead{background:var(--z6527-dark)!important}.paper[data-z6527-template="classic"] .masthead{background:var(--z6527-dark)!important}.paper[data-z6527-template="premium"] .masthead{border-bottom:5px double var(--z6527-accent)}
+.paper[data-z6527-hide-notes="1"] .notes{display:none}.paper[data-z6527-hide-notes="1"] .bottom{grid-template-columns:1fr}.paper[data-z6527-hide-sign="1"] .signs{display:none}.paper[data-z6527-hide-balance="1"] .sumrow:last-child{display:none}
+.paper[data-z6527-no-logo="1"] .brand .mark{display:none}
+.paper[data-z6527-no-phone="1"] input[name="shop_phone"]{display:none}
+.paper[data-z6527-no-address="1"] input[name="address"]{display:none}
+.paper[data-z6527-paper="A4"]{width:210mm;max-width:100%}
+@media(max-width:620px){.z6527-manual-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.tools{flex-wrap:wrap}}
+@media print{
+ .tools,.z6527-manual-selector{display:none!important}
+ .paper[data-z6527-paper="A4"]{width:210mm!important;max-width:210mm!important}
+ .paper{color:#183958!important}
+ .paper .masthead{print-color-adjust:exact;-webkit-print-color-adjust:exact}
+ .paper .table th{print-color-adjust:exact;-webkit-print-color-adjust:exact}
+ .z6527-manual-extras{break-inside:avoid}
+ .z6527-manual-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+/* Invoice paper must remain readable irrespective of application dark mode. */
+html body main.paper .section,html body main.paper .notes,html body main.paper .signs>div{background:#fff!important;color:var(--z6527-ink)!important}
+html body main.paper .inputline span,html body main.paper .section .title,html body main.paper .tiny,html body main.paper .notes b{color:var(--z6527-ink)!important}
+html body main.paper .inputline input,html body main.paper .table input,html body main.paper .notes textarea{background:transparent!important;color:var(--z6527-ink)!important;-webkit-text-fill-color:var(--z6527-ink)!important}
+html body main.paper table.table td,html body main.paper table.table td span{color:var(--z6527-ink)!important}
+html body main.paper .sumrow:not(:last-child){background:var(--z6527-soft)!important;color:var(--z6527-ink)!important}
+html body main.paper .sumrow:not(:last-child) input{color:var(--z6527-ink)!important;-webkit-text-fill-color:var(--z6527-ink)!important}
+html body main.paper .sumrow:last-child input{color:#fff!important;-webkit-text-fill-color:#fff!important}
+html body main.paper .signs>div{color:var(--z6527-ink)!important;background:#f8fafc!important}
+html body main.paper .notes textarea::placeholder,html body main.paper .inputline input::placeholder{color:#6b7e91!important;-webkit-text-fill-color:#6b7e91!important;opacity:1}

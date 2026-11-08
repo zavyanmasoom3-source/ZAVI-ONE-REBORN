@@ -1,0 +1,7 @@
+.zavi-integrity-summary{line-height:1.9;padding:4px 0 12px;overflow-wrap:anywhere}
+.zavi-integrity-summary .notice{margin:12px 0}
+.zavi-integrity-list{max-height:55vh;overflow:auto;border:1px solid var(--border,#d3dce8);border-radius:12px;padding:8px}
+.zavi-integrity-row{padding:11px 12px;border-bottom:1px solid var(--border,#d3dce8);line-height:1.7;overflow-wrap:anywhere}
+.zavi-integrity-row:last-child{border-bottom:0}
+.zavi-integrity-row small{display:inline-block;max-width:100%;overflow-wrap:anywhere}
+@media(max-width:600px){.zavi-integrity-list{max-height:43vh}.zavi-integrity-row{font-size:12px}}
