@@ -165,6 +165,9 @@ jobs:
             "$GITHUB_SHA" "${{ matrix.app }}" "$GITHUB_RUN_NUMBER" "$version" "$package" "$ZAVI_QA_SIGNING_MODE" \
             > android-build/app/src/main/assets/zavi-build-info.json
           test -s android-build/app/src/main/assets/zavi-build-info.json
+          python3 scripts/stamp-qa-version.py \
+            --app "${{ matrix.app }}" --run "$GITHUB_RUN_NUMBER" --commit "$GITHUB_SHA" \
+            --signing "$ZAVI_QA_SIGNING_MODE" --assets android-build/app/src/main/assets
           mkdir -p android-build/app/src/main/res/drawable-nodpi android-build/app/src/main/res/values android-build/app/src/main/res/xml
           cp "apps/${{ matrix.app }}/icon-192.png" android-build/app/src/main/res/drawable-nodpi/zavi_launcher_image.png
           printf '%s\n' '<resources><style name="ZaviTheme" parent="android:style/Theme.Material.Light.NoActionBar"><item name="android:windowLightStatusBar">false</item></style></resources>' > android-build/app/src/main/res/values/styles.xml
@@ -184,6 +187,9 @@ jobs:
           apk=$(find android-build/app/build/outputs/apk/debug -maxdepth 1 -type f -name '*.apk' -print -quit)
           test -n "$apk"
           unzip -p "$apk" assets/zavi-build-info.json | grep -F "$GITHUB_SHA"
+          python3 scripts/stamp-qa-version.py \
+            --app "${{ matrix.app }}" --run "$GITHUB_RUN_NUMBER" --commit "$GITHUB_SHA" \
+            --signing "$ZAVI_QA_SIGNING_MODE" --apk "$apk"
           if [[ "${{ matrix.app }}" == "one" ]]; then
             unzip -l "$apk" | grep -F 'assets/zavi-pdf-final-v6760.css'
           else
