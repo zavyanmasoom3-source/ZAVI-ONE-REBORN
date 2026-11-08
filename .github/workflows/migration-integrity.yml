@@ -33,6 +33,8 @@ jobs:
         run: python3 scripts/check-offline-shell-assets.py
       - name: Regression for recovered offline sale against newer mock server
         run: python3 scripts/test-cloud-sync-browser.py
+      - name: Three-device cloud CAS, dropped ACK, delete/edit and clock-skew regression
+        run: python3 scripts/test-cloud-three-device-browser.py
       - name: Verify service-worker installed asset cache in real browser
         run: python3 scripts/test-offline-shell-browser.py
       - name: Verify route navigation and settings design
