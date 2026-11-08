@@ -23,10 +23,13 @@ stamp={'commit':a.commit,'app':a.app,'run':str(a.run),
                   else 'com.zavione.one.admin.desktop'),
        'kind':'desktop-qa','signing':'unsigned-windows-qa'}
 (folder/'zavi-build-info.json').write_text(json.dumps(stamp,indent=2)+'\n',encoding='utf8')
+required={'zavi-release.json'} if a.app=='admin' else {'zavi-release.json','edition.json','deployment-info.json'}
 for name in ('zavi-release.json','edition.json','deployment-info.json'):
     target=folder/name
     if not target.is_file():
-        raise SystemExit('Missing required desktop version manifest: '+name)
+        if name in required:
+            raise SystemExit('Missing required desktop version manifest: '+name)
+        continue
     data=json.loads(target.read_text(encoding='utf8'))
     if not isinstance(data,dict):raise SystemExit('Invalid manifest: '+name)
     for k in ('version','web_version','release_version','staging_version'):
