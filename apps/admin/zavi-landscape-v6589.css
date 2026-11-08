@@ -1,0 +1,98 @@
+/* ZAVI ONE 65.89 / ADMIN 1.4.35 — non-destructive landscape / rotation repair.
+   Correct actual viewport and flex/grid sizing, NOT document zoom or screen transforms. */
+:root{--z89-viewport-height:100dvh;--z89-viewport-width:100vw;--z89-safe-bottom:env(safe-area-inset-bottom,0px)}
+html,html body{width:100%!important;min-width:0!important;max-width:100%!important;box-sizing:border-box!important}
+html.zavi-design-84 body{min-height:var(--z89-viewport-height)!important;overflow-x:clip!important;overflow-y:auto!important;-webkit-overflow-scrolling:touch}
+html.zavi-design-84 body :is(.app,#appScreen,.main,.workspace,#content,#appScreen #view){
+ box-sizing:border-box!important;max-width:100%!important;min-width:0!important;
+}
+html.zavi-design-84 body :is(.app,#appScreen,.main,.workspace){min-height:0}
+html.zavi-design-84 body :is(.content,#content,#appScreen #view){
+ overflow-y:visible;overflow-wrap:anywhere;
+}
+html.zavi-design-84 body :is(.card,.panel,.settings-card,.form-grid,.page-head,.z76-settings-group,.z87-panel,.z88-panel){
+ min-width:0!important;max-width:100%!important;
+}
+html.zavi-design-84 body :is(.table-wrap,.table-responsive,.table-scroll,.data-table-wrap){
+ min-width:0!important;max-width:100%!important;overflow-x:auto!important;-webkit-overflow-scrolling:touch;
+}
+html.zavi-design-84 body :is(.modal,.modal-card,[role="dialog"]){
+ max-height:calc(var(--z89-viewport-height) - 20px);
+ overflow-y:auto;-webkit-overflow-scrolling:touch;
+}
+/* A portrait-only WebView must not pretend a landscape viewport is still 360px wide. */
+@media screen and (max-width:1199px) {
+ html.zavi-design-84 body .app{display:block!important;width:100%!important;min-width:0!important}
+ html.zavi-design-84 body .main,
+ html.zavi-design-84 body .app > .main,
+ html.zavi-design-84 body #appScreen .workspace{
+   width:100%!important;min-width:0!important;max-width:100%!important;
+   margin-inline:0!important;float:none!important;flex:1 1 100%!important;
+ }
+ html.zavi-design-84[dir="ltr"] body .main{margin-inline:0!important}
+ html.zavi-design-84 body #content,html.zavi-design-84 body #appScreen #view{
+   width:100%!important;min-width:0!important;max-width:100%!important;
+ }
+ html.zavi-design-84 body #side.sidebar:not(.mobile-drawer){display:none!important}
+ html.zavi-design-84 body #side.sidebar.mobile-drawer{display:flex!important}
+}
+/* Phone landscape: no full-screen offscreen panels, fixed-height form or clipped text. */
+@media screen and (orientation:landscape) and (max-height:650px) and (max-width:1199px) {
+ html.zavi-design-84 body{height:auto!important;min-height:var(--z89-viewport-height)!important;overflow-y:auto!important}
+ html.zavi-design-84 body :is(.app,.main,#appScreen,#appScreen .workspace){
+   height:auto!important;min-height:var(--z89-viewport-height)!important;overflow-x:clip!important;
+ }
+ html.zavi-design-84 body :is(.content,#content,#appScreen #view){
+   height:auto!important;min-height:0!important;
+   width:100%!important;min-width:0!important;max-width:100%!important;
+   padding-block:clamp(8px,2vh,16px)!important;
+   padding-inline:clamp(10px,2vw,24px)!important;
+   overflow-x:clip!important;overflow-y:visible!important;
+ }
+ html.zavi-design-84 body .topbar,html.zavi-design-84 body #appScreen .topbar{
+   height:auto!important;min-height:48px!important;max-width:100%!important;
+   padding-block:6px!important;flex-wrap:wrap!important;
+ }
+ html.zavi-design-84 body #content :is(.stat-grid,.dashboard-grid,.quick-grid,.dashboard-shortcuts,.z74-link-grid),
+ html.zavi-design-84 body #appScreen #view :is(.admin-grid-actions,.admin-quick-grid,.admin-layout,.admin-secondary,.admin-analytics) {
+   display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+   width:100%!important;min-width:0!important;max-width:100%!important;
+ }
+ html.zavi-design-84 body :is(.settings-grid,.form-grid,.z76-settings-groups){
+   grid-template-columns:minmax(0,1fr)!important;
+ }
+ html.zavi-design-84 body :is(.page-head,.action-group,.toolbar,.form-row){
+   max-width:100%!important;min-width:0!important;flex-wrap:wrap!important;
+ }
+ html.zavi-design-84 body .mobile-bottom{
+   padding-bottom:max(4px,env(safe-area-inset-bottom,0px))!important;
+   min-height:44px!important;
+ }
+ html.zavi-design-84 body .z637-ai-button{
+   bottom:calc(58px + env(safe-area-inset-bottom,0px))!important;
+   width:46px!important;height:46px!important;z-index:90;
+ }
+ html.zavi-design-84 body .z637-ai-panel{
+   top:0!important;bottom:0!important;
+   height:var(--z89-viewport-height)!important;max-height:var(--z89-viewport-height)!important;
+   overflow:hidden!important;
+ }
+ html.zavi-design-84 body .z637-ai-messages{
+   min-height:0!important;overflow-y:auto!important;
+ }
+ html.zavi-design-84 body :is(.modal,.modal-card,[role="dialog"]){
+   max-height:calc(var(--z89-viewport-height) - 12px)!important;overflow-y:auto!important;
+ }
+}
+/* Very small landscape: one column avoids 2px-wide cards and makes settings readable. */
+@media screen and (orientation:landscape) and (max-width:650px) and (max-height:440px){
+ html.zavi-design-84 body #content :is(.stat-grid,.dashboard-grid,.quick-grid,.dashboard-shortcuts,.z74-link-grid),
+ html.zavi-design-84 body #appScreen #view :is(.admin-grid-actions,.admin-quick-grid){
+    grid-template-columns:minmax(0,1fr)!important;
+ }
+}
+@media screen and (orientation:landscape) and (max-height:650px) {
+ html.zavi-design-84 #z88-size-settings .z87-row{padding:10px!important}
+ html.zavi-design-84 #z88-size-settings .z87-body{gap:8px!important}
+}
+@media print{html.zavi-design-84 body{height:auto!important;overflow:visible!important}}

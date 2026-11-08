@@ -1,0 +1,50 @@
+/* ZAVI ONE ADMIN V40 — correct English sidebar offsets, small-screen layout
+   and accessible Light Mode labels. Server-side authentication unchanged. */
+html,body{max-width:100%;overflow-x:clip}
+#appScreen,.app-shell,.workspace,#view{min-width:0}
+/* Fix v18 rule at 761–910px that wrongly removed the English workspace offset
+   while the 246px sidebar was still visible. RTL has the normal sidebar on right. */
+@media(min-width:761px){
+ html[dir="ltr"] #appScreen>.workspace,html[dir="ltr"] .app-shell>.workspace{
+  margin-left:246px!important;margin-right:0!important;width:calc(100% - 246px)!important;
+ }
+ html[dir="rtl"] #appScreen>.workspace,html[dir="rtl"] .app-shell>.workspace{
+  margin-right:246px!important;margin-left:0!important;width:calc(100% - 246px)!important;
+ }
+ html[dir="ltr"] #appScreen>.sidebar{left:0!important;right:auto!important}
+ html[dir="rtl"] #appScreen>.sidebar{right:0!important;left:auto!important}
+}
+@media(max-width:760px){
+ html[dir] #appScreen>.workspace,html[dir] .app-shell>.workspace{
+  margin:0!important;width:100%!important;max-width:100%!important;
+ }
+ html[dir="ltr"] #appScreen>.sidebar{left:0!important;right:auto!important;transform:translateX(-105%)}
+ html[dir="ltr"] body.mobile-drawer #appScreen>.sidebar,
+ html[dir="ltr"] #appScreen.mobile-drawer>.sidebar,
+ html[dir="ltr"] #appScreen>.sidebar.mobile-drawer{transform:translateX(0)}
+ html[dir="rtl"] #appScreen>.sidebar{right:0!important;left:auto!important}
+ #appScreen .topbar{min-width:0;width:100%;gap:6px}
+ #appScreen :is(.top-actions,.top-right,.breadcrumbs){min-width:0}
+ #view{max-width:100%;padding-inline:13px}
+ #view :is(.metric-grid,.overview-cols,.panel,.page-head){min-width:0;max-width:100%}
+}
+html[data-zavi-theme="light"] #view .page-head :is(h1,h2,h3,p),
+html[data-zavi-theme="light"] #view .panel-heading :is(h1,h2,h3,p),
+html[data-zavi-theme="light"] #view .metric :is(.label,strong,small){
+ color:#173952!important;-webkit-text-fill-color:#173952!important;opacity:1!important;
+}
+html[data-zavi-theme="light"] .sidebar :is(.nav-item.selected,.nav-item.active),
+html[data-zavi-theme="light"] .sidebar :is(.nav-item.selected,.nav-item.active) :is(span,b,small){
+ color:#fff!important;-webkit-text-fill-color:#fff!important;
+}
+html[data-zavi-theme="light"] .data-table th,
+html[data-zavi-theme="light"] .data-table td{
+ color:#203b52!important;-webkit-text-fill-color:#203b52!important;
+}
+html[data-zavi-theme="light"] #view :is(.zsvc-banner,.z23-top-banner){
+ color:#fff!important;
+ background:linear-gradient(110deg,#076acb,#0b427e)!important;
+}
+html[data-zavi-theme="light"] #view :is(.zsvc-banner,.z23-top-banner) :is(h1,h2,h3,p,span,strong,b,small){
+ color:#fff!important;-webkit-text-fill-color:#fff!important;
+}
