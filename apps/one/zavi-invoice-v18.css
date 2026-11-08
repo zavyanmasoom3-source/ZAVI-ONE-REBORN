@@ -1,0 +1,17 @@
+/* Readable invoices in Dark Executive UI; print is always clean A5 white. */
+@media screen{body{background:linear-gradient(140deg,#040e22,#091f41)!important}.paper{border:1px solid #2e77ab!important;box-shadow:0 12px 45px #0007!important}.tools{position:sticky;top:5px;z-index:10;flex-wrap:wrap;padding:7px;background:#071c38ed;border:1px solid #29628d;border-radius:12px}.tools select{background:#082953;color:white;padding:8px;border-radius:8px;border:1px solid #3873a0}.tools button{padding:9px 11px;min-height:40px}}
+@media print{
+ @page{size:A5 portrait;margin:0}
+ html,body{background:#fff!important;color:#102b45!important;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+ .tools,.tools select{display:none!important}
+ .paper{background:#fff!important;color:#102b45!important;box-shadow:none!important;border:0!important;border-radius:0!important;margin:0 auto!important;width:148mm!important;min-height:210mm!important;max-height:none!important;padding:0 8mm 5mm!important;zoom:1!important}
+ .masthead{background:linear-gradient(105deg,#123b74,#0878bd,#04b5ca)!important;color:white!important}
+ .section,.notes,.signs div{background:#fff!important;color:#132d44!important;border-color:#d5dfe8!important}
+ .section .title,.tiny,.inputline span,.foot,.table td,.table th,.sumrow,.table input,.inputline input,.notes textarea,.sumrow input{color:#15334b!important}
+ .table th{background:#e6f1fc!important;color:#16324f!important}
+ .table tbody tr:nth-child(even),.sumrow,.sumrow:last-child{background:#f6faff!important;color:#193856!important;border-color:#d7e1ea!important}
+ input,textarea{background:transparent!important;border:none!important}
+ .masthead .brand small{color:#d7f6ff!important}
+}
+
+.zavi-invoice-qr{display:flex;align-items:center;justify-content:flex-end;gap:9px;margin:8px 3mm 5mm;color:#9fc9ec;font-size:10px}.zavi-invoice-qr canvas{width:76px;height:76px;border-radius:6px;background:white;padding:2px}.zavi-invoice-qr small{max-width:180px;overflow-wrap:anywhere}.zavi-invoice-qr{break-inside:avoid}@media print{.zavi-invoice-qr{color:#425970!important}.zavi-invoice-qr canvas{width:21mm;height:21mm}}

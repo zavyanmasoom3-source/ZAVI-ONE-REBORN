@@ -1,0 +1,112 @@
+/* ZAVI ONE V59 — iPhone chart + stock panel viewport containment.
+   Fix cause: 1fr grid track inherited 948px chart min-content width;
+   grid children expanded beyond the phone, pushing stock button off-screen.
+   Scoped to dashboard mobile/tablet, does not touch accounting data. */
+@media screen and (max-width: 900px) {
+ html,body {width:100%!important;max-width:100%!important;overflow-x:clip!important;}
+ .app,.main,.content,#content {box-sizing:border-box!important;min-width:0!important;max-width:100%!important;}
+ .main{width:100%!important;margin-inline:0!important;}
+ .content{width:100%!important;max-width:100%!important;}
+ .content > .layout-2,.layout-2{
+   box-sizing:border-box!important;
+   display:grid!important;
+   grid-template-columns:minmax(0,1fr)!important;
+   width:100%!important;
+   max-width:100%!important;
+   min-width:0!important;
+   gap:14px!important;
+ }
+ .layout-2 > section.card {
+   box-sizing:border-box!important;
+   display:block!important;
+   min-width:0!important;
+   width:100%!important;
+   max-width:100%!important;
+   overflow:hidden!important;
+ }
+ .layout-2 > section.card > .panel-head,
+ .layout-2 > section.card > .panel-body {
+   box-sizing:border-box!important;
+   min-width:0!important;
+   width:100%!important;
+   max-width:100%!important;
+ }
+ .layout-2 > section.card > .panel-body{overflow:hidden!important; padding:12px!important;}
+ .layout-2 > section.card > .panel-head{padding:12px 14px!important;gap:8px!important;}
+ .layout-2 > section.card > .panel-head h3{min-width:0!important;font-size:14px!important;overflow-wrap:anywhere!important;}
+ .layout-2 > section.card .empty{box-sizing:border-box!important;max-width:100%!important;min-width:0!important;padding:16px 9px!important;}
+ .layout-2 > section.card .empty strong,
+ .layout-2 > section.card .empty span{white-space:normal!important;overflow-wrap:anywhere!important;}
+ .layout-2 > section.card button[data-go="products"] {
+   box-sizing:border-box!important;display:flex!important;
+   align-items:center!important;justify-content:center!important;
+   gap:8px!important;width:100%!important;max-width:100%!important;
+   min-width:0!important;min-height:48px!important;
+   padding:10px 14px!important;white-space:normal!important;
+   font-size:14px!important;line-height:1.5!important;
+   text-align:center!important;direction:rtl!important;
+   overflow-wrap:anywhere!important;
+   border-radius:12px!important;
+ }
+ .layout-2 > section.card button[data-go="products"] svg {flex:0 0 18px!important;}
+ .z47-chart-header.z27-chart-header{
+   box-sizing:border-box!important;min-width:0!important;
+   max-width:100%!important;width:100%!important;
+   display:flex!important;align-items:center!important;
+   flex-wrap:wrap!important;gap:8px!important;
+ }
+ .z47-chart-header .z27-chart-filters{min-width:0!important;max-width:100%!important;gap:5px!important;}
+ .z47-chart-header .z27-chart-filters label{min-width:0!important;max-width:100%!important;}
+ .z47-chart-header .z27-chart-filters select{min-width:64px!important;max-width:135px!important;font-size:12px!important;}
+ .zavi-chart-mobile-controls{
+   box-sizing:border-box!important;width:100%!important;max-width:100%!important;min-width:0!important;
+   display:grid!important;grid-template-columns:auto minmax(0,1fr) auto!important;
+   align-items:center!important;gap:5px!important;margin:11px 0 7px!important;
+ }
+ .zavi-chart-mobile-controls .zavi-chart-move{
+   box-sizing:border-box!important;min-width:48px!important;min-height:43px!important;
+   padding:6px 7px!important;font-size:12px!important;
+   text-align:center!important;white-space:nowrap!important;
+ }
+ .zavi-chart-mobile-controls .zavi-chart-swipe-hint{
+   min-width:0!important;overflow-wrap:anywhere!important;
+   white-space:normal!important;text-align:center!important;
+   line-height:1.5!important;font-size:10px!important;
+ }
+ .layout-2 .z47-chart-scroll.z27-chart-scroll {
+   display:block!important;position:relative!important;
+   box-sizing:border-box!important;
+   width:100%!important;max-width:100%!important;min-width:0!important;
+   overflow-x:auto!important;overflow-y:hidden!important;
+   -webkit-overflow-scrolling:touch!important;
+   touch-action:pan-x pan-y!important;
+   overscroll-behavior-x:contain!important;
+   padding:3px 0 11px!important;
+   scrollbar-width:thin!important;
+ }
+ .layout-2 .z47-chart-scroll.z27-chart-scroll > .bar-chart{
+   display:flex!important;
+   width:max-content!important;
+   min-width:900px!important;
+   max-width:none!important;
+   flex-flow:row nowrap!important;
+   gap:6px!important;
+   padding:10px 5px 0!important;
+   justify-content:flex-start!important;
+   direction:rtl!important;
+ }
+ html[data-zavi-lang="en"] .layout-2 .z47-chart-scroll.z27-chart-scroll > .bar-chart{
+   direction:ltr!important;
+ }
+ .layout-2 .z47-chart-scroll.z27-chart-scroll .bar-col{
+   box-sizing:border-box!important;flex:0 0 69px!important;
+   width:69px!important;max-width:69px!important;
+   min-width:69px!important;
+   overflow:visible!important;
+ }
+}
+@media screen and (min-width:901px) {
+ .layout-2>section.card{min-width:0}
+ .layout-2>section.card>.panel-body{min-width:0}
+ .z47-chart-scroll.z27-chart-scroll{max-width:100%!important}
+}
