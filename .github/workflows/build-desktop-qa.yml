@@ -1,0 +1,82 @@
+name: REBORN Windows Desktop QA Installer
+on:
+  push:
+    branches: [dev]
+    paths:
+      - 'apps/one/**'
+      - 'packages/shared/**'
+      - 'desktop/windows/**'
+      - 'scripts/stamp-desktop-qa.py'
+      - '.github/workflows/build-desktop-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  windows-qa:
+    name: Windows x64 QA installer (unsigned)
+    runs-on: windows-2022
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify source and stage unchanged UI files
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          python scripts/check-public-source-security.py
+          python scripts/check-migration-integrity.py
+          New-Item -ItemType Directory -Force "desktop/windows/web/apps/one" | Out-Null
+          New-Item -ItemType Directory -Force "desktop/windows/web/packages/shared" | Out-Null
+          Copy-Item "apps/one/*" "desktop/windows/web/apps/one/" -Recurse -Force
+          Copy-Item "packages/shared/*" "desktop/windows/web/packages/shared/" -Recurse -Force
+          python scripts/stamp-desktop-qa.py --assets desktop/windows/web/apps/one --run $env:GITHUB_RUN_NUMBER --commit $env:GITHUB_SHA
+          python -m pip install "Pillow==12.0.0" --disable-pip-version-check --quiet
+          python -c "from PIL import Image; Image.open('apps/one/icon-192.png').save('desktop/windows/zavi.ico', sizes=[(16,16),(32,32),(48,48),(64,64),(128,128),(192,192)])"
+          if (-not (Test-Path "desktop/windows/zavi.ico")) { throw "Missing Windows icon" }
+      - name: Publish self-contained Windows desktop app
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $version = "66.78.$env:GITHUB_RUN_NUMBER"
+          $label = "66.78-reborn.qa.$env:GITHUB_RUN_NUMBER"
+          dotnet publish "desktop/windows/ZaviOneDesktop.csproj" -c Release -r win-x64 --self-contained true -o "desktop/windows/publish" -p:Version=$version -p:InformationalVersion=$label
+          if ($LASTEXITCODE -ne 0) { throw "Windows publish failed" }
+          if (-not (Test-Path "desktop/windows/publish/ZAVI_ONE.exe")) { throw "Missing executable" }
+          if (-not (Test-Path "desktop/windows/publish/web/apps/one/index.html")) { throw "Packaged UI missing" }
+          if (-not (Test-Path "desktop/windows/publish/web/packages/shared/database/supabase-config.js")) { throw "Shared source missing" }
+          $check=Get-Content "desktop/windows/publish/web/apps/one/zavi-build-info.json" | ConvertFrom-Json
+          if ($check.commit -ne $env:GITHUB_SHA) { throw "Source commit mismatch in published application" }
+          Write-Host "PASS: WebView2 executable and immutable UI source stamp"
+      - name: Compile Inno Setup QA installer and SHA-256
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $iscc=Join-Path ([Environment]::GetFolderPath('ProgramFilesX86')) 'Inno Setup 6\ISCC.exe'
+          if (-not (Test-Path $iscc)) {
+            choco install innosetup -y --no-progress
+            if ($LASTEXITCODE -ne 0) { throw "Inno Setup installation failed" }
+          }
+          if (-not (Test-Path $iscc)) { throw "Inno compiler missing" }
+          $env:ZAVI_DESKTOP_LABEL="66.78-reborn.qa.$env:GITHUB_RUN_NUMBER"
+          $env:ZAVI_DESKTOP_NUMBER=$env:GITHUB_RUN_NUMBER
+          & $iscc "desktop/windows/installer.iss"
+          if ($LASTEXITCODE -ne 0) { throw "Inno compiler failed" }
+          $installer=Get-ChildItem "desktop/windows/output" -Filter "*QA_*.exe" | Select-Object -First 1
+          if (-not $installer -or $installer.Length -lt 102400) { throw "Installer missing or too small" }
+          $digest=(Get-FileHash -Algorithm SHA256 $installer.FullName).Hash.ToLowerInvariant()
+          "$digest  $($installer.Name)" | Set-Content -Encoding ascii "desktop/windows/output/SHA256SUMS.txt"
+          Write-Host "PASS: Windows QA Installer SHA-256 $digest"
+          Write-Host "::warning::QA Windows installer is unsigned and not device-certified."
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ZAVI-ONE-REBORN-WINDOWS-QA
+          path: |
+            desktop/windows/output/*.exe
+            desktop/windows/output/SHA256SUMS.txt
+          if-no-files-found: error
+          retention-days: 14
