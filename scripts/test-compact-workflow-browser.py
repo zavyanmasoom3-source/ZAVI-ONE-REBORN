@@ -47,6 +47,39 @@ with Session() as browser:
     })()""")
     assert rate=='۱ USD = ۷۵ AFN',rate
     print('PASS: actual dashboard displays ۱ USD = ۷۵ AFN with uniform digits and correct order')
+    cash=browser.eval("""(()=>{
+      const account=db.accounts.find(x=>x.id==='a_cash');
+      const initial=account.opening;
+      const extra=[
+        {id:'qa-cash-sale',type:'sale',accountId:'a_cash',paid:50,amount:50,
+          date:'2026-11-09',created:'2026-11-09T10:00:00Z',items:[]},
+        {id:'qa-cash-expense',type:'expense',accountId:'a_cash',amount:30,
+          date:'2026-11-09',created:'2026-11-09T10:01:00Z'},
+        {id:'qa-cash-transfer',type:'transfer',fromAccountId:'a_cash',
+          toAccountId:'a_bank',amount:20,fee:2,date:'2026-11-09',
+          created:'2026-11-09T10:02:00Z'}
+      ];
+      const origLength=db.tx.length;
+      account.opening=200;db.tx.push(...extra);
+      go('dashboard');
+      const current=document.querySelector('[data-zavi-cash-current]')?.textContent;
+      const details=document.querySelector('.zavi-dash-cash-card details');
+      details.open=true;
+      const got={
+        current,
+        opening:document.querySelector('[data-zavi-cash-opening]')?.textContent,
+        incoming:document.querySelector('[data-zavi-cash-received]')?.textContent,
+        outgoing:document.querySelector('[data-zavi-cash-paid]')?.textContent,
+        balance:cashBalances().a_cash,
+        liveMoneyButton:!!document.querySelector('.zavi-dash-cash-card [data-go=money]')
+      };
+      db.tx.length=origLength;account.opening=initial;go('dashboard');
+      return got;
+    })()""")
+    assert cash['balance']==198 and cash['liveMoneyButton'],cash
+    assert cash['current'] and '۱۹۸' in cash['current'],cash
+    assert '۲۰۰' in cash['opening'] and '۵۰' in cash['incoming'] and '۵۲' in cash['outgoing'],cash
+    print('PASS: dashboard cash = opening 200 + receipts 50 - outgoing 52 = 198 (disposable in-memory only)')
     for route,keys in [
       ('money',['accounts','transactions','more']),
       ('reports',['summary','details','output'])
