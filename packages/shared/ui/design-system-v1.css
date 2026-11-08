@@ -54,6 +54,15 @@ html[data-zavi-appearance="glass"] {
   border-color:var(--zds-danger); outline:2px solid var(--zds-danger);
   outline-offset:0;
 }
+.zds-password-row {display:flex;gap:6px;align-items:center;min-width:0;max-width:100%}
+.zds-password-row > input {flex:1 1 0;width:0!important;min-width:0!important;max-width:100%;box-sizing:border-box}
+.zds-password-toggle {
+  flex:0 0 var(--zds-touch-target);width:var(--zds-touch-target);
+  min-height:var(--zds-touch-target);border:1px solid var(--zds-border);
+  border-radius:var(--zds-radius-sm);background:var(--zds-surface-alt);
+  color:var(--zds-text);cursor:pointer;font:inherit;font-size:18px;
+}
+.zds-password-toggle:focus-visible {outline:3px solid var(--zds-focus);outline-offset:2px}
 .zds-field-error { display:block; color:var(--zds-danger); font-size:12px;
   margin-block:2px 0; line-height:1.4; }
 .zds-field-error[hidden] {display:none}
