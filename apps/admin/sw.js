@@ -5,7 +5,7 @@
  */
 'use strict';
 const APK_ORIGIN='https://appassets.androidplatform.net';
-const CACHE_NAME='zavi-admin-shell-reborn-20261108-r2';
+const CACHE_NAME='zavi-admin-shell-reborn-20261109-r3';
 const CORE=[
   "index.html",
   "zavi-admin-showcase-v1459.css",
@@ -106,6 +106,8 @@ const CORE=[
   "../../packages/shared/database/supabase-config.js",
   "../../packages/shared/security/access-contract.js",
   "../../packages/shared/i18n/language-core.js",
+  "../../packages/shared/ui/design-system-v1.css",
+  "../../packages/shared/ui/design-system-v1.js",
   "../../packages/shared/diagnostics/build-proof-v1.js",
   "icon-192.png"
 ];
