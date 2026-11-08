@@ -55,7 +55,7 @@ const forex={workspaceId:w,baseCurrency:'AFN',events:[],journal:[],
  amount:'12.34',currency:'USD',status:'pending'}]};
 a.throws(()=>process(forex,evt(30,'settle',{amount:'12.34',accountId:'a_cash'})),/EXCHANGE_RATE/);
 const fx=process(forex,evt(31,'settle',{amount:'12.34',accountId:'a_cash',exchangeRate:'72.345678'})).ledger;
-a.equal(fx.journal[0].debit.amount,'892.84'); // rounded half-up in base currency
+a.equal(fx.journal[0].debit.amount,'892.75'); // 12.34 × 72.345678 = 892.74566652, half-up
 a.equal(fx.cheques[0].status,'cleared');
 a.equal(fxMinor(1n,'0.500000'),1n,'half-up rounding');
 a.throws(()=>process(forex,evt(32,'settle',{amount:'12.35',accountId:'a_cash',exchangeRate:'72'})),/EXCEEDS/);
