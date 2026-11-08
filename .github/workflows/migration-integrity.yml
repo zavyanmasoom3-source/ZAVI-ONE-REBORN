@@ -17,6 +17,8 @@ jobs:
           node-version: '22'
       - name: Verify migration completeness
         run: python3 scripts/check-migration-integrity.py
+      - name: Verify route navigation and settings design
+        run: python3 scripts/verify-ui-navigation.py
       - name: Check JavaScript syntax
         shell: bash
         run: |
