@@ -48,4 +48,44 @@ class UpgradeSafetyTests(unittest.TestCase):
         self.assertEqual(mod.check_update(('com.zavione.one.admin',147001,OTHER),'admin','release-candidate',OTHER,old),'same-certificate-release-candidate')
         with self.assertRaises(mod.UnsafeUpdate):
             mod.check_update(('com.zavione.one.admin',147001,H),'admin','release-candidate',OTHER,old)
+    def test_inspect_separately_validates_all_three_schemes(self):
+        original=mod.run_command
+        calls=[]
+        try:
+            def pretend(argv):
+                calls.append(argv)
+                if argv[0]=='aapt':
+                    return "package: name='com.zavione.one.rebornqa' versionCode='667802' versionName='66.78'\n"
+                if '--min-sdk-version' in argv:
+                    return ('Verified using v1 scheme (JAR signing): true\n'
+                            'Signer #1 certificate SHA-256 digest: '+OTHER+'\n')
+                return ('Verified using v1 scheme (JAR signing): false\n'
+                        'Verified using v2 scheme (APK Signature Scheme v2): true\n'
+                        'Verified using v3 scheme (APK Signature Scheme v3): true\n'
+                        'Signer #1 certificate SHA-256 digest: '+OTHER+'\n')
+            mod.run_command=pretend
+            self.assertEqual(mod.inspect('dummy.apk','aapt','apksigner'),
+                             ('com.zavione.one.rebornqa',667802,OTHER))
+            self.assertTrue(any('--min-sdk-version' in c and '23' in c for c in calls))
+        finally:
+            mod.run_command=original
+
+    def test_inspect_rejects_bad_legacy_v1_even_with_v2v3(self):
+        original=mod.run_command
+        try:
+            def pretend(argv):
+                if argv[0]=='aapt':
+                    return "package: name='com.zavione.one.rebornqa' versionCode='667802' versionName='66.78'\n"
+                if '--min-sdk-version' in argv:
+                    return ('Verified using v1 scheme (JAR signing): false\n'
+                            'Signer #1 certificate SHA-256 digest: '+OTHER+'\n')
+                return ('Verified using v1 scheme (JAR signing): false\n'
+                        'Verified using v2 scheme (APK Signature Scheme v2): true\n'
+                        'Verified using v3 scheme (APK Signature Scheme v3): true\n'
+                        'Signer #1 certificate SHA-256 digest: '+OTHER+'\n')
+            mod.run_command=pretend
+            with self.assertRaisesRegex(mod.UnsafeUpdate,'v1'):
+                mod.inspect('dummy.apk','aapt','apksigner')
+        finally:
+            mod.run_command=original
 if __name__=='__main__':unittest.main()
