@@ -18,6 +18,20 @@ def releaseSigningEnv = [
 def releaseSigning = releaseSigningEnv.collectEntries { field, envName ->
     [(field): providers.environmentVariable(envName).getOrElse('')]
 }
+// A persistent QA key may be injected from GitHub Actions secrets. Do not commit
+// test signing keys: this is a public repository. Absent credentials use the
+// default ephemeral Android debug key, which CANNOT update previous QA installs.
+def qaSigningEnv = [
+    storeFile: 'ZAVI_QA_STORE_FILE',
+    storePassword: 'ZAVI_QA_STORE_PASSWORD',
+    keyAlias: 'ZAVI_QA_KEY_ALIAS',
+    keyPassword: 'ZAVI_QA_KEY_PASSWORD'
+]
+def qaSigning = qaSigningEnv.collectEntries { field, envName ->
+    [(field): providers.environmentVariable(envName).getOrElse('')]
+}
+boolean qaSigningPresent = qaSigning.values().every { it }
+
 android {
     namespace 'com.zavione.mobile'
     compileSdk 36
@@ -31,6 +45,14 @@ android {
         resValue 'string', 'app_name', admin ? 'ZAVI ONE ADMIN' : 'ZAVI ONE'
     }
     signingConfigs {
+        zaviQa {
+            if (qaSigningPresent) {
+                storeFile file(qaSigning.storeFile)
+                storePassword qaSigning.storePassword
+                keyAlias qaSigning.keyAlias
+                keyPassword qaSigning.keyPassword
+            }
+        }
         release {
             if (releaseSigning.values().every { it }) {
                 storeFile file(releaseSigning.storeFile)
@@ -46,6 +68,12 @@ android {
         debug {
             applicationIdSuffix '.rebornqa'
             resValue 'string', 'app_name', admin ? 'ZAVI ONE ADMIN REBORN QA' : 'ZAVI ONE REBORN QA'
+            if (qaSigningPresent) {
+                if (!file(qaSigning.storeFile).isFile()) {
+                    throw new GradleException('Stable QA signing keystore was configured but no file exists.')
+                }
+                signingConfig signingConfigs.zaviQa
+            }
         }
         release {
             minifyEnabled true

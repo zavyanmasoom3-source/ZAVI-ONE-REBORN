@@ -104,6 +104,33 @@ jobs:
           sed -i "s#^distributionUrl=.*#distributionUrl=file://$zip#" gradle/wrapper/gradle-wrapper.properties
           chmod +x ./gradlew
           ./gradlew --version --no-daemon
+      - name: Configure optional stable QA signing from GitHub Secrets
+        shell: bash
+        env:
+          ZAVI_QA_KEYSTORE_BASE64: ${{ secrets.ZAVI_QA_KEYSTORE_BASE64 }}
+          ZAVI_QA_STORE_PASSWORD: ${{ secrets.ZAVI_QA_STORE_PASSWORD }}
+          ZAVI_QA_KEY_ALIAS: ${{ secrets.ZAVI_QA_KEY_ALIAS }}
+          ZAVI_QA_KEY_PASSWORD: ${{ secrets.ZAVI_QA_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          if [[ -n "$ZAVI_QA_KEYSTORE_BASE64" ]]; then
+            for key in ZAVI_QA_STORE_PASSWORD ZAVI_QA_KEY_ALIAS ZAVI_QA_KEY_PASSWORD; do
+              if [[ -z "${!key}" ]]; then echo "::error::Incomplete stable QA signing secrets: $key"; exit 1; fi
+            done
+            target="$RUNNER_TEMP/zavi-reborn-qa.keystore"
+            printf '%s' "$ZAVI_QA_KEYSTORE_BASE64" | base64 --decode > "$target"
+            chmod 600 "$target"
+            keytool -list -keystore "$target" -storepass "$ZAVI_QA_STORE_PASSWORD" -alias "$ZAVI_QA_KEY_ALIAS" >/dev/null
+            echo "ZAVI_QA_STORE_FILE=$target" >> "$GITHUB_ENV"
+            echo "ZAVI_QA_STORE_PASSWORD=$ZAVI_QA_STORE_PASSWORD" >> "$GITHUB_ENV"
+            echo "ZAVI_QA_KEY_ALIAS=$ZAVI_QA_KEY_ALIAS" >> "$GITHUB_ENV"
+            echo "ZAVI_QA_KEY_PASSWORD=$ZAVI_QA_KEY_PASSWORD" >> "$GITHUB_ENV"
+            echo "ZAVI_QA_SIGNING_MODE=stable" >> "$GITHUB_ENV"
+            echo "Stable QA certificate configured; no private key is placed in Git."
+          else
+            echo "ZAVI_QA_SIGNING_MODE=ephemeral" >> "$GITHUB_ENV"
+            echo "::warning::Ephemeral debug signing: this QA APK cannot upgrade prior independently built QA APKs."
+          fi
       - name: Stage app and shared assets
         shell: bash
         run: |
@@ -134,8 +161,8 @@ jobs:
             version="1.4.69-reborn.qa.$GITHUB_RUN_NUMBER"
             package="com.zavione.one.admin.rebornqa"
           fi
-          printf '{"commit":"%s","app":"%s","run":"%s","version":"%s","package":"%s","kind":"debug-qa"}\n' \
-            "$GITHUB_SHA" "${{ matrix.app }}" "$GITHUB_RUN_NUMBER" "$version" "$package" \
+          printf '{"commit":"%s","app":"%s","run":"%s","version":"%s","package":"%s","kind":"debug-qa","signing":"%s"}\n' \
+            "$GITHUB_SHA" "${{ matrix.app }}" "$GITHUB_RUN_NUMBER" "$version" "$package" "$ZAVI_QA_SIGNING_MODE" \
             > android-build/app/src/main/assets/zavi-build-info.json
           test -s android-build/app/src/main/assets/zavi-build-info.json
           mkdir -p android-build/app/src/main/res/drawable-nodpi android-build/app/src/main/res/values android-build/app/src/main/res/xml
@@ -163,6 +190,7 @@ jobs:
             unzip -l "$apk" | grep -F 'assets/zavi-admin-pdf-final-v1467.css'
           fi
           AAPT="$ANDROID_SDK_ROOT/build-tools/36.0.0/aapt"
+          "$ANDROID_SDK_ROOT/build-tools/36.0.0/apksigner" verify --print-certs "$apk"
           badging=$("$AAPT" dump badging "$apk")
           printf '%s\\n' "$badging"
           # Android 8.0 (API 26) through Android 16 (API 36) build contract.
