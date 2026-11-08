@@ -86,7 +86,11 @@ with Session() as browser:
         browser.navigate(app)
         # Login/pin screens remain real, but tests touch only a throwaway
         # presentation fixture and no actual customer/financial record.
-        result=browser.eval(EXAMINE)
+        # Preserve actionable browser exception messages in CI (not just "Uncaught").
+        wrapped='(function(){try{return '+EXAMINE+';}catch(e){return {qaError:String(e),qaStack:String(e.stack)}}})()'
+        result=browser.eval(wrapped)
+        if 'qaError' in result:
+            raise AssertionError(app+' shared design browser check: '+result['qaError']+' '+result.get('qaStack',''))
         ROWS.append({'app':app,'contrasts':result['checks'],'dates':result['dates']})
         print('PASS:',app,'3 themes x 3 languages x 5 computed contrast pairs, Afghan dual dates and inline errors')
 
