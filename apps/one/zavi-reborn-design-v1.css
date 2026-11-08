@@ -70,3 +70,9 @@ html[data-zavi-appearance="glass"] #content textarea{
 @media(prefers-reduced-motion:reduce){
  #content *, .sidebar *{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}
 }
+
+/* REBORN: legacy online-AI star is superseded by the single local command icon.
+   Keep code for dependency analysis, but never show two conflicting launchers. */
+#z637AiButton,#z637AiSide,#z637AiBackdrop,#z637AiPanel{
+ display:none!important;visibility:hidden!important;pointer-events:none!important;
+}
