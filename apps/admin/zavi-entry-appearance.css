@@ -1,0 +1,23 @@
+/* Shared source-owned entry layout and glass appearance. No auth or ledger changes. */
+html.zawi-locked,html.zawi-locked body{height:100%!important;overflow:hidden!important}
+html.zawi-locked .app,html.zawi-locked .mobile-bottom,html.zawi-locked #overlay{display:none!important}
+html.zawi-locked #zawiPrivateGate{position:fixed!important;inset:0!important;width:100%!important;height:100dvh!important;max-height:100dvh!important;overflow:auto!important;display:flex!important;align-items:safe center!important;padding:16px!important;box-sizing:border-box!important;transform:none!important}
+#zawiPrivateGate .zawi-auth-card,#authScreen .auth-card{width:min(100%,360px)!important;max-width:360px!important;padding:22px!important;border-radius:20px!important;box-sizing:border-box!important}
+#zawiPrivateGate .zawi-auth-card{max-height:none!important;overflow:visible!important;margin:auto!important}
+#zawiPrivateGate .zawi-lock-emblem{width:52px!important;height:52px!important;margin-bottom:8px!important}
+#zawiPrivateGate h2{font-size:20px!important;margin:8px 0!important}
+#zawiPrivateGate .zawi-lock-description{font-size:12px!important;line-height:1.7!important;margin-bottom:12px!important}
+#zawiPrivateGate input,#authScreen input{min-height:44px!important;font-size:16px!important;box-sizing:border-box!important}
+#authScreen{min-height:100dvh!important;height:auto!important;padding:20px!important;box-sizing:border-box!important;align-items:safe center!important}
+html[data-zavi-theme="light"] :is(#zawiPrivateGate .zawi-auth-card,#authScreen .auth-card){background:#fff!important;color:#17324d!important;border-color:#bacde0!important}
+html[data-zavi-theme="light"] :is(#zawiPrivateGate,#authScreen) :is(h2,label,p,small,.field-hint){color:#334f69!important;text-shadow:none!important}
+html[data-zavi-theme="dark"] :is(#zawiPrivateGate .zawi-auth-card,#authScreen .auth-card){background:#10253f!important;color:#f5f9ff!important;border-color:#476787!important}
+html[data-zavi-theme="dark"] :is(#zawiPrivateGate,#authScreen) :is(h2,label,p,small,.field-hint){color:#d9e8f5!important;text-shadow:none!important}
+html[data-zavi-appearance="glass"] body{background:radial-gradient(ellipse at 15% 5%,#25486c,transparent 55%),radial-gradient(ellipse at 90% 80%,#145052,transparent 60%),#07182b!important}
+html[data-zavi-appearance="glass"] :is(.card,.panel,.stat,.auth-card,.zawi-auth-card,.modal,.metric){background:rgba(12,32,53,.82)!important;border:1px solid rgba(190,224,248,.3)!important;box-shadow:0 12px 30px #020b1a38!important;color:#eef6ff!important}
+@supports (backdrop-filter:blur(1px)){
+ html[data-zavi-appearance="glass"] :is(.card,.panel,.stat,.auth-card,.zawi-auth-card,.modal,.metric){background:rgba(12,32,53,.72)!important;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+}
+@media(prefers-reduced-motion:reduce){#zawiPrivateGate *,#authScreen *{animation:none!important;transition:none!important}html[data-zavi-appearance="glass"] :is(.card,.panel,.modal){backdrop-filter:none!important;-webkit-backdrop-filter:none!important}}
+
+html[data-zavi-appearance="glass"] :is(#zawiPrivateGate .zawi-auth-card,#authScreen .auth-card){background:rgba(12,32,53,.76)!important;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}

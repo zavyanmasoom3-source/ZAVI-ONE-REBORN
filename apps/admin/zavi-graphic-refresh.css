@@ -1,0 +1,14 @@
+/* ZAVI design refresh — visual layer only; existing functions preserved. */
+:root{--navy:#102f60;--navy2:#081e41;--cyan:#25b6d4;--bg:#f3f7fd;--ink:#152e51;--muted:#687e9b;--line:#e0eaf5;--shadow:0 12px 34px rgba(21,53,100,.09)}
+body{background:radial-gradient(circle at 90% 0%,#e3f5ff 0,transparent 32%),linear-gradient(135deg,#f2f6fd,#f9fbff);-webkit-font-smoothing:antialiased}
+.sidebar{background:linear-gradient(170deg,#071936,#103b72 63%,#06162e);box-shadow:-8px 0 35px rgba(7,29,69,.17)}
+.brand,.auth-logo{letter-spacing:.1px}.brand img,.auth-logo img{object-fit:contain;filter:drop-shadow(0 5px 12px rgba(43,181,217,.24))}
+.nav-item{transition:background .18s ease,transform .18s ease,border-color .18s ease;border-radius:13px}.nav-item:hover{transform:translateX(-2px);background:rgba(99,193,241,.14)}
+.workspace{min-width:0}.topbar{backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);background:rgba(255,255,255,.88);border-bottom:1px solid #e0eaf5}
+.auth-card,.modal-card{border-radius:24px}.auth-promo{background:radial-gradient(circle at 70% 30%,#1a65a5,#0a254e 70%)}
+button,.button{transition:transform .15s ease,box-shadow .15s ease,background .15s ease}button:not(:disabled):active,.button:not(:disabled):active{transform:scale(.985)}
+input,select,textarea{transition:border-color .2s,box-shadow .2s;background:#fff}input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid #28b9d3;outline-offset:1px}
+.card,.panel,.stat-card,.modal-card{box-shadow:0 9px 30px rgba(18,50,94,.065)}
+#z268policy{background:linear-gradient(130deg,#f5fbff,#eaf5ff)!important;border:1px solid #cbdff3!important;box-shadow:0 10px 28px rgba(18,68,116,.07);border-radius:20px!important}
+@media(max-width:760px){.auth-card{border-radius:0}.topbar{backdrop-filter:none}.sidebar{box-shadow:none}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
