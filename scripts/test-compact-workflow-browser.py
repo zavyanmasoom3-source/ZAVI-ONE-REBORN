@@ -99,6 +99,34 @@ with Session() as browser:
       'submit','submitOutsidePanels','details','products','payment','shifted','connected']),purchase
     (out/'purchase-form.png').write_bytes(browser.screenshot())
     print('PASS: purchase form has three live stages; all original named fields, product row and submit remain connected')
+    # Synthetic in-memory-only product: this disposable browser has no customer
+    # workspace or cloud authorization. Nothing is saved or synchronized.
+    browser.eval("""(()=>{
+       document.getElementById('cancelModal')?.click();
+       db.products.push({id:'qa-only-disposable',name:'QA_NOT_A_REAL_PRODUCT',
+         sku:'QA-NONRELEASE',category:'QA',salePrice:5,purchasePrice:3,
+         openingQty:3,reorder:1});
+       openOrder('sale');
+       return true;
+    })()""")
+    browser.until("!!document.querySelector('[data-zavi-flow=\"order\"]')",
+                  'real sale three-step modal')
+    sale=browser.eval("""(()=>{
+       const f=document.getElementById('dialogForm');
+       const flow=f.querySelector('[data-zavi-flow="order"]');
+       const panes=[...flow.querySelectorAll('[role="tabpanel"]')];
+       return {keys:[...flow.querySelectorAll('[role="tab"]')].map(x=>x.dataset.zaviFlowLabel),
+          product:!!panes[0].querySelector('#orderItems'),
+          customer:!!panes[1].querySelector('[name="freeContactName"]'),
+          payment:!!panes[2].querySelector('[name="paid"]') &&
+             !!panes[2].querySelector('[name="accountId"]'),
+          savePresent:!!f.querySelector('.modal-foot button[type=submit]'),
+          rows:f.querySelectorAll('.order-line').length};
+    })()""")
+    assert sale['keys']==['products','customer','payment'] and sale['rows']>=1,sale
+    assert all(sale[k] for k in ['product','customer','payment','savePresent']),sale
+    (out/'sale-form-no-transactions.png').write_bytes(browser.screenshot())
+    print('PASS: three-tab sales form keeps actual item, customer, payment and submit controls')
 
 (out/'result.json').write_text(json.dumps({
   'scope':'real browser UI and existing live nodes only; no transaction submitted',
