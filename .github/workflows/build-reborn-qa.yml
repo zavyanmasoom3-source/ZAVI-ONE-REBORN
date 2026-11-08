@@ -180,6 +180,21 @@ jobs:
         run: ./gradlew :app:clean -PzaviApp=${{ matrix.app }} -PzaviBuildNumber=${{ github.run_number }} --no-build-cache
       - name: Assemble QA APK
         run: ./gradlew :app:assembleDebug -PzaviApp=${{ matrix.app }} -PzaviBuildNumber=${{ github.run_number }} --stacktrace
+      - name: Check optimized Release compilation (unsigned, never distributed)
+        shell: bash
+        run: |
+          set -euo pipefail
+          # Exercise R8, resource shrinking and the actual release build type.
+          # This test artifact is deliberately UNSIGNED and must not be uploaded.
+          ./gradlew :app:assembleRelease \
+            -PzaviApp=${{ matrix.app }} \
+            -PzaviBuildNumber=${{ github.run_number }} \
+            -PzaviUnsignedReleaseQa=true --no-build-cache --stacktrace
+          unsigned=$(find android-build/app/build/outputs/apk/release -maxdepth 1 \
+            -type f -name '*unsigned.apk' -print -quit)
+          test -n "$unsigned"
+          unzip -t "$unsigned" >/dev/null
+          echo "PASS: R8-optimized unsigned release compilation (not installable, not published)"
       - name: Verify unique identity, commit provenance and PDF assets
         shell: bash
         run: |
