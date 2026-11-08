@@ -1,0 +1,82 @@
+/* V15 ADMIN PRO SERVICE CENTER: independent styles; no changes to existing pages */
+body.zsvc-open{overflow:hidden!important}
+#zaviServiceCenter{position:fixed;inset:0;z-index:2500;overflow:auto;background:#ecf5fc;color:#0d2844;font-family:Tahoma,"Noto Naskh Arabic",Arial,sans-serif;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+#zaviServiceCenter *{box-sizing:border-box}
+#zaviServiceCenter button,#zaviServiceCenter input,#zaviServiceCenter select{font-family:inherit;font-size:14px}
+#zaviServiceCenter button{cursor:pointer}
+#zaviServiceCenter button:focus-visible,#zaviServiceCenter input:focus-visible,#zaviServiceCenter select:focus-visible{outline:3px solid #16b6cc;outline-offset:2px}
+#zaviServiceCenter .zsvc-page{max-width:1310px;margin:0 auto;padding:22px 18px 64px}
+#zaviServiceCenter .zsvc-top{border-radius:22px;background:linear-gradient(115deg,#082c58,#06497d 62%,#007d90);padding:24px 28px;display:flex;justify-content:space-between;align-items:start;gap:20px;color:white;box-shadow:0 12px 35px #123b6d23}
+#zaviServiceCenter .zsvc-top h1{font-size:clamp(23px,3.3vw,34px);line-height:1.45;margin:4px 0}
+#zaviServiceCenter .zsvc-top p{font-size:14px;opacity:.92;margin:3px 0}
+#zaviServiceCenter .zsvc-overline{font-size:12px;letter-spacing:1px;color:#7fe1e6}
+#zaviServiceCenter .zsvc-close{border:1px solid #ffffff73;background:#ffffff26;border-radius:12px;color:white;min-height:44px;padding:9px 15px;white-space:nowrap}
+#zaviServiceCenter .zsvc-internet{margin:16px 0 18px;border:1px solid #c9dce9;border-right:5px solid #17a6c0;background:#f8fcff;border-radius:13px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;line-height:1.7;font-size:13px}
+#zaviServiceCenter .zsvc-internet span:last-child{color:#18617b;font-weight:bold}
+#zaviServiceCenter .zsvc-kpis{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
+#zaviServiceCenter .zsvc-kpis article{min-height:103px;padding:16px 14px;background:#fff;border:1px solid #dfe9f1;box-shadow:0 5px 18px #26466508;border-radius:16px}
+#zaviServiceCenter .zsvc-kpis small{display:block;font-size:12px;color:#52728c}
+#zaviServiceCenter .zsvc-kpis strong{display:block;color:#073e6e;font-size:29px;margin-top:6px;font-weight:900}
+#zaviServiceCenter .zsvc-shortcuts,#zaviServiceCenter .zsvc-follow,#zaviServiceCenter .zsvc-help{background:white;padding:20px;border:1px solid #dce9f2;border-radius:20px;margin-top:18px;box-shadow:0 5px 24px #07366d09}
+#zaviServiceCenter h2{font-size:20px;margin:0 0 14px;color:#0b3558}
+#zaviServiceCenter .zsvc-servicegrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px}
+#zaviServiceCenter .zsvc-shortcut{min-height:114px;border:1px solid #dbeaf2;background:#f7fbfe;border-radius:15px;padding:13px 9px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;transition:background .15s,border-color .15s}
+#zaviServiceCenter .zsvc-shortcut:hover{background:#eafaff;border-color:#89d5eb}
+#zaviServiceCenter .zsvc-shortcut span{font-size:24px}
+#zaviServiceCenter .zsvc-shortcut b{font-size:13px;color:#0a3b63}
+#zaviServiceCenter .zsvc-shortcut small{font-size:11px;color:#587489}
+#zaviServiceCenter .zsvc-line{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;align-items:start}
+#zaviServiceCenter .zsvc-line p{font-size:12px;color:#637d90;margin:0 0 12px}
+#zaviServiceCenter .zsvc-tools{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+#zaviServiceCenter .zsvc-tools button{min-height:42px;border-radius:10px;color:#0e547c;padding:10px 12px;border:1px solid #c5e0ed;background:#eaf6fd;font-weight:700}
+#zaviServiceCenter .zsvc-tools button:hover{background:#cdeefb}
+#zaviServiceCenter .zsvc-controls{display:grid;grid-template-columns:minmax(190px,1fr) minmax(160px,240px);gap:12px;margin-bottom:12px}
+#zaviServiceCenter .zsvc-controls label{font-size:13px;color:#43637d;font-weight:700}
+#zaviServiceCenter .zsvc-controls input,#zaviServiceCenter .zsvc-controls select{margin-top:7px;width:100%;border:1px solid #c9dbe9;padding:12px 14px;min-height:45px;border-radius:11px;background:white;color:#183b58}
+#zaviServiceCenter .zsvc-filters{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0 16px}
+#zaviServiceCenter .zsvc-filters button{border:1px solid #cedee9;background:#f8fbff;padding:9px 13px;border-radius:11px;color:#355e7a;min-height:39px}
+#zaviServiceCenter .zsvc-filters button.on{background:#066c9e;border-color:#066c9e;color:white;font-weight:bold}
+#zaviServiceCenter .zsvc-results-head{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin:9px 0;font-size:13px;color:#59728a}
+#zaviServiceCenter .zsvc-results-head b{color:#0c4776}
+#zaviServiceCenter .zsvc-table-scroll{overflow:auto;border:1px solid #e0eaf3;border-radius:14px}
+#zaviServiceCenter .zsvc-table{width:100%;min-width:710px;border-collapse:collapse;text-align:right}
+#zaviServiceCenter .zsvc-table th{background:#eff7fc;font-size:13px;color:#1e4b6c}
+#zaviServiceCenter .zsvc-table td,#zaviServiceCenter .zsvc-table th{border-bottom:1px solid #e8eff5;padding:13px 12px;vertical-align:middle}
+#zaviServiceCenter .zsvc-table td small{display:block;font-size:11px;color:#6c8192;margin-top:6px;line-height:1.65}
+#zaviServiceCenter .zsvc-table td b{display:block;font-size:14px;color:#153858}
+#zaviServiceCenter .zsvc-chip{display:inline-block;padding:6px 9px;font-size:12px;border-radius:8px;background:#e0f2fe;color:#0e608a;font-weight:bold}
+#zaviServiceCenter .zsvc-chip.due{background:#fff2d5;color:#955a00}
+#zaviServiceCenter .zsvc-chip.expired,#zaviServiceCenter .zsvc-chip.suspended{background:#fee8e8;color:#b42537}
+#zaviServiceCenter .zsvc-chip.active{background:#ddf8e9;color:#176c42}
+#zaviServiceCenter .zsvc-actions{display:flex;gap:6px;flex-wrap:wrap}
+#zaviServiceCenter .zsvc-actions button{min-height:37px;border:1px solid #badce9;color:#125a81;background:#e8f7fc;border-radius:9px;padding:8px 9px;white-space:nowrap}
+#zaviServiceCenter .zsvc-actions button:first-child{background:#096895;color:white;border-color:#096895}
+#zaviServiceCenter .zsvc-actions button:disabled{opacity:.45;cursor:default}
+#zaviServiceCenter .zsvc-empty{text-align:center;color:#5a7388;padding:28px}
+#zaviServiceCenter .zsvc-foot{font-size:12px;line-height:1.9;color:#516e84;margin:17px 2px 2px}
+#zaviServiceCenter .zsvc-help summary{cursor:pointer;font-size:15px;font-weight:700;color:#1d4b6d}
+#zaviServiceCenter .zsvc-help p{font-size:13px;line-height:2;color:#43637a}
+#zaviServiceOpen,#zaviServiceQuick{transition:opacity .12s}
+@media(max-width:900px){#zaviServiceCenter .zsvc-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}#zaviServiceCenter .zsvc-servicegrid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:580px){#zaviServiceCenter .zsvc-page{padding:10px 10px 36px}#zaviServiceCenter .zsvc-top{padding:18px 15px;border-radius:16px;gap:10px}#zaviServiceCenter .zsvc-top h1{font-size:22px}#zaviServiceCenter .zsvc-top p{font-size:12px}#zaviServiceCenter .zsvc-close{font-size:12px;padding:7px 10px}#zaviServiceCenter .zsvc-kpis{gap:7px}#zaviServiceCenter .zsvc-kpis article{min-height:85px;padding:12px 9px}#zaviServiceCenter .zsvc-kpis strong{font-size:23px}#zaviServiceCenter .zsvc-shortcuts,#zaviServiceCenter .zsvc-follow,#zaviServiceCenter .zsvc-help{padding:14px;margin-top:12px;border-radius:15px}#zaviServiceCenter .zsvc-servicegrid{grid-template-columns:repeat(2,minmax(0,1fr))}#zaviServiceCenter .zsvc-shortcut{min-height:91px}#zaviServiceCenter .zsvc-controls{grid-template-columns:1fr}#zaviServiceCenter .zsvc-line h2{font-size:18px}}
+@media print{body>*:not(#zaviServiceCenter){display:none!important}#zaviServiceCenter{position:static!important;inset:auto!important;height:auto!important;overflow:visible!important;background:white!important}#zaviServiceCenter .zsvc-page{padding:0!important}#zaviServiceCenter .zsvc-top{background:#eff7fb!important;color:#103354!important;box-shadow:none!important}#zaviServiceCenter .zsvc-shortcuts,#zaviServiceCenter .zsvc-tools,#zaviServiceCenter .zsvc-controls,#zaviServiceCenter .zsvc-filters,#zaviServiceCenter .zsvc-actions,#zaviServiceCenter .zsvc-help,#zaviServiceCenter .zsvc-close{display:none!important}#zaviServiceCenter .zsvc-table{min-width:0;font-size:11px}#zaviServiceCenter .zsvc-table-scroll{overflow:visible!important}}
+
+#zaviAdminNetworkNotice:not([hidden]){position:fixed;bottom:max(12px,env(safe-area-inset-bottom));right:12px;left:12px;z-index:1200;max-width:650px;margin:auto;background:#153450;color:white;padding:12px 16px;border-radius:14px;font:13px/1.8 Tahoma,Arial,sans-serif;text-align:center;box-shadow:0 8px 28px #061b2f44;pointer-events:none}
+#zaviAdminNetworkNotice[hidden]{display:none!important}
+@media print{#zaviAdminNetworkNotice{display:none!important}}
+
+/* V15: renewal planning & follow-up timeline */
+#zaviServiceCenter .zsvc-extra-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;margin-top:18px}
+#zaviServiceCenter .zsvc-extra-card{background:white;border:1px solid #dce9f2;border-radius:20px;padding:20px;box-shadow:0 5px 24px #07366d09;min-width:0}
+#zaviServiceCenter .zsvc-extra-card h2{font-size:18px;margin:0 0 10px}
+#zaviServiceCenter .zsvc-muted{color:#61788d;font-size:12px;line-height:1.9;margin:0}
+#zaviServiceCenter .zsvc-timeline{display:grid;gap:8px;margin-top:13px}
+#zaviServiceCenter .zsvc-timeline>div{display:flex;gap:8px;align-items:center;justify-content:space-between;background:#f5fafe;border:1px solid #e0ebf2;border-radius:11px;padding:8px 10px;flex-wrap:wrap}
+#zaviServiceCenter .zsvc-timeline b{font-size:13px;color:#163e63;flex:1}
+#zaviServiceCenter .zsvc-timeline small{color:#63768b;font-size:11px}
+#zaviServiceCenter .zsvc-time-count{font-size:12px;font-weight:700;background:#fff0cf;border-radius:10px;padding:5px 9px;color:#875500}
+#zaviServiceCenter .zsvc-label{display:block;color:#42627a;font-weight:700;font-size:12px;margin-top:12px}
+#zaviServiceCenter .zsvc-label select{display:block;width:100%;min-width:0;background:white;color:#1b4765;border:1px solid #ccdfeb;border-radius:11px;padding:10px 12px;margin-top:6px;min-height:42px}
+#zaviServiceCenter .zsvc-forecast{margin-top:14px;border:1px dashed #98cbdc;border-radius:12px;padding:14px;background:#f2fbff;color:#215773;line-height:2;font-size:13px}
+@media(max-width:740px){#zaviServiceCenter .zsvc-extra-grid{grid-template-columns:1fr;gap:12px}#zaviServiceCenter .zsvc-extra-card{border-radius:15px;padding:14px}}
+@media print{#zaviServiceCenter .zsvc-extra-grid{display:none!important}}

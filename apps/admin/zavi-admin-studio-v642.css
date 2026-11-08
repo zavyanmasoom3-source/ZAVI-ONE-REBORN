@@ -1,0 +1,19 @@
+/* ZAVI ONE ADMIN V64.2 — progressive UI treatment without changing billing permissions or data. */
+:root{--z642-admin-ease:cubic-bezier(.16,1,.3,1)}
+.app-shell .workspace{isolation:isolate}
+.app-shell .workspace .topbar{backdrop-filter:blur(14px) saturate(1.1);-webkit-backdrop-filter:blur(14px)}
+.app-shell .brand{position:relative}
+.app-shell .brand img{filter:drop-shadow(0 5px 15px #1fa8e146)}
+.app-shell .sidebar .nav-item{border-radius:13px;transition:background .22s var(--z642-admin-ease),box-shadow .22s,color .22s}
+.app-shell .sidebar .nav-item:hover{box-shadow:inset 3px 0 0 #39c1de}
+.app-shell .sidebar .nav-item.selected{box-shadow:inset 3px 0 0 #38d8e6,0 6px 19px #09335b16}
+.app-shell #view>*{animation:z642-admin-in .42s var(--z642-admin-ease) both}
+.app-shell #view>*:nth-child(2){animation-delay:.04s}.app-shell #view>*:nth-child(3){animation-delay:.08s}
+.app-shell :is(.button,.icon-btn,.close-modal){transition:transform .2s var(--z642-admin-ease),box-shadow .2s,color .2s,background .2s}
+.app-shell :is(.button,.icon-btn,.close-modal):not(:disabled):active{transform:scale(.98)}
+.app-shell :is(input,textarea,select):focus-visible{outline:3px solid #20b9e0!important;outline-offset:2px!important}
+html[data-zavi-theme=dark] .app-shell :is(.card,.table-card,.panel,.stat-card) :is(.muted,small,p,label){color:#c0d7eb!important}
+html[data-zavi-theme=light] .app-shell :is(.card,.table-card,.panel,.stat-card) :is(.muted,small,p,label){color:#445e76!important}
+@keyframes z642-admin-in{from{opacity:.15;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){.app-shell #view>*,.app-shell :is(.button,.icon-btn,.close-modal),.app-shell .sidebar .nav-item{animation:none!important;transition:none!important}}
+@media print{.app-shell #view>*{animation:none!important}.app-shell .workspace .topbar{backdrop-filter:none}}

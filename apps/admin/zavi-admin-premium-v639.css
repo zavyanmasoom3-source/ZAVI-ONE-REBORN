@@ -1,0 +1,24 @@
+/* ADMIN V63.9 — deliberate presentation-only improvements. */
+:root{--z639-admin-ease:cubic-bezier(.2,.85,.2,1)}
+body,.app-shell,button,input,select,textarea,table{font-family:'Estedad','Vazirmatn','Noto Sans Arabic','Segoe UI',Tahoma,sans-serif!important;font-kerning:normal}
+.app-shell .sidebar{background:linear-gradient(165deg,#081c3a,#103a65 58%,#0b2142)!important;box-shadow:-8px 0 35px #02142c31!important}
+.app-shell .sidebar .nav-item{border-radius:13px;transition:background .24s var(--z639-admin-ease),color .24s,transform .24s!important}
+.app-shell .sidebar .nav-item.selected{background:linear-gradient(115deg,#166da8a9,#0a9a9b55)!important;color:#fff!important;box-shadow:inset -3px 0 #63f5e3}
+.app-shell :is(.card,.panel,.stat-card,.table-card){border-radius:19px;transition:box-shadow .28s var(--z639-admin-ease),transform .28s var(--z639-admin-ease),border-color .28s!important}
+.app-shell :is(.card,.panel,.stat-card):hover{box-shadow:0 16px 40px #12345922;transform:translateY(-2px)}
+.app-shell .topbar{backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.app-shell :is(h1,h2,h3){letter-spacing:0!important;line-height:1.55}
+.app-shell :is(button,input,textarea,select,a):focus-visible{outline:3px solid #12bdd0!important;outline-offset:3px!important}
+/* Text must remain readable in both themes, including table cells and modal labels. */
+html[data-zavi-theme=dark] .app-shell :is(.card,.panel,.table-card,.modal-card) :is(label,td,th,p,small){color:#e1eefb!important}
+html[data-zavi-theme=light] .app-shell :is(.card,.panel,.table-card,.modal-card) :is(label,td,th,p,small){color:#29425d!important}
+html[data-zavi-theme=dark] .app-shell :is(input,textarea,select){background:#193953!important;color:#f5faff!important;border-color:#7192b5!important;-webkit-text-fill-color:#f5faff!important}
+html[data-zavi-theme=light] .app-shell :is(input,textarea,select){background:#fff!important;color:#142f4c!important;border-color:#aac0d4!important;-webkit-text-fill-color:#142f4c!important}
+.app-shell :is(input,textarea)::placeholder{opacity:1;color:#7691a8}
+html[data-zavi-theme=dark] .app-shell :is(input,textarea)::placeholder{color:#c0d3e2}
+.app-shell .modal-card{animation:z639-admin-enter .35s var(--z639-admin-ease) both}
+#authScreen .auth-card{animation:z639-admin-enter .55s var(--z639-admin-ease) both}
+@keyframes z639-admin-enter{from{opacity:.45;transform:translateY(14px) scale(.99)}to{opacity:1;transform:none}}
+@media(max-width:760px){.app-shell .topbar{backdrop-filter:none}.app-shell :is(.card,.panel,.stat-card):hover{transform:none}}
+@media(prefers-reduced-motion:reduce){.app-shell *,#authScreen .auth-card{animation:none!important;transition:none!important}}
+@media print{.app-shell :is(.card,.panel,.stat-card){box-shadow:none!important;transform:none!important}}

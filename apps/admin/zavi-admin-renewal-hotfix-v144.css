@@ -1,0 +1,10 @@
+/* Renewal QA 1.4.4: keeps the original ADMIN look, improves accessibility only */
+.zavi-renew-feedback{margin:12px 0;padding:12px;border:1px solid #178a7b88;background:#0f865d18;border-radius:12px;line-height:1.9;font-size:14px;overflow-wrap:anywhere;color:inherit}
+.zavi-renew-feedback[hidden]{display:none!important}
+.zavi-renew-feedback.is-error{border-color:#cf4d57;background:#ff53591c}
+#modalBg:not([hidden]){overflow-y:auto!important;overscroll-behavior:contain;padding:env(safe-area-inset-top,8px) 10px env(safe-area-inset-bottom,8px)!important}
+#modalBg:not([hidden]) .modal-card{max-height:calc(100dvh - 18px)!important;overflow-y:auto!important;box-sizing:border-box!important}
+#modalBg :is(#paymentReceipt,#paymentAmount,#paymentTerm,#paymentMethod,#paymentCurrency){min-height:44px!important}
+#modalBg #renewConfirm{min-height:48px!important;line-height:1.6!important;white-space:normal!important}
+@media(max-width:480px){#modalBg .modal-card{width:100%!important;max-width:100%!important;padding:15px!important}#modalBg .form-row{display:grid!important;grid-template-columns:1fr!important;gap:8px!important}}
+@media print{.zavi-renew-feedback{display:none!important}}

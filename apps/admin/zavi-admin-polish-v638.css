@@ -1,0 +1,14 @@
+/* ZAVI ONE ADMIN V63.8: typography, readable tables, motion safety. */
+:root{--z638-motion:cubic-bezier(.2,.8,.2,1)}
+html,body,button,input,select,textarea,table{font-family:'Estedad','Vazirmatn','Noto Sans Arabic','Segoe UI',Tahoma,sans-serif!important;text-rendering:optimizeLegibility}
+html[data-zavi-theme=dark] .app-shell :is(.card,.panel,.table-card,.modal-card){color:#eaf5ff!important}
+html[data-zavi-theme=light] .app-shell :is(.card,.panel,.table-card,.modal-card){color:#18314d!important}
+html[data-zavi-theme=dark] .app-shell :is(.card,.panel,.table-card,.modal-card) :is(h2,h3,strong,b){color:#ecf7ff}
+html[data-zavi-theme=light] .app-shell :is(.card,.panel,.table-card,.modal-card) :is(h2,h3,strong,b){color:#17304a}
+.app-shell :is(.card,.panel,.table-card){transition:transform .3s var(--z638-motion),box-shadow .3s var(--z638-motion),border-color .3s}
+.app-shell .nav-item{transition:background .22s var(--z638-motion),transform .22s var(--z638-motion)}
+.app-shell .nav-item:hover{transform:translateX(-2px)}
+.app-shell :is(button,input,select,textarea):focus-visible{outline:3px solid #1aaed2;outline-offset:2px}
+.app-shell .modal-card{animation:z638-admin-modal .3s var(--z638-motion) both}
+@keyframes z638-admin-modal{from{opacity:.6;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.app-shell *, .app-shell *::before, .app-shell *::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}

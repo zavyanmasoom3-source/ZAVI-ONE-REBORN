@@ -1,0 +1,273 @@
+/* ZAVI ONE ADMIN 1.4.59 — approved premium compact owner-only concept.
+ * Presentation ONLY. Real authentication, billing, roles, transactions and routes untouched.
+ */
+html[data-zavi-theme="light"]{
+ --z59-bg:#f4f7fd;--z59-panel:#ffffff;--z59-soft:#f8fbff;--z59-text:#152944;
+ --z59-muted:#536b85;--z59-line:#dbe6f4;--z59-accent:#1268ed;
+ --z59-shadow:0 8px 26px rgba(32,63,115,.07);--z59-sidebar:#13233c;
+ --z59-hero-a:#1463e4;--z59-hero-b:#04b8de;
+}
+html[data-zavi-theme="dark"]{
+ --z59-bg:#081527;--z59-panel:#101e34;--z59-soft:#14263f;--z59-text:#f3f7fe;
+ --z59-muted:#bdd0e4;--z59-line:#304866;--z59-accent:#6ac3ff;
+ --z59-shadow:0 11px 30px rgba(0,3,15,.23);--z59-sidebar:#07162c;
+ --z59-hero-a:#073279;--z59-hero-b:#095d88;
+}
+html[data-zavi-appearance="glass"]{
+ --z59-bg:#1b4787;--z59-panel:rgba(24,59,111,.58);--z59-soft:rgba(45,87,147,.48);
+ --z59-text:#fff;--z59-muted:#daebff;--z59-line:rgba(211,235,255,.27);
+ --z59-accent:#b0e6ff;--z59-shadow:0 16px 38px rgba(5,24,66,.20);
+ --z59-sidebar:rgba(13,37,73,.82);--z59-hero-a:rgba(38,102,210,.58);
+ --z59-hero-b:rgba(100,106,226,.50);
+}
+html[data-zavi-theme] body{
+ background:var(--z59-bg)!important;color:var(--z59-text)!important;
+ -webkit-font-smoothing:antialiased;
+}
+html[data-zavi-appearance="glass"] body{
+ background:radial-gradient(ellipse at 12% 10%,rgba(91,171,255,.65),transparent 45%),
+ radial-gradient(ellipse at 95% 35%,rgba(146,99,229,.52),transparent 45%),
+ radial-gradient(ellipse at 47% 95%,rgba(73,209,221,.40),transparent 48%),#204b8c!important;
+ background-attachment:fixed!important;
+}
+html[data-zavi-theme] #appScreen.app-shell,
+html[data-zavi-theme] #appScreen .workspace,
+html[data-zavi-theme] #view{
+ background:transparent!important;color:var(--z59-text)!important;min-width:0;
+}
+html[data-zavi-theme] #appScreen .sidebar{
+ background:var(--z59-sidebar)!important;border-inline-start:1px solid var(--z59-line)!important;
+ box-shadow:none!important;
+}
+html[data-zavi-theme] #appScreen .sidebar .brand{
+ margin-bottom:11px!important;padding-bottom:11px!important;
+ border-bottom:1px solid rgba(217,241,255,.12);
+}
+html[data-zavi-theme] #appScreen .sidebar .brand img{
+ width:54px!important;height:54px!important;border-radius:13px!important;box-shadow:none!important;
+}
+html[data-zavi-theme] #appScreen .sidebar .nav-item{
+ min-height:40px!important;border-radius:11px!important;box-shadow:none!important;margin-block:2px!important;
+}
+html[data-zavi-theme] #appScreen .sidebar .nav-item.selected{
+ background:rgba(61,151,255,.24)!important;border-color:rgba(149,218,255,.21)!important;
+ box-shadow:none!important;color:#fff!important;
+}
+html[data-zavi-theme] #appScreen .topbar{
+ background:var(--z59-panel)!important;border-color:var(--z59-line)!important;
+ box-shadow:none!important;color:var(--z59-text)!important;
+}
+html[data-zavi-theme] #view .admin-hero{
+ overflow:hidden;position:relative;
+ min-height:158px!important;padding:20px 24px!important;
+ border-radius:19px!important;
+ border:1px solid rgba(189,229,255,.29)!important;
+ background:linear-gradient(120deg,var(--z59-hero-a),var(--z59-hero-b))!important;
+ box-shadow:0 12px 30px rgba(18,74,158,.18)!important;
+ color:#fff!important;
+}
+html[data-zavi-theme] #view .admin-hero::before{
+ content:"";position:absolute;pointer-events:none;
+ width:260px;height:260px;border-radius:50%;
+ left:-95px;top:-140px;border:1px solid rgba(255,255,255,.20);
+ box-shadow:0 0 0 24px rgba(255,255,255,.035),0 0 0 60px rgba(255,255,255,.025);
+}
+html[data-zavi-theme] #view .admin-hero :is(h1,h2,h3,.admin-hero-kicker,p){
+ color:#fff!important;text-shadow:none!important;position:relative;z-index:1;
+}
+html[data-zavi-theme] #view .admin-hero h1{
+ font-size:clamp(19px,3vw,26px)!important;margin-block:0 4px!important;line-height:1.3!important;
+}
+html[data-zavi-theme] #view .admin-hero h2{
+ font-size:clamp(17px,2vw,22px)!important;margin-block:3px!important;
+}
+html[data-zavi-theme] #view .admin-hero p{
+ margin:7px 0!important;line-height:1.55!important;max-width:52ch;font-weight:500!important;
+}
+html[data-zavi-theme] #view .admin-hero button.button.primary{
+ background:#fff!important;color:#1255c6!important;
+ border:1px solid rgba(255,255,255,.76)!important;border-radius:10px!important;
+ box-shadow:none!important;min-height:39px!important;
+}
+html[data-zavi-theme] #view .admin-hero-art{
+ position:relative;z-index:1;
+}
+html[data-zavi-theme] #view .admin-hero-art img{
+ width:105px!important;height:105px!important;object-fit:contain!important;
+ border-radius:18px!important;box-shadow:none!important;
+}
+html[data-zavi-theme] #view .admin-kpis{
+ display:grid!important;grid-template-columns:repeat(auto-fit,minmax(148px,1fr))!important;
+ gap:10px!important;margin-block:14px!important;
+}
+html[data-zavi-theme] #view .admin-kpi{
+ min-width:0;min-height:122px!important;padding:15px!important;
+ border-radius:16px!important;border:1px solid var(--z59-line)!important;
+ background:var(--z59-panel)!important;color:var(--z59-text)!important;
+ box-shadow:var(--z59-shadow)!important;
+}
+html[data-zavi-theme] #view .admin-kpi :is(strong,b,.kpi-label){
+ color:var(--z59-text)!important;font-weight:800!important;
+}
+html[data-zavi-theme] #view .admin-kpi :is(small,.kpi-foot){
+ color:var(--z59-muted)!important;
+}
+html[data-zavi-theme] #view .admin-kpi .kpi-ico{
+ display:grid;place-items:center;
+ width:38px;height:38px;border-radius:12px!important;
+ box-shadow:none!important;
+}
+html[data-zavi-theme] #view .admin-analytics{
+ gap:12px!important;
+}
+html[data-zavi-theme] #view :is(.panel,.card,.metric,.admin-card,.report-card,.status-card,.table-card,.service-card,.admin-analytics-main,.admin-kpi,.fin-metric,.mini-box){
+ background:var(--z59-panel)!important;color:var(--z59-text)!important;
+ border:1px solid var(--z59-line)!important;border-radius:16px!important;
+ box-shadow:var(--z59-shadow)!important;min-width:0;
+}
+html[data-zavi-theme] #view :is(.panel,.card,.admin-card,.report-card,.admin-analytics-main) :is(h1,h2,h3,h4,strong,b){
+ color:var(--z59-text)!important;
+}
+html[data-zavi-theme] #view :is(.hint,.muted,.kpi-foot,.admin-muted,.subtitle,.small-muted){
+ color:var(--z59-muted)!important;
+}
+html[data-zavi-theme] :is(#view,#authScreen,#modalBg) :is(input,textarea,select){
+ background:var(--z59-soft)!important;color:var(--z59-text)!important;
+ border:1px solid var(--z59-line)!important;border-radius:11px!important;
+ max-width:100%;min-width:0;box-shadow:none!important;
+}
+html[data-zavi-theme] :is(#view,#authScreen,#modalBg) :is(input,textarea)::placeholder{
+ color:var(--z59-muted)!important;opacity:1!important;
+}
+html[data-zavi-theme] :is(#view,#authScreen,#modalBg) :is(button,.button){
+ border-radius:11px!important;box-shadow:none!important;
+}
+html[data-zavi-theme] :is(#view,#authScreen,#modalBg) :is(button,a,input,select,textarea):focus-visible{
+ outline:3px solid var(--z59-accent)!important;outline-offset:2px;
+}
+html[data-zavi-theme] #authScreen .auth-wrapper{
+ background:transparent!important;
+}
+html[data-zavi-theme] #authScreen .auth-card{
+ max-width:425px!important;
+ background:var(--z59-panel)!important;color:var(--z59-text)!important;
+ border-radius:19px!important;border:1px solid var(--z59-line)!important;
+ box-shadow:var(--z59-shadow)!important;padding:clamp(18px,3vw,25px)!important;
+}
+html[data-zavi-theme] #authScreen .auth-card :is(h1,h2){
+ font-size:clamp(19px,2.8vw,26px)!important;margin:8px 0!important;
+}
+html[data-zavi-theme] #authScreen .hint{
+ color:var(--z59-muted)!important;line-height:1.6!important;
+}
+html[data-zavi-theme] #authScreen .auth-promo{
+ background:linear-gradient(130deg,#103b85,#0566c8)!important;
+}
+html[data-zavi-theme] .admin-mobile-nav{
+ background:var(--z59-panel)!important;border-top:1px solid var(--z59-line)!important;
+ box-shadow:0 -8px 26px rgba(8,28,61,.10)!important;
+}
+html[data-zavi-theme] .admin-mobile-nav :is(button,.nav-item){
+ border-radius:11px!important;
+}
+html[data-zavi-theme] .admin-mobile-nav :is(button.selected,.nav-item.selected){
+ background:linear-gradient(124deg,#1763ef,#049de1)!important;color:#fff!important;
+}
+html[data-zavi-appearance="glass"] #view :is(.panel,.card,.metric,.admin-card,.report-card,.status-card,.table-card,.service-card,.admin-analytics-main,.admin-kpi,.fin-metric),
+html[data-zavi-appearance="glass"] :is(#appScreen .topbar,#authScreen .auth-card,.admin-mobile-nav){
+ background:var(--z59-panel)!important;
+ -webkit-backdrop-filter:blur(18px) saturate(145%);backdrop-filter:blur(18px) saturate(145%);
+}
+html[data-zavi-appearance="glass"] #view .admin-hero{
+ background:linear-gradient(125deg,rgba(33,104,215,.65),rgba(124,102,231,.56))!important;
+ -webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);
+}
+html[data-zavi-appearance="glass"] #appScreen .sidebar{
+ background:var(--z59-sidebar)!important;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
+}
+@media(max-width:760px){
+ html[data-zavi-theme] #view .admin-hero{
+  min-height:150px!important;padding:15px!important;border-radius:17px!important;
+ }
+ html[data-zavi-theme] #view .admin-kpis{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}
+ html[data-zavi-theme] #view .admin-kpi{min-height:105px!important;padding:12px!important}
+ html[data-zavi-theme] #view .admin-hero-art img{width:67px!important;height:67px!important}
+ html[data-zavi-theme] #view :is(.panel,.card,.admin-card,.report-card){border-radius:14px!important}
+}
+@media(max-width:380px){
+ html[data-zavi-theme] #view .admin-kpi{padding:10px!important}
+ html[data-zavi-theme] #view .admin-hero{padding:12px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-zavi-theme] #view :is(.panel,.card,.admin-kpi,button){transition:none!important;animation:none!important}
+}
+@media print{
+ html[data-zavi-theme] #view :is(.panel,.card,.admin-kpi,.report-card){
+  background:#fff!important;color:#111!important;box-shadow:none!important;
+ }
+}
+
+
+/* Pixel QA: Light owner-dashboard action labels must remain visible on white. */
+html[data-zavi-theme="light"] body #appScreen #view .admin-hero button.button.primary,
+html[data-zavi-theme="light"] body #appScreen #view .admin-hero button.button.primary :is(span,b,strong){
+ background:#fff!important;background-image:none!important;
+ color:#104fae!important;-webkit-text-fill-color:#104fae!important;
+ text-shadow:none!important;filter:none!important;
+}
+html[data-zavi-theme="dark"] body #appScreen #view .admin-hero button.button.primary,
+html[data-zavi-theme="dark"] body #appScreen #view .admin-hero button.button.primary :is(span,b,strong){
+ color:#1054be!important;-webkit-text-fill-color:#1054be!important;
+}
+html[data-zavi-appearance="glass"] body #appScreen #view .admin-hero button.button.primary,
+html[data-zavi-appearance="glass"] body #appScreen #view .admin-hero button.button.primary :is(span,b,strong){
+ color:#1454b2!important;-webkit-text-fill-color:#1454b2!important;
+}
+
+
+/* Keep all owner tools visible, but pack mobile header into deliberate rows. */
+@media(max-width:760px){
+ html[data-zavi-theme] body #appScreen .workspace>.topbar{
+  display:flex!important;flex-direction:column!important;
+  align-items:stretch!important;justify-content:flex-start!important;
+  width:100%!important;height:auto!important;min-height:88px!important;
+  gap:6px!important;padding:8px 12px!important;
+  border-bottom:1px solid var(--z59-line)!important;
+ }
+ html[data-zavi-theme] body #appScreen .topbar .top-right{
+  display:flex!important;align-items:center!important;justify-content:space-between!important;
+  width:100%!important;gap:8px!important;min-width:0!important;
+ }
+ html[data-zavi-theme] body #appScreen .topbar .top-right .breadcrumbs{
+  flex:1!important;min-width:0!important;white-space:normal!important;
+  line-height:1.5!important;font-weight:700!important;
+ }
+ html[data-zavi-theme] body #appScreen .topbar .top-actions{
+  display:flex!important;flex-direction:row!important;align-items:center!important;
+  justify-content:flex-start!important;flex-wrap:wrap!important;gap:6px!important;
+  width:100%!important;min-width:0!important;
+ }
+ html[data-zavi-theme] body #appScreen .topbar .top-actions :is(button,select){
+  min-height:34px!important;max-height:38px!important;
+ }
+ html[data-zavi-theme] body #appScreen .topbar .top-actions .zavi-language-switch{
+  display:flex!important;align-items:center!important;min-width:82px!important;
+  max-width:126px!important;gap:4px!important;
+ }
+ html[data-zavi-theme] body #appScreen .topbar .top-actions #zaviAdminLanguage{
+  width:auto!important;min-width:68px!important;padding:5px 7px!important;
+  font-size:12px!important;
+ }
+ html[data-zavi-theme] body #appScreen .topbar .top-actions .live-status{
+  font-size:11px!important;padding:5px 8px!important;border-radius:10px!important;
+ }
+}
+
+/* Account control injects its compact-table stylesheet at runtime. Explicit
+   light specificity keeps dark row backgrounds from defeating readable text. */
+html[data-zavi-theme="light"] body #z24Root .v24-table:has(.v24-actions) tbody tr{
+ background:#ffffff!important;color:#152944!important;border-color:#dbe6f4!important;
+}
+html[data-zavi-theme="light"] body #z24Root .v24-table:has(.v24-actions) tbody tr :is(td,small,b,span){
+ color:#152944!important;opacity:1!important;
+}
