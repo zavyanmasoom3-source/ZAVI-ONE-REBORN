@@ -239,10 +239,14 @@ jobs:
           else
             cp "$apk" final-apks/ZAVI_ONE_ADMIN_REBORN_QA.apk
           fi
+          # File integrity hash of the exact signed APK (not merely the source).
+          sha256sum final-apks/*.apk | tee final-apks/SHA256SUMS.txt
       - uses: actions/upload-artifact@v4
         with:
           name: ZAVI-ONE-REBORN-QA-${{ matrix.app }}
-          path: final-apks/*.apk
+          path: |
+            final-apks/*.apk
+            final-apks/SHA256SUMS.txt
           if-no-files-found: error
           retention-days: 14
 
