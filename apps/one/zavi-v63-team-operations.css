@@ -1,0 +1,56 @@
+/* ZAVI ONE V62: view-only colleagues moved to Daily Operations */
+#z60TeamDashboard,#z61TeamPanel,.z60-team-dashboard,#z20CloudPanel .z60-team-settings{display:none!important}
+#z62TeamMenu{background:linear-gradient(100deg,#10518a,#0b7f91)!important;color:#fff!important;border:1px solid #45a7c4!important}
+.z62-backdrop{position:fixed;inset:0;z-index:100500;display:flex;align-items:center;justify-content:center;padding:12px;background:#010c1edb}
+.z62-dialog{direction:rtl;box-sizing:border-box;width:min(560px,100%);max-height:92dvh;overflow-y:auto;border:1px solid #439abd;border-radius:17px;background:#0b2948;color:#e8f6ff;box-shadow:0 20px 80px #0009;font-family:Tahoma,Arial,sans-serif;text-align:right}
+.z62-head{display:flex;justify-content:space-between;align-items:center;gap:9px;padding:14px 17px;background:#105073}
+.z62-head h2{color:white;margin:0;font-size:19px}.z62-head button{color:white;background:#276c8a;border:1px solid #6daec6;border-radius:8px;padding:8px}
+.z62-body{padding:15px}.z62-total{display:flex;justify-content:space-between;align-items:center;gap:9px;background:#153d60;border-radius:12px;padding:12px}
+.z62-total strong{background:#0d9abb;color:#fff;border-radius:11px;min-width:45px;height:45px;display:grid;place-items:center;font-size:20px}
+.z62-note{color:#b8d8e6;font-size:12px;line-height:2;margin:12px 0}
+.z62-form{display:flex;flex-wrap:wrap;gap:8px}.z62-form input{flex:2 1 220px;background:#f4fbff;color:#193b51;border:1px solid #62aecf;border-radius:9px;padding:10px;min-width:0}
+.z62-form button{flex:1 1 120px;background:#0b91c1;color:#fff;border:1px solid #3dd1e8;border-radius:9px;padding:10px;font:inherit;font-weight:bold}
+.z62-headrow{display:flex;justify-content:space-between;align-items:center;gap:9px;margin:14px 0}
+.z62-headrow button{background:#215e86;color:#fff;border:1px solid #6ab5d2;border-radius:9px;padding:9px;font:inherit}
+.z62-member{display:flex;justify-content:space-between;align-items:center;gap:10px;border:1px solid #336987;background:#164061;border-radius:11px;padding:12px;margin:8px 0}
+.z62-member div{display:flex;flex-direction:column;gap:4px;min-width:0}.z62-member small{font:10px/1.5 monospace;overflow-wrap:anywhere;color:#bddeeb;direction:ltr}
+.z62-member button{background:#a33352;color:white;border:1px solid #ee8695;border-radius:9px;padding:10px;font:inherit;white-space:nowrap}
+#z62Status{font-size:12px;margin:10px 0}#z62Status.z62-error{color:#ffb8b8}
+@media(max-width:540px){.z62-backdrop{padding:7px}.z62-body{padding:13px}.z62-form{display:grid;grid-template-columns:1fr}.z62-form input{width:100%;box-sizing:border-box}.z62-member button{font-size:12px}}
+
+/* V63: always discoverable under the Daily Operations menu; not inside
+   the nav content that is overwritten by renderNav(). */
+#z63TeamMenu{display:flex!important;align-items:center!important;gap:12px!important;width:calc(100% - 2px)!important;box-sizing:border-box!important;
+ background:linear-gradient(110deg,#0b6094,#08777d)!important;border:1px solid #18a5c7!important;color:#fff!important;
+ margin:7px 1px 13px!important;padding:13px 14px!important;border-radius:12px!important;font-weight:800!important;
+ font-family:inherit!important;text-align:right!important;min-height:46px!important;cursor:pointer!important}
+#z63TeamMenu:focus-visible{outline:3px solid #42d2f4!important;outline-offset:2px}
+#z63TeamMenu .z63-icon{font-size:20px}
+@media(max-width:760px){#z63TeamMenu{position:relative!important;min-height:49px!important;font-size:15px!important}}
+
+/* V63.2 — keyboard accessibility and readable layouts; no financial logic changes. */
+.z62-dialog:focus-within{scroll-padding-block:16px}
+.z62-dialog button:focus-visible,.z62-dialog input:focus-visible{outline:3px solid #73e7ff!important;outline-offset:2px}
+.z62-dialog button{min-height:44px}
+.z62-dialog input{font-size:16px}
+.z62-dialog label{display:block;font-weight:700;margin:0 0 7px}
+html[lang="en"] .z62-dialog{direction:ltr;text-align:left}
+html[lang="en"] #z63TeamMenu{text-align:left!important}
+@media(max-width:540px){.z62-member{flex-wrap:wrap}.z62-member button{margin-inline-start:auto;white-space:normal;min-height:44px}.z62-head h2{font-size:17px}}
+
+/* Keep role-restricted menu hidden even with legacy !important display rules. */
+#z63TeamMenu[hidden]{display:none!important}
+
+/* V63.4: member search, non-fabricated activity dates and comfortable touch targets */
+#z62Search{box-sizing:border-box;display:block;width:100%;background:#f4fbff;color:#193b51;border:1px solid #62aecf;border-radius:9px;padding:11px;font:16px Tahoma,Arial,sans-serif;min-height:44px}
+#z62Search:focus-visible{outline:3px solid #73e7ff;outline-offset:2px}
+.z62-member-date{color:#b8d8e6;font-size:11px;line-height:1.6}
+.z62-headrow label{margin:0}
+.z62-dialog :is(button,input):disabled{cursor:not-allowed;opacity:.6}
+.z62-dialog p{overflow-wrap:anywhere}
+@media(max-width:540px){.z62-headrow{flex-wrap:wrap}.z62-headrow button{min-width:112px}.z62-member{align-items:flex-start}}
+/* Actual barcode field used by keyboard-compatible USB/Bluetooth POS scanners. */
+.zavi-barcode-box{margin-block:14px;padding:14px;border:1px dashed #33a4c0;border-radius:12px;background:rgba(37,146,181,.07)}
+#zaviBarcodeScan{width:100%;box-sizing:border-box;min-height:48px;padding:12px;border:2px solid #378eae;border-radius:10px;font:16px/1.4 ui-monospace,Consolas,monospace;background:var(--card,#fff);color:var(--text,#162b45)}
+#zaviBarcodeScan:focus-visible{outline:3px solid #19b5d0;outline-offset:3px}
+.zavi-barcode-box small{display:block;margin-top:7px;line-height:1.8}

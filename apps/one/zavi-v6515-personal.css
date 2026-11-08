@@ -1,0 +1,51 @@
+/* ZAVI ONE V65.15 — original startup logo, per-account font, offline-safe display. */
+.z6515-original-logo{
+  padding:0!important;
+  overflow:hidden!important;
+  background:#f1f8ff!important;
+  box-shadow:0 4px 18px rgba(22,140,221,.16)!important;
+  border:1px solid rgba(175,222,249,.50)!important;
+}
+.z6515-original-logo img{
+  display:block;width:100%;height:100%;border-radius:inherit;
+  object-fit:contain;image-rendering:auto;
+}
+.z6515-original-logo::after{display:none!important}
+/* The mark moves very gently exactly once during the existing splash sequence. */
+.z6513-splash.is-live .z6515-original-logo{
+  animation:z6515MarkEntrance .65s cubic-bezier(.22,.82,.26,1) both;
+}
+@keyframes z6515MarkEntrance{
+  from{opacity:.55;transform:translateY(6px) scale(.95)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+/* Three named font families. No font assets or private information are downloaded
+   or shipped; installed/cloud web fonts fall back to device fonts if offline. */
+html[data-z6515-font="standard"] body,
+html[data-z6515-font="standard"] :is(button,input,select,textarea){font-family:Tahoma,Arial,sans-serif!important}
+html[data-z6515-font="vazir"] body,
+html[data-z6515-font="vazir"] :is(button,input,select,textarea){font-family:"Vazirmatn",Tahoma,Arial,sans-serif!important}
+html[data-z6515-font="estedad"] body,
+html[data-z6515-font="estedad"] :is(button,input,select,textarea){font-family:"Estedad",Tahoma,Arial,sans-serif!important}
+.z6515-font-card{padding:18px!important}
+.z6515-font-card h3{margin:0 0 6px;font-weight:850}
+.z6515-font-card p{margin:4px 0 12px;line-height:1.9}
+.z6515-font-label{display:block;font-size:12px;font-weight:750;margin-bottom:7px}
+.z6515-font-choice{
+  width:100%;max-width:440px;min-height:44px;padding:9px 12px;
+  border-radius:12px;border:1px solid #b1c8df;
+  background:var(--z6515-field,#fff);color:var(--z6515-ink,#17344e);
+  font-size:14px;cursor:pointer
+}
+.z6515-font-choice:focus-visible{outline:3px solid #24a6cc;outline-offset:2px}
+.z6515-font-preview{
+  margin:12px 0 2px;border:1px solid #c7dcee;border-radius:12px;
+  padding:12px 15px;font-size:clamp(15px,2vw,19px);line-height:1.85;
+  background:linear-gradient(135deg,#f8fbff,#e9f6ff);color:#143953
+}
+html[data-zavi-theme="dark"] .z6515-font-card{--z6515-field:#142d47;--z6515-ink:#eaf6ff}
+html[data-zavi-theme="dark"] .z6515-font-preview{
+  background:#132d46!important;color:#eff8ff!important;border-color:#3a5e7c!important;
+}
+@media(prefers-reduced-motion:reduce){.z6513-splash.is-live .z6515-original-logo{animation:none!important}}
+html[data-z6513-low-gpu="true"] .z6513-splash.is-live .z6515-original-logo{animation:none!important}

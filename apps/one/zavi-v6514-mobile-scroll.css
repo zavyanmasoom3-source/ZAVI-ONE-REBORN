@@ -1,0 +1,98 @@
+/* ZAVI ONE V65.14: one reliable vertical scroll surface for the full menu.
+ * Cross-platform fix for iOS Safari / Android Chrome / tablets / desktop.
+ * Navigation, transactions, and offline data are untouched.
+ */
+#side.sidebar{
+  box-sizing:border-box!important;
+  min-height:0!important;
+  max-height:100vh!important;
+  max-height:100dvh!important;
+  height:100vh!important;
+  height:100dvh!important;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+  overscroll-behavior-y:contain!important;
+  -webkit-overflow-scrolling:touch!important;
+  touch-action:pan-y!important;
+  scrollbar-width:thin;
+  scrollbar-color:#5486b1 transparent;
+}
+#side.sidebar::-webkit-scrollbar{width:5px}
+#side.sidebar::-webkit-scrollbar-thumb{background:#407ca8;border-radius:20px}
+
+/* Earlier Android v6 split the drawer into nested, independently scrolling
+ * flex children and hid overflow on the outer drawer. That combination can
+ * make the mobile "More" menu impossible to swipe on iOS. Flatten it. */
+#side.sidebar>.zavi-v6-menu-scroll{
+  display:block!important;
+  flex:none!important;
+  height:auto!important;
+  max-height:none!important;
+  min-height:0!important;
+  overflow:visible!important;
+  overscroll-behavior:auto!important;
+  touch-action:pan-y!important;
+  padding:4px 0 12px!important;
+}
+#side.sidebar>.brand{flex:none!important;min-height:0!important}
+#side.sidebar>.sidebar-footer,
+#side.sidebar>.sidebar-bottom{
+  flex:none!important;
+  max-height:none!important;
+  overflow:visible!important;
+  margin-top:10px!important;
+  padding-bottom:max(15px,env(safe-area-inset-bottom))!important;
+}
+#side.sidebar :is(.nav-btn,.zawi-personal-action,.z637-ai-side){
+  touch-action:pan-y!important;
+  -webkit-user-select:none;
+  user-select:none;
+}
+#side.sidebar :is(#sidebarLinks,#sidebarLinks2){
+  min-height:0!important;
+  height:auto!important;
+  max-height:none!important;
+  overflow:visible!important;
+}
+@media(max-width:1050px){
+  #side.sidebar.mobile-drawer{
+    position:fixed!important;
+    top:0!important;
+    bottom:auto!important;
+    inset-block-start:0!important;
+    height:100vh!important;
+    height:100dvh!important;
+    max-height:100dvh!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    -webkit-overflow-scrolling:touch!important;
+    touch-action:pan-y!important;
+    overscroll-behavior-y:contain!important;
+    padding-bottom:max(20px,env(safe-area-inset-bottom))!important;
+    box-shadow:0 8px 26px rgba(0,7,21,.24)!important;
+    z-index:80!important;
+  }
+  /* Only the menu scrolls: the fixed tab bar and background page stay put. */
+  #side.sidebar.mobile-drawer>.zavi-v6-menu-scroll{overflow:visible!important}
+  #side.sidebar.mobile-drawer>.sidebar-footer{position:static!important}
+}
+
+/* Long dialogs keep independent, touch-friendly scrolling without changing
+ * invoice/order modal layouts, which already have their own form scrollers. */
+@media(max-width:1050px){
+  #z62TeamDialog .z62-dialog{
+    max-height:calc(100dvh - 18px)!important;
+    overflow-y:auto!important;
+    overscroll-behavior-y:contain!important;
+    -webkit-overflow-scrolling:touch!important;
+    touch-action:pan-y!important;
+  }
+  #overlay .modal:not(.z645-order-dialog) .modal-body{
+    min-height:0!important;
+    max-height:calc(100dvh - 160px);
+    overflow-y:auto!important;
+    -webkit-overflow-scrolling:touch!important;
+    overscroll-behavior:contain!important;
+  }
+}
+@media print{#side.sidebar{display:none!important}}

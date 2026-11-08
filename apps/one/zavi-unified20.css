@@ -1,0 +1,52 @@
+/* Single ZAVI ONE app, 20 dynamic business profiles. Compact and accessible. */
+#content .z74-workspace{box-sizing:border-box;width:100%;min-width:0;max-width:100%;margin:0 0 13px;padding:13px 15px;border-radius:15px;border:1px solid var(--border,#b9d4e5);background:var(--card,#fff);color:var(--text,#15344b);box-shadow:0 4px 14px rgba(8,44,86,.05)}
+#content .z74-workspace *{box-sizing:border-box}
+#content .z74-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+#content .z74-heading{display:flex;flex-direction:column;min-width:0;gap:3px}
+#content .z74-heading small{opacity:.78;font-size:11px}
+#content .z74-heading strong{font-size:16px;line-height:1.5}
+#content .z74-change{border:1px solid #2675bd;background:linear-gradient(120deg,#135ec9,#089fbd);color:#fff;-webkit-text-fill-color:#fff;padding:10px 15px;border-radius:11px;min-height:42px;font-size:12px;font-weight:850;cursor:pointer}
+#content .z74-focus{font-size:12px;line-height:1.8;margin:9px 0;color:inherit}
+#content .z74-tools{margin:12px 0 0}
+#content .z74-subtitle{display:block;font-size:11px;font-weight:800;margin:11px 0 7px;color:inherit}
+#content .z74-link-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px}
+#content .z74-action{min-width:0;min-height:44px;padding:8px 10px;white-space:normal;background:rgba(24,116,193,.075);color:inherit;border:1px solid rgba(45,125,196,.23);border-radius:10px;font-size:12px;font-weight:750;cursor:pointer}
+#content .z74-action:hover,#content .z74-action:focus-visible{border-color:#128cce;outline-offset:2px}
+#content .z74-fields{font-size:11px;line-height:1.8;margin:2px 0 5px;overflow-wrap:anywhere}
+#content .z74-notice{display:block;font-size:10.5px;line-height:1.75;color:inherit;opacity:.8;margin-top:9px}
+.z74-picker{box-sizing:border-box;max-width:min(95vw,760px);width:720px;max-height:88dvh;overflow:auto;border-radius:18px;padding:17px;border:1px solid #aacbe3;background:#f7fbff;color:#193b52;box-shadow:0 25px 90px rgba(0,21,58,.35)}
+.z74-picker::backdrop{background:rgba(2,13,31,.63)}
+.z74-dialog-header{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.z74-dialog-header h2{font-size:17px;margin:2px 0 10px}
+.z74-close{min-height:40px;padding:8px 13px;border-radius:8px;border:1px solid #b1ccde;background:#e6f2f8;color:#143850;cursor:pointer}
+.z74-search{display:block;box-sizing:border-box;width:100%;padding:12px;border:1px solid #b7d0dd;border-radius:11px;background:#fff;color:#163649;font-size:14px;min-height:44px}
+.z74-picker .z74-notice{font-size:12px;line-height:1.7;margin:10px 0}
+.z74-choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:8px}
+.z74-option{box-sizing:border-box;display:flex;flex-direction:column;align-items:flex-start;text-align:start;gap:5px;min-height:94px;padding:12px;border:1px solid #c2d8e6;background:#fff;color:#163d5b;border-radius:11px;cursor:pointer}
+.z74-option strong{font-size:13px;line-height:1.5}
+.z74-option small{font-size:10.5px;line-height:1.6;color:#4c6478}
+.z74-option:hover,.z74-option:focus-visible,.z74-option.is-active{border-color:#028cb8;background:#e1f7ff}
+.z74-save-warning{padding:10px 12px;border-inline-start:4px solid #078aba;border-radius:8px;background:#e6f5ff;color:#145276;font-size:12px}
+html[data-zavi-theme="dark"] #content .z74-workspace{background:#132e48;color:#f2f8ff;border-color:#365674}
+html[data-zavi-theme="dark"] #content .z74-action{background:#21435c;color:#fff;border-color:#3d688b}
+html[data-zavi-theme="dark"] .z74-picker{background:#112e48;color:#f3f9ff;border-color:#3b6582}
+html[data-zavi-theme="dark"] .z74-option{background:#204058;color:#fff;border-color:#3f708e}
+html[data-zavi-theme="dark"] .z74-option small{color:#c3deef}
+html[data-zavi-theme="dark"] .z74-option.is-active{background:#15566f}
+@media(max-width:480px){#content .z74-workspace{padding:10px;border-radius:12px}#content .z74-change{width:100%}.z74-picker{width:96vw;padding:11px}.z74-choices{grid-template-columns:repeat(2,minmax(0,1fr))}.z74-option{padding:8px;min-height:88px}}
+@media(prefers-reduced-motion:reduce){#content .z74-workspace,.z74-picker *{transition:none!important;animation:none!important}}
+/* V65.75: No active business/industry cards on the dashboard. Existing financial reports remain. */
+#content .z638-business-ribbon,#content .z639-focus-card{display:none!important}
+#content .z649-extras-header{display:none!important}
+/* Put ONE small selection entry inside Settings, without duplicate action lists. */
+#content .z74-settings-only{padding:10px 12px!important;margin:0 0 12px!important;box-shadow:none!important;border-radius:12px!important}
+#content .z74-settings-only .z74-heading small{font-size:10px}
+#content .z74-settings-only .z74-heading strong{font-size:13px}
+#content .z74-settings-only .z74-change{min-height:40px;padding:8px 12px;font-size:11px}
+.z74-business-advanced{border:1px solid #b8d1e7;border-radius:12px;margin:12px 0;padding:10px 11px;background:rgba(37,132,208,.05);color:inherit}
+.z74-business-advanced>summary{cursor:pointer;font-size:13px;font-weight:800;list-style:revert;min-height:40px;display:list-item;padding:8px}
+.z74-business-advanced[open]>summary{margin-bottom:12px;border-bottom:1px solid rgba(68,128,168,.2)}
+.z74-business-advanced>section.card{margin:10px 0!important;min-width:0}
+.z74-business-advanced .grid{min-width:0}
+html[data-zavi-theme="dark"] .z74-business-advanced{border-color:#416b8e;background:rgba(26,74,113,.4)}
+@media(max-width:520px){#content .z74-settings-only .z74-change{width:auto;max-width:50%;min-width:130px}.z74-business-advanced{padding:7px}.z74-business-advanced>section.card{padding:10px!important}}

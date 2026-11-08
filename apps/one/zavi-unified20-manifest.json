@@ -1,0 +1,177 @@
+{
+  "version": "65.83-trial-seven-real-entitlement-qa",
+  "count": 20,
+  "mode": "one-app-20-industries-15-user-reported-fixes",
+  "ipad": "Static PWA files in Netlify-ready ZIP; APK is Android-only.",
+  "profiles": [
+    {
+      "id": "general",
+      "name": {
+        "fa": "تجارت عمومی",
+        "en": "General Business",
+        "ps": "تجارت عمومي"
+      }
+    },
+    {
+      "id": "pharmacy",
+      "name": {
+        "fa": "دواخانه",
+        "en": "Pharmacy",
+        "ps": "درملتون"
+      }
+    },
+    {
+      "id": "mobile",
+      "name": {
+        "fa": "فروشگاه موبایل",
+        "en": "Mobile Shop",
+        "ps": "د موبایل پلورنځی"
+      }
+    },
+    {
+      "id": "supermarket",
+      "name": {
+        "fa": "سوپرمارکیت",
+        "en": "Supermarket",
+        "ps": "سوپرمارکېټ"
+      }
+    },
+    {
+      "id": "wholesale",
+      "name": {
+        "fa": "عمده‌فروشی",
+        "en": "Wholesale",
+        "ps": "عمده پلور"
+      }
+    },
+    {
+      "id": "clothing",
+      "name": {
+        "fa": "فروشگاه لباس",
+        "en": "Clothing",
+        "ps": "د جامو دوکان"
+      }
+    },
+    {
+      "id": "services",
+      "name": {
+        "fa": "شرکت خدماتی",
+        "en": "Services",
+        "ps": "خدماتي شرکت"
+      }
+    },
+    {
+      "id": "construction",
+      "name": {
+        "fa": "مصالح ساختمانی",
+        "en": "Building Materials",
+        "ps": "ساختماني مواد"
+      }
+    },
+    {
+      "id": "company",
+      "name": {
+        "fa": "شرکت تجارتی",
+        "en": "Trading Company",
+        "ps": "سوداګریز شرکت"
+      }
+    },
+    {
+      "id": "exchange",
+      "name": {
+        "fa": "صرافی و تبدیل ارز",
+        "en": "Exchange Office",
+        "ps": "صرافۍ"
+      }
+    },
+    {
+      "id": "contractor",
+      "name": {
+        "fa": "شرکت ساختمانی و پیمانکاری",
+        "en": "Construction Contractor",
+        "ps": "ساختماني قراردادي"
+      }
+    },
+    {
+      "id": "gold",
+      "name": {
+        "fa": "زرگری و طلافروشی",
+        "en": "Jewelry & Gold",
+        "ps": "زرګري"
+      }
+    },
+    {
+      "id": "bookstore",
+      "name": {
+        "fa": "کتاب‌فروشی و لوازم‌التحریر",
+        "en": "Bookstore & Stationery",
+        "ps": "کتابپلورنځی"
+      }
+    },
+    {
+      "id": "footwear",
+      "name": {
+        "fa": "کفش و لوازم ورزشی",
+        "en": "Footwear & Sports",
+        "ps": "بوټان او سپورت"
+      }
+    },
+    {
+      "id": "cosmetics",
+      "name": {
+        "fa": "آرایشی و بهداشتی",
+        "en": "Cosmetics",
+        "ps": "ښکلا او روغتیا"
+      }
+    },
+    {
+      "id": "electronics",
+      "name": {
+        "fa": "وسایل برقی و الکترونیکی",
+        "en": "Electronics",
+        "ps": "برېښنايي وسایل"
+      }
+    },
+    {
+      "id": "furniture",
+      "name": {
+        "fa": "مبلمان و لوازم خانه",
+        "en": "Furniture & Home",
+        "ps": "فرنیچر"
+      }
+    },
+    {
+      "id": "hardware",
+      "name": {
+        "fa": "ابزار و لوازم ساختمانی",
+        "en": "Tools & Hardware",
+        "ps": "وسایل او ابزار"
+      }
+    },
+    {
+      "id": "laboratory",
+      "name": {
+        "fa": "لابراتوار طبی",
+        "en": "Medical Laboratory",
+        "ps": "طبي لابراتوار"
+      }
+    },
+    {
+      "id": "distribution",
+      "name": {
+        "fa": "شرکت توزیع",
+        "en": "Distribution",
+        "ps": "د توزیع شرکت"
+      }
+    }
+  ],
+  "personalization": "Display-only user name/photo stored per signed-in user and workspace on this device.",
+  "source": "ZAVI ONE V65.72 QA embedded frontend",
+  "security": "Cloud-owner-only automatic first-device registration, server-check and ES256 offline token; existing device replacement and server authorization unchanged.",
+  "trade_change": "Draft selection from one app, owner confirms on native store settings page.",
+  "storage": "QA application ID is separate from production. No automatic migration or data deletion.",
+  "limitation": "QA source and static validation only; real-device accounting and specialised compliance require additional tests.",
+  "offline_trial": "Owner-controlled seven-day trial extension enables seven-day offline server policy automatically; the device fetches signed ES256 lease on cloud sign-in and prepares its offline app shell.",
+  "offline_ui": "Compact signed status, localized readable retry + diagnostics; original safety controls retained.",
+  "trial7_fix": "trial is accepted by online entitlement guards, expiry details and subscription UI; correct signed lease ready event binding by workspace_id; actual signed device token required for offline writes."
+}
