@@ -25,6 +25,8 @@ Thumbs.db
 *.jks
 *.keystore
 *.p12
+*.pfx
+*.b64
 *.pem
 *.key
 local.properties
