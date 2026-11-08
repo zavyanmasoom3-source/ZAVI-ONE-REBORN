@@ -16,6 +16,8 @@ SHARED={
  '../../packages/shared/security/access-contract.js',
  '../../packages/shared/i18n/language-core.js',
  '../../packages/shared/diagnostics/build-proof-v1.js',
+ '../../packages/shared/ui/design-system-v1.css',
+ '../../packages/shared/ui/design-system-v1.js',
 }
 
 class Refs(HTMLParser):
