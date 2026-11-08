@@ -68,7 +68,10 @@ class ApkPairTests(unittest.TestCase):
             def mocked(args):
                 if args[0] == 'aapt':
                     return "package: name='com.zavione.one.rebornqa' versionCode='667802' versionName='66.78'\n"
-                return ('Verified using v1 scheme (JAR signing): true\n'
+                if '--min-sdk-version' in args:
+                    return ('Verified using v1 scheme (JAR signing): true\n'
+                            'Signer #1 certificate SHA-256 digest: '+QA_SHA+'\n')
+                return ('Verified using v1 scheme (JAR signing): false\n'
                         'Verified using v2 scheme (APK Signature Scheme v2): true\n'
                         'Verified using v3 scheme (APK Signature Scheme v3): true\n'
                         'Signer #1 certificate SHA-256 digest: '+QA_SHA+'\n')
@@ -85,7 +88,10 @@ class ApkPairTests(unittest.TestCase):
             def mocked(args):
                 if args[0] == 'aapt':
                     return "package: name='com.zavione.one.rebornqa' versionCode='667802' versionName='66.78'\n"
-                return ('Verified using v1 scheme (JAR signing): true\n'
+                if '--min-sdk-version' in args:
+                    return ('Verified using v1 scheme (JAR signing): true\n'
+                            'Signer #1 certificate SHA-256 digest: '+QA_SHA+'\n')
+                return ('Verified using v1 scheme (JAR signing): false\n'
                         'Verified using v2 scheme (APK Signature Scheme v2): true\n'
                         'Verified using v3 scheme (APK Signature Scheme v3): false\n'
                         'Signer #1 certificate SHA-256 digest: '+QA_SHA+'\n')
@@ -94,6 +100,46 @@ class ApkPairTests(unittest.TestCase):
                 mod.read_apk(apk, 'aapt', 'apksigner')
         finally:
             mod.command = original
+
+    def test_invalid_legacy_v1_rejected(self):
+        apk = pathlib.Path(__file__)
+        original = mod.command
+        try:
+            def mocked(args):
+                if args[0]=='aapt':
+                    return "package: name='com.zavione.one.rebornqa' versionCode='667802' versionName='66.78'\\n"
+                if '--min-sdk-version' in args:
+                    return ('Verified using v1 scheme (JAR signing): false\\n'
+                            'Signer #1 certificate SHA-256 digest: '+QA_SHA+'\\n')
+                return ('Verified using v1 scheme (JAR signing): false\\n'
+                        'Verified using v2 scheme (APK Signature Scheme v2): true\\n'
+                        'Verified using v3 scheme (APK Signature Scheme v3): true\\n'
+                        'Signer #1 certificate SHA-256 digest: '+QA_SHA+'\\n')
+            mod.command=mocked
+            with self.assertRaisesRegex(mod.VerificationError, 'v1 signature'):
+                mod.read_apk(apk,'aapt','apksigner')
+        finally:
+            mod.command=original
+
+    def test_legacy_signer_mismatch_rejected(self):
+        apk = pathlib.Path(__file__)
+        original = mod.command
+        try:
+            def mocked(args):
+                if args[0]=='aapt':
+                    return "package: name='com.zavione.one.rebornqa' versionCode='667802' versionName='66.78'\\n"
+                if '--min-sdk-version' in args:
+                    return ('Verified using v1 scheme (JAR signing): true\\n'
+                            'Signer #1 certificate SHA-256 digest: '+ADMIN_SHA+'\\n')
+                return ('Verified using v1 scheme (JAR signing): false\\n'
+                        'Verified using v2 scheme (APK Signature Scheme v2): true\\n'
+                        'Verified using v3 scheme (APK Signature Scheme v3): true\\n'
+                        'Signer #1 certificate SHA-256 digest: '+QA_SHA+'\\n')
+            mod.command=mocked
+            with self.assertRaisesRegex(mod.VerificationError,'Signer identity changed'):
+                mod.read_apk(apk,'aapt','apksigner')
+        finally:
+            mod.command=original
 
 
 if __name__ == '__main__':
