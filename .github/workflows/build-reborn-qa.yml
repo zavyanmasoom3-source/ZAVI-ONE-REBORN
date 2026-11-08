@@ -70,13 +70,36 @@ jobs:
           test -x "$SDKMANAGER"
           yes | "$SDKMANAGER" --sdk_root="$SDK_ROOT" --licenses >/dev/null || true
           "$SDKMANAGER" --sdk_root="$SDK_ROOT" "platforms;android-36" "build-tools;36.0.0"
-      - name: Verify pinned official Gradle 8.13 wrapper
+      - name: Download and verify Gradle 8.13 (mirror fallback)
         shell: bash
         run: |
           set -euo pipefail
           test -s gradle/wrapper/gradle-wrapper.jar
-          # Exact binary from gradle/gradle v8.13.0; reject substituted wrapper JARs.
+          # Official Gradle 8.13 wrapper blob; no untrusted substitute is accepted.
           test "$(git hash-object gradle/wrapper/gradle-wrapper.jar)" = "9bbc975c742b298b441bfb90dbc124400a3751b9"
+          zip="$RUNNER_TEMP/gradle-8.13-bin.zip"
+          expected="20f1b1176237254a6fc204d8434196fa11a4cfb387567519c61556e8710aed78"
+          downloaded=false
+          # Gradle's public distribution endpoints sometimes redirect to a GitHub
+          # release that returns HTTP 504. The alternate mirror is checksum-verified.
+          for url in \
+            "https://downloads.gradle.org/distributions/gradle-8.13-bin.zip" \
+            "https://repo.huaweicloud.com/gradle/gradle-8.13-bin.zip"; do
+            echo "Fetching Gradle 8.13 from: $url"
+            if curl --fail --location --silent --show-error \
+              --retry 2 --retry-all-errors --connect-timeout 20 --max-time 240 \
+              --output "$zip" "$url"; then
+              if printf '%s  %s\n' "$expected" "$zip" | sha256sum --check --status; then
+                downloaded=true
+                break
+              fi
+              echo "::warning::Gradle checksum mismatch; rejecting this download"
+            fi
+          done
+          test "$downloaded" = true
+          # CI-only local ZIP override: source file retains the official remote
+          # download URL and pinned distributionSha256Sum for non-CI builds.
+          sed -i "s#^distributionUrl=.*#distributionUrl=file://$zip#" gradle/wrapper/gradle-wrapper.properties
           chmod +x ./gradlew
           ./gradlew --version --no-daemon
       - name: Stage app and shared assets
