@@ -1,0 +1,147 @@
+name: Original-key update compatibility preflight (never publishes APK)
+
+on:
+  push:
+    branches: [dev]
+    paths:
+      - '.github/workflows/release-signing-preflight.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  original-key-preflight:
+    # No original signing material should be generated or substituted.
+    # Owner enables this only after loading original keystores in Secrets.
+    if: ${{ vars.ZAVI_RELEASE_PREFLIGHT == 'enabled' }}
+    name: Verify original-key update — ${{ matrix.app }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        app: [one, admin]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Audit source before build
+        run: |
+          python3 scripts/check-public-source-security.py
+          python3 scripts/check-migration-integrity.py
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Configure Android SDK
+        shell: bash
+        run: |
+          set -euo pipefail
+          SDK_ROOT="${ANDROID_SDK_ROOT:-${ANDROID_HOME:-/usr/local/lib/android/sdk}}"
+          test -d "$SDK_ROOT"
+          echo "ANDROID_HOME=$SDK_ROOT" >> "$GITHUB_ENV"
+          echo "ANDROID_SDK_ROOT=$SDK_ROOT" >> "$GITHUB_ENV"
+          SDKMANAGER="$SDK_ROOT/cmdline-tools/latest/bin/sdkmanager"
+          if [[ ! -x "$SDKMANAGER" ]]; then
+            SDKMANAGER=$(find "$SDK_ROOT/cmdline-tools" -type f -name sdkmanager -print -quit 2>/dev/null || true)
+          fi
+          test -x "$SDKMANAGER"
+          yes | "$SDKMANAGER" --sdk_root="$SDK_ROOT" --licenses >/dev/null || true
+          "$SDKMANAGER" --sdk_root="$SDK_ROOT" "platforms;android-36" "build-tools;36.0.0"
+      - name: Download and verify Gradle 8.13 (mirror fallback)
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s gradle/wrapper/gradle-wrapper.jar
+          # Official Gradle 8.13 wrapper blob; no untrusted substitute is accepted.
+          test "$(git hash-object gradle/wrapper/gradle-wrapper.jar)" = "9bbc975c742b298b441bfb90dbc124400a3751b9"
+          zip="$RUNNER_TEMP/gradle-8.13-bin.zip"
+          expected="20f1b1176237254a6fc204d8434196fa11a4cfb387567519c61556e8710aed78"
+          downloaded=false
+          # Gradle's public distribution endpoints sometimes redirect to a GitHub
+          # release that returns HTTP 504. The alternate mirror is checksum-verified.
+          for url in \
+            "https://downloads.gradle.org/distributions/gradle-8.13-bin.zip" \
+            "https://repo.huaweicloud.com/gradle/gradle-8.13-bin.zip"; do
+            echo "Fetching Gradle 8.13 from: $url"
+            if curl --fail --location --silent --show-error \
+              --retry 2 --retry-all-errors --connect-timeout 20 --max-time 240 \
+              --output "$zip" "$url"; then
+              if printf '%s  %s\n' "$expected" "$zip" | sha256sum --check --status; then
+                downloaded=true
+                break
+              fi
+              echo "::warning::Gradle checksum mismatch; rejecting this download"
+            fi
+          done
+          test "$downloaded" = true
+          # CI-only local ZIP override: source file retains the official remote
+          # download URL and pinned distributionSha256Sum for non-CI builds.
+          sed -i "s#^distributionUrl=.*#distributionUrl=file://$zip#" gradle/wrapper/gradle-wrapper.properties
+          chmod +x ./gradlew
+          ./gradlew --version --no-daemon
+      - name: Stage WebView and Android resources
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf android-build/app/src/main/assets
+          mkdir -p android-build/app/src/main/assets/packages/shared
+          cp -a "apps/${{ matrix.app }}/." android-build/app/src/main/assets/
+          cp -a packages/shared/. android-build/app/src/main/assets/packages/shared/
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('android-build/app/src/main/assets/index.html')
+          t=p.read_text(encoding='utf8')
+          t=t.replace('../../packages/shared/','./packages/shared/')
+          t=t.replace('../packages/shared/','./packages/shared/')
+          p.write_text(t,encoding='utf8')
+          PY
+          mkdir -p android-build/app/src/main/res/drawable-nodpi android-build/app/src/main/res/values android-build/app/src/main/res/xml
+          cp "apps/${{ matrix.app }}/icon-192.png" android-build/app/src/main/res/drawable-nodpi/zavi_launcher_image.png
+          printf '%s\n' '<resources><style name="ZaviTheme" parent="android:style/Theme.Material.Light.NoActionBar"><item name="android:windowLightStatusBar">false</item></style></resources>' > android-build/app/src/main/res/values/styles.xml
+          printf '%s\n' '<?xml version="1.0" encoding="utf-8"?><paths xmlns:android="http://schemas.android.com/apk/res/android"><cache-path name="camera" path="."/></paths>' > android-build/app/src/main/res/xml/zavi_camera_paths.xml
+          python3 scripts/fix-webview-receipt.py
+          python3 scripts/validate-webview-html.py
+      - name: Build signed candidate, compare original certificate, destroy binary
+        shell: bash
+        env:
+          ONE_B64: ${{ secrets.ZAVI_RELEASE_ONE_KEYSTORE_BASE64 }}
+          ONE_PASS: ${{ secrets.ZAVI_RELEASE_ONE_STORE_PASSWORD }}
+          ONE_ALIAS: ${{ secrets.ZAVI_RELEASE_ONE_KEY_ALIAS }}
+          ONE_KEY_PASS: ${{ secrets.ZAVI_RELEASE_ONE_KEY_PASSWORD }}
+          ADMIN_B64: ${{ secrets.ZAVI_RELEASE_ADMIN_KEYSTORE_BASE64 }}
+          ADMIN_PASS: ${{ secrets.ZAVI_RELEASE_ADMIN_STORE_PASSWORD }}
+          ADMIN_ALIAS: ${{ secrets.ZAVI_RELEASE_ADMIN_KEY_ALIAS }}
+          ADMIN_KEY_PASS: ${{ secrets.ZAVI_RELEASE_ADMIN_KEY_PASSWORD }}
+          ADMIN_EXPECTED: ${{ secrets.ZAVI_RELEASE_ADMIN_EXPECTED_CERT_SHA256 }}
+        run: |
+          set -euo pipefail
+          umask 077
+          app="${{ matrix.app }}"
+          if [[ "$app" == "one" ]]; then
+            key_bytes="$ONE_B64"
+            export ZAVI_RELEASE_STORE_PASSWORD="$ONE_PASS" ZAVI_RELEASE_KEY_ALIAS="$ONE_ALIAS" ZAVI_RELEASE_KEY_PASSWORD="$ONE_KEY_PASS"
+            expected="f88cfa395f1f256198e81a82ae002de591d772745ae19c70a495b23619c25f25"
+          else
+            key_bytes="$ADMIN_B64"
+            export ZAVI_RELEASE_STORE_PASSWORD="$ADMIN_PASS" ZAVI_RELEASE_KEY_ALIAS="$ADMIN_ALIAS" ZAVI_RELEASE_KEY_PASSWORD="$ADMIN_KEY_PASS"
+            expected="$ADMIN_EXPECTED"
+          fi
+          if [[ -z "$key_bytes" || -z "$ZAVI_RELEASE_STORE_PASSWORD" || -z "$ZAVI_RELEASE_KEY_ALIAS" || -z "$ZAVI_RELEASE_KEY_PASSWORD" || -z "$expected" ]]; then
+            echo "::error::Original signing material or approved certificate fingerprint missing. A new signing key cannot update the original APK."
+            exit 1
+          fi
+          export ZAVI_RELEASE_STORE_FILE="$RUNNER_TEMP/zavi-original-$app.keystore"
+          trap 'rm -f "$ZAVI_RELEASE_STORE_FILE"' EXIT
+          printf '%s' "$key_bytes" | base64 --decode > "$ZAVI_RELEASE_STORE_FILE"
+          chmod 600 "$ZAVI_RELEASE_STORE_FILE"
+          keytool -list -keystore "$ZAVI_RELEASE_STORE_FILE" -storepass "$ZAVI_RELEASE_STORE_PASSWORD" -alias "$ZAVI_RELEASE_KEY_ALIAS" >/dev/null
+          ./gradlew :app:assembleRelease -PzaviApp="$app" -PzaviBuildNumber="$GITHUB_RUN_NUMBER" --no-build-cache --stacktrace
+          apk=$(find android-build/app/build/outputs/apk/release -maxdepth 1 -type f -name '*.apk' ! -name '*unsigned.apk' -print -quit)
+          test -n "$apk"
+          python3 scripts/verify-apk-update.py --app "$app" --mode release-candidate \
+            --apk "$apk" --aapt "$ANDROID_SDK_ROOT/build-tools/36.0.0/aapt" \
+            --apksigner "$ANDROID_SDK_ROOT/build-tools/36.0.0/apksigner" \
+            --expected-sha256 "$expected"
+          rm -f "$apk"
+          echo "PASS: signer matches original; signed candidate was NOT distributed."
+# No upload-artifact, release, deployment or customer-data access by design.
