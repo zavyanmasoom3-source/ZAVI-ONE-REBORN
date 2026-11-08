@@ -14,6 +14,21 @@ OUT.mkdir(exist_ok=True)
 for app,field_id in [('one','zawiPinOne'),('admin','authPassword')]:
     with Session() as browser:
         browser.navigate(app)
+        if app=='admin':
+            # The animation is not the login screen; wait until it is gone.
+            browser.until("""(()=>{
+              const auth=document.getElementById('authScreen');
+              const splash=document.getElementById('zaviAdminSplash');
+              return !!auth && !auth.hidden &&
+                auth.getBoundingClientRect().width>0 &&
+                (!splash || getComputedStyle(splash).visibility==='hidden');
+            })()""",'ADMIN real login visible after splash',seconds=20)
+            assert browser.eval("""(()=>{
+              const demo=document.getElementById('demoBtn');
+              const resume=document.getElementById('resumeBtn');
+              return (!demo || !demo.hidden || getComputedStyle(demo).display==='none') &&
+                (!resume || !resume.hidden || getComputedStyle(resume).display==='none');
+            })()"""), 'HTML-hidden ADMIN entry buttons must remain invisible'
         browser.until("""(typeof window.ZaviDesignSystemV1==='object' &&
           typeof window.ZaviThemeV29?.set==='function')""",
           app+' common design and theme scripts',seconds=20)
