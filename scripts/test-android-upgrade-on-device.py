@@ -25,9 +25,15 @@ def apk_info(path, aapt, apksigner):
     verification=run([apksigner,'verify','--verbose','--print-certs',str(path)])
     signer=re.search(r'Signer #1 certificate SHA-256 digest:\s*([a-fA-F0-9:]+)',verification)
     if not signer:raise RuntimeError('APK is unsigned or has no readable certificate')
-    for scheme in ('v1','v2','v3'):
+    for scheme in ('v2','v3'):
         if not re.search(r'Verified using '+scheme+r' scheme.*?: true',verification):
             raise RuntimeError('Missing verified '+scheme+' signature')
+    legacy=run([apksigner,'verify','--min-sdk-version','23','--verbose','--print-certs',str(path)])
+    if not re.search(r'Verified using v1 scheme.*?: true',legacy):
+        raise RuntimeError('Missing verified JAR v1 signature under API 23')
+    old_signer=re.search(r'Signer #1 certificate SHA-256 digest:\s*([a-fA-F0-9:]+)',legacy)
+    if not old_signer or old_signer.group(1).replace(':','').lower()!=signer.group(1).replace(':','').lower():
+        raise RuntimeError('Signing certificate changed between v1 and v2/v3 verification')
     return match.group(1),int(match.group(2)),signer.group(1).replace(':','').lower()
 
 def main():
