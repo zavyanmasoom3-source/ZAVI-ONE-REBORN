@@ -5,9 +5,11 @@
  */
 'use strict';
 const APK_ORIGIN='https://appassets.androidplatform.net';
-const CACHE_NAME='zavi-admin-shell-reborn-20261109-r3';
+const CACHE_NAME='zavi-admin-shell-reborn-20261109-r4';
 const CORE=[
   "index.html",
+  "zavi-admin-settings-hub-v1.css",
+  "zavi-admin-settings-hub-v1.js",
   "zavi-admin-showcase-v1459.css",
   "zavi-clean-professional-v1458.css",
   "zavi-admin-renewal-v1439.js",
