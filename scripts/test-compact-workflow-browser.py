@@ -110,6 +110,19 @@ with Session() as browser:
     assert purchase['keys']==['specs','products','payment'],purchase
     assert all(purchase[x] for x in ['itemContainer','name','account','discount','pay',
       'submit','submitOutsidePanels','details','products','payment','shifted','connected']),purchase
+    inline=browser.eval("""(()=>{
+       const form=document.getElementById('dialogForm');
+       const name=form.querySelector('#orderItems [data-field="productName"]');
+       name.value='';
+       const valid=name.checkValidity();
+       const panel=name.closest('[role="tabpanel"]');
+       const error=name.nextElementSibling;
+       return {blocked:!valid,invalid:name.getAttribute('aria-invalid')==='true',
+          inline:!!error&&error.classList.contains('zds-field-error')&&!error.hidden,
+          productTabOpened:!!panel&&!panel.hidden};
+    })()""")
+    assert all(inline.values()),inline
+    print('PASS: invalid required product opens its real tab and displays localized field error underneath')
     (out/'purchase-form.png').write_bytes(browser.screenshot())
     print('PASS: purchase form has three live stages; all original named fields, product row and submit remain connected')
     # Synthetic in-memory-only product: this disposable browser has no customer
