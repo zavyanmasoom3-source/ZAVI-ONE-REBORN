@@ -3,13 +3,13 @@
 (() => {
   'use strict';
   const labels={
-    fa:{accounts:'حساب‌ها',transactions:'تراکنش‌ها',more:'بیشتر',summary:'خلاصه',details:'جزئیات',output:'خروجی',
+    fa:{accounts:'حساب‌ها',transactions:'تراکنش‌ها',more:'بیشتر',summary:'خلاصه',details:'جزئیات',output:'خروجی',warehouses:'گدام‌ها',movements:'حرکت موجودی',
       products:'محصولات',customer:'مشتری',payment:'پرداخت',specs:'مشخصات',
       required:'این فیلد ضروری است.',positive:'قیمت هر واحد باید بیشتر از صفر باشد.',badNumber:'یک عدد معتبر وارد کنید.',badFormat:'فرمت این فیلد معتبر نیست.'},
-    ps:{accounts:'حسابونه',transactions:'معاملې',more:'نور',summary:'لنډیز',details:'جزئیات',output:'وتنه',
+    ps:{accounts:'حسابونه',transactions:'معاملې',more:'نور',summary:'لنډیز',details:'جزئیات',output:'وتنه',warehouses:'ګدامونه',movements:'د موجودۍ حرکت',
       products:'توکي',customer:'پېرودونکی',payment:'تادیه',specs:'معلومات',
       required:'دا برخه اړینه ده.',positive:'د هر واحد بیه باید له صفر څخه لوړه وي.',badNumber:'سمه شمېره ولیکئ.',badFormat:'د دې برخې بڼه سمه نه ده.'},
-    en:{accounts:'Accounts',transactions:'Transactions',more:'More',summary:'Summary',details:'Details',output:'Export',
+    en:{accounts:'Accounts',transactions:'Transactions',more:'More',summary:'Summary',details:'Details',output:'Export',warehouses:'Warehouses',movements:'Stock movements',
       products:'Products',customer:'Customer',payment:'Payment',specs:'Details',
       required:'This field is required.',positive:'Unit price must be greater than zero.',badNumber:'Enter a valid number.',badFormat:'Invalid field format.'}
   };
@@ -95,6 +95,59 @@
     const result=createTabs(root,'reports',
       [[...extras,metrics],[stock],[exports]],['summary','details','output']);
     if(result)split.remove();
+  }
+  function enhanceProducts(root){
+    const main=root.querySelector('.zui-phase2-content');
+    if(!main||main.querySelector('[data-zavi-flow="products"]'))return;
+    const manager=main.querySelector(':scope > .zv-wh-manager');
+    const scanner=main.querySelector(':scope > .z638-warehouse-scanner');
+    const listing=[...main.children].find(el=>el.matches?.('section.card')&&
+      el!==manager&&el!==scanner);
+    if(!manager||!scanner||!listing)return;
+    const existing=[...main.children];
+    const originalHeader=existing.find(el=>el.matches?.('.page-head'));
+    const products=existing.filter(el=>el!==manager&&el!==originalHeader);
+    if(!products.includes(listing))return;
+    const snapshot=document.createElement('section');
+    snapshot.className='card zavi-stock-history-projection';
+    snapshot.setAttribute('role','region');
+    snapshot.setAttribute('aria-live','polite');
+    // A read-only projection of the *already authenticated* server history;
+    // no fake stock records or independent, unconfirmed quantities are created.
+    const heading=document.createElement('strong');heading.className='zavi-history-title';
+    heading.textContent='';snapshot.append(heading);
+    const history=document.createElement('div');history.className='zavi-history-rows';
+    snapshot.append(history);
+    function refreshHistory(){
+      heading.textContent=tr('movements');
+      const native=manager.querySelector('.zv-wh-history');
+      history.replaceChildren();
+      if(native){
+        // Server widget creates its entries with textContent. Clone only the
+        // existing read-only report, not forms/privileged action handlers.
+        for(const child of native.children){
+          if(child.matches('button,a,form,input'))continue;
+          history.append(child.cloneNode(true));
+        }
+      }
+      if(!history.childElementCount){
+        const message=document.createElement('p');message.className='zds-muted';
+        message.textContent=lang()==='en'?'No confirmed stock movement data loaded.':
+          lang()==='ps'?'د موجودۍ د حرکت تایید شوي معلومات نشته.':
+          'هنوز حرکت موجودی تأییدشده دریافت نشده است.';
+        history.append(message);
+      }
+    }
+    refreshHistory();
+    const native=manager.querySelector('.zv-wh-history');
+    if(native)new MutationObserver(refreshHistory).observe(native,{childList:true,subtree:true});
+    // Keep warehouse management in its original server-backed DOM. The third
+    // tab is read-only and never makes writes on its own.
+    const layout=createTabs(main,'products',[products,[manager],[snapshot]],
+      ['products','warehouses','movements']);
+    if(!layout)return;
+    layout.querySelectorAll('[role="tab"]')[2].addEventListener('click',refreshHistory);
+    if(originalHeader && main.firstElementChild!==originalHeader)main.prepend(originalHeader);
   }
   function enhanceOrderForm(){
     const form=document.getElementById('dialogForm');
@@ -188,6 +241,7 @@
     if(root){
       enhanceMoney(root);
       enhanceReports(root);
+      enhanceProducts(root);
     }
     enhanceOrderForm();
     refreshLabels();
