@@ -1,0 +1,35 @@
+/* ZAVI ONE ADMIN V53 MOBILE STABILITY PATCH - presentation only */
+:root{color-scheme:dark;--zma-ink:#ecf8ff;--zma-bg:#06152c;--zma-panel:#102a55;--zma-line:#326199}
+html{min-width:0;overflow-x:hidden;-webkit-text-size-adjust:100%}
+body{min-width:0;max-width:100%;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+.auth-wrapper{background:#071936!important;color:var(--zma-ink)!important;min-height:100dvh!important}
+.auth-card,.auth-promo{color:var(--zma-ink)!important;min-width:0!important}
+.auth-card{background:linear-gradient(145deg,#102c59,#081a3c)!important;border:1px solid #2b6093!important}
+.auth-card .security-note,.auth-card .hint,.auth-card label{color:#bcd7ee!important}
+.auth-card input,.auth-card select,.auth-card textarea{background:#0b2750!important;color:#eafaff!important;border:1px solid #3767a0!important;min-height:44px!important}
+.auth-card input::placeholder{color:#a6bddf!important}
+/* Dynamic dialogs are scrollable, not trapped beneath keyboard/phone gesture bar. */
+.modal-bg{max-height:100dvh!important;overflow-y:auto!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior:contain!important;padding:12px!important;align-items:safe center!important}
+.modal-card{background:linear-gradient(140deg,#102d5c,#071a38)!important;color:var(--zma-ink)!important;border:1px solid #3a6da3!important;max-height:calc(100dvh - 24px)!important;overflow-y:auto!important;overflow-x:hidden!important;-webkit-overflow-scrolling:touch!important}
+.modal-card input,.modal-card select,.modal-card textarea{background:#092650!important;color:#edfaff!important;border-color:#396ea8!important;min-height:44px!important}
+.modal-card input::placeholder{color:#acc7e5!important}
+.modal-card label,.modal-card .hint,.modal-card .muted{color:#bfddf7!important}
+.modal-card .close-modal{background:#163e77!important;color:#effaff!important}
+#view{min-width:0!important}
+@media(max-width:820px){
+ body,.auth-wrapper,.app-shell,.workspace,#view{max-width:100%!important;min-width:0!important}
+ .auth-wrapper{display:block!important;overflow-y:auto!important;min-height:100dvh!important;-webkit-overflow-scrolling:touch!important}
+ .auth-card{width:100%!important;max-width:100%!important;margin:0 auto!important;padding:clamp(16px,4vw,32px)!important;overflow:visible!important}
+ .auth-card .form-row{display:flex!important;flex-wrap:wrap!important;gap:8px!important}
+ .auth-card .form-row>.form-group{flex:1 1 200px!important;min-width:0!important}
+ .app-shell{min-height:100dvh!important;overflow:visible!important}
+ .workspace{overflow:visible!important}
+ .sidebar{height:100dvh!important;max-height:100dvh!important;overflow-y:auto!important;overscroll-behavior:contain!important;touch-action:pan-y!important;-webkit-overflow-scrolling:touch!important;padding-bottom:max(16px,env(safe-area-inset-bottom))!important}
+ .sidebar .nav{flex:0 0 auto!important;min-height:0!important;overflow:visible!important}
+ .sidebar-bottom{margin-top:18px!important;flex-shrink:0!important}
+ .modal-bg:not([hidden]){display:block!important;overflow-y:auto!important;touch-action:pan-y!important}
+ .modal-card{margin:0 auto!important;max-width:100%!important;max-height:calc(100dvh - 24px)!important}
+ #view,.workspace,.auth-card{overflow-wrap:anywhere}
+ .table-wrap,.table-scroll{overflow-x:auto!important;max-width:100%!important;-webkit-overflow-scrolling:touch!important}
+}
+@media print{.modal-bg{background:transparent!important}body{color:#000}}

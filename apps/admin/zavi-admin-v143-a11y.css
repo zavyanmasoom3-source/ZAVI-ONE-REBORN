@@ -1,0 +1,14 @@
+/* ADMIN 1.4.3 responsive clarity; additive, no existing options removed */
+@media(max-width:760px){
+ #z24Root .v24-shell{max-width:100vw!important;box-sizing:border-box!important;padding-bottom:max(18px,env(safe-area-inset-bottom,0px))!important}
+ #z24Root .v24-tabs{position:sticky;top:0;z-index:8;background:var(--surface,#f5f9ff);display:flex!important;gap:8px!important;overflow-x:auto!important;padding:10px 4px;scrollbar-width:thin}
+ #z24Root .v24-tabs button{flex:0 0 auto;min-height:43px!important;font-size:13px!important}
+ #z24Root .v24-cardrow{gap:12px;flex-wrap:wrap}
+ #z24Root input{max-width:100%;min-height:42px}
+ #z24Root .v24-list{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+ #z23AdminPortal .z23-wrap{max-width:100%;box-sizing:border-box;padding:18px 11px 70px}
+ #z23AdminPortal .z23-card{border-radius:13px!important}
+ #z23AdminPortal .z23-actions button{min-height:45px!important}
+}
+#z24Root button:focus-visible,#zaviRecovery141 button:focus-visible,#z23AdminPortal button:focus-visible{outline:3px solid #15a7c8!important;outline-offset:2px}
+@media(print){#zaviRecovery141{display:none!important}}

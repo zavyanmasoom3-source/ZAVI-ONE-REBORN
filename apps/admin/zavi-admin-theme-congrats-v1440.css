@@ -1,0 +1,51 @@
+/* ZAVI ONE ADMIN 1.4.40 — 7/180/365 congratulations, light/dark parity.
+   Colors of reminder and card are scoped to #z139-dialog and #z140-modal only. */
+#z140-modal[hidden]{display:none!important}
+#z140-modal{--panel:#f7fbff;--field:#fff;--card:#fff;--ink:#16314f;--muted:#456382;--stroke:#b2cde8;--focus:#1caedb;position:fixed;inset:0;z-index:2147483200;display:grid;place-items:center;background:#02132bc9;backdrop-filter:blur(9px);padding:clamp(8px,2vw,26px);color:var(--ink)}
+#z140-modal *{box-sizing:border-box}
+#z140-modal .z140-panel{display:grid;gap:13px;width:min(640px,100%);max-height:calc(100dvh - 24px);overflow-y:auto;overscroll-behavior:contain;padding:clamp(15px,3vw,28px);border-radius:24px;background:var(--panel);border:1px solid var(--stroke);box-shadow:0 30px 90px #0009;color:var(--ink)}
+#z140-modal .z140-header{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+#z140-modal h2{font-size:clamp(20px,2.5vw,27px);line-height:1.4;color:var(--ink);margin:0}
+#z140-modal p{margin:5px 0;line-height:1.7;color:var(--muted)}
+#z140-modal .z140-customer{font-size:18px;font-weight:800;padding:11px 13px;background:var(--card);border:1px solid var(--stroke);border-radius:13px;overflow-wrap:anywhere}
+#z140-modal .z140-label{display:grid;gap:7px;font-weight:800;color:var(--ink)}
+#z140-modal select,#z140-modal textarea{width:100%;max-width:100%;min-height:46px;border-radius:12px;border:1px solid var(--stroke);background:var(--field);color:var(--ink);font:inherit;padding:10px 12px;line-height:1.7}
+#z140-modal textarea{min-height:152px;resize:vertical;direction:inherit}
+#z140-modal .z140-ack{display:flex;align-items:flex-start;gap:10px;line-height:1.7;font-weight:700}
+#z140-modal .z140-ack input{width:22px;height:22px;flex:none;accent-color:#028fc0;margin-top:3px}
+#z140-modal button,#z139-dialog .z140-trigger{border:1px solid var(--stroke,#aacce7);background:var(--field,#fff);color:var(--ink,#134680);border-radius:12px;padding:10px 12px;min-height:46px;font-weight:800;cursor:pointer}
+#z140-modal .z140-primary{background:linear-gradient(125deg,#0a845b,#16b99b);color:white;border-color:#087c66}
+#z140-modal button:disabled{opacity:.5;cursor:not-allowed}
+#z140-modal footer{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+#z140-modal #z140-info{padding:9px 11px;border-radius:11px;border:1px solid #6fa4cb;color:var(--ink);background:var(--card);font-weight:750}
+#z140-modal :is(button,input,textarea,select):focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+#z139-dialog .z140-trigger{grid-column:1/-1;background:linear-gradient(120deg,#1e58ab,#167bb6);color:#fff;border-color:#76bce3}
+/* Improved reminder card density, fit and contrast for tablet and desktop */
+#z139-dialog{--r-bg:#f5f9ff;--r-card:#fff;--r-input:#fff;--r-text:#18314d;--r-title:#073a73;--r-soft:#425d78;--r-stroke:#b4cde3;--r-note:#e7f3fd;--r-shadow:#14375b25}
+#z139-dialog .z139-panel{background:var(--r-bg)!important;color:var(--r-text)!important;border-color:var(--r-stroke)!important}
+#z139-dialog h2{color:var(--r-title)!important}
+#z139-dialog :is(.z139-head p,.z139-time,.z139-expiry,.z139-nophone){color:var(--r-soft)!important}
+#z139-dialog .z139-card{background:var(--r-card)!important;color:var(--r-text)!important;border-color:var(--r-stroke)!important;box-shadow:0 5px 20px var(--r-shadow)!important}
+#z139-dialog .z139-identity strong{color:var(--r-title)!important}
+#z139-dialog .z139-identity small{color:var(--r-soft)!important}
+#z139-dialog .z139-controls input{background:var(--r-input)!important;color:var(--r-text)!important;border-color:var(--r-stroke)!important}
+#z139-dialog :is(button:not(.z139-primary):not(.z140-trigger),.z139-status){color:var(--r-text)!important;background:var(--r-note)!important;border-color:var(--r-stroke)!important}
+#z139-dialog .z139-controls [aria-pressed="true"]{background:linear-gradient(115deg,#1458d7,#047ea8)!important;color:white!important}
+#z139-dialog .z139-primary{background:linear-gradient(115deg,#08814c,#12a972)!important;color:#fff!important}
+#z139-dialog .z140-trigger{background:linear-gradient(110deg,#1e55b5,#1486bd)!important;color:#fff!important}
+#z139-dialog .z139-count{background:#daecff;color:#12477e}
+#z139-dialog .z139-count.z139-critical{background:#ffedb5;color:#723e07}
+#z139-dialog .z139-count.z139-expired{background:#ffe2e7;color:#972139}
+html[data-theme="dark"] #z139-dialog,html:has(body.dark) #z139-dialog,body.dark #z139-dialog,body[data-theme="dark"] #z139-dialog,#z139-dialog[data-zavi-theme="dark"]{
+ --r-bg:#091a33;--r-card:#102a4a;--r-input:#0e2644;--r-text:#f2f8ff;--r-title:#f3fbff;--r-soft:#c0d4e8;--r-stroke:#406688;--r-note:#183557;--r-shadow:#0004;
+}
+html[data-theme="dark"] #z140-modal,body.dark #z140-modal,body[data-theme="dark"] #z140-modal,#z140-modal[data-zavi-theme="dark"]{
+ --panel:#081a34;--field:#122c4f;--card:#133455;--ink:#f4faff;--muted:#c6def5;--stroke:#416b93;--focus:#7de3fa;
+}
+#z139-dialog[data-zavi-theme="dark"] .z139-count.z139-soon{background:#17456c;color:#e8f7ff}
+#z139-dialog[data-zavi-theme="dark"] .z139-count.z139-critical{background:#6b4d1d;color:#ffe9bc}
+#z139-dialog[data-zavi-theme="dark"] .z139-count.z139-expired{background:#6e2b3f;color:#ffe3eb}
+#z139-dialog :is(.z139-controls input,button,.z139-card),#z140-modal :is(button,input,textarea,select){font-size:clamp(14px,1.25vw,16px)!important}
+@media(min-width:700px){#z139-dialog .z139-list{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:16px!important}}
+@media(max-width:699px){#z139-dialog .z139-list{grid-template-columns:1fr!important}#z139-dialog .z139-card{padding:13px!important}#z140-modal footer{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){#z139-dialog *,#z140-modal *{transition:none!important;animation:none!important}}

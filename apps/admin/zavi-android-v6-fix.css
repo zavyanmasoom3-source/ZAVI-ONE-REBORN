@@ -1,0 +1,23 @@
+/* ZAVI ONE Android/mobile V6 — presentation-only patch; source V57/V53 logic unchanged */
+:root{--zavi-v6-navy:#061830;--zavi-v6-panel:#0a2c58;--zavi-v6-sky:#37c9e4;}
+html,body{min-width:0;max-width:100%;overflow-x:clip;overscroll-behavior-y:auto}
+/* An inner flex scroll region makes drawer actions accessible while its brand/footer remain stable. */
+.sidebar{box-sizing:border-box!important;min-height:0!important;height:100vh!important;height:100dvh!important;max-height:100dvh!important;overflow:hidden!important;display:flex!important;flex-direction:column!important;touch-action:pan-y!important;-webkit-overflow-scrolling:touch!important;}
+.sidebar>.brand{flex:0 0 auto!important;}
+.sidebar>.zavi-v6-menu-scroll{flex:1 1 auto!important;min-height:0!important;overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior-y:contain!important;touch-action:pan-y!important;-webkit-overflow-scrolling:touch!important;scrollbar-width:thin;scrollbar-color:#4381ac transparent;padding:5px 4px 24px;position:relative;}
+.sidebar>.zavi-v6-menu-scroll::-webkit-scrollbar{width:4px}
+.sidebar>.zavi-v6-menu-scroll::-webkit-scrollbar-thumb{border-radius:8px;background:#377da1}
+.sidebar>.sidebar-footer,.sidebar>.sidebar-bottom{flex:0 0 auto!important;margin-top:0!important;max-height:28dvh!important;overflow-y:auto!important;overscroll-behavior:contain;}
+.sidebar>.zavi-v6-menu-scroll button,.sidebar>.zavi-v6-menu-scroll a{min-height:42px;touch-action:manipulation;}
+/* No dark vertical double-border or detached shadow stripe on mobile drawers. */
+@media(max-width:1050px){
+ .sidebar{top:0!important;bottom:auto!important;padding-top:max(14px,env(safe-area-inset-top))!important;padding-bottom:max(10px,env(safe-area-inset-bottom))!important;border-left:0!important;border-right:0!important;box-shadow:none!important;background:linear-gradient(168deg,#092e60,#061b3a 70%,#07182e)!important;}
+ .sidebar.mobile-drawer,.mobile-drawer .sidebar{box-shadow:none!important;border:0!important;}
+ .sidebar>.zavi-v6-menu-scroll{padding-bottom:32px}
+}
+@media(max-width:820px){
+ input,select,textarea{scroll-margin-top:20vh;}
+ /* Keep modal contents scrollable above keyboard and gesture bar. */
+ .modal-card,#overlay .modal{overscroll-behavior-y:contain!important;-webkit-overflow-scrolling:touch!important;}
+}
+@media print{.sidebar{display:none!important}}

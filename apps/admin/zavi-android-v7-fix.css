@@ -1,0 +1,10 @@
+/* ZAVI ONE ADMIN v7 - restore semantic hidden to remove phantom subscription modal.
+   Android/mobile V5 included display:block!important on .modal-bg, defeating [hidden]. */
+[hidden], #modalBg[hidden], #appScreen[hidden], #authScreen[hidden] { display:none!important; }
+#modalBg:not([hidden]) { display:grid!important; align-items:center!important; justify-items:center!important; overflow-y:auto!important; padding:16px!important; }
+#modalBg:not([hidden]) .modal-card { max-height:calc(100dvh - 32px)!important; overflow-y:auto!important; overscroll-behavior:contain!important; -webkit-overflow-scrolling:touch!important; }
+#modalBody { display:block; min-height:0; }
+@media(max-width:820px){
+ #modalBg:not([hidden]){padding:10px!important;align-items:start!important;}
+ #modalBg:not([hidden]) .modal-card{width:100%;max-height:calc(100dvh - 20px)!important;}
+}

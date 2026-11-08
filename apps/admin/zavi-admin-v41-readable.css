@@ -1,0 +1,206 @@
+/* ZAVI ONE ADMIN V41 | targeted accessibility / mobile / multilingual polish.
+   Purely UI-level changes. Subscription/finance/account operations remain untouched. */
+:root{--v41-dark-ink:#102943;--v41-mid-ink:#284766;--v41-border:#c8d9e8}
+html,body{width:100%;max-width:100%;margin:0;overflow-x:clip}
+#appScreen,.app-shell,.workspace,#view{box-sizing:border-box;min-width:0;max-width:100%}
+#view :is(.overview-cols,.fin-grid,.fin-cards,.metric-grid,.panel,.table-scroll,.zsvc-table-scroll,.page-head){min-width:0;max-width:100%}
+#view .panel{overflow:visible}
+#view :is(.table-scroll,.zsvc-table-scroll){overflow-x:auto;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch}
+#view :is(.data-table,.zsvc-table){min-width:0}
+#view :is(.panel-heading,.page-head,.toolbar){min-width:0;gap:10px}
+#view .page-head{isolation:isolate}
+/* Correct a V40 global text override that turned content on dark blue heroes navy. */
+html[data-zavi-theme="light"] #view > .page-head,
+html[data-zavi-theme="light"] #view > .page-head :is(h1,h2,h3,p,.eyebrow,.subtle,small,span:not(.tag)){
+ color:#f6fbff!important;-webkit-text-fill-color:#f6fbff!important;opacity:1!important;text-shadow:none!important;
+}
+html[data-zavi-theme="light"] #view > .page-head p{color:#d7ebff!important;-webkit-text-fill-color:#d7ebff!important}
+html[data-zavi-theme="light"] #view > .page-head .eyebrow{color:#83e6ff!important;-webkit-text-fill-color:#83e6ff!important}
+html[data-zavi-theme="light"] #view > .page-head .page-actions :is(.tag,.button:not(.primary)){
+ color:#17436e!important;-webkit-text-fill-color:#17436e!important;background:#e7f2ff!important;border-color:#b1cee7!important;
+}
+html[data-zavi-theme="light"] #view > .page-head .page-actions :is(.button.primary){
+ color:#fff!important;-webkit-text-fill-color:#fff!important;background:linear-gradient(112deg,#0873da,#028bc3)!important;border:1px solid #3095e3!important;
+}
+html[data-zavi-theme="light"] #view > .page-head .page-actions :is(.button.primary) *{color:#fff!important;-webkit-text-fill-color:#fff!important}
+html[data-zavi-theme="light"] #view :is(.panel-heading h2,.panel h2,.metric .label,.metric strong,.metric small){opacity:1!important}
+html[data-zavi-theme="light"] #view .panel-heading :is(h2,h3){color:#163551!important;-webkit-text-fill-color:#163551!important}
+html[data-zavi-theme="light"] #view .panel :is(.subtle,.form-helper,.small-muted){color:#405a73!important;-webkit-text-fill-color:#405a73!important}
+/* Preserve semantic status hues with adequate contrast; never hide important state. */
+html[data-zavi-theme="light"] #view .status.active{color:#155b3d!important;background:#d9f9e9!important}
+html[data-zavi-theme="light"] #view .status.warning{color:#704606!important;background:#fff2cb!important}
+html[data-zavi-theme="light"] #view .status.expired{color:#9b2840!important;background:#ffe5ea!important}
+html[data-zavi-theme="light"] #view .status.pending{color:#244a70!important;background:#e8f1fc!important}
+/* Readable dates and focused controls. */
+#view .zavi-v10-date{max-width:100%;overflow-wrap:anywhere}
+#view :is(.data-table,.zsvc-table) th{font-size:clamp(12px,.9vw,14px);line-height:1.65}
+#view :is(.data-table,.zsvc-table) td{line-height:1.8}
+#view .action-cell{flex-wrap:wrap;gap:7px}
+#view .action-cell .button{min-height:35px;white-space:normal}
+#view .panel-heading{flex-wrap:wrap}
+#appScreen .breadcrumbs{min-width:0;overflow-wrap:anywhere}
+#appScreen .top-actions{min-width:0;flex-wrap:wrap;justify-content:end}
+#appScreen .topbar{min-width:0}
+#view .form-group :is(input,select,textarea),#view .fin-form :is(input,select,textarea){min-width:0;max-width:100%}
+/* Critical: the dashboard must occupy the whole free viewport in any language. */
+@media(min-width:761px){
+ html[dir="ltr"] #appScreen>.workspace{margin-left:246px!important;margin-right:0!important;width:calc(100% - 246px)!important;max-width:calc(100% - 246px)!important}
+ html[dir="rtl"] #appScreen>.workspace{margin-right:246px!important;margin-left:0!important;width:calc(100% - 246px)!important;max-width:calc(100% - 246px)!important}
+ #view .overview-cols{grid-template-columns:minmax(0,1.4fr) minmax(0,.9fr)}
+ #view .fin-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(min-width:761px) and (max-width:1120px){
+ #view .overview-cols,#view .fin-grid{grid-template-columns:minmax(0,1fr)}
+ #view .table-scroll{max-width:100%;overflow-x:auto}
+ #appScreen .topbar{height:auto;min-height:67px;flex-wrap:wrap;gap:8px;padding:10px 15px}
+}
+/* Mobile: replace narrow, horizontally clipped subscription/payment tables with
+   label-value cards. Original accessible <table> semantics & actions are intact. */
+@media(max-width:760px){
+ html[dir] #appScreen>.workspace{width:100%!important;max-width:100%!important;margin:0!important}
+ #appScreen .topbar{height:auto!important;min-height:67px;padding:8px 11px!important;gap:7px;flex-wrap:wrap;align-items:center}
+ #appScreen .top-actions{gap:6px;flex:1;justify-content:end}
+ #appScreen .top-right{gap:8px;min-width:0}
+ #appScreen .breadcrumbs{font-size:11px;max-width:135px;line-height:1.5;white-space:normal}
+ #appScreen .live-status{font-size:10px;max-width:100px;line-height:1.35;white-space:normal;padding:7px}
+ #appScreen .zavi-language-switch{max-width:145px;min-width:0}
+ #view{padding:14px 12px 30px!important;width:100%;max-width:100%;box-sizing:border-box}
+ #view > .page-head{padding:16px 14px!important;gap:12px}
+ #view > .page-head h1{font-size:clamp(19px,5.5vw,25px)!important;line-height:1.5}
+ #view > .page-head p{font-size:13px!important;line-height:1.8}
+ #view .page-actions{width:100%;gap:8px}
+ #view .page-actions :is(.tag,.button){min-height:40px;max-width:100%;white-space:normal;line-height:1.6}
+ #view .metric-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+ #view .metric{min-width:0;padding:12px!important;min-height:140px}
+ #view .metric .label{font-size:12px!important;line-height:1.6;overflow-wrap:anywhere}
+ #view .metric strong{font-size:22px!important}
+ #view .metric .metric-icon{margin-inline:2px}
+ #view .overview-cols,#view .fin-grid{display:grid;grid-template-columns:minmax(0,1fr)!important;gap:14px}
+ #view .panel{padding:13px!important;min-width:0}
+ #view .panel-heading h2{font-size:16px!important;line-height:1.7;overflow-wrap:anywhere}
+ #view .panel-heading :is(button,.tag){flex-shrink:0}
+ /* Keep original wide table as scrollable fallback until progressive enhancement marks it. */
+ #view .table-scroll{overflow-x:auto!important;max-width:100%!important}
+ #view .data-table[data-zavi-mobile-cards="1"]{display:block!important;width:100%!important;min-width:0!important;white-space:normal!important;border-collapse:separate!important;background:transparent!important}
+ #view .data-table[data-zavi-mobile-cards="1"] thead{position:absolute!important;clip:rect(0 0 0 0)!important;clip-path:inset(50%)!important;width:1px!important;height:1px!important;overflow:hidden!important;white-space:nowrap!important}
+ #view .data-table[data-zavi-mobile-cards="1"] tbody{display:grid!important;gap:10px!important;min-width:0!important}
+ #view .data-table[data-zavi-mobile-cards="1"] tbody tr{display:block!important;min-width:0!important;padding:11px 12px!important;background:#fff;border:1px solid #c8d9e9!important;border-radius:14px;box-shadow:0 3px 9px #122d4f14}
+ #view .data-table[data-zavi-mobile-cards="1"] tbody td{
+  display:grid!important;grid-template-columns:minmax(90px,37%) minmax(0,1fr)!important;align-items:start!important;
+  gap:6px 10px!important;width:100%!important;min-width:0!important;padding:9px 0!important;margin:0!important;
+  text-align:start!important;border-bottom:1px solid #dce7f0!important;white-space:normal!important;
+  font-size:13px!important;line-height:1.75!important;overflow-wrap:anywhere!important;
+ }
+ #view .data-table[data-zavi-mobile-cards="1"] tbody td:last-child{border:0!important}
+ #view .data-table[data-zavi-mobile-cards="1"] tbody td::before{
+  content:attr(data-zavi-label);display:block;grid-column:1;font-size:11px!important;font-weight:800!important;
+  color:#365b7a!important;-webkit-text-fill-color:#365b7a!important;line-height:1.75;text-align:start!important;
+ }
+ #view .data-table[data-zavi-mobile-cards="1"] tbody td > :is(b,strong,span,small,div,.action-cell){min-width:0;max-width:100%;overflow-wrap:anywhere;grid-column:2}
+ #view .data-table[data-zavi-mobile-cards="1"] tbody td > small{margin:0!important;text-align:start!important;white-space:normal!important;font-size:11px!important}
+ #view .data-table[data-zavi-mobile-cards="1"] tbody td > .zavi-v10-date{min-width:0!important;white-space:normal!important}
+ #view .data-table[data-zavi-mobile-cards="1"] tbody td > .action-cell{display:flex!important;gap:7px;flex-wrap:wrap;justify-content:start;max-width:100%}
+ #view .data-table[data-zavi-mobile-cards="1"] tbody td .button{white-space:normal!important;padding:8px 9px!important;font-size:12px!important;min-height:37px}
+ #view .data-table[data-zavi-mobile-cards="1"] :is(.tag,.status){white-space:normal!important;display:inline-flex;max-width:100%;font-size:11px!important;line-height:1.6!important}
+ #view .data-table[data-zavi-mobile-cards="1"] .zavi-v10-date{min-width:0!important;max-width:100%;white-space:normal!important;font-size:11px!important}
+ html[data-zavi-theme="light"] #view .data-table[data-zavi-mobile-cards="1"] tbody tr{background:#fff!important;color:#163650!important}
+ html[data-zavi-theme="light"] #view .data-table[data-zavi-mobile-cards="1"] tbody td{color:#173753!important;-webkit-text-fill-color:#173753!important}
+ html[data-zavi-theme="dark"] #view .data-table[data-zavi-mobile-cards="1"] tbody tr{background:#0e294a!important;border-color:#315780!important;color:#f0f8ff!important}
+ html[data-zavi-theme="dark"] #view .data-table[data-zavi-mobile-cards="1"] tbody td{border-color:#2e537a!important;color:#e5f5ff!important}
+ html[data-zavi-theme="dark"] #view .data-table[data-zavi-mobile-cards="1"] tbody td::before{color:#add1e9!important;-webkit-text-fill-color:#add1e9!important}
+ html[data-zavi-theme="dark"] #view .data-table[data-zavi-mobile-cards="1"] td > :is(b,strong,span,small){color:#e8f7ff!important;-webkit-text-fill-color:#e8f7ff!important}
+ #view .fin-cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #view .fin-metric{min-width:0;padding:12px}
+ #view .fin-metric strong{font-size:19px}
+ /* Reclaim vertical real estate; toast never hides entire data rows. */
+ #toast{max-width:calc(100vw - 28px);left:14px;bottom:15px}
+ #toast .toast{font-size:12px;padding:10px 12px}
+}
+@media(max-width:360px){
+ #view .metric-grid{gap:7px}
+ #view .metric{padding:10px!important}
+ #view .data-table[data-zavi-mobile-cards="1"] tbody td{grid-template-columns:minmax(75px,35%) minmax(0,1fr)!important;gap:6px!important}
+}
+@media print{#view .data-table[data-zavi-mobile-cards="1"]{display:table!important}}
+
+/* V41 final visual QA: improve contrast of dashboard date chips and dark hero descriptions. */
+html[data-zavi-theme="light"] #appScreen .zavi-date-chip{background:transparent!important;color:#153e60!important}
+html[data-zavi-theme="light"] #appScreen .zavi-date-part{background:#e8f4ff!important;border:1px solid #a9c9e3!important;box-shadow:none!important}
+html[data-zavi-theme="light"] #appScreen .zavi-date-part :is(b,span,small){color:#17486f!important;-webkit-text-fill-color:#17486f!important;opacity:1!important}
+html[data-zavi-theme="dark"] #view > .page-head p{color:#d3e9ff!important;-webkit-text-fill-color:#d3e9ff!important;opacity:1!important}
+html[data-zavi-theme="dark"] #view > .page-head .eyebrow{color:#71dcf3!important;-webkit-text-fill-color:#71dcf3!important}
+
+
+/* V41.2 | READABLE SUBSCRIPTION STATUS BADGES (Dari / Pashto / English)
+   Fixes the V41 mobile rule that paints ALL direct td > span text pale-white,
+   even when the span is a green/blue/pink status pill. The status class itself
+   is the single source for semantic colors; no account state/data is changed. */
+html[data-zavi-theme] #view .data-table .status {
+  --zavi41-status-bg:#dcecff;
+  --zavi41-status-fg:#20466e;
+  --zavi41-status-border:#94b6d8;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:7px!important;
+  width:fit-content!important;
+  max-width:100%!important;
+  min-height:32px!important;
+  padding:6px 12px!important;
+  border-radius:999px!important;
+  border:1px solid var(--zavi41-status-border)!important;
+  background:var(--zavi41-status-bg)!important;
+  color:var(--zavi41-status-fg)!important;
+  -webkit-text-fill-color:var(--zavi41-status-fg)!important;
+  font-weight:850!important;
+  font-size:12px!important;
+  line-height:1.6!important;
+  white-space:normal!important;
+  text-align:start!important;
+  justify-self:start!important;
+  overflow-wrap:anywhere!important;
+  opacity:1!important;
+  text-shadow:none!important;
+}
+html[data-zavi-theme] #view .data-table .status.active {
+  --zavi41-status-bg:#d4f8e7;
+  --zavi41-status-fg:#075b3e;
+  --zavi41-status-border:#7ccaab;
+}
+html[data-zavi-theme] #view .data-table .status.pending {
+  --zavi41-status-bg:#e1efff;
+  --zavi41-status-fg:#20446c;
+  --zavi41-status-border:#99bbdf;
+}
+html[data-zavi-theme] #view .data-table .status.warning {
+  --zavi41-status-bg:#fff0c4;
+  --zavi41-status-fg:#715000;
+  --zavi41-status-border:#dcc279;
+}
+html[data-zavi-theme] #view .data-table .status.expired {
+  --zavi41-status-bg:#ffe0e8;
+  --zavi41-status-fg:#852542;
+  --zavi41-status-border:#e5a2b2;
+}
+html[data-zavi-theme] #view .data-table .status.suspended {
+  --zavi41-status-bg:#f0e4ff;
+  --zavi41-status-fg:#57347b;
+  --zavi41-status-border:#c9ace9;
+}
+/* Override the exact selector from the mobile-card view (even with !important). */
+@media(max-width:760px){
+ html[data-zavi-theme] #view .data-table[data-zavi-mobile-cards="1"] tbody td > span.status {
+  width:fit-content!important;
+  max-width:100%!important;
+  justify-self:start!important;
+  color:var(--zavi41-status-fg)!important;
+  -webkit-text-fill-color:var(--zavi41-status-fg)!important;
+  background:var(--zavi41-status-bg)!important;
+  border-color:var(--zavi41-status-border)!important;
+ }
+}
+
+/* 2026-10-21 accessibility patch: reliable keyboard focus for critical actions. */
+#modalBg button:focus-visible,#modalBg input:focus-visible,#modalBg select:focus-visible,#modalBg textarea:focus-visible,
+#authScreen button:focus-visible,#authScreen input:focus-visible,#authScreen select:focus-visible{outline:3px solid #09b1c6!important;outline-offset:3px!important}
+@media(max-width:760px){#modalBg .modal-card{max-height:92dvh;overflow-y:auto}#modalBg button{min-height:44px}#modalBg input,#modalBg select,#modalBg textarea{font-size:16px}}
