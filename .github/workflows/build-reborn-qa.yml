@@ -228,11 +228,20 @@ jobs:
             --expected-sha256 "$ZAVI_QA_EXPECTED_CERT_SHA256"
           signer_report=$("$APKSIGNER" verify --verbose --print-certs "$apk")
           printf '%s\n' "$signer_report"
-          for scheme in "v1 scheme" "v2 scheme" "v3 scheme"; do
+          # On API 26+ the default verifier may print v1=false because v1 is
+          # not needed. Verify v1 independently at API 23, without weakening it.
+          for scheme in "v2 scheme" "v3 scheme"; do
             printf '%s\n' "$signer_report" | grep -E "Verified using $scheme.*: true" >/dev/null || {
               echo "::error::Required signing scheme $scheme failed verification"; exit 1;
             }
           done
+          legacy_report=$("$APKSIGNER" verify --min-sdk-version 23 --verbose --print-certs "$apk")
+          printf '%s\n' "$legacy_report" | grep -E "Verified using v1 scheme.*: true" >/dev/null || {
+            echo "::error::Required v1 signature failed Android 23 verification"; exit 1;
+          }
+          current_cert=$(printf '%s\n' "$signer_report" | grep -F 'Signer #1 certificate SHA-256 digest:')
+          legacy_cert=$(printf '%s\n' "$legacy_report" | grep -F 'Signer #1 certificate SHA-256 digest:')
+          test -n "$current_cert" && test "$current_cert" = "$legacy_cert"
           printf '%s\n' "$signer_report" | grep -Fi "$ZAVI_QA_EXPECTED_CERT_SHA256" >/dev/null || {
             echo "::error::Signer does not match pinned fingerprint"; exit 1;
           }
