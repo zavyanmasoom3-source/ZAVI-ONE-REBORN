@@ -17,6 +17,8 @@ jobs:
           node-version: '22'
       - name: Reject privileged secrets in public source
         run: python3 scripts/check-public-source-security.py
+      - name: Verify anonymous access is denied by real ADMIN RPCs
+        run: python3 scripts/test-admin-rpc-authorization.py
       - name: Verify migration completeness
         run: python3 scripts/check-migration-integrity.py
       - name: Verify crash-safe cloud synchronization and full workspace acknowledgements
