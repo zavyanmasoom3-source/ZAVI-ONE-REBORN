@@ -175,6 +175,27 @@
   function passwordVisibilityLabel(language, visible) {
     return visibilityLabels[normalizeLanguage(language)][visible ? 'hide' : 'show'];
   }
+  const fixedLabels = Object.freeze({
+    'fa-AF': Object.freeze({serverSettings:'تنظیمات اتصال سرور',
+      serverUrl:'آدرس سرور مرکزی',publishableKey:'کلید عمومی سرور'}),
+    'ps-AF': Object.freeze({serverSettings:'د سرور د نښلولو تنظیمات',
+      serverUrl:'د مرکزي سرور پته',publishableKey:'د سرور عامه کیلي'}),
+    en: Object.freeze({serverSettings:'Server connection settings',
+      serverUrl:'Central server address',publishableKey:'Public server key'})
+  });
+  function localizedLabel(key, language) {
+    const label = fixedLabels[normalizeLanguage(language)][key];
+    if (!label) throw new RangeError('Unknown design translation key');
+    return label;
+  }
+  function syncFixedLabels(doc) {
+    const lang = normalizeLanguage(doc.documentElement?.lang);
+    doc.querySelectorAll('[data-zds-translation]').forEach(node => {
+      const key = node.getAttribute('data-zds-translation');
+      if (!fixedLabels[lang][key]) return;
+      node.textContent = localizedLabel(key,lang);
+    });
+  }
   function syncPasswordToggleLabels(doc) {
     const language = normalizeLanguage(doc.documentElement?.lang);
     doc.querySelectorAll('[data-zds-password-toggle]').forEach(button => {
@@ -194,6 +215,7 @@
     const update = () => {
       refreshDualDateNodes(document);
       syncPasswordToggleLabels(document);
+      syncFixedLabels(document);
     };
     document.addEventListener('click', event => {
       const button = event.target?.closest?.('[data-zds-password-toggle]');
@@ -211,6 +233,6 @@
   return Object.freeze({
     normalizeLanguage,direction,digits,formatDualDate,formatNumber,
     formatExchangeRate,normalizeAfghanPhone,whatsappDigits,setFieldError,
-    refreshDualDateNodes,passwordVisibilityLabel
+    refreshDualDateNodes,passwordVisibilityLabel,localizedLabel
   });
 });
