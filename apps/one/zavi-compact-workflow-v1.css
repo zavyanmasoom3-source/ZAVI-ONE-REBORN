@@ -62,3 +62,19 @@
   padding:9px 11px;border:1px solid var(--zds-border,#9aaec1);
   border-radius:10px;color:var(--zds-text,#152b43)}
 .zavi-stock-history-projection .zv-wh-stock-row>*{overflow-wrap:anywhere;max-width:100%}
+
+/* Journal: three actual views; same tenant transactions and notes with separate
+ * pagination, and stock widgets read from existing stockState() data. */
+.zavi-journal-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:4px;padding:4px;border:1px solid var(--zds-border,#9aaec1);
+  border-radius:13px;background:var(--zds-surface,#fff);margin:0 0 12px}
+.zavi-journal-tab{background:transparent;border:1px solid transparent;
+  color:var(--zds-text,#152b43);border-radius:10px;min-height:44px;
+  padding:8px 5px;font:inherit;cursor:pointer;overflow-wrap:anywhere}
+.zavi-journal-tab[aria-selected="true"]{background:var(--zds-button,#075fa6);
+  border-color:var(--zds-button,#075fa6);color:var(--zds-button-text,#fff);font-weight:700}
+.zavi-journal-tab:focus-visible{outline:3px solid var(--zds-focus,#075fa6);outline-offset:2px}
+.zavi-journal-tab-panels{min-width:0}
+.zavi-journal-tab-panels:not([data-zavi-journal-active="inventory"]) > .zv18-insight{display:none!important}
+.zavi-journal-tab-panels[data-zavi-journal-active="inventory"] > section.card{display:none!important}
+.zavi-journal-tab-panels[data-zavi-journal-active="inventory"] > .zv-feature-row{display:none!important}
