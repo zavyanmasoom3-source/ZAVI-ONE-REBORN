@@ -9,6 +9,7 @@ on:
       - 'scripts/test-pdf-59-route-coverage.py'
       - 'scripts/test-login-design-browser.py'
       - 'scripts/test-phase2-recovery-contract-browser.py'
+      - 'scripts/test-phase2-display-sizes-browser.py'
       - 'scripts/test-shared-design-browser.py'
       - 'scripts/test-unified-reference-browser.py'
       - 'scripts/test-compact-workflow-browser.py'
@@ -49,6 +50,8 @@ jobs:
         run: python3 scripts/test-login-design-browser.py
       - name: Verify full private PIN recovery with isolated fake owner approval
         run: python3 scripts/test-phase2-recovery-contract-browser.py
+      - name: Verify independent text/interface/icon sliders and persistence
+        run: python3 scripts/test-phase2-display-sizes-browser.py
       - name: Test common three-mode reference tokens and safe DOM components
         run: python3 scripts/test-unified-reference-browser.py
       - name: Measure actual shared color contrast, language, date and field errors in Chrome
