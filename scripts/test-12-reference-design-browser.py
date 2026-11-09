@@ -116,6 +116,20 @@ with Session() as browser:
         })()""")
         assert not overlay['active'] and overlay['navVisible'], (route, overlay)
         report['apps'][f'one-{route}-floating-buttons']=overlay
+        if route=='products':
+            scanner=browser.eval("""(()=>{
+              const panel=document.querySelector('#content details.z638-warehouse-scanner');
+              if(!panel)return {exists:false};
+              const closed=!panel.open;
+              const input=panel.querySelector('#zaviWarehouseScan');
+              const camera=panel.querySelector('[data-zavi-camera-open="zaviWarehouseScan"]');
+              panel.querySelector('summary').click();
+              return {exists:true,closed,open:panel.open,
+                 input:!!input,camera:!!camera,
+                 inputVisible:!!input && getComputedStyle(input).display!=='none'};
+            })()""")
+            assert all(scanner.values()),scanner
+            report['apps']['one-products-compact-barcode']=scanner
 
     # Obsolete legacy design customizer and repair menu are absent from new UI.
     browser.route('settings')
