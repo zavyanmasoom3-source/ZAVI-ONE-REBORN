@@ -37,18 +37,21 @@ function locale(lang){return lang==='en'?2:lang==='ps-AF'?1:0}
 function t(k,lang){return dictionary[k]?.[locale(lang)]||k}
 const latin=s=>String(s??'').replace(/[۰-۹]/g,ch=>String('۰۱۲۳۴۵۶۷۸۹'.indexOf(ch))).replace(/[٠-٩]/g,ch=>String('٠١٢٣٤٥٦٧٨٩'.indexOf(ch)));
 function isFresh(last,now=Date.now(),minutes=15){const n=Date.parse(last||'');return Number.isFinite(n)&&n<=now+60000&&now-n<=minutes*60000;}
+// A heartbeat with zero pending changes does not prove the cloud ledger was
+// actually synchronized. Use the same 15-minute relation as server RPCs.
+function isVerifiedSynced(d,now=Date.now()){
+ if(!d||d.reported_pending_count===null||d.reported_pending_count===undefined||
+   !Number.isInteger(Number(d.reported_pending_count))||
+   Number(d.reported_pending_count)!==0)return false;
+ const report=Date.parse(d.last_report_at||'');
+ const synced=Date.parse(d.last_sync_at||'');
+ return isFresh(d.last_report_at,now)&&Number.isFinite(report)&&
+  Number.isFinite(synced)&&synced<=now+60000&&synced>=report-15*60000;
+}
 function classifyOtherDevices(devices,ownId,now=Date.now()){
  const previous=(Array.isArray(devices)?devices:[]).filter(d=>d?.status==='active'&&d?.device_id!==ownId);
  if(previous.some(d=>Number(d.reported_pending_count)>0))return {status:'pending',devices:previous};
- // Match the server's 15-minute last-sync rule. A fresh heartbeat alone
- // does NOT prove the last cloud upload succeeded; the server rejects it.
- if(previous.some(d=>{
-  const report=Date.parse(d.last_report_at||'');
-  const synced=Date.parse(d.last_sync_at||'');
-  return !isFresh(d.last_report_at,now)||!Number.isFinite(synced)||
-   synced>now+60000||synced<report-15*60000||
-   d.reported_pending_count===null||d.reported_pending_count===undefined;
- }))return {status:'unknown',devices:previous};
+ if(previous.some(d=>!isVerifiedSynced(d,now)))return {status:'unknown',devices:previous};
  return {status:'clear',devices:previous};
 }
 function date(v,lang){if(!v)return '—';const d=new Date(v);if(!Number.isFinite(d.getTime()))return '—';return latin(new Intl.DateTimeFormat(lang==='en'?'en-GB':lang==='ps-AF'?'en-GB':'en-GB',{year:'numeric',month:'short',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false,timeZone:'Asia/Kabul'}).format(d));}
@@ -110,7 +113,7 @@ function mount(w){
  }
  async function revoke(id){if(!own())return;const d=serverRows.find(x=>x.device_id===id);if(!d||id===deviceId())return;
  if(Number(d.reported_pending_count)>0){w.alert(t('rejected',lang()));return}
- if(d.reported_pending_count===null||d.reported_pending_count===undefined||!isFresh(d.last_report_at)){w.alert(t('unknownPending',lang()));return}
+ if(!isVerifiedSynced(d)){w.alert(t('unknownPending',lang()));return}
  if(!w.confirm(t('confirmRevoke',lang())+'\n'+t('revokeWarning',lang())))return;
  try{await rpc('zavi_v652_owner_revoke_device',{p_workspace:ctx().workspace,p_device_id:id});await refresh()}catch(e){report(e.message,true)}
  }
@@ -147,5 +150,5 @@ w.addEventListener('zavi-cloud-workspace-selected',()=>{const now=scope();if(now
  }
  w.ZaviDevices652={settingsHTML,onSettingsRendered,refresh,checkin,guardTransfer:guardedTransfer,lastTransferBlock:()=>lastTransferBlocked};
  }
- return {t,latin,isFresh,classifyOtherDevices,mount};
+ return {t,latin,isFresh,isVerifiedSynced,classifyOtherDevices,mount};
 });
