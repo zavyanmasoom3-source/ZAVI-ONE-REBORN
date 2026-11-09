@@ -12,6 +12,7 @@ with Session() as browser:
     route=browser.route('purchases')
     assert route['selected'] and route['visible'] and not route['locked'],route
     browser.until("!!document.querySelector('[data-zv-transit]')",'in-transit module mounted')
+    assert browser.eval("document.querySelectorAll('[data-zv-open]').length===1"),'purchase heading must expose one transit launcher'
     assert browser.eval("document.querySelector('[data-zv-status]').textContent.includes('مالک')"),'owner-only gate must be visible'
     print('PASS: real Chrome purchase page displays owner-only cloud gate')
     init=browser.eval(r"""(()=>{
