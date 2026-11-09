@@ -1,13 +1,10 @@
-/* ZAVI approved interface: light/dark only, with the existing public theme API.
-   Legacy glass preference is migrated to dark without touching account data. */
+/* ZAVI unified 12-reference themes: light/dark/glass, no cloud or finance mutations. */
 (()=>{'use strict';
  const KEY='zavi_theme_preference_v29',UI_KEY='zavi_ui_appearance_v2';
- const normalize=value=>value==='light'?'light':'dark';
+ const normalize=value=>['light','dark','glass'].includes(value)?value:'dark';
  let current=normalize(document.documentElement.getAttribute('data-zavi-theme'));
  try{current=normalize(localStorage.getItem(UI_KEY)||localStorage.getItem(KEY)||current)}catch(_){}
  function syncControls(){
-   // Old settings may contain hard-coded glass buttons, not merely dynamic ones.
-   document.querySelectorAll('[data-zavi-theme-choice="glass"]').forEach(el=>el.remove());
    document.querySelectorAll('[data-zavi-theme-choice]').forEach(el=>{
      const active=el.getAttribute('data-zavi-theme-choice')===current;
      if(el.getAttribute('aria-pressed')!==String(active))
@@ -27,8 +24,7 @@
  }
  document.addEventListener('click',event=>{
    const control=event.target.closest?.('[data-zavi-theme-choice]');
-   if(control && control.dataset.zaviThemeChoice!=='glass')
-     setTheme(control.dataset.zaviThemeChoice);
+   if(control)setTheme(control.dataset.zaviThemeChoice);
  });
  window.addEventListener('storage',event=>{
    if(event.key===KEY||event.key===UI_KEY)setTheme(event.newValue);

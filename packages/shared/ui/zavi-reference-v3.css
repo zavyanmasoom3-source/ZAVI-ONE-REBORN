@@ -1,37 +1,11 @@
-/* Reference V3 — owner-provided 12 composite screenshots.
-   Final layer: replaces visual tokens only, never data/permissions. */
-html[data-zavi-theme="light"] {
- --zav-bg:#f5f7fb;--zav-surface:#fff;--zav-soft:#f1f5fa;
- --zav-input:#fff;--zav-ink:#14213a;--zav-muted:#596a7f;
- --zav-border:#dfe6f0;--zav-blue:#0a69e8;--zav-blue-2:#278bff;
- --zav-link:#125fcb;--zav-blue-soft:#eaf2ff;
- --zav-positive:#0a7e4b;--zav-positive-bg:#e9f8f0;
- --zav-negative:#bb2739;--zav-negative-bg:#ffedf0;
- --zav-warn:#915e08;--zav-warn-bg:#fff2d7;
- --zav-radius:14px;--zav-field-radius:11px;--zav-tap:44px;
- --zav-shadow:0 3px 10px #112b5510,0 13px 28px #142b590a;
- color-scheme:light;
-}
-html[data-zavi-theme="dark"] {
- --zav-bg:#0a0e15;--zav-surface:#171b22;--zav-soft:#222833;
- --zav-input:#1d232e;--zav-ink:#f4f7fb;--zav-muted:#b8c4d3;
- --zav-border:#323c4a;--zav-blue:#0e68e8;--zav-blue-2:#3a95ff;
- --zav-link:#a0cfff;--zav-blue-soft:#142d51;
- --zav-positive:#6ae4a6;--zav-positive-bg:#14392a;
- --zav-negative:#ff959e;--zav-negative-bg:#432329;
- --zav-warn:#ffd07f;--zav-warn-bg:#41341e;
- --zav-radius:14px;--zav-field-radius:11px;--zav-tap:44px;
- --zav-shadow:0 7px 25px #0005;color-scheme:dark;
-}
+/* Compatibility aliases only. The single authoritative palette, spacing,
+ * radius and theme colors live in design-system-v1.css for both applications.
+ * This file MUST NOT redefine light/dark/glass color values. */
 html[data-zavi-theme] {
  --zrf-page:var(--zav-bg);--zrf-paper:var(--zav-surface);
  --zrf-paper2:var(--zav-soft);--zrf-text:var(--zav-ink);
  --zrf-muted:var(--zav-muted);--zrf-border:var(--zav-border);
  --zrf-shadow:var(--zav-shadow);
- --zds-bg:var(--zav-bg);--zds-surface:var(--zav-surface);
- --zds-surface-alt:var(--zav-soft);--zds-text:var(--zav-ink);
- --zds-muted:var(--zav-muted);--zds-border:var(--zav-border);
- --zds-button:var(--zav-blue);--zds-button-text:#fff;--zds-focus:var(--zav-blue-2);
  --zpdf-bg:var(--zav-bg);--zpdf-paper:var(--zav-surface);
  --zpdf-ink:var(--zav-ink);--zpdf-muted:var(--zav-muted);
  --zpdf-line:var(--zav-border);--zpdf-blue:var(--zav-blue);
@@ -41,7 +15,7 @@ html[data-zavi-theme] {
 }
 html[data-zavi-theme] body {
  background:var(--zav-bg)!important;color:var(--zav-ink)!important;
- font-family:Vazirmatn,Estedad,Tahoma,Arial,system-ui,sans-serif!important;
+ font-family:var(--zds-font-family)!important;
 }
 html[data-zavi-theme] :is(button,a,input,select,textarea,summary):focus-visible {
  outline:3px solid var(--zav-blue-2)!important;outline-offset:2px!important;
