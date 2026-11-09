@@ -5,7 +5,7 @@
  */
 'use strict';
 const APK_ORIGIN='https://appassets.androidplatform.net';
-const CACHE_NAME='zavi-admin-design-tokens-unified-20261109';;;
+const CACHE_NAME='zavi-admin-design-tokens-unified-20261109-font1';;;
 const CORE=[
   "../../packages/shared/ui/zavi-reference-v3.css",
   "../../packages/shared/ui/zavi-reference-navigation-v3.js",
@@ -100,6 +100,7 @@ const CORE=[
   "../../packages/shared/database/supabase-config.js",
   "../../packages/shared/security/access-contract.js",
   "../../packages/shared/i18n/language-core.js",
+  "../../packages/shared/ui/fonts/Vazirmatn-Variable.ttf",
   "../../packages/shared/ui/design-system-v1.css",
   "../../packages/shared/ui/design-system-v1.js",
   "../../packages/shared/diagnostics/build-proof-v1.js",

@@ -1,3 +1,5 @@
+@font-face{font-family:"Vazirmatn";src:url("./fonts/Vazirmatn-Variable.ttf") format("truetype");font-style:normal;font-weight:100 900;font-display:swap}
+/* Bundled SIL Open Font License 1.1: ./fonts/OFL.txt. Offline, including Pashto. */
 /* ZAVI Unified Reference Design — one authoritative token source.
  * Owner's 12 screenshot sheets; shared by ONE mobile, ONE desktop and ADMIN.
  * No network font loads; prefer locally packaged Vazirmatn when present,
