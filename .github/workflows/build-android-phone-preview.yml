@@ -148,10 +148,10 @@ jobs:
           print('staged shared modules:', list((Path('android-build/app/src/main/assets/packages/shared')).rglob('*'))[:20])
           PY
           if [[ "${{ matrix.app }}" == "one" ]]; then
-            version="66.78-reborn.qa.$GITHUB_RUN_NUMBER-OFFLINE-PREVIEW"
+            version="66.78-reborn.qa.$GITHUB_RUN_NUMBER-OFFLINE-PREVIEW-NOT-RELEASE"
             package="com.zavione.one.offlinepreview"
           else
-            version="1.4.69-reborn.qa.$GITHUB_RUN_NUMBER-OFFLINE-PREVIEW"
+            version="1.4.69-reborn.qa.$GITHUB_RUN_NUMBER-OFFLINE-PREVIEW-NOT-RELEASE"
             package="com.zavione.one.admin.offlinepreview"
           fi
           printf '{"commit":"%s","app":"%s","run":"%s","version":"%s","package":"%s","kind":"OFFLINE-PREVIEW-NOT-RELEASE","signing":"%s"}\n' \
@@ -220,26 +220,7 @@ jobs:
             grep -F "name='com.zavione.one.admin.offlinepreview'" <<< "$package"
           fi
           grep -F 'OFFLINE-PREVIEW-NOT-RELEASE' <<< "$package"
-          "$aapt" dump xmltree "$apk" AndroidManifest.xml | grep -E 'testOnly.*0x0
-          unzip -p "$apk" assets/zavi-build-info.json | grep -F '"kind":"OFFLINE-PREVIEW-NOT-RELEASE"'
-          test -s "$apk"
-          mkdir -p offline-preview-output
-          cp "$apk" "offline-preview-output/ZAVI_${{ matrix.app }}_OFFLINE-PREVIEW-NOT-RELEASE.apk"
-          (cd offline-preview-output && sha256sum *.apk > SHA256SUMS.txt)
-          cat offline-preview-output/SHA256SUMS.txt
-          echo "::warning::Only for disposable devices: tap APK to install on Android 8+; this is NOT a Release/upgrade and must not contain real financial data."
-      - uses: actions/upload-artifact@v4
-        with:
-          name: OFFLINE-PREVIEW-NOT-RELEASE-Android-${{ matrix.app }}
-          path: offline-preview-output/
-          retention-days: 4
-          if-no-files-found: error
-      - name: Destroy one-run preview signing material
-        if: always()
-        shell: bash
-        run: rm -f "$RUNNER_TEMP/zavi-${{ matrix.app }}-isolated-testonly.p12"
- >/dev/null
-          # Explicitly refuse adb-only testOnly=true APK: phone users must install by tapping.
+          "$aapt" dump xmltree "$apk" AndroidManifest.xml | grep -E 'testOnly.*0x0$' >/dev/null
           if "$aapt" dump xmltree "$apk" AndroidManifest.xml | grep -E 'testOnly.*0xffffffff' >/dev/null; then
             echo "::error::Preview unexpectedly became testOnly=true"; exit 1
           fi
