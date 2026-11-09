@@ -219,6 +219,50 @@ with Session() as browser:
       'modes':['light','dark','glass'],'locales':['fa-AF','ps-AF','en'],
       'native_and_preferences_synchronized':True}
 
+    # Owner sheet 11: changing interface language must relabel the actual
+    # eight collapsible groups without losing the current search/open state
+    # or moving/replacing any original Settings form controls.
+    original_ids=browser.eval("""[...document.querySelectorAll(
+       '#content .zavi-clean-settings-group .zavi-clean-settings-stack > *')]
+       .map(el=>el.id||el.className)""")
+    browser.eval("""document.querySelector(
+      '#content .zavi-clean-settings-group[data-group="security"]').open=true""")
+    for language,title,first,look in [
+        ('fa-AF','تنظیمات','حساب و پروفایل','ظاهر و زبان'),
+        ('ps-AF','تنظیمات','حساب او پېژندپاڼه','بڼه او ژبه'),
+        ('en','Settings','Account & profile','Appearance & language')
+    ]:
+        localized=browser.eval("""(()=>{
+          const lang=%s;
+          document.documentElement.lang=lang;
+          document.documentElement.dir=lang==='en'?'ltr':'rtl';
+          document.dispatchEvent(new CustomEvent('zavi:language-change',
+            {detail:{language:lang}}));
+          const hub=document.querySelector('#content .zavi-clean-settings-hub');
+          const groups=[...hub.querySelectorAll('.zavi-clean-settings-group')];
+          return {title:hub.querySelector('.zavi-clean-settings-title strong')?.textContent,
+            first:groups[0].querySelector('summary span')?.textContent,
+            look:groups.find(g=>g.dataset.group==='look')?.querySelector('summary span')?.textContent,
+            locale:hub.dataset.locale,
+            search:!!hub.querySelector('#zaviCleanSettingsSearch'),
+            securityOpen:groups.find(g=>g.dataset.group==='security')?.open,
+            controls:[...hub.querySelectorAll('.zavi-clean-settings-stack > *')]
+              .map(el=>el.id||el.className)};
+        })()""" %json.dumps(language))
+        assert localized['title']==title and localized['first']==first,localized
+        assert localized['look']==look,localized
+        assert localized['securityOpen'] and localized['search'],localized
+        assert localized['controls']==original_ids,localized
+    browser.eval("""(()=>{
+      document.documentElement.lang='fa-AF';
+      document.documentElement.dir='rtl';
+      document.dispatchEvent(new CustomEvent('zavi:language-change',
+        {detail:{language:'fa-AF'}}));
+    })()""")
+    report['one_settings_8_group_languages']={'locales':['fa-AF','ps-AF','en'],
+       'live_controls_preserved':True,'open_state_preserved':True}
+
+
     # Owner reference 11: the native subscription view must NOT render dark
     # neon cards when the user has selected light mode. UI-only test: it
     # deliberately never requests a plan, writes a licence or touches RPC.
@@ -279,6 +323,25 @@ with Session() as browser:
         })()""" %json.dumps(language))
         assert [x['duration'] for x in requests['requests']]==[7,180,365],requests
         assert requests['authButton'] and requests['label'],requests
+
+        expected_heading={
+          'fa-AF':'عضویت و اعتبار','ps-AF':'ګډون او اعتبار',
+          'en':'Subscription & validity'}[language]
+        expected_plan={
+          'fa-AF':'نوع اشتراک','ps-AF':'د ګډون ډول',
+          'en':'Subscription plan'}[language]
+        details=browser.eval("""(()=>{
+          const hub=document.getElementById('zaviSubscriptionHub');
+          return {heading:hub.querySelector('.zsh-hero h2')?.textContent,
+            plan:hub.querySelector('.zsh-main .zsh-caption')?.textContent,
+            firstDate:hub.querySelector('.zsh-row span')?.textContent,
+            direction:getComputedStyle(hub).direction,
+            offline:hub.querySelector('[data-zavi-auto-offline-card] h3')?.textContent};
+        })()""")
+        assert details['heading']==expected_heading and details['plan']==expected_plan,details
+        assert details['direction']==('ltr' if language=='en' else 'rtl'),details
+        assert details['offline'] and details['firstDate'],details
+
         for entry in requests['requests']:
             assert entry['target']=='_blank' and 'noopener' in entry['rel'],entry
             assert entry['href'].startswith('https://wa.me/'),entry
