@@ -5,7 +5,7 @@
  */
 'use strict';
 const APK_ORIGIN='https://appassets.androidplatform.net';
-const CACHE_NAME='zavi-one-shell-reborn-20261109-r5';
+const CACHE_NAME='zavi-one-shell-reborn-20261109-r6';
 const SHELL_PROTOCOL='zavi-shell-v2';
 const CACHE_PREFIX='zavi-one-';
 const CORE=[
@@ -15,6 +15,8 @@ const CORE=[
   "zavi-showcase-v6668.css",
   "zavi-clean-professional-v6667.css",
   "zavi-warehouse-transfers-v1.js",
+  "zavi-in-transit-v1.js",
+  "zavi-in-transit-v1.css",
   "zavi-whatsapp-v1.js",
   "zavi-three-sizes-v6588.js",
   "zavi-three-sizes-v6588.css",
