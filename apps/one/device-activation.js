@@ -144,9 +144,21 @@ async function replacePrimary(){
     // New release: device list is fetched fresh on every transfer attempt.
     const approved=await window.ZaviDevices652.guardTransfer(ws,id,{silent:true});
     if(!approved){
-       transferMessage(msg('در حال بررسی اجازه انتقال در سرور…','Checking device transfer eligibility on the server…','د سرور له لارې د وسیلې لېږد څېړل کېږي…'),'info');
-     }
-     const reply=await rpc('zavi_v6580_owner_one_tap_transfer',{p_workspace_id:ws,p_new_device_id:id,p_new_device_name:(navigator.userAgentData?.platform||navigator.platform||'ZAVI ONE Device').slice(0,150)},auth,cfg);
+      // Never submit a transfer request after the preflight rejects it.
+      // The server also refuses pending/stale previous-device reports, but
+      // bypassing the client guard here gives false hope and hides the exact
+      // reason. Do not attempt emergency override: no audited override RPC
+      // exists, and unsent accounting data must not be silently abandoned.
+      const rejection=window.ZaviDevices652.lastTransferBlock?.();
+      const explanation=String(rejection?.message||msg(
+        'انتقال دستگاه تأیید نشد؛ همگام‌سازی دستگاه قبلی و مجوز مالک را بررسی کنید.',
+        'Device transfer was blocked. Verify the previous device sync and owner permission.',
+        'د وسیلې لېږد بند شو؛ د پخوانۍ وسیلې همغږي او د مالک اجازه وګورئ.'));
+      update('transfer_blocked',explanation);
+      transferMessage(explanation,'error');
+      return false;
+    }
+    const reply=await rpc('zavi_v6580_owner_one_tap_transfer',{p_workspace_id:ws,p_new_device_id:id,p_new_device_name:(navigator.userAgentData?.platform||navigator.platform||'ZAVI ONE Device').slice(0,150)},auth,cfg);
     if(!['DEVICE_ACTIVATED','DEVICE_REPLACED','DEVICE_ALREADY_ACTIVE'].includes(reply))throw Error(msg('انتقال توسط سرور تأیید نشد.','The server did not confirm the transfer.','سرور لېږد تایید نه کړ.'));
     moved=true;registeredFor='';registeredAt=0;
    }
