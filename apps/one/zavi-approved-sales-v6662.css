@@ -451,10 +451,25 @@ html[data-zavi-theme="dark"] body #overlay .modal.zsal-approved-modal
 html[data-zavi-theme="dark"] body #overlay .modal.zsal-approved-modal
   .zavi-flow-panel .totals #sumTotal{color:#a9d5ff!important}
 
-/* Existing shared date component already shows Afghan Solar + Gregorian in a
- * single blue line. The sales enhancer must not show its own second line. */
+/* Keep exactly ONE small Afghan Solar/Gregorian line. The original
+ * date field contains only a hidden tutorial and our formatted small label,
+ * as verified against the real Chrome DOM; suppress pseudo-generated copies. */
 html[data-zavi-theme] body #overlay .modal.zsal-approved-modal .zsal-dual-date{
-  display:none!important;
+  display:block!important;
+  font-size:11px!important;
+  line-height:1.5!important;
+  color:var(--zsal-muted)!important;
+  background:transparent!important;
+  border:0!important;
+  padding:3px 1px!important;
+  margin:4px 0 0!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+html[data-zavi-theme] body #overlay .modal.zsal-approved-modal .zsal-dual-date::before,
+html[data-zavi-theme] body #overlay .modal.zsal-approved-modal .zsal-dual-date::after{
+  content:none!important;display:none!important;
 }
 
 
