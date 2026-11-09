@@ -456,3 +456,27 @@ html[data-zavi-theme="dark"] body #overlay .modal.zsal-approved-modal
 html[data-zavi-theme] body #overlay .modal.zsal-approved-modal .zsal-dual-date{
   display:none!important;
 }
+
+
+/* The approved final invoice amount spans the whole card, not one tiny column. */
+html body #overlay .modal.zsal-approved-modal .zavi-flow-panel .totals{
+  display:grid!important;grid-template-columns:minmax(0,1fr)!important;
+  gap:8px!important;width:100%!important;min-width:0!important;
+}
+html body #overlay .modal.zsal-approved-modal .zavi-flow-panel .totals > div{
+  grid-column:1/-1!important;width:100%!important;min-width:0!important;
+  box-sizing:border-box!important;
+}
+html body #overlay .modal.zsal-approved-modal .zavi-flow-panel .totals
+  > div:has(#sumTotal){justify-self:stretch!important;width:100%!important;}
+html body #overlay .modal.zsal-approved-modal .zsal-payment-notes{
+  padding:9px 11px!important;border:1px solid var(--zsal-outline)!important;
+  border-radius:13px!important;background:var(--zsal-paper)!important;
+  color:var(--zsal-muted)!important;font-size:12px!important;
+}
+html body #overlay .modal.zsal-approved-modal .zsal-payment-notes summary{
+  min-height:30px!important;cursor:pointer!important;
+  font-weight:700!important;color:var(--zsal-ink)!important;
+}
+html body #overlay .modal.zsal-approved-modal .zsal-payment-notes
+  .tiny-note{font-size:11px!important;line-height:1.7!important;margin:7px 0!important;}
