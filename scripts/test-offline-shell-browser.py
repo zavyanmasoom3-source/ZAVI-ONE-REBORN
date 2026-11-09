@@ -4,8 +4,10 @@
 Disposable localhost profile, no account or cloud login, and no customer data.
 This tests program assets only, NOT offline financial transaction correctness.
 """
-from chrome_cdp import Session
+from chrome_cdp import Session, ROOT
+from pathlib import Path
 import json
+import re
 
 with Session() as browser:
  for app in ('one','admin'):
@@ -35,6 +37,12 @@ with Session() as browser:
    raise SystemExit(app+': offline shell incomplete: '+str(status.get('missing',status)))
   if status.get('required')!=status.get('cached'):
    raise SystemExit(app+': mismatched offline asset count')
-  if not str(status.get('version','')).startswith('zavi-'+app+'-shell-approved-ui-v2-'):
-   raise SystemExit(app+': stale offline cache version '+str(status.get('version')))
+  worker_source=(ROOT/'apps'/app/'sw.js').read_text(encoding='utf-8')
+  match=re.search(r'''const CACHE_NAME\s*=\s*['\"]([^'\"]+)['\"];''',worker_source)
+  if not match:
+   raise SystemExit(app+': service-worker cache identifier missing in source')
+  expected_version=match.group(1)
+  if status.get('version')!=expected_version:
+   raise SystemExit(app+': installed offline cache version '+str(status.get('version'))+
+                    ' differs from current source '+expected_version)
  print('PASS: both PWA shells installed and all mandatory assets cached in Chrome')
