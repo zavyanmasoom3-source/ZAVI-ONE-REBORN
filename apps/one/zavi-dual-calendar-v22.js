@@ -21,10 +21,9 @@ const modes=[['both','هر دو تقویم','دواړه جنتري','Both calend
 const card=()=>`<section class="card zavi-date-settings" id="zaviDateSettings" data-no-translate><div><h3>${t('تقویم هجری شمسی و میلادی','لمریزه هجري او میلادي جنتري','Solar Hijri and Gregorian calendars')}</h3><p>${t('تاریخ‌ها به هر دو تقویم نمایش داده می‌شوند.','نېټې په دواړو جنتریو کې ښودل کېږي.','Dates are shown in both calendars.')}</p></div></section>`;
 function paint(){if(!document.body)return;let el=document.getElementById('zaviDateBanner');
  if(!el){const header=document.querySelector('.topbar,.admin-topbar,.topbar-actions,.app-header,header');if(header){el=document.createElement('div');el.id='zaviDateBanner';el.className='zavi-date-chip';el.setAttribute('data-no-translate','');header.appendChild(el)}}
- if(el){const now=new Date();const html=[];
- if(mode()!=='gregorian')html.push(`<span class="zavi-date-part"><b>${t('هجری شمسی','لمریز هجري','Solar Hijri')}</b><span dir="auto">${renderDate(now,'solar')}</span></span>`);
- if(mode()!=='solar')html.push(`<span class="zavi-date-part"><b>${t('میلادی','میلادي','Gregorian')}</b><span dir="auto">${renderDate(now,'gregorian')}</span></span>`);
- if(el.innerHTML!==html.join(''))el.innerHTML=html.join('')}
+ if(el){const now=new Date();const both=renderDate(now,'solar')+' · '+renderDate(now,'gregorian');
+  const text='<span class="zavi-date-compact" dir="auto">'+both+'</span>';
+  if(el.innerHTML!==text)el.innerHTML=text}
  const settingsRoot=document.getElementById('content');
  if(settingsRoot?.querySelector('#zaviSettingsLanguage')&&!document.getElementById('zaviDateSettings'))settingsRoot.insertAdjacentHTML('afterbegin',card());
  const pane=document.querySelector('#adminSettingsPane,[data-view="settings"].active')||(document.querySelector('.nav-item[data-page="settings"].selected')?document.getElementById('view'):null);
