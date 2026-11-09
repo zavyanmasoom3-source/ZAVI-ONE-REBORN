@@ -362,3 +362,27 @@ html[data-zavi-appearance="glass"] body #overlay .modal.zsal-approved-modal
     > .zavi-flow-panel{padding:11px!important}
   html body #overlay .modal.zsal-approved-modal .zsal-scan-actions{gap:7px!important}
 }
+
+/* Final pass from the owner's actual sale screenshots:
+ * no duplicated internal "ZAVI ONE / sale invoice" card above invoice date.
+ * Preserve hidden native nodes and all ledger handlers in the DOM.
+ */
+html[data-zavi-theme] body #overlay .modal.zsal-approved-modal
+  .modal-body > .zui-section-heading.zui-invoice-form{
+  display:none!important;
+}
+html[data-zavi-theme] body #overlay .modal.zsal-approved-modal
+  .zsal-vertical input[name="date"] ~ .field-hint{
+  display:none!important;
+}
+html[data-zavi-theme] body #overlay .modal.zsal-approved-modal
+  .zsal-vertical .zsal-dual-date{
+  font-size:11px!important;line-height:1.5!important;
+  white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;
+}
+/* The original screenshot has narrow, comfortable spacing rather than stacked
+ * tutorial prose. Real controls are not hidden in the form footer. */
+html[data-zavi-theme] body #overlay .modal.zsal-approved-modal
+  .zsal-vertical > .zavi-flow-panel{
+  margin-block:0 10px!important;
+}
