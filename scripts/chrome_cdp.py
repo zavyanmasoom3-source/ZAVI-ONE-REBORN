@@ -40,18 +40,29 @@ class Session:
         self.server=ThreadingHTTPServer(('127.0.0.1',0),QuietHandler)
         Thread(target=self.server.serve_forever,daemon=True).start()
         self.web='http://127.0.0.1:'+str(self.server.server_address[1])
-        self.tmp=TemporaryDirectory(prefix='zavi-chrome-')
-        self.proc=subprocess.Popen([exe,'--headless=new','--no-sandbox','--disable-gpu',
-            '--disable-dev-shm-usage','--disable-sync','--no-first-run',
-            '--disable-background-networking','--remote-allow-origins=*',
-            '--remote-debugging-port=0','--user-data-dir='+self.tmp.name,'about:blank'],
-            stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
-        f=Path(self.tmp.name)/'DevToolsActivePort'
-        for _ in range(180):
+        # Ephemeral CI runners can reject the first Chrome process. Retry with
+        # a fresh isolated profile; never reuse one with a stale singleton lock.
+        for attempt in range(3):
+            self.tmp=TemporaryDirectory(prefix='zavi-chrome-')
+            self.proc=subprocess.Popen([exe,'--headless=new','--no-sandbox','--disable-gpu',
+                '--disable-dev-shm-usage','--disable-sync','--no-first-run',
+                '--disable-background-networking','--remote-allow-origins=*',
+                '--remote-debugging-port=0','--user-data-dir='+self.tmp.name,'about:blank'],
+                stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+            f=Path(self.tmp.name)/'DevToolsActivePort'
+            for _ in range(180):
+                if f.exists():break
+                if self.proc.poll() is not None:break
+                time.sleep(.1)
             if f.exists():break
-            if self.proc.poll() is not None:raise RuntimeError('Chrome exited before CDP')
-            time.sleep(.1)
-        if not f.exists():raise RuntimeError('CDP port unavailable')
+            with suppress(Exception):
+                self.proc.terminate()
+                self.proc.wait(timeout=4)
+            with suppress(Exception):self.proc.kill()
+            self.tmp.cleanup()
+            if attempt<2:time.sleep(.6)
+        else:
+            raise RuntimeError('Chrome CDP port unavailable after 3 isolated attempts')
         port=int(f.read_text().splitlines()[0])
         targets=json.loads(urlopen(f'http://127.0.0.1:{port}/json/list').read())
         page=next((x for x in targets if x.get('type')=='page'),None)
