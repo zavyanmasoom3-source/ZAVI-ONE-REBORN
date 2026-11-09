@@ -10,6 +10,7 @@ per-warehouse server stock enforcement or real-device barcode permission.
 from pathlib import Path
 import json
 import os
+import time
 from chrome_cdp import Session, ROOT
 
 out=ROOT/'qa-approved-sales'
@@ -21,7 +22,11 @@ proof={"status":"browser QA, not production acceptance","commit":os.environ.get(
 
 with Session() as b:
     b.navigate('one')
+    b.eval("localStorage.setItem('zavi_theme_preference_v29','light');localStorage.setItem('zavi_ui_appearance_v2','light')")
     assert not b.unlock_one(), 'Disposable PIN unlock failed'
+    # A DOM-ready page can still be visually covered by the *real* splash.
+    # Capture the approved screen only after the visible launch finishes.
+    time.sleep(3.0)
     original=b.eval(r"""(()=>{
       const pid='qa-approved-sale-product';
       if(!db.products.find(p=>p.id===pid)){
