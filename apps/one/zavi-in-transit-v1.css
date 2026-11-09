@@ -1,0 +1,21 @@
+/* Isolated in-transit UI. Does not change existing purchase/sale layouts. */
+.zv-transit{margin-top:18px;padding:16px}
+.zv-transit-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.zv-transit-head h3{margin:0;font-size:1rem}
+.zv-transit>p{font-size:.88rem;line-height:1.6}
+.zv-transit-hint{border-inline-start:3px solid var(--primary,#0aa8ae);padding-inline-start:10px;opacity:.85}
+.zv-transit [data-zv-status]:not(:empty){padding:10px;margin:10px 0;border-radius:8px;border:1px solid currentColor;overflow-wrap:anywhere}
+.zv-transit-form{margin:12px 0;padding:12px;border:1px solid var(--border,#8c9bab);border-radius:12px}
+.zv-transit-form summary{cursor:pointer;font-weight:700}
+.zv-transit-fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:10px;margin:14px 0}
+.zv-transit label{display:flex;flex-direction:column;gap:5px;font-size:.84rem;margin:5px 0}
+.zv-transit input,.zv-transit select{min-height:38px;width:100%;min-width:0;color:var(--text,#e6edf4);background:var(--surface,#182c3b);border:1px solid var(--border,#789);border-radius:8px;padding:8px}
+.zv-transit input:focus-visible,.zv-transit select:focus-visible{outline:2px solid var(--primary,#2cbec8);outline-offset:2px}
+.zv-transit-line{display:flex;gap:9px;flex-wrap:wrap;align-items:end;padding:10px 0;border-bottom:1px solid var(--border,#789)}
+.zv-transit-line>label{min-width:135px;flex:1}
+.zv-transit-orders{display:grid;gap:12px;margin-top:16px}
+.zv-transit-order{border:1px solid var(--border,#789);border-radius:10px;padding:12px;overflow-wrap:anywhere}
+.zv-transit-order h4{margin:0}
+.zv-transit-order p{font-size:.84rem}
+.zv-transit-order [data-zv-receive]{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:end;width:100%}
+@media(max-width:540px){.zv-transit-order [data-zv-receive]{grid-template-columns:1fr}.zv-transit .btn{white-space:normal}}
