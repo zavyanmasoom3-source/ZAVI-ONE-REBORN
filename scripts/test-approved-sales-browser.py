@@ -261,18 +261,20 @@ with Session() as b:
       ('ps-AF','pashto','نوی پلور ثبتول'),
       ('fa-AF','dari','ثبت فروش جدید')
     ):
-      b.eval("document.documentElement.lang="+json.dumps(lang_id,ensure_ascii=False)+
-             ";document.dispatchEvent(new Event('zavi:language-change'))")
+      # Use the production locale controller rather than an HTML.lang-only override.
+      b.eval("window.zaviPublicSetLang("+json.dumps(lang_id,ensure_ascii=False)+")")
       b.until("document.querySelector('.zsal-approved-modal .modal-head h3')?.textContent===" +
               json.dumps(expected,ensure_ascii=False),
               'live sales translation to '+locale_name,seconds=8)
       state=b.eval("""(()=>({
         translated:document.querySelector('.zsal-approved-modal .modal-head h3').textContent,
         date:document.querySelector('.zsal-dual-date')?.textContent||'',
-        lang:document.documentElement.lang
+        lang:document.documentElement.lang,
+        appLang:window.zaviPublicLanguage?.()
       }))()""")
       locales[locale_name]={'translated':state['translated']==expected,
-                            'date':state['date'],'lang':state['lang']}
+                            'date':state['date'],'lang':state['lang'],'appLang':state['appLang']}
+      assert state['appLang']==lang_id and state['lang']==lang_id,state
     assert all(locales[k]['translated'] and locales[k]['date'] for k in ('english','pashto','dari')),locales
     print('PASS: real-time Dari/Pashto/English sales header and dual Afghan/Gregorian date update without reload')
     # Exercise actual native localStorage transaction posting in the disposable
