@@ -2702,8 +2702,8 @@ function renderSalesReference(rows,selected,total){
  const filtered=rows.filter(zaviSalesMatchesView),result=z647Limit(filtered,'sales');
  const view=[['all',L.all],['paid',L.paid],['credit',L.credit]];
  const tabbar=view.map(([id,label])=>`<button type="button"
-  class="zavi-sales-filter ${{zaviSalesView===id?'selected':''}"
-  data-zavi-sales-view="${{id}" aria-pressed="${{zaviSalesView===id}">${{label}</button>`).join('');
+  class="zavi-sales-filter ${zaviSalesView===id?'selected':''}"
+  data-zavi-sales-view="${id}" aria-pressed="${zaviSalesView===id}">${label}</button>`).join('');
  const invoices=result.rows.map(t=>{
   const outstanding=Math.max(0,money(txTotal(t)-num(t.paid)));
   const isReturn=t.type==='sale_return';
@@ -2712,43 +2712,43 @@ function renderSalesReference(rows,selected,total){
   const customer=t.customerName||contactName(t.contactId)||'—';
   const day=window.ZaviDesignSystemV1?.formatDualDate(t.date,
      {language:document.documentElement.lang})||fmtDate(t.date);
-  return `<button type="button" class="zavi-sales-invoice" data-detail="${{escapeHtml(t.id)}">
-    <span class="zavi-sales-invoice-icon">${{icon('expense')}</span>
+  return `<button type="button" class="zavi-sales-invoice" data-detail="${escapeHtml(t.id)}">
+    <span class="zavi-sales-invoice-icon">${icon('expense')}</span>
     <span class="zavi-sales-invoice-body">
-      <strong>${{escapeHtml(t.code||'—')}</strong>
-      <small>${{escapeHtml(customer)}</small>
-      <small class="zavi-sales-invoice-date">${{escapeHtml(day)}</small>
+      <strong>${escapeHtml(t.code||'—')}</strong>
+      <small>${escapeHtml(customer)}</small>
+      <small class="zavi-sales-invoice-date">${escapeHtml(day)}</small>
     </span>
     <span class="zavi-sales-invoice-amount">
-      <strong>${{currency(txTotal(t))}</strong>
-      <small class="zavi-sales-invoice-state ${{state}">${{status}</small>
+      <strong>${currency(txTotal(t))}</strong>
+      <small class="zavi-sales-invoice-state ${state}">${status}</small>
     </span>
     <span aria-hidden="true" class="zavi-sales-invoice-chevron">‹</span>
   </button>`;
  }).join('');
- return `<main class="zavi-sales-reference" data-module="sales" aria-label="${{L.title}">
+ return `<main class="zavi-sales-reference" data-module="sales" aria-label="${L.title}">
   <header class="zavi-sales-top">
     <button type="button" data-go="dashboard" class="zavi-sales-back"
      aria-label="بازگشت">‹</button>
-    <h1>${{L.title}</h1>
+    <h1>${L.title}</h1>
     <button type="button" class="btn primary zavi-sales-new" data-action="sale">
-      ${{icon('plus')} ${{L.newSale}</button>
+      ${icon('plus')} ${L.newSale}</button>
   </header>
-  <nav class="zavi-sales-filters" aria-label="${{L.title}">${{tabbar}</nav>
+  <nav class="zavi-sales-filters" aria-label="${L.title}">${tabbar}</nav>
   <section class="zavi-sales-summary">
-    <div><small>${{L.total}</small><strong>${{currency(total)}</strong></div>
-    <div><small>${{L.count}</small><strong>${{fmtQty(selected.length)}</strong></div>
+    <div><small>${L.total}</small><strong>${currency(total)}</strong></div>
+    <div><small>${L.count}</small><strong>${fmtQty(selected.length)}</strong></div>
   </section>
   <section class="zavi-sales-list">
-    <label class="zavi-sales-search"><span>${{icon('search')}</span>
+    <label class="zavi-sales-search"><span>${icon('search')}</span>
       <input id="searchInput" type="search" autocomplete="off"
-       placeholder="${{L.search}" value="${{escapeHtml(search)}"></label>
+       placeholder="${L.search}" value="${escapeHtml(search)}"></label>
     <div class="zavi-sales-invoices">
-      ${{invoices||`<div class="zavi-sales-empty">
-        <span>${{icon('expense')}</span><strong>${{L.empty}</strong>
-        <small>${{L.after}</small></div>`}
+      ${invoices||`<div class="zavi-sales-empty">
+        <span>${icon('expense')}</span><strong>${L.empty}</strong>
+        <small>${L.after}</small></div>`}
     </div>
-    ${{z647Paging().controls(result,'sales')}
+    ${z647Paging().controls(result,'sales')}
   </section>
  </main>`;
 }
