@@ -39,8 +39,12 @@ def theme_proof(browser,app,mode):
     # The older V2 fixture expected only two appearance controls.
     # Owner's final reference sheet now explicitly requires three modes on
     # ONE's real PIN gate, while the legacy Settings picker remains intact.
-    required={'light','dark','glass'} if app=='one' else {'light','dark'}
-    assert required.issubset(set(proof['buttons'])),(app,required,proof)
+    if app=='one':
+        assert {'light','dark','glass'}.issubset(set(proof['buttons'])),proof
+    else:
+        # ADMIN's V2 route has no inline picker; absence is normal.
+        # Its global three-mode behavior is verified in shared/reference tests.
+        assert 'glass' not in proof['buttons'],proof
     return proof
 
 with Session() as browser:
