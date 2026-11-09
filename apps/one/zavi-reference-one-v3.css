@@ -247,3 +247,69 @@ html[data-zavi-theme] #content .zavi-clean-settings-stack>:is(.card,.settings-ca
  }
  html[data-zavi-theme] #content .zavi-clean-settings-stack{padding:8px!important}
 }
+
+/* Owner's approved ONE home: logo, four clean route tiles, real ledger next. */
+html[data-zavi-theme] #content.zrf-dashboard .zrf-brandbar{
+ display:flex;align-items:center;gap:10px;padding:5px 8px 12px;
+ margin:0 0 8px;background:transparent;min-height:55px;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-brandbar>img{
+ flex:none;width:38px;height:38px;object-fit:contain;border-radius:9px;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-brandbar>span{
+ display:grid;gap:2px;min-width:0;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-brandbar strong{
+ font-size:16px;font-weight:900;letter-spacing:.03em;color:var(--zav-ink);
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-brandbar small{
+ font-size:10px;color:var(--zav-muted);line-height:1.4;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-primary-row.zrf-quick-actions{
+ display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
+ gap:8px!important;margin:0 0 11px!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-quick-action{
+ display:flex;align-items:center;justify-content:center;flex-direction:column;gap:7px;
+ min-width:0;min-height:86px;padding:10px 3px;
+ border:1px solid var(--zav-border)!important;border-radius:13px!important;
+ background:var(--zav-surface)!important;color:var(--zav-ink)!important;
+ box-shadow:var(--zav-shadow)!important;cursor:pointer;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-quick-icon{
+ display:grid;place-items:center;width:34px;height:34px;border-radius:11px;
+ background:var(--zav-blue-soft);color:var(--zav-blue);
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-quick-icon svg{
+ width:23px;height:23px;fill:none;stroke:currentColor;
+ stroke-width:1.85;stroke-linejoin:round;stroke-linecap:round;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-quick-green .zrf-quick-icon{
+ background:var(--zav-positive-bg);color:var(--zav-positive);
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-quick-orange .zrf-quick-icon{
+ background:var(--zav-warn-bg);color:var(--zav-warn);
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-quick-purple .zrf-quick-icon{
+ background:#eceafa;color:#6249c8;
+}
+html[data-zavi-theme="dark"] #content.zrf-dashboard .zrf-quick-purple .zrf-quick-icon{
+ background:#32294d;color:#beadfa;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-quick-label{
+ font-size:clamp(10px,2.2vw,13px)!important;
+ line-height:1.4;font-weight:800;color:var(--zav-ink)!important;
+ white-space:normal;text-align:center;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-brandbar+
+ .zrf-quick-actions + .zav-home-real-summary{
+ margin-top:10px!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-search-wrap{
+ min-height:42px!important;margin:10px 0 12px!important;
+}
+@media(max-width:370px){
+ html[data-zavi-theme] #content.zrf-dashboard .zrf-primary-row.zrf-quick-actions{gap:5px!important}
+ html[data-zavi-theme] #content.zrf-dashboard .zrf-quick-action{min-height:77px;padding:7px 2px}
+ html[data-zavi-theme] #content.zrf-dashboard .zrf-quick-label{font-size:10px!important}
+}

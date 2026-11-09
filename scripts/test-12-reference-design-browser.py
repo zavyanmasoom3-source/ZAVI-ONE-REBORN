@@ -43,6 +43,15 @@ with Session() as browser:
         browser.route('dashboard')
         browser.until("!!document.querySelector('#mobileBottom .bottom-btn')",
                       'ONE original five-tab mobile navigation')
+        browser.until("document.querySelectorAll('#content.zrf-dashboard .zrf-quick-action').length===4",
+                      'ONE four native quick routes in approved home')
+        quick=browser.eval("""(()=>{
+          return [...document.querySelectorAll('#content.zrf-dashboard .zrf-quick-action')]
+            .map(b=>({route:b.dataset.zrfGo,text:b.innerText.trim(),
+              hasIcon:!!b.querySelector('svg')}));
+        })()""")
+        assert [x['route'] for x in quick]==['sales','purchases','contacts','products'],quick
+        assert all(x['hasIcon'] and x['text'] for x in quick),quick
         bottom=browser.eval("""(()=>{
           const nav=document.getElementById('mobileBottom');
           return {destinations:[...nav.querySelectorAll('[data-go]')].map(b=>b.dataset.go),
