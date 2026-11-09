@@ -113,7 +113,12 @@ with Session() as b:
         cameraX:cam.left,cameraRight:cam.right,
         scannerX:scan.left,scannerRight:scan.right,
         screenWidth:innerWidth,modalRight:bounds.right,
-        dualDate:date,tabNavHidden:flow.querySelector('.zavi-flow-tabs')?.hidden,
+        dualDate:date,dualValue:f.elements.date.value,
+        dualFormatter:typeof window.ZaviDesignSystemV1?.formatDualDate,
+        dualProbe:(()=>{try{return window.ZaviDesignSystemV1?.formatDualDate(
+            f.elements.date.value,{language:'fa-AF',timezone:'Asia/Kabul'})}
+            catch(e){return 'ERR:'+e.message}})(),
+        tabNavHidden:flow.querySelector('.zavi-flow-tabs')?.hidden,
         buttonBg:getComputedStyle(d.querySelector('.modal-foot [type=submit]')).backgroundColor};
     })()""")
     assert layout['scrollGroups']==3 and layout['shown'] and layout['tabNavHidden'],layout
