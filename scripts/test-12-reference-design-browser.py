@@ -161,6 +161,64 @@ with Session() as browser:
     })()""")
     assert sections['count']==8 and sections['expanded']==0 and sections['search'],sections
     report['one_12_reference_settings']=sections
+
+    # Owner sheet 11: ONE appearance must not offer a stale two-mode picker.
+    # The native settings actions and the existing preference widget share
+    # persisted ZaviThemeV29 state; no test touches real owner data.
+    browser.eval("""document.querySelector(
+      '#content .zavi-clean-settings-group[data-group="look"]').open=true""")
+    browser.until("""document.querySelectorAll(
+      '#content .zavi-theme-settings [data-zavi-theme-choice]').length===3""",
+      'ONE original settings picker exposes all three owner themes')
+    for language,labels in [
+        ('fa-AF',['روشن','تاریک','شیشه‌ای']),
+        ('ps-AF',['روښانه','تیاره','ښیښه‌یي']),
+        ('en',['Light','Dark','Glass'])
+    ]:
+        localized=browser.eval("""(()=>{
+          document.documentElement.lang=%s;
+          document.documentElement.dir=%s;
+          document.dispatchEvent(new CustomEvent('zavi:language-change',
+            {detail:{language:%s}}));
+          return [...document.querySelectorAll(
+            '#content .zavi-theme-settings [data-zavi-theme-choice]')]
+            .map(b=>({mode:b.dataset.zaviThemeChoice,
+              text:b.textContent.trim(),height:b.getBoundingClientRect().height}));
+        })()""" % (json.dumps(language),
+                   json.dumps('ltr' if language=='en' else 'rtl'),
+                   json.dumps(language)))
+        assert [x['mode'] for x in localized]==['dark','light','glass'] or (
+            [x['mode'] for x in localized]==['light','dark','glass']),localized
+        assert all(any(label in x['text'] for x in localized) for label in labels),localized
+        assert all(x['height']>=44 for x in localized),localized
+    browser.eval("""(()=>{
+      document.documentElement.lang='fa-AF';
+      document.documentElement.dir='rtl';
+      document.dispatchEvent(new CustomEvent('zavi:language-change',
+        {detail:{language:'fa-AF'}}));
+    })()""")
+    for theme in ['light','dark','glass']:
+        synchronized=browser.eval("""(()=>{
+          const theme=%s;
+          document.querySelector('#content .zavi-theme-settings '+
+            '[data-zavi-theme-choice="'+theme+'"]').click();
+          const native=[...document.querySelectorAll(
+            '#content .zavi-theme-settings [data-zavi-theme-choice]')]
+            .filter(b=>b.getAttribute('aria-pressed')==='true').map(b=>b.dataset.zaviThemeChoice);
+          const pref=[...document.querySelectorAll(
+            '#zavi-ui-preferences-v2 [data-zui-theme]')]
+            .filter(b=>b.getAttribute('aria-pressed')==='true').map(b=>b.dataset.zuiTheme);
+          return {runtime:window.ZaviThemeV29.get(),
+            appearance:document.documentElement.dataset.zaviAppearance,
+            native,pref,stored:localStorage.getItem('zavi_ui_appearance_v2')};
+        })()""" %json.dumps(theme))
+        assert synchronized['runtime']==theme and synchronized['appearance']==theme,synchronized
+        assert synchronized['native']==[theme] and synchronized['pref']==[theme],synchronized
+        assert synchronized['stored']==theme,synchronized
+    report['one_reference_settings_appearance']={
+      'modes':['light','dark','glass'],'locales':['fa-AF','ps-AF','en'],
+      'native_and_preferences_synchronized':True}
+
     browser.route('sales')
     browser.until("!!document.querySelector('#content .zavi-sales-reference')",
                   'ONE reference sales uses native list')
