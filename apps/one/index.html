@@ -3946,6 +3946,55 @@ render(); initializeIndexedDB(); window.addEventListener("zavi-offline-ready",()
 <!-- Service Worker installation starts in <head> to support cold offline reloads. -->
 <script>(()=>{
 'use strict';
+
+/* Locale-only gate text. PIN storage, hashing and rate limiting stay unchanged. */
+const PIN_WORDS={
+ 'fa-AF':{title:'ورود به ZAVI ONE',language:'زبان',theme:'انتخاب ظاهر',
+  labelNew:'رمز جدید',labelEnter:'رمز ورود',repeat:'تکرار رمز',
+  setupHelp:'رمز خصوصی ۶ تا ۱۲ رقمی برای این دستگاه بسازید.',
+  enterHelp:'رمز خصوصی خود را وارد کنید تا سیستم حسابداری باز شود.',
+  setup:'ثبت رمز و ورود',enter:'بازکردن سیستم حسابداری',
+  forgot:'رمز را فراموش کرده‌اید؟ بازیابی',
+  invalid:'رمز باید ۶ تا ۱۲ رقم باشد.',mismatch:'تکرار رمز با رمز جدید یکسان نیست.',
+  busy:'در حال بررسی…',limit:'ورود برای {seconds} ثانیه محدود است.',
+  wrong:'رمز صحیح نیست.',tooMany:'۵ تلاش نادرست؛ یک دقیقه بعد دوباره امتحان کنید.',
+  failure:'خطا در ورود',noSecure:'برای رمز خصوصی، برنامه باید از آدرس امن HTTPS اجرا شود.',
+  change:'تغییر رمز شخصی',current:'رمز فعلی',new:'رمز جدید (۶ تا ۱۲ رقم)',
+  newRepeat:'تکرار رمز جدید',changeHelp:'اگر رمز را فراموش کردید، از بخش بازیابی تأییدشده استفاده کنید.',
+  save:'ذخیره رمز جدید',invalidChange:'رمز جدید و تکرار آن صحیح یا یکسان نیستند.',
+  badCurrent:'رمز قبلی درست نیست.',changed:'رمز خصوصی تغییر کرد.',cantChange:'تغییر رمز ممکن نشد.'},
+ 'ps-AF':{title:'ZAVI ONE ته ننوتل',language:'ژبه',theme:'د بڼې ټاکل',
+  labelNew:'نوی شخصي رمز',labelEnter:'د ننوتلو رمز',repeat:'رمز بیا ولیکئ',
+  setupHelp:'د دې وسیلې لپاره له ۶ تر ۱۲ شمېرو شخصي رمز جوړ کړئ.',
+  enterHelp:'خپل شخصي رمز ولیکئ چې حسابداري پرانیستل شي.',
+  setup:'رمز جوړول او ننوتل',enter:'حسابداري پرانیستل',
+  forgot:'رمز مو هېر شوی؟ بیا رغونه',
+  invalid:'رمز باید له ۶ تر ۱۲ شمېرو وي.',mismatch:'تکراري رمز له نوي رمز سره یو شان نه دی.',
+  busy:'کتل کېږي…',limit:'ننوتل د {seconds} ثانیو لپاره بند دي.',
+  wrong:'رمز سم نه دی.',tooMany:'۵ ناسمې هڅې؛ یوه دقیقه وروسته بیا هڅه وکړئ.',
+  failure:'په ننوتلو کې ستونزه',noSecure:'د شخصي رمز لپاره خوندي HTTPS پکار دی.',
+  change:'د شخصي رمز بدلول',current:'اوسنی رمز',new:'نوی رمز (۶ تر ۱۲ شمېرې)',
+  newRepeat:'نوی رمز بیا ولیکئ',changeHelp:'که رمز مو هېر شو، تایید شوې بیا رغونه وکاروئ.',
+  save:'نوی رمز خوندي کول',invalidChange:'نوی رمز او تکرار یې سم یا یو شان نه دي.',
+  badCurrent:'پخوانی رمز سم نه دی.',changed:'شخصي رمز بدل شو.',cantChange:'رمز نه شي بدلېدای.'},
+ 'en':{title:'Sign in to ZAVI ONE',language:'Language',theme:'Choose appearance',
+  labelNew:'New private PIN',labelEnter:'Private PIN',repeat:'Repeat PIN',
+  setupHelp:'Create a 6–12 digit private PIN for this device.',
+  enterHelp:'Enter your private PIN to unlock accounting.',
+  setup:'Save PIN & enter',enter:'Unlock accounting',
+  forgot:'Forgot private PIN? Recover',
+  invalid:'PIN must contain 6–12 digits.',mismatch:'PIN confirmation does not match.',
+  busy:'Checking…',limit:'Try again in {seconds} seconds.',
+  wrong:'Incorrect PIN.',tooMany:'Five incorrect attempts. Try again after one minute.',
+  failure:'Unable to sign in',noSecure:'Private PIN requires a secure HTTPS origin.',
+  change:'Change private PIN',current:'Current PIN',new:'New PIN (6–12 digits)',
+  newRepeat:'Repeat new PIN',changeHelp:'If you forget this PIN, use verified account recovery.',
+  save:'Save new PIN',invalidChange:'New PIN and confirmation must match and be 6–12 digits.',
+  badCurrent:'Current PIN is incorrect.',changed:'Private PIN changed.',cantChange:'PIN could not be changed.'}
+};
+const pinLocale=()=>{const l=String(document.documentElement.lang||'fa-AF');return l.startsWith('en')?'en':l.startsWith('ps')?'ps-AF':'fa-AF'};
+const pinWord=(key)=>PIN_WORDS[pinLocale()][key]||key;
+
 const LOCK_KEY='zawi_store_personal_pin_v1';
 const ATTEMPTS_KEY='zawi_store_private_attempts_v1';
 const gate=document.getElementById('zawiPrivateGate');
@@ -3963,7 +4012,7 @@ function valid(v){return /^\d{6,12}$/.test(v)}
 function to64(bytes){return btoa(String.fromCharCode(...new Uint8Array(bytes)))}
 function from64(s){return Uint8Array.from(atob(s),c=>c.charCodeAt(0))}
 async function keyPin(pin,salt){
- if(!globalThis.crypto?.subtle)throw Error('برای رمز خصوصی، برنامه را از آدرس امن HTTPS نصب کنید.');
+ if(!globalThis.crypto?.subtle)throw Error(pinWord('noSecure'));
  const basic=await crypto.subtle.importKey('raw',new TextEncoder().encode(pin),'PBKDF2',false,['deriveBits']);
  const bits=await crypto.subtle.deriveBits({name:'PBKDF2',salt:from64(salt),iterations:180000,hash:'SHA-256'},basic,256);
  return to64(bits);
@@ -3971,41 +4020,57 @@ async function keyPin(pin,salt){
 function state(){try{return JSON.parse(localStorage.getItem(LOCK_KEY)||'null')}catch(e){return null}}
 function tries(){try{return JSON.parse(localStorage.getItem(ATTEMPTS_KEY)||'{"count":0,"until":0}')}catch(e){return {count:0,until:0}}}
 function setTries(v){try{localStorage.setItem(ATTEMPTS_KEY,JSON.stringify(v))}catch(e){}}
-function showState(){configured=!!state();row.style.display=configured?'none':'';repeat.required=!configured;btn.textContent=configured?'بازکردن سیستم حسابداری':'ثبت رمز و ورود';help.textContent=configured?'رمز خصوصی خود را وارد کنید تا حساب مشتریان و فروشگاه باز شود.':'برای استفاده شخصی یک رمز ۶ تا ۱۲ رقمی انتخاب کنید و آن را به خاطر بسپارید.';label.textContent=configured?'رمز ورود':'رمز جدید';error.textContent='';pass.value='';repeat.value='';}
+function showState(reset=true){
+ configured=!!state();row.style.display=configured?'none':'';repeat.required=!configured;
+ btn.textContent=pinWord(configured?'enter':'setup');
+ help.textContent=pinWord(configured?'enterHelp':'setupHelp');
+ label.textContent=pinWord(configured?'labelEnter':'labelNew');
+ const title=document.getElementById('zawiGateTitle');
+ if(title)title.textContent=pinWord('title');
+ const repeatLabel=row.querySelector('label');
+ if(repeatLabel)repeatLabel.textContent=pinWord('repeat');
+ const forgot=document.getElementById('zawiForgotPinBtn');
+ if(forgot)forgot.textContent=pinWord('forgot');
+ const langLabel=gate.querySelector('[data-zavi-lang-label]');
+ if(langLabel)langLabel.textContent=pinWord('language');
+ const appearance=gate.querySelector('.zavi-gate-appearance');
+ if(appearance)appearance.setAttribute('aria-label',pinWord('theme'));
+ if(reset){error.textContent='';pass.value='';repeat.value='';}
+}
 function unlock(){document.documentElement.classList.remove('zawi-locked');error.textContent='';pass.value='';repeat.value='';resetIdle();}
 function lock(){if(document.documentElement.classList.contains('zawi-locked'))return;document.documentElement.classList.add('zawi-locked');try{closeModal()}catch(e){};showState();}
 function resetIdle(){clearTimeout(idleTimer);if(!document.documentElement.classList.contains('zawi-locked'))idleTimer=setTimeout(lock,10*60*1000)}
 form.addEventListener('submit',async e=>{
  e.preventDefault();if(btn.disabled)return;
- const pin=clean(pass.value),again=clean(repeat.value);if(!valid(pin)){error.textContent='رمز باید ۶ تا ۱۲ رقم باشد.';return;}
- const a=tries();if(a.until>Date.now()){error.textContent='ورود برای '+Math.ceil((a.until-Date.now())/1000)+' ثانیه محدود است.';return;}
- btn.disabled=true;error.textContent='در حال بررسی...';
+ const pin=clean(pass.value),again=clean(repeat.value);if(!valid(pin)){error.textContent=pinWord('invalid');return;}
+ const a=tries();if(a.until>Date.now()){error.textContent=pinWord('limit').replace('{seconds}',String(Math.ceil((a.until-Date.now())/1000)));return;}
+ btn.disabled=true;error.textContent=pinWord('busy');
  try{
   const saved=state();if(!saved){
-    if(pin!==again)throw Error('تکرار رمز با رمز جدید یکسان نیست.');
+    if(pin!==again)throw Error(pinWord('mismatch'));
     const salt=to64(crypto.getRandomValues(new Uint8Array(16)));const hash=await keyPin(pin,salt);
     localStorage.setItem(LOCK_KEY,JSON.stringify({salt,hash,createdAt:Date.now(),algorithm:'PBKDF2-SHA256'}));
     setTries({count:0,until:0});unlock();
   }else{
     const hash=await keyPin(pin,saved.salt);
-    if(hash!==saved.hash){const next={count:(a.count||0)+1,until:0};if(next.count>=5){next.until=Date.now()+60*1000;next.count=0;}setTries(next);throw Error(next.until?'۵ تلاش نادرست؛ یک دقیقه بعد دوباره امتحان کنید.':'رمز صحیح نیست.');}
+    if(hash!==saved.hash){const next={count:(a.count||0)+1,until:0};if(next.count>=5){next.until=Date.now()+60*1000;next.count=0;}setTries(next);throw Error(pinWord(next.until?'tooMany':'wrong'));}
     setTries({count:0,until:0});unlock();
   }
- }catch(ex){error.textContent=ex.message||'خطا در ورود';}finally{btn.disabled=false;pass.value='';repeat.value='';}
+ }catch(ex){error.textContent=ex.message||pinWord('failure');}finally{btn.disabled=false;pass.value='';repeat.value='';}
 });
 function changePin(){if(document.documentElement.classList.contains('zawi-locked'))return;
- const markup=`<div class="field"><label>رمز فعلی</label><input name="previous" type="password" inputmode="numeric" minlength="6" maxlength="12" required autocomplete="off"></div><div class="field"><label>رمز جدید (۶ تا ۱۲ رقم)</label><input name="next" type="password" inputmode="numeric" minlength="6" maxlength="12" required autocomplete="off"></div><div class="field"><label>تکرار رمز جدید</label><input name="again" type="password" inputmode="numeric" minlength="6" maxlength="12" required autocomplete="off"></div><p class="tiny-note">اگر رمز فراموش شود، بازیابی مستقیم آن وجود ندارد. به شکل منظم از اطلاعات پشتیبان تهیه کنید.</p>`;
- showModal('تغییر رمز شخصی',markup,'ذخیره رمز جدید');
+ const markup=`<div class="field"><label>${pinWord('current')}</label><input name="previous" type="password" inputmode="numeric" minlength="6" maxlength="12" required autocomplete="off"></div><div class="field"><label>${pinWord('new')}</label><input name="next" type="password" inputmode="numeric" minlength="6" maxlength="12" required autocomplete="off"></div><div class="field"><label>${pinWord('newRepeat')}</label><input name="again" type="password" inputmode="numeric" minlength="6" maxlength="12" required autocomplete="off"></div><p class="tiny-note">${pinWord('changeHelp')}</p>`;
+ showModal(pinWord('change'),markup,pinWord('save'));
  const changeForm=document.getElementById('dialogForm');
  changeForm.addEventListener('submit',async e=>{
    e.preventDefault();e.stopImmediatePropagation();const f=changeForm.elements;const current=state();if(!current)return;
    const old=clean(f.previous.value),fresh=clean(f.next.value),other=clean(f.again.value);
-   if(!valid(fresh)||fresh!==other){toast('رمز جدید و تکرار آن صحیح یا یکسان نیستند.');return;}
+   if(!valid(fresh)||fresh!==other){toast(pinWord('invalidChange'));return;}
    const submit=changeForm.querySelector('button[type=submit]');submit.disabled=true;
-   try{if(await keyPin(old,current.salt)!==current.hash){toast('رمز قبلی درست نیست.');return;}
+   try{if(await keyPin(old,current.salt)!==current.hash){toast(pinWord('badCurrent'));return;}
      const salt=to64(crypto.getRandomValues(new Uint8Array(16)));const hash=await keyPin(fresh,salt);
-     localStorage.setItem(LOCK_KEY,JSON.stringify({salt,hash,createdAt:Date.now(),algorithm:'PBKDF2-SHA256'}));setTries({count:0,until:0});document.dispatchEvent(new Event('zavi-pin-changed'));closeModal();toast('رمز خصوصی تغییر کرد.');
-   }catch(ex){toast('تغییر رمز ممکن نشد.')}finally{submit.disabled=false;}
+     localStorage.setItem(LOCK_KEY,JSON.stringify({salt,hash,createdAt:Date.now(),algorithm:'PBKDF2-SHA256'}));setTries({count:0,until:0});document.dispatchEvent(new Event('zavi-pin-changed'));closeModal();toast(pinWord('changed'));
+   }catch(ex){toast(pinWord('cantChange'))}finally{submit.disabled=false;}
  },true);
 }
 document.addEventListener('click',e=>{if(e.target.closest('#zawiTopLock,#zawiSidebarLock,#zawiSettingsLock')){lock();}if(e.target.closest('#zawiChangePin')){changePin();}});
@@ -4015,6 +4080,12 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden)hiddenAt=Da
 // Only an authenticated, admin-approved, single-use server decision may reset the LOCAL screen PIN.
 document.addEventListener('zavi-v24-pin-reset-success',()=>{localStorage.removeItem(LOCK_KEY);setTries({count:0,until:0});document.documentElement.classList.add('zawi-locked');showState();});
 showState();
+document.addEventListener('zavi:language-change',()=>showState(false));
+document.addEventListener('change',event=>{
+ if(event.target?.id==='zaviGateLanguage')requestAnimationFrame(()=>showState(false));
+});
+new MutationObserver(()=>showState(false)).observe(document.documentElement,{
+ attributes:true,attributeFilter:['lang']});
 })();
 </script>
 
