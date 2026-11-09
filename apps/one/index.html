@@ -2837,11 +2837,14 @@ async function zaviCompressProductPhoto(file){
 
 
 /* V63.8 warehouse scanner: registered products only, read-only lookup. */
-function zaviWarehousePanel(){return `<section class="card z638-warehouse-scanner zavi-barcode-box" aria-label="اسکن بارکد گدام">
- <div class="z638-scanner-head"><div><h3>▥ اسکن بارکد گدام</h3><p>با دوربین، بارکدخوان USB / Bluetooth یا نوشتن کود، محصول و قیمت واقعی همان گدام را ببینید.</p></div><span class="pill blue">جست‌وجو بدون تغییر موجودی</span></div>
- <div class="zavi-barcode-actions"><input id="zaviWarehouseScan" type="search" dir="ltr" inputmode="search" maxlength="70" autocomplete="off" spellcheck="false" placeholder="بارکد را اسکن کنید یا بنویسید" aria-controls="zaviWarehouseResult" aria-label="بارکد محصول در گدام"><button type="button" class="btn subtle" data-zavi-camera-open="zaviWarehouseScan">📷 دوربین</button></div>
- <div id="zaviWarehouseResult" role="status" aria-live="polite" class="z638-warehouse-result">برای نمایش نام، موجودی و قیمت محصول، بارکد آن را اسکن کنید.</div>
- </section>`}
+function zaviWarehousePanel(){return `<details class="card z638-warehouse-scanner zavi-barcode-box" aria-label="اسکن بارکد گدام">
+ <summary class="zavi-barcode-summary"><span>▥ اسکن بارکد گدام</span><small>دوربین یا بارکدخوان</small><span aria-hidden="true">⌄</span></summary>
+ <div class="zavi-barcode-expanded">
+  <p class="zavi-barcode-help">برای جستجوی محصول و قیمت واقعی گدام، بارکد را اسکن یا تایپ کنید.</p>
+  <div class="zavi-barcode-actions"><input id="zaviWarehouseScan" type="search" dir="ltr" inputmode="search" maxlength="70" autocomplete="off" spellcheck="false" placeholder="بارکد را اسکن کنید یا بنویسید" aria-controls="zaviWarehouseResult" aria-label="بارکد محصول در گدام"><button type="button" class="btn subtle" data-zavi-camera-open="zaviWarehouseScan">📷 دوربین</button></div>
+  <div id="zaviWarehouseResult" role="status" aria-live="polite" class="z638-warehouse-result">برای نمایش نام، موجودی و قیمت محصول، بارکد آن را اسکن کنید.</div>
+ </div>
+ </details>`}
 function zaviWarehouseLookup(code,strict=false){
  const out=document.getElementById('zaviWarehouseResult');if(!out)return null;
  const sku=window.ZaviBarcodeV641.code(code);if(!sku){out.textContent='بارکد محصول را اسکن یا تایپ کنید.';return null}
