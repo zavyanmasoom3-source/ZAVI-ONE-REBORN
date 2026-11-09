@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- No testOnly: mobile users can install by tapping the APK. Distinct app/package/signature. -->
+    <application android:testOnly="false" />
+</manifest>
