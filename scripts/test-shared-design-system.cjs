@@ -145,9 +145,7 @@ for (const app of ['one','admin']) {
  assert.ok(html.includes(finalSkin),'Missing reference stylesheet: '+app);
  assert.ok(html.indexOf(tokens)<html.indexOf(finalSkin),
   'Shared design must load before final app skin: '+app);
- if (html.includes('https://fonts.googleapis.com')) {
-  console.warn('FONT GATE OPEN:',app,
-   'online Google Fonts still referenced; locally bundled font not yet proven');
- }
+ assert.ok(!/fonts\\.googleapis\\.com|fonts\\.gstatic\\.com/.test(html),
+  'Network-loaded fonts are prohibited in offline apps: '+app);
 }
 console.log('PASS: source-linked shared design, forms, calendars, responsive filters and status contracts');
