@@ -201,3 +201,110 @@ html[data-zavi-theme] :is(.zds-field-error,[aria-invalid="true"]){--zds-danger:v
  html[data-zavi-theme] #content{max-width:none!important;padding:0!important}
  html[data-zavi-theme] .mobile-bottom,html[data-zavi-theme] .sidebar,html[data-zavi-theme] .topbar{display:none!important}
 }
+
+/* Approved home dashboard overrides. The original buttons still navigate to real modules. */
+html[data-zavi-theme] #content.zrf-dashboard{
+ --zrf-text:var(--zav-ink);--zrf-muted:var(--zav-muted);
+ --zrf-page:var(--zav-bg);--zrf-paper:var(--zav-surface);
+ --zrf-paper2:var(--zav-soft);--zrf-border:var(--zav-border);
+ --zrf-shadow:var(--zav-shadow);
+ background:var(--zav-bg)!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard>.zrf-home{
+ animation:none!important;padding:0!important;margin:0 auto 12px!important;
+ color:var(--zav-ink)!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-search-wrap{
+ min-height:44px!important;max-width:none!important;border-radius:13px!important;
+ border:1px solid var(--zav-border)!important;background:var(--zav-surface)!important;
+ box-shadow:none!important;padding:3px 7px!important;margin:0 0 11px!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-search-wrap :is(input,button){
+ background:transparent!important;color:var(--zav-ink)!important;
+ box-shadow:none!important;border:0!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-primary-row{
+ gap:9px!important;margin:0 0 11px!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-primary{
+ min-height:67px!important;border-radius:14px!important;padding:10px!important;
+ background:var(--zav-surface)!important;border:1px solid var(--zav-border)!important;
+ color:var(--zav-ink)!important;box-shadow:var(--zav-shadow)!important;
+ transform:none!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-invoice{
+ background:linear-gradient(120deg,var(--zav-blue-2),#0753d6)!important;
+ color:#fff!important;border-color:#236fe5!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-primary-icon{
+ width:37px!important;height:37px!important;min-width:37px!important;
+ border-radius:10px!important;background:var(--zav-blue-soft)!important;
+ color:var(--zav-blue)!important;font-size:19px!important;box-shadow:none!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-invoice .zrf-primary-icon{
+ background:#ffffff30!important;color:#fff!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-primary :is(b,small){
+ color:inherit!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-primary b{font-size:13px!important}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-primary small{font-size:10px!important}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-section-head>b{
+ color:var(--zav-ink)!important;font-size:15px!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-tiles{
+ grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:9px!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-tile{
+ min-height:72px!important;padding:9px!important;gap:6px!important;
+ background:var(--zav-surface)!important;border:1px solid var(--zav-border)!important;
+ border-radius:14px!important;box-shadow:var(--zav-shadow)!important;
+ transform:none!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-tile-icon{
+ width:35px!important;height:35px!important;min-width:35px!important;
+ border-radius:10px!important;box-shadow:none!important;font-size:19px!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-tile-copy b{
+ font-size:12px!important;color:var(--zav-ink)!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-tile-copy small{
+ font-size:10px!important;color:var(--zav-muted)!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-store-banner{
+ min-height:58px!important;padding:9px 12px!important;margin:11px 0!important;
+ background:var(--zav-surface)!important;color:var(--zav-ink)!important;
+ border:1px solid var(--zav-border)!important;border-radius:14px!important;
+ box-shadow:none!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-store-banner :is(b,small){
+ color:var(--zav-ink)!important;font-size:12px!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-store-icon{
+ width:35px!important;height:35px!important;border-radius:10px!important;
+ background:var(--zav-blue-soft)!important;color:var(--zav-blue)!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-usd-shell,
+html[data-zavi-theme] #content.zrf-dashboard .zrf-details-toggle{
+ background:var(--zav-surface)!important;color:var(--zav-ink)!important;
+ border:1px solid var(--zav-border)!important;border-radius:13px!important;
+ box-shadow:none!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-usd-shell .zrf-dollar-current{
+ background:var(--zav-soft)!important;color:var(--zav-ink)!important;
+}
+/* Never cover accounting dashboard content with the assistant launcher.
+   The assistant and its keyboard-command functionality remain available
+   on other authorized pages. */
+body.zavi-approved-dashboard #z605-launch{display:none!important}
+@media(max-width:760px){
+ html[data-zavi-theme] #content.zrf-dashboard .zrf-tiles{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ }
+ html[data-zavi-theme] #content.zrf-dashboard .zrf-primary-row{
+  grid-template-columns:1fr 1fr!important;
+ }
+ html[data-zavi-theme] #content.zrf-dashboard .zrf-primary{
+  min-height:61px!important;padding:8px!important;gap:7px!important;
+ }
+}
