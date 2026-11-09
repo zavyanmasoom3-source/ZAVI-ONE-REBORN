@@ -201,7 +201,8 @@ with Session() as browser:
                   'ADMIN appearance settings loaded')
     options=browser.eval("""[...document.querySelectorAll('#zavi-ui-preferences-v2 [data-zui-theme]')]
         .map(b=>b.dataset.zuiTheme)""")
-    assert options==['light','dark'],options
+    # Owner's three-mode ADMIN appearance is now available in native Settings.
+    assert options==['light','dark','glass'],options
     assert browser.eval("!!document.getElementById('zaviChangePasswordForm')")
     (OUT/'admin-settings-desktop-dark.png').write_bytes(browser.screenshot())
     report['admin_settings']={'options':options,'originalPasswordFormRetained':True}
