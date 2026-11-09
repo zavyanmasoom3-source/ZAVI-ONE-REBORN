@@ -255,6 +255,14 @@ with Session() as b:
       assert result['width']<=result['maxWidth'] and result['panelWidth']<=result['width'],result
       (out/('sale-'+theme+'-mobile.png')).write_bytes(b.screenshot())
     print('PASS: form remains within 420px phone viewport across light/dark/glass style selectors')
+    b.eval("""(()=>{
+      window.__zaviQaSalesWarnings=[];
+      const oldWarn=console.warn;
+      console.warn=(...parts)=>{
+        window.__zaviQaSalesWarnings.push(parts.map(String).join(' '));
+        oldWarn(...parts);
+      };
+    })()""")
     locales={}
     for lang_id,locale_name,expected in (
       ('en','english','New sale'),
@@ -263,9 +271,19 @@ with Session() as b:
     ):
       # Use the production locale controller rather than an HTML.lang-only override.
       b.eval("window.zaviPublicSetLang("+json.dumps(lang_id,ensure_ascii=False)+")")
-      b.until("document.querySelector('.zsal-approved-modal .modal-head h3')?.textContent===" +
-              json.dumps(expected,ensure_ascii=False),
-              'live sales translation to '+locale_name,seconds=8)
+      try:
+        b.until("document.querySelector('.zsal-approved-modal .modal-head h3')?.textContent===" +
+                json.dumps(expected,ensure_ascii=False),
+                'live sales translation to '+locale_name,seconds=8)
+      except RuntimeError:
+        diag=b.eval("""(()=>({
+          lang:document.documentElement.lang,header:document.querySelector('.zsal-approved-modal .modal-head h3')?.textContent,
+          root:document.querySelector('.zsal-approved-modal')?.dataset,
+          warnings:window.__zaviQaSalesWarnings,flowActive:document.querySelector('[data-zavi-flow=order]')?.dataset,
+          saleItems:document.querySelectorAll('.order-line').length
+        }))()""")
+        print('SALES-LANGUAGE-DIAGNOSTIC',json.dumps(diag,ensure_ascii=False),flush=True)
+        raise
       state=b.eval("""(()=>({
         translated:document.querySelector('.zsal-approved-modal .modal-head h3').textContent,
         date:document.querySelector('.zsal-dual-date')?.textContent||'',
