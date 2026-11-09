@@ -1,14 +1,14 @@
-# ZAVI ONE / ADMIN — Owner's NEW visual references (10 of 12 received)
-Date: 2026-11-09 · Target: `dev` · Gate: **visual approval pending 2 further sheets**
+# ZAVI ONE / ADMIN — Owner's 12 NEW visual references (all received)
+Date: 2026-11-09 · Target: `dev` · Gate: **all 12 sheets received; code-level and pixel acceptance pending**
 Status: **evidence inventory and implementation plan**, not a finished UI, production test, APK or installer.
 
 ## Source provenance and safeguard
 
-On 2026-11-09 the owner supplied **10 composite JPEG design sheets** in chat and stated **2 more will follow**. The 10 sheets are the newly approved UI direction; do **not** mistake them for live-app screenshots or QA proof. Attachments are conversation assets, **not currently committed image baselines** in the repository. Every sheet contains multiple screen mockups; numbers, dates, names, addresses, phone numbers, devices, currency sums, charts, QR and barcodes are illustrative only. Actual apps must display real, tenant-authorized data, functional empty states, or legally safe defaults — **never hardcoded mock customer data**.
+On 2026-11-09 the owner supplied **12 composite JPEG design sheets** in chat in two batches (10 + 2). All 12 sheets are the approved UI direction; do **not** mistake them for live-app screenshots or QA proof. Attachments are conversation assets, **not currently committed image baselines** in the repository. Every sheet contains multiple screen mockups; numbers, dates, names, addresses, phone numbers, devices, currency sums, charts, QR and barcodes are illustrative only. Actual apps must display real, tenant-authorized data, functional empty states, or legally safe defaults — **never hardcoded mock customer data**.
 
-The older `docs/UI_12_REFERENCE_TRACEABILITY_2026-11-09.md` was based on textual brief before these concrete images arrived. This new inventory refines it; no 12/12 image parity claim is permitted until the last two sheets and screenshot-diff assets are available.
+The older `docs/UI_12_REFERENCE_TRACEABILITY_2026-11-09.md` was based on textual brief before these concrete images arrived. This new inventory refines it; **12/12 reference receipt is not 12/12 UI implementation or pixel parity**. Exact per-screen screenshot-diff assets and device tests remain pending.
 
-## Reviewed sheets (order of receipt)
+## Reviewed sheets (order of receipt; 12 of 12)
 
 | Sheet | App / appearance shown | Visible pages and flows | Current entry/source to preserve | First visual acceptance checks |
 | --- | --- | --- | --- | --- |
@@ -23,9 +23,8 @@ The older `docs/UI_12_REFERENCE_TRACEABILITY_2026-11-09.md` was based on textual
 | 09 | ONE light mobile | Products/warehouses entry; product search/stock; independent warehouses; stock movements; barcode label; purchase stages; procurement; sales/purchase invoices; invoice preview; print/share | products, purchases, sales; `zavi-warehouses-v1.js`, `zavi-barcode-label-v6700.js`, invoice/receipt modules | Warehouse-independent stock; movement history; offline barcode; actual invoice and 58mm/80mm/A4/A5 print/WhatsApp functions |
 | 10 | ONE light mobile | Home; customers; customer detail; contacts/phonebook; editable WhatsApp reminder; receivables; our debts and debt detail; waste list + new waste form | dashboard, contacts, phonebook, debtors, creditors, waste; messaging modules | Keep receivables separate from obligations; E.164 send intent; waste decreases correct warehouse with audit trail |
 
-**Sheet 11:** PENDING (do not invent content or mark approved).
-
-**Sheet 12:** PENDING (do not invent content or mark approved).
+| 11 | ONE light mobile | Compact PIN login; private-code recovery using account email and online credential, previous-shop selection or management request; home; eight-group settings list; light/dark appearance; 3 global size sliders; subscription 7/180/365 days; account devices/primary-device transfer; offline access and syncing; cloud backup; colleague permissions | `apps/one/index.html` `#zawiPrivateGate`, `pin-recovery.js`, settings and subscription routes; `zavi-theme-v29.js`, `zavi-three-sizes-v6588.js`; device/cloud/staff modules | Must preserve 6–12 digit PIN gate, verified recovery, only real biometric option if supported, three themes and three sizing controls, real device transfer and audit; no fake sync success |
+| 12 | ONE light mobile | Home with dual Afghan/Gregorian date and balances; the **three actual sale stages** (1 customer/cash sale, 2 warehouse-scoped items/barcode/quantities, 3 cash/credit/installment payment, invoice currency, manual FX, discount, received amount, optional print and share) | `apps/one/index.html` dashboard and native sale dialog, `zavi-compact-workflow-v1.js`, barcode, invoice and warehouse services | Customer → products → payment must remain functional; stock protection, currency arithmetic, transaction/ledger/invoice persist atomic and idempotent; print and WhatsApp are opt-in actions after successful save |
 
 ## Visual constants already supported by live dev source
 
@@ -47,10 +46,11 @@ The older `docs/UI_12_REFERENCE_TRACEABILITY_2026-11-09.md` was based on textual
 
 ## Ordered, non-destructive implementation
 
-**Phase A — reference intake & source map (CURRENT).**
-- [x] Inspect and label 10 available composite sheets, including live source paths.
+**Phase A — reference intake & source map (RECEIVED / CONTRACT DOCUMENTED).**
+- [x] Inspect and label all 12 composite sheets, including live source paths.
 - [x] Validate actual source route names in ONE and ADMIN on dev (route exists does not imply correctness).
-- [ ] Receive sheets 11–12 and settle conflicting visual variants.
+- [x] Receive sheets 11–12 and record their login/settings/sale flows.
+- [ ] Settle ambiguous ADMIN sidebar orientation from original mixed references on each locale/breakpoint.
 - [ ] Create per-screen cropped, approved baseline assets under a dedicated QA directory; avoid mock data extraction.
 - [ ] Approve one semantic navigation / token contract for all variants.
 
@@ -67,4 +67,4 @@ The older `docs/UI_12_REFERENCE_TRACEABILITY_2026-11-09.md` was based on textual
 
 ## Evidence at intake
 
-At intake the known `dev` head was `51c849f7a05d8238fde11c4792de38b55c191320`. The existing `Migration integrity gate` run `42633486767` succeeded at that head, but that success is **not** acceptance of the 10 newly supplied references. The original routes, shared design CSS/JS and 12-reference Chromium tests were verified to exist. No database, finances, subscription or app logic was changed by this inventory.
+At intake the known `dev` head was `51c849f7a05d8238fde11c4792de38b55c191320`. The existing `Migration integrity gate` run `42633486767` succeeded at that head, but that success is **not** acceptance of the 12 newly supplied references. The original routes, shared design CSS/JS and 12-reference Chromium tests were verified to exist. No database, finances, subscription or app logic was changed by this inventory.
