@@ -262,6 +262,42 @@ with Session() as browser:
     report['one_settings_8_group_languages']={'locales':['fa-AF','ps-AF','en'],
        'live_controls_preserved':True,'open_state_preserved':True}
 
+    # Click the actual language controls rather than only changing <html>
+    # attributes. Locale and direction must persist without restarting.
+    for value,visible_title in [
+        ('en','Settings'),('ps-AF','تنظیمات'),('fa-AF','تنظیمات')
+    ]:
+        clicked=browser.eval("""(()=>{
+          const value=%s;
+          const b=document.querySelector(
+            '#zavi-ui-preferences-v2 [data-zui-language="'+value+'"]');
+          if(!b)return {buttonFound:false};
+          b.click();
+          const hub=document.querySelector('#content .zavi-clean-settings-hub');
+          return {buttonFound:true,lang:document.documentElement.lang,
+             direction:document.documentElement.dir,
+             stored:localStorage.getItem('zavi_public_language_v11'),
+             title:hub?.querySelector('.zavi-clean-settings-title strong')?.textContent,
+             selected:[...document.querySelectorAll(
+              '#zavi-ui-preferences-v2 [data-zui-language]')]
+              .filter(x=>x.getAttribute('aria-pressed')==='true')
+              .map(x=>x.dataset.zuiLanguage)};
+        })()""" %json.dumps(value))
+        assert clicked['buttonFound'] and clicked['lang']==value,clicked
+        assert clicked['direction']==('ltr' if value=='en' else 'rtl'),clicked
+        assert clicked['stored']==value and clicked['title']==visible_title,clicked
+        assert clicked['selected']==[value],clicked
+    # Navigation out and back must not reset the actual selected locale.
+    browser.route('dashboard')
+    browser.route('settings')
+    persisted_locale=browser.eval("""(()=>({
+       lang:document.documentElement.lang,
+       stored:localStorage.getItem('zavi_public_language_v11'),
+       title:document.querySelector('#content .zavi-clean-settings-title strong')?.textContent
+    }))()""")
+    assert persisted_locale=={'lang':'fa-AF','stored':'fa-AF','title':'تنظیمات'},persisted_locale
+
+
 
     # Owner reference 11: the native subscription view must NOT render dark
     # neon cards when the user has selected light mode. UI-only test: it
