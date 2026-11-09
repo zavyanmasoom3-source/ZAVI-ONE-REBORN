@@ -1,15 +1,9 @@
 name: TEST-NOT-FOR-RELEASE isolated Android APK (never production)
+# Owner approval is required before ANY installable binary is built.
+# Visual/contract QA workflows remain automatic; release/preview is manual only.
 on:
-  push:
-    branches: [dev]
-    paths:
-      - 'apps/one/**'
-      - 'apps/admin/**'
-      - 'packages/shared/**'
-      - 'android-build/**'
-      - 'scripts/check-public-source-security.py'
-      - '.github/workflows/build-android-isolated-test.yml'
   workflow_dispatch:
+
 permissions:
   contents: read
 jobs:
