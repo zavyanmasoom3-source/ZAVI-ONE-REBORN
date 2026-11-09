@@ -141,10 +141,24 @@ jobs:
             if before not in original:
               raise SystemExit('Admin production config shape changed; refusing unsafe preview')
             admin.write_text(original.replace(before,"config={url:'',key:''};"),encoding='utf-8')
-          for f in preview.rglob('*'):
-            if f.is_file() and f.suffix in ('.js','.html') and 'wbbmwfnmurpphwxesssx.supabase.co' in f.read_text(encoding='utf-8',errors='replace'):
-              raise SystemExit('LIVE-CLOUD-URL FOUND IN PREVIEW ASSET: '+str(f))
-          print('PASS: staged offline preview cannot use bundled production cloud credentials')
+          import re
+          # Sanitize all staged JS/HTML only. Source repository is untouched.
+          # Explicitly block every embedded *.supabase.co project endpoint.
+          for asset in preview.rglob('*'):
+            if asset.is_file() and asset.suffix in ('.js','.html'):
+              data=asset.read_text(encoding='utf-8',errors='replace')
+              data=re.sub(r'https://[a-z0-9-]+\\.supabase\\.co',
+                          'https://offline-preview.invalid',data,flags=re.I)
+              data=data.replace('wbbmwfnmurpphwxesssx','offline-preview')
+              data=data.replace('sb_publishable_qv0LSRUyBASqLG_VS0TUcg_ioZWdlWX',
+                                'sb_publishable_disabled_offline_preview')
+              if asset.name=='index.html':
+                data=data.replace('<head>',
+                   '<head>\\n<meta http-equiv="Content-Security-Policy" content="connect-src \'self\' blob: data:;">',1)
+              asset.write_text(data,encoding='utf-8')
+              if re.search(r'https://[a-z0-9-]+\\.supabase\\.co',data,re.I):
+                raise SystemExit('Unblocked live Supabase endpoint: '+str(asset))
+          print('PASS: packaged preview blocks external Supabase and includes local-only CSP')
           print('staged shared modules:', list((Path('android-build/app/src/main/assets/packages/shared')).rglob('*'))[:20])
           PY
           if [[ "${{ matrix.app }}" == "one" ]]; then
