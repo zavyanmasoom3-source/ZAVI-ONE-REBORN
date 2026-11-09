@@ -1,3 +1,24 @@
 /* Appearance/language controls in existing settings, no floating overlays. */
 .zui-preferences{padding:14px;margin:0 0 12px;border:1px solid var(--zui-line,#b9c9d9);border-radius:14px;background:var(--zui-surface,#fff);color:var(--zui-fg,#162b44);max-width:100%;box-sizing:border-box}
 .zui-preferences h3{font-size:16px;margin:0 0 12px;color:inherit}.zui-pref-row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:10px}.zui-pref-row>span{font-weight:650}.zui-pref-buttons{display:flex;flex-wrap:wrap;gap:6px}.zui-pref-buttons button{min-height:44px;padding:6px 10px;border:1px solid var(--zui-line,#b9c9d9);border-radius:10px;color:var(--zui-fg,#162b44);background:var(--zui-surface-2,#f8fafc);font:inherit;cursor:pointer}.zui-pref-buttons button[aria-pressed="true"]{outline:2px solid var(--zui-action,#1266bb);outline-offset:-2px;font-weight:800}
+
+/* Owner sheet 11: one three-mode picker, one language selector. The
+   second theme row stays in DOM only as a compatibility fallback. */
+#content .zui-preferences.zui-hide-duplicate-theme .zui-pref-theme-row{
+ display:none!important
+}
+#content .zui-preferences.zui-hide-duplicate-theme{
+ padding:12px!important;margin-bottom:0!important;
+ background:var(--zds-surface)!important;border-color:var(--zds-border)!important;
+ color:var(--zds-text)!important
+}
+#content .zui-preferences .zui-pref-row>span{
+ color:var(--zds-text)!important
+}
+#content .zui-preferences .zui-pref-buttons button{
+ background:var(--zds-surface-alt)!important;color:var(--zds-text)!important;
+ border-color:var(--zds-border)!important
+}
+#content .zui-preferences .zui-pref-buttons button[aria-pressed="true"]{
+ border:2px solid var(--zds-focus)!important
+}
