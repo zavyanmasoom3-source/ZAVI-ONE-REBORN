@@ -215,7 +215,7 @@
     const content=root.document?.querySelector('.zui-order-page[data-module="purchases"]');
     if(!content||content.querySelector('[data-zv-transit]'))return;
     content.insertAdjacentHTML('beforeend',markup());
-    const heading=content.querySelector('.zui-section-heading');
+    const heading=content.querySelector('.page-head .action-group')||content.querySelector('.zui-section-heading')||content.querySelector('.page-head');
     if(heading&&!heading.querySelector('[data-zv-open]'))heading.insertAdjacentHTML('beforeend','<button type="button" class="btn subtle zv-transit-launch" data-zv-open>'+escape(L().heading)+'</button>');
     refresh(content.querySelector('[data-zv-transit]'));
   }
