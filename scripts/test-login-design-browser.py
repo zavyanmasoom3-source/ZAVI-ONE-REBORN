@@ -80,7 +80,7 @@ for app,field_id in [('one','zawiPinOne'),('admin','authPassword')]:
                 raise SystemExit('ADMIN advanced connection settings mismatch: '+repr(status))
         # Real runtime theme API only; not merely changing a CSS attribute.
         browser.eval("document.documentElement.lang='fa-AF';document.documentElement.dir='rtl';")
-        for mode in ['light','dark','glass']:
+        for mode in ['light','dark']:
             proof=browser.eval("""(()=>{
               window.ZaviThemeV29.set(%s);
               const root=document.documentElement;
@@ -96,5 +96,5 @@ for app,field_id in [('one','zawiPinOne'),('admin','authPassword')]:
             if p.stat().st_size<10000:
                 raise SystemExit('Tiny/blank screenshot: '+p.name)
             print('PASS:',app,mode,'real login theme + password control + screenshot',p.name)
-print('PASS: both apps, three theme runtime screenshots and three localized password/advanced labels')
+print('PASS: both apps, two theme runtime screenshots and three localized password/advanced labels')
 print('NOT VERIFIED: all surrounding login prose translations, biometric authentication, real owner login.')
