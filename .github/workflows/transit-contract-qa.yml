@@ -1,0 +1,26 @@
+name: ZAVI transit contract checks
+on:
+  push:
+    branches: [dev]
+    paths:
+      - 'apps/one/zavi-in-transit-v1.js'
+      - 'apps/one/zavi-in-transit-v1.css'
+      - 'apps/one/index.html'
+      - 'apps/one/sw.js'
+      - 'scripts/test-in-transit-contract.cjs'
+      - '.github/workflows/transit-contract-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  transit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check JavaScript syntax
+        run: node --check apps/one/zavi-in-transit-v1.js
+      - name: Verify synthetic order and receipt contract
+        run: node scripts/test-in-transit-contract.cjs
+      - name: Check PWA asset references
+        run: python3 scripts/check-offline-shell-assets.py
