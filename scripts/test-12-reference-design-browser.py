@@ -80,6 +80,9 @@ with Session() as browser:
     browser.eval("document.getElementById('demoBtn').click()")
     browser.until("!document.getElementById('appScreen').hidden",
                   'ADMIN local read-only demo')
+    browser.until("document.getElementById('zaviAdminSplash')?.classList.contains('is-hidden')",
+                  'ADMIN splash hidden before reference screenshots',seconds=30)
+    time.sleep(0.4)
     for theme in ('light','dark'):
         mode=check_styles(browser,'admin',theme)
         nav=browser.eval("""(()=>{
