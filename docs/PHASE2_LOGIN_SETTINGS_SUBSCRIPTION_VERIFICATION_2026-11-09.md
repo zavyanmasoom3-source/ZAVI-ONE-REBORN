@@ -23,10 +23,10 @@ Scope: ZAVI ONE Phase 2 only. ADMIN full redesign, device transfer, offline lice
 - Subscription: light/dark/glass computed cards, three language headings, RTL/LTR, 7/180/365-day renewal request links, and original refresh/offline controls retained.
 - Existing navigation, accounting invariants, warehouse, backup, barcode, sync and 59 mapped-route checks stayed green on the last verified code commit.
 
-Latest verified CI run IDs:
-- 42660918625 — REBORN PDF visual QA screenshots: success
-- 42660918797 — Migration integrity gate: success
-- 42660918765 — ZAVI transit contract checks: success
+Latest verified CI run IDs for code commit `821c3b126fef520b7b4bc9907afbc669c6f42519`:
+- 42665885750 — REBORN PDF visual QA screenshots: success
+- 42665885865 — Migration integrity gate: success
+- 42656555026 — ZAVI transit contract checks: success on earlier app-code commit `f0b5a3bc` (not rerun for test-only changes).
 
 ## Production database metadata audit — read-only
 
@@ -38,6 +38,28 @@ The Supabase project URL used by `apps/one/cloud-config.js` was matched to a con
 - Public workspace/subscription/member tables have RLS enabled.
 No user/customer table data was queried; no mutation, migration or permission change was performed.
 This is an audit of metadata and source, **not an authenticated end-to-end authorization or penetration test**.
+
+## Phase 2 acceptance checkpoint — 2026-11-09
+
+**Status: source implementation and automated isolated browser acceptance PASS.**
+The two latest changes are regression tests only; existing application-side fixes
+for login, private PIN, recovery, eight Settings categories, live language switching,
+Light/Dark/Glass and subscription/renewal were already committed on `dev`.
+
+Additional hard acceptance evidence:
+- Five genuinely incorrect PIN attempts cause cooldown using the original
+  PBKDF2 login handler, and a valid PIN remains blocked during cooldown.
+  The test never logs in to a real customer or changes production credentials.
+- The subscription's HTML `dir` attribute (not merely the CSS appearance)
+  matches the actual chosen language, alongside earlier heading, date, status,
+  and 7/180/365-day WhatsApp request checks.
+- Both new regression checks are part of the passing visual QA run 42665885750.
+
+**Do not equate the isolated QA PASS with production-release certification.**
+Owner/staff approval on the real server, Android fingerprint hardware, fully
+verified reference-image pixel parity and signed APK installation remain
+unverified release-acceptance items. Phase 3 device/offline behavior was not
+modified in this checkpoint.
 
 ## Hard limits / what has not been certified
 
