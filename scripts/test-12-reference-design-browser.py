@@ -103,7 +103,8 @@ with Session() as browser:
     # Retired floating assistants must never cover forms or the mobile navigation.
     # This is a UI assertion only: accounting commands/permissions are unchanged.
     for route in ('sales','products','purchases'):
-        browser.route(route)
+        state=browser.route(route)
+        assert state['selected'] and state['visible'] and not state['locked'],state
         overlay=browser.eval("""(()=>{
           const ids=['z637AiButton','z605-launch'];
           const active=ids.map(id=>document.getElementById(id))
