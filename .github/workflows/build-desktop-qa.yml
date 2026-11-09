@@ -1,14 +1,9 @@
 name: REBORN Windows Desktop QA Installers
+# Owner approval is required before ANY installable binary is built.
+# Visual/contract QA workflows remain automatic; release/preview is manual only.
 on:
-  push:
-    branches: [dev]
-    paths:
-      - 'apps/**'
-      - 'packages/shared/**'
-      - 'desktop/windows/**'
-      - 'scripts/stamp-desktop-qa.py'
-      - '.github/workflows/build-desktop-qa.yml'
   workflow_dispatch:
+
 permissions:
   contents: read
 jobs:
