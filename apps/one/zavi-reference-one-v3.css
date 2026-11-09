@@ -1,0 +1,159 @@
+/* ZAVI ONE: actual screens, 12 owner references.
+   Remove legacy visual treatment without replacing real financial controls. */
+html[data-zavi-theme] .sidebar{
+ background:#101c2e!important;border-color:#23364b!important;
+ box-shadow:0 7px 24px #0002!important;
+}
+html[data-zavi-theme] #content {
+ max-width:1160px!important;background:var(--zav-bg)!important;
+ color:var(--zav-ink)!important;
+}
+html[data-zavi-theme] #content :is(.card,.panel,.settings-card,
+ .zavi-dash-cash-card,.zav-new-stat,.zav-new-chart,.zvi-feature-card,
+ .zrf-store-banner,.zavi-stock-history-projection){
+ background:var(--zav-surface)!important;color:var(--zav-ink)!important;
+ border:1px solid var(--zav-border)!important;border-radius:14px!important;
+ box-shadow:var(--zav-shadow)!important;
+}
+html[data-zavi-theme] #content :is(.page-head,h1,h2,h3) {
+ color:var(--zav-ink)!important;line-height:1.5!important;
+}
+html[data-zavi-theme] #content :is(.record-card,.stock-item,.zv-journal-item,.zv-wh-stock-row) {
+ background:var(--zav-surface)!important;color:var(--zav-ink)!important;
+ border:1px solid var(--zav-border)!important;border-radius:12px!important;
+ box-shadow:none!important;
+}
+html[data-zavi-theme] #content :is(.btn.primary,button.primary) {
+ background:linear-gradient(115deg,#288cff,#085bdb)!important;
+ color:#fff!important;border:1px solid #0b62db!important;
+ border-radius:11px!important;box-shadow:0 4px 12px #0b62db26!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard>.zrf-home {
+ animation:none!important;max-width:1120px!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .z62-hero {
+ background:var(--zav-surface)!important;background-image:none!important;
+ border:1px solid var(--zav-border)!important;border-radius:14px!important;
+ box-shadow:none!important;padding:13px!important;min-height:0!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .z62-hero::before,
+html[data-zavi-theme] #content.zrf-dashboard .z62-hero::after {
+ display:none!important;content:none!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .z62-hero :is(.z62-title,.z62-subtitle) {
+ color:var(--zav-ink)!important;-webkit-text-fill-color:var(--zav-ink)!important;
+ text-shadow:none!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .z62-hero .z62-title {
+ font-size:clamp(16px,2vw,22px)!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .z62-date {
+ background:transparent!important;border:0!important;box-shadow:none!important;
+ color:var(--zav-muted)!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard button.z62-sale{
+ background:linear-gradient(120deg,#2990ff,#075bd7)!important;
+ border:1px solid #0e69e5!important;color:#fff!important;
+ border-radius:12px!important;box-shadow:0 4px 12px #075bd82b!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .z63-quick-panel{
+ background:transparent!important;border:0!important;padding:0!important;
+ box-shadow:none!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .z63-quick-grid,
+html[data-zavi-theme] #content.zrf-dashboard .zavi-dash-fast-actions{
+ display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
+ gap:7px!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard :is(.z63-quick-tile,.zavi-dash-fast-button){
+ background:var(--zav-surface)!important;color:var(--zav-ink)!important;
+ border:1px solid var(--zav-border)!important;border-radius:13px!important;
+ box-shadow:var(--zav-shadow)!important;min-height:68px!important;
+ padding:7px 4px!important;display:flex!important;flex-direction:column!important;
+ gap:5px!important;align-items:center!important;justify-content:center!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-search-wrap{
+ background:var(--zav-surface)!important;border:1px solid var(--zav-border)!important;
+ border-radius:12px!important;box-shadow:none!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zav-new-chart,
+html[data-zavi-theme] #content.zrf-dashboard .zav-new-stat {
+ border-radius:13px!important;background:var(--zav-surface)!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zav-new-stats,
+html[data-zavi-theme] #content.zrf-dashboard .zav-new-charts{gap:9px!important}
+html[data-zavi-theme] #overlay .modal {
+ background:var(--zav-surface)!important;color:var(--zav-ink)!important;
+ border-radius:18px!important;border:1px solid var(--zav-border)!important;
+ box-shadow:0 22px 70px #0005!important;max-height:93dvh!important;
+ overflow:hidden!important;
+}
+html[data-zavi-theme] #overlay .modal-body{
+ min-height:0!important;overflow-y:auto!important;overscroll-behavior:contain;
+}
+html[data-zavi-theme] #overlay :is(input:not([type="checkbox"]),select,textarea) {
+ border:1px solid var(--zav-border)!important;border-radius:11px!important;
+ background:var(--zav-input)!important;color:var(--zav-ink)!important;
+ min-height:44px!important;box-shadow:none!important;
+}
+html[data-zavi-theme] #overlay :is(.order-line,.totals,.zavi-flow-payment-fields){
+ background:var(--zav-soft)!important;border:1px solid var(--zav-border)!important;
+ border-radius:12px!important;box-shadow:none!important;
+}
+html[data-zavi-theme] #overlay .zavi-flow-layout[data-zavi-flow="order"]{
+ counter-reset:zavi-step;gap:9px!important;
+}
+html[data-zavi-theme] #overlay [data-zavi-flow="order"]>.zavi-flow-tabs{
+ grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:4px!important;
+ background:var(--zav-soft)!important;border:1px solid var(--zav-border)!important;
+ padding:4px!important;border-radius:12px!important;
+}
+html[data-zavi-theme] #overlay [data-zavi-flow="order"]>.zavi-flow-tabs>.zavi-flow-tab{
+ display:flex!important;flex-direction:column!important;justify-content:center!important;
+ align-items:center!important;min-height:58px!important;gap:3px!important;
+ color:var(--zav-muted)!important;font-size:12px!important;
+ background:transparent!important;border-radius:10px!important;
+}
+html[data-zavi-theme] #overlay [data-zavi-flow="order"]>.zavi-flow-tabs>.zavi-flow-tab::before{
+ counter-increment:zavi-step;content:counter(zavi-step);display:grid;place-items:center;
+ width:25px;height:25px;border-radius:50%;background:var(--zav-surface);
+ color:var(--zav-muted);border:1px solid var(--zav-border);font-size:11px;
+}
+html[data-zavi-theme] #overlay [data-zavi-flow="order"]>.zavi-flow-tabs>.zavi-flow-tab[aria-selected="true"]{
+ background:var(--zav-blue)!important;color:#fff!important;
+}
+html[data-zavi-theme] #overlay [data-zavi-flow="order"]>.zavi-flow-tabs>.zavi-flow-tab[aria-selected="true"]::before{
+ background:#fff;color:#095bd1;border-color:#fff;
+}
+html[data-zavi-theme] #mobileBottom{
+ background:var(--zav-surface)!important;border:1px solid var(--zav-border)!important;
+ border-bottom:0!important;border-radius:17px 17px 0 0!important;
+ box-shadow:0 -5px 21px #0002!important;
+ padding-bottom:env(safe-area-inset-bottom)!important;
+}
+html[data-zavi-theme] #mobileBottom .bottom-btn{
+ min-width:0!important;min-height:56px!important;border-radius:11px!important;
+ white-space:normal!important;font-size:11px!important;
+}
+html[data-zavi-theme] #mobileBottom .bottom-btn.active{
+ background:linear-gradient(120deg,#2c8dff,#085bdc)!important;color:#fff!important;
+ box-shadow:0 4px 12px #075bd82a!important;
+}
+@media(max-width:760px){
+ html[data-zavi-theme] #content{padding:10px 9px calc(102px + env(safe-area-inset-bottom))!important}
+ html[data-zavi-theme] #content :is(.card,.panel,.settings-card){padding:12px!important}
+ html[data-zavi-theme] #content.zrf-dashboard .zav-new-stats,
+ html[data-zavi-theme] #content.zrf-dashboard .zav-new-charts{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ }
+ html[data-zavi-theme] #overlay .modal{width:min(100%,720px)!important}
+ html[data-zavi-theme] #overlay .modal-foot{position:sticky!important;bottom:0!important;
+  background:var(--zav-surface)!important;border-top:1px solid var(--zav-border)!important}
+}
+@media(max-width:390px){
+ html[data-zavi-theme] #overlay .zavi-flow-panel .form-grid{grid-template-columns:1fr!important}
+}
+@media print{
+ html[data-zavi-theme] :is(#mobileBottom,.sidebar,.topbar){display:none!important}
+ html[data-zavi-theme] #content{padding:0!important;max-width:none!important}
+}

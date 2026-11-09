@@ -1,0 +1,170 @@
+/* ZAVI ONE ADMIN: reference-v3 desktop navy sidebar and clean workspace.
+   Original real navigation and server-authorized functions remain attached. */
+html[data-zavi-theme] .sidebar{
+ width:228px!important;padding:16px 11px!important;
+ background:linear-gradient(170deg,#111c2c,#0b1725)!important;
+ color:#e5edfa!important;border:0!important;box-shadow:0 5px 22px #0002!important;
+}
+html[data-zavi-theme] .sidebar .brand{
+ min-height:56px!important;display:flex!important;align-items:center!important;
+ margin:0 0 12px!important;gap:10px!important;
+}
+html[data-zavi-theme] .sidebar .brand img{
+ width:39px!important;height:39px!important;object-fit:contain!important;
+}
+html[data-zavi-theme] .sidebar .brand :is(strong,small){color:#fff!important}
+html[data-zavi-theme] .sidebar .nav{
+ display:grid!important;gap:2px!important;align-content:start!important;
+}
+html[data-zavi-theme] .sidebar .nav-item{
+ min-height:42px!important;padding:9px 11px!important;display:flex!important;
+ align-items:center!important;gap:9px!important;background:transparent!important;
+ color:#d0dcec!important;border:1px solid transparent!important;
+ border-radius:10px!important;box-shadow:none!important;
+ font-size:12px!important;font-weight:700!important;
+}
+html[data-zavi-theme] .sidebar .nav-item span{width:20px!important;text-align:center!important}
+html[data-zavi-theme] .sidebar .nav-item.selected{
+ background:linear-gradient(120deg,#288dff,#085bd8)!important;
+ color:#fff!important;border-color:#1b70e8!important;
+ box-shadow:0 4px 12px #085bd837!important;
+}
+html[data-zavi-theme] .sidebar .zavi-ref-more{
+ border-top:1px solid #ffffff25;padding-top:5px;margin-top:7px;min-width:0;
+}
+html[data-zavi-theme] .sidebar .zavi-ref-more>summary{
+ min-height:40px;display:flex;align-items:center;gap:8px;
+ list-style:none;border-radius:10px;padding:9px 12px;
+ color:#c7d4e6;font-size:12px;font-weight:650;cursor:pointer;
+}
+html[data-zavi-theme] .sidebar .zavi-ref-more>summary::before{content:'⋯';font-size:17px}
+html[data-zavi-theme] .sidebar .zavi-ref-more>summary::after{
+ content:'⌄';margin-inline-start:auto;
+}
+html[data-zavi-theme] .sidebar .zavi-ref-more[open]>summary::after{content:'⌃'}
+html[data-zavi-theme] .sidebar .zavi-ref-more .nav-item{width:100%}
+html[data-zavi-theme] .workspace{
+ background:var(--zav-bg)!important;color:var(--zav-ink)!important;
+ width:calc(100% - 228px)!important;
+}
+html[dir="rtl"][data-zavi-theme] .workspace{
+ margin-right:228px!important;margin-left:0!important;
+}
+html[dir="ltr"][data-zavi-theme] .workspace{
+ margin-left:228px!important;margin-right:0!important;
+}
+html[data-zavi-theme] .workspace .topbar{
+ min-height:61px!important;height:auto!important;padding:8px 20px!important;
+ background:var(--zav-surface)!important;color:var(--zav-ink)!important;
+ border-bottom:1px solid var(--zav-border)!important;box-shadow:none!important;
+}
+html[data-zavi-theme] #view{
+ max-width:1470px!important;background:var(--zav-bg)!important;
+ color:var(--zav-ink)!important;padding:18px clamp(12px,2vw,26px) 80px!important;
+}
+html[data-zavi-theme] #view :is(.page-head,h1,h2,h3){
+ color:var(--zav-ink)!important;line-height:1.5!important;
+}
+html[data-zavi-theme] #view :is(.panel,.admin-secondary,.admin-analytics-main,
+ .admin-distribution,.admin-kpi,.metric,.admin-item,.admin-health){
+ background:var(--zav-surface)!important;color:var(--zav-ink)!important;
+ border:1px solid var(--zav-border)!important;border-radius:14px!important;
+ box-shadow:var(--zav-shadow)!important;min-width:0!important;
+}
+html[data-zavi-theme] #view .panel{padding:15px!important;margin-bottom:12px!important}
+html[data-zavi-theme] #view .admin-hero{
+ background:var(--zav-surface)!important;background-image:none!important;
+ border:1px solid var(--zav-border)!important;box-shadow:none!important;
+ border-radius:14px!important;min-height:0!important;padding:12px 15px!important;
+ margin-bottom:12px!important;
+}
+html[data-zavi-theme] #view .admin-hero::before,
+html[data-zavi-theme] #view .admin-hero-art{display:none!important}
+html[data-zavi-theme] #view .admin-kpis{
+ display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
+ gap:10px!important;margin-bottom:14px!important;
+}
+html[data-zavi-theme] #view .admin-kpi{
+ min-height:92px!important;padding:12px!important;background-image:none!important;
+}
+html[data-zavi-theme] #view .admin-kpi strong{
+ font-weight:850!important;font-size:clamp(18px,2vw,28px)!important;
+ color:var(--zav-ink)!important;
+}
+html[data-zavi-theme] #view .admin-kpi :is(small,.kpi-foot){
+ color:var(--zav-muted)!important;font-size:11px!important;
+}
+html[data-zavi-theme] #view :is(input,select,textarea){
+ border:1px solid var(--zav-border)!important;border-radius:11px!important;
+ background:var(--zav-input)!important;color:var(--zav-ink)!important;
+ min-height:44px!important;box-shadow:none!important;
+}
+html[data-zavi-theme] #view :is(.button.primary,.btn.primary),
+html[data-zavi-theme] #modalBg :is(.button.primary,.btn.primary){
+ background:linear-gradient(120deg,#2b8eff,#075bd8)!important;
+ color:#fff!important;border:1px solid #0c68e4!important;
+ border-radius:11px!important;box-shadow:0 4px 12px #075bd82c!important;
+}
+html[data-zavi-theme] #view .table-scroll{
+ max-width:100%!important;overflow-x:auto!important;
+ border:1px solid var(--zav-border)!important;border-radius:12px!important;
+ background:var(--zav-surface)!important;
+}
+html[data-zavi-theme] #view .data-table{
+ min-width:610px!important;width:100%!important;
+ color:var(--zav-ink)!important;border:0!important;
+}
+html[data-zavi-theme] #view .data-table th{
+ background:var(--zav-soft)!important;color:var(--zav-muted)!important;
+ border-color:var(--zav-border)!important;padding:11px 9px!important;
+ font-size:11px!important;
+}
+html[data-zavi-theme] #view .data-table td{
+ background:var(--zav-surface)!important;color:var(--zav-ink)!important;
+ border-color:var(--zav-border)!important;padding:10px 9px!important;
+ font-size:12px!important;
+}
+html[data-zavi-theme] #view :is(.zavi-admin-settings-heading,.zavi-admin-settings-group){
+ background:var(--zav-surface)!important;color:var(--zav-ink)!important;
+ border:1px solid var(--zav-border)!important;border-radius:13px!important;
+}
+html[data-zavi-theme] #modalBg .modal-card{
+ background:var(--zav-surface)!important;color:var(--zav-ink)!important;
+ border-radius:18px!important;border:1px solid var(--zav-border)!important;
+ box-shadow:0 22px 65px #0006!important;max-height:93dvh!important;
+ overflow-y:auto!important;
+}
+html[data-zavi-theme] #authScreen .auth-card{
+ background:var(--zav-surface)!important;color:var(--zav-ink)!important;
+ border-radius:18px!important;border:1px solid var(--zav-border)!important;
+ box-shadow:var(--zav-shadow)!important;
+}
+html[data-zavi-theme] #authScreen .auth-promo{
+ background:linear-gradient(165deg,#0d1c32,#15334f)!important;color:#fff!important;
+}
+html[data-zavi-theme] .admin-mobile-nav{
+ background:var(--zav-surface)!important;color:var(--zav-muted)!important;
+ border-top:1px solid var(--zav-border)!important;
+}
+@media(max-width:1180px){
+ html[data-zavi-theme] #view .admin-kpis{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ }
+}
+@media(max-width:760px){
+ html[data-zavi-theme] .workspace{width:100%!important;margin:0!important}
+ html[data-zavi-theme] .sidebar{width:min(290px,85vw)!important}
+ html[data-zavi-theme] #view{padding:11px 10px calc(106px + env(safe-area-inset-bottom))!important}
+ html[data-zavi-theme] #view .admin-analytics,
+ html[data-zavi-theme] #view .admin-secondary{grid-template-columns:1fr!important}
+ html[data-zavi-theme] #view .admin-kpis{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;
+ }
+ html[data-zavi-theme] #view .panel{padding:12px!important}
+ html[data-zavi-theme] .topbar{min-height:56px!important;padding:7px 11px!important}
+}
+@media print{
+ html[data-zavi-theme] :is(.sidebar,.topbar,.admin-mobile-nav){display:none!important}
+ html[data-zavi-theme] .workspace{width:100%!important;margin:0!important}
+ html[data-zavi-theme] #view{padding:0!important;max-width:none!important}
+}

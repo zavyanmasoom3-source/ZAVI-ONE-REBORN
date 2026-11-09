@@ -5,10 +5,13 @@
  */
 'use strict';
 const APK_ORIGIN='https://appassets.androidplatform.net';
-const CACHE_NAME='zavi-one-shell-approved-ui-v2-20261109-r3';
+const CACHE_NAME='zavi-one-12refs-20261109-v3';
 const SHELL_PROTOCOL='zavi-shell-v2';
 const CACHE_PREFIX='zavi-one-';
 const CORE=[
+  "../../packages/shared/ui/zavi-reference-v3.css",
+  "../../packages/shared/ui/zavi-reference-navigation-v3.js",
+  "zavi-reference-one-v3.css",
   "zavi-approved-dashboard-v2.js",
   "../../packages/shared/ui/zavi-approved-navigation-v2.js",
   "../../packages/shared/ui/zavi-approved-visual-v2.css",
