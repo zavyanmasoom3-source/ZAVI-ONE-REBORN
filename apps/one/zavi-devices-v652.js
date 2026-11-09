@@ -40,7 +40,15 @@ function isFresh(last,now=Date.now(),minutes=15){const n=Date.parse(last||'');re
 function classifyOtherDevices(devices,ownId,now=Date.now()){
  const previous=(Array.isArray(devices)?devices:[]).filter(d=>d?.status==='active'&&d?.device_id!==ownId);
  if(previous.some(d=>Number(d.reported_pending_count)>0))return {status:'pending',devices:previous};
- if(previous.some(d=>!isFresh(d.last_report_at,now)||!d.last_sync_at||!Number.isFinite(Date.parse(d.last_sync_at))||Date.parse(d.last_sync_at)>now+60000||d.reported_pending_count===null||d.reported_pending_count===undefined))return {status:'unknown',devices:previous};
+ // Match the server's 15-minute last-sync rule. A fresh heartbeat alone
+ // does NOT prove the last cloud upload succeeded; the server rejects it.
+ if(previous.some(d=>{
+  const report=Date.parse(d.last_report_at||'');
+  const synced=Date.parse(d.last_sync_at||'');
+  return !isFresh(d.last_report_at,now)||!Number.isFinite(synced)||
+   synced>now+60000||synced<report-15*60000||
+   d.reported_pending_count===null||d.reported_pending_count===undefined;
+ }))return {status:'unknown',devices:previous};
  return {status:'clear',devices:previous};
 }
 function date(v,lang){if(!v)return '—';const d=new Date(v);if(!Number.isFinite(d.getTime()))return '—';return latin(new Intl.DateTimeFormat(lang==='en'?'en-GB':lang==='ps-AF'?'en-GB':'en-GB',{year:'numeric',month:'short',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false,timeZone:'Asia/Kabul'}).format(d));}
