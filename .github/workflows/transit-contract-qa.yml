@@ -9,6 +9,8 @@ on:
       - 'apps/one/sw.js'
       - 'scripts/test-in-transit-contract.cjs'
       - 'scripts/test-in-transit-browser.py'
+      - 'scripts/test-in-transit-guard.sql'
+      - 'supabase/staged/20261109_in_transit_receipt_guard_CANDIDATE.sql'
       - '.github/workflows/transit-contract-qa.yml'
   workflow_dispatch:
 permissions:
@@ -34,3 +36,28 @@ jobs:
           path: qa-in-transit/
           if-no-files-found: ignore
           retention-days: 7
+
+  transit-postgres:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_DB: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: synthetic-only-postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test candidate guard on disposable PostgreSQL 17
+        env:
+          PGPASSWORD: synthetic-only-postgres
+        run: |
+          psql -h 127.0.0.1 -U postgres -d postgres -v ON_ERROR_STOP=1 -f scripts/test-in-transit-guard.sql
