@@ -11,7 +11,7 @@ const translations={
  en:{shortcuts:'Quick actions',newSale:'New sale',newPurchase:'New purchase',receive:'Receive payment',pay:'Make payment',financial:'Financial overview',help:'Help and guides',restore:'More sections',noPermission:'This feature is not enabled'}
 };
 function lang(){const l=($('#zaviTopLanguage')?.value||document.documentElement.lang||'fa').toLowerCase();return l.startsWith('en')?'en':l.startsWith('ps')?'ps':'fa'}
-function isDash(root){return !!root?.classList.contains('zrf-dashboard')&&!!$(':scope > .zrf-home',root)}
+function isDash(root){return !!root?.classList.contains('zrf-dashboard')&&!$(':scope > .zavi-native-home',root)&&!!$(':scope > .zrf-home',root)}
 function nativeAction(ids){
  // Routes and actions are delegated to existing application logic; no financial figures are modified.
  for(const id of ids){

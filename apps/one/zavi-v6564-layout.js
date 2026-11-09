@@ -7,7 +7,7 @@ const T={
  en:{charts:'Visual reports',rate:"Today's dollar rate",help:'Help is available under Settings.',settings:'System settings'}
 };
 function locale(){const n=($('#zaviTopLanguage')?.value||document.documentElement.lang||'fa').toLowerCase();return n.startsWith('en')?'en':n.startsWith('ps')?'ps':'fa'}
-function rootDash(c){return c?.classList.contains('zrf-dashboard')&&!!$(':scope > .zrf-home',c)}
+function rootDash(c){return c?.classList.contains('zrf-dashboard')&&!$(':scope > .zavi-native-home',c)&&!!$(':scope > .zrf-home',c)}
 function moveQuick(c,home){
  const quick=$('.z63-quick-panel',home);
  if(!quick)return;

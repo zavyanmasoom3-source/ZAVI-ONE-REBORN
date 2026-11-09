@@ -65,7 +65,8 @@ with Session() as browser:
           return {homeChildren:[...home.children].map(el=>({id:el.id,className:el.className})),
             oldQuickExists:!!oldQuick,oldQuickDisplay:oldQuick?getComputedStyle(oldQuick).display:null,fixed};
         })()""")
-        assert native['oldQuickDisplay'] in (None,'none'),native
+        assert not native['oldQuickExists'],('retired dashboard quick widget injected',native)
+        assert not any('z62-hero' in x['className'] for x in native['homeChildren']),native
         assert not any('z62-hero' in el['className'] or 'z63-quick-panel' in el['className'] for el in native['homeChildren']),native
         assert native['homeChildren'][0]['className'].find('zavi-native-welcome')>=0,native
         assert not any(x['className'].find('zrf-brandbar')>=0 for x in native['homeChildren']),native

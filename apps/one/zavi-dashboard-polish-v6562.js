@@ -15,6 +15,8 @@ function localeDate(){
 }
 function ensure(){
  const content=document.getElementById("content");
+ // The approved home is native: never manufacture an obsolete second hero.
+ if(content?.querySelector(':scope > .zavi-native-home'))return;
  if(!content||!content.classList.contains("zrf-dashboard"))return;
  const home=content.querySelector(":scope > .zrf-home");
  if(!home||home.classList.contains('zavi-native-home'))return;
