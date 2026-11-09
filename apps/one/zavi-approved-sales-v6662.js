@@ -12,7 +12,7 @@
       payment:'روش پرداخت',cash:'نقدی',bank:'بانکی / حواله',credit:'قرض / پرداخت بعدی',
       received:'مبلغ دریافت‌شده',currency:'ارز فاکتور',preview:'پیش‌نمایش فاکتور',
       close:'بستن پیش‌نمایش',receipt:'پیش‌نمایش رسید',item:'محصول',qty:'تعداد',
-      unit:'قیمت واحد',total:'مبلغ نهایی فاکتور',balance:'باقی‌مانده مشتری',
+      unit:'قیمت واحد',quantity:'تعداد',lineTotal:'جمع محصول',calcInvoice:'محاسبه فاکتور',total:'مبلغ نهایی فاکتور',balance:'باقی‌مانده مشتری',
       nameRequired:'محصول را از گدام انتخاب کنید.',qtyRequired:'تعداد باید بیشتر از صفر باشد.',
       priceRequired:'قیمت واحد باید بیشتر از صفر باشد.',bankRequired:'یک حساب بانکی یا حواله معتبر لازم است.',overpaid:'مبلغ دریافت‌شده نمی‌تواند از کل بیشتر باشد.',creditName:'برای فروش قرضی، نام مشتری را وارد کنید.',
       stock:'موجودی کافی نیست.',noItems:'حداقل یک محصول لازم است.',notSaved:'پیش‌نمایش است؛ هنوز هیچ معامله‌ای ثبت نشده است.'},
@@ -23,7 +23,7 @@
       payment:'د تادیې ډول',cash:'نغدي',bank:'بانک / حواله',credit:'پور / وروسته تادیه',
       received:'ترلاسه شوې پیسې',currency:'د بل اسعار',preview:'د بل مخکتنه',
       close:'مخکتنه بندول',receipt:'د رسید مخکتنه',item:'توکی',qty:'شمېر',
-      unit:'د واحد بیه',total:'د بل وروستۍ اندازه',balance:'د پېرودونکي پاتې',
+      unit:'د واحد بیه',quantity:'شمېر',lineTotal:'د توکي ټول',calcInvoice:'د بل حساب',total:'د بل وروستۍ اندازه',balance:'د پېرودونکي پاتې',
       nameRequired:'توکی له ګدامه وټاکئ.',qtyRequired:'شمېر باید له صفر څخه لوړ وي.',
       priceRequired:'د واحد بیه باید له صفر څخه لوړه وي.',bankRequired:'د بانک یا حوالې معتبر حساب اړین دی.',overpaid:'ترلاسه شوې پیسې له ټول مبلغ څخه ډېرې نشي.',creditName:'د پور پلور لپاره د پېرودونکي نوم ولیکئ.',
       stock:'موجودي کمه ده.',noItems:'لږ تر لږه یو توکی اړین دی.',notSaved:'دا مخکتنه ده؛ معامله لا نه ده ثبت شوې.'},
@@ -34,7 +34,7 @@
       payment:'Payment method',cash:'Cash',bank:'Bank / remittance',credit:'Credit / pay later',
       received:'Amount received',currency:'Invoice currency',preview:'Invoice preview',
       close:'Close preview',receipt:'Receipt preview',item:'Product',qty:'Quantity',
-      unit:'Unit price',total:'Invoice final amount',balance:'Customer balance',
+      unit:'Unit price',quantity:'Quantity',lineTotal:'Line total',calcInvoice:'Invoice calculation',total:'Invoice final amount',balance:'Customer balance',
       nameRequired:'Select a product from the warehouse.',qtyRequired:'Quantity must be greater than zero.',
       priceRequired:'Unit price must be greater than zero.',bankRequired:'A valid bank or remittance account is required.',overpaid:'Received amount cannot exceed total.',creditName:'A customer name is required for credit sales.',
       stock:'Not enough inventory.',noItems:'At least one product is required.',notSaved:'Preview only; no transaction has been saved.'}
@@ -286,7 +286,13 @@
       }
       payBox.append(group);
       const info=mk('p','zsal-currency-note',tr('currency')+': '+String(db.currency||'AFN'));
-      paymentPane.prepend(info);paymentPane.prepend(payBox);
+      paymentPane.prepend(info);
+      paymentPane.prepend(mk('h3','zsal-payment-heading',tr('calcInvoice')));
+      const totals=paymentPane.querySelector(':scope > .totals');
+      // Visual order follows the owner's receipt screenshots, with native
+      // discount and account controls kept in the same original form.
+      if(totals)totals.after(payBox);
+      else paymentPane.append(payBox);
       const account=form.elements.accountId,paid=form.elements.paid;
       const modesByName=()=>[...payBox.querySelectorAll('input[name=zsalMode]')];
       const chosenMode=()=>modesByName().find(x=>x.checked)?.value||'cash';
@@ -348,7 +354,7 @@
           return;
         }
         if(e.target.matches?.('[data-field="qty"],[data-field="price"],input[name="discount"]'))
-          queueMicrotask(syncFullPayment);
+          queueMicrotask(()=>{syncFullPayment();schedule()});
       });
       form.addEventListener('change',e=>{
         if(e.target===account){
@@ -360,7 +366,7 @@
           queueMicrotask(syncFullPayment);
       });
       productPane.querySelector('#zaviBarcodeScan')?.addEventListener('keydown',e=>{
-        if(e.key==='Enter')queueMicrotask(syncFullPayment);
+        if(e.key==='Enter')queueMicrotask(()=>{syncFullPayment();schedule()});
       });
       productPane.querySelector('#orderItems')?.addEventListener('click',e=>{
         if(e.target.closest?.('.remove-line'))queueMicrotask(syncFullPayment);
@@ -408,6 +414,19 @@
       row.dataset.zsalApproved='true';
       const caption=mk('div','zsal-line-title',tr('item')+' '+(i+1));
       row.prepend(caption);
+      const rowGrid=row.querySelector('.order-row');
+      for(const [field,cls,label] of [
+        ['qty','zsal-qty-label','quantity'],['price','zsal-price-label','unit']
+      ]){
+        const input=rowGrid?.querySelector('[data-field="'+field+'"]');
+        if(!input)continue;
+        input.id='zsal-'+field+'-'+String(row.dataset.line||i);
+        const labelNode=mk('label','zsal-field-label '+cls,tr(label));
+        labelNode.htmlFor=input.id;rowGrid.insertBefore(labelNode,input);
+      }
+      const subtotal=mk('div','zsal-line-subtotal');
+      subtotal.append(mk('span','',tr('lineTotal')),mk('strong','',nativeCurrency(0)));
+      row.append(subtotal);
       const name=row.querySelector('[data-field="productName"]');
       if(name)name.placeholder=lang()==='en'?'Product name or scan barcode':
         lang()==='ps'?'د توکي نوم یا بارکوډ':'نام محصول یا اسکن بارکد';
@@ -457,8 +476,23 @@
     }
     const btn=modal.querySelector('.zsal-preview-button');
     if(btn)set(btn,btn.getAttribute('aria-expanded')==='true'?tr('close'):tr('preview'));
+    set(modal.querySelector('.zsal-payment-heading'),tr('calcInvoice'));
     for(const [i,row] of [...modal.querySelectorAll('.order-line')].entries()){
       set(row.querySelector('.zsal-line-title'),tr('item')+' '+(i+1));
+      set(row.querySelector('.zsal-qty-label'),tr('quantity'));
+      set(row.querySelector('.zsal-price-label'),tr('unit'));
+      set(row.querySelector('.zsal-line-subtotal span'),tr('lineTotal'));
+      const subtotal=row.querySelector('.zsal-line-subtotal strong');
+      if(subtotal){
+        let amount=0;
+        try{
+          amount=window.ZaviDecimal.invoiceTotals([{
+            qty:row.querySelector('[data-field="qty"]')?.value||'0',
+            price:row.querySelector('[data-field="price"]')?.value||'0'
+          }],'0','0','0').total;
+        }catch(_){amount=0}
+        set(subtotal,nativeCurrency(amount));
+      }
     }
   }
   let queued=false;
