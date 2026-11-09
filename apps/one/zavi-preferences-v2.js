@@ -8,7 +8,24 @@ const translations={
 'en':{title:'Appearance and language',theme:'Theme',language:'Language',light:'Light',dark:'Dark',glass:'Glass',dari:'Dari',pashto:'Pashto',english:'English'}};
 const safeRead=(k,d)=>{try{return localStorage.getItem(k)||d}catch{return d}};
 const safeWrite=(k,v)=>{try{localStorage.setItem(k,v)}catch{}};
-function setLanguage(l){if(!translations[l])return;safeWrite(langKey,l);document.documentElement.lang=l;document.documentElement.dir=l==='en'?'ltr':'rtl';document.documentElement.dataset.zaviLang=l;refresh();document.dispatchEvent(new CustomEvent('zavi:language-change',{detail:{language:l}}))}
+function setLanguage(l){
+ if(!translations[l])return;
+ safeWrite(langKey,l);
+ // The settings buttons must use the same canonical i18n engine as the
+ // gate/topbar language pickers. Otherwise other modules keep the old locale.
+ if(app==='one'&&typeof window.zaviPublicSetLang==='function'){
+   window.zaviPublicSetLang(l);
+ }else if(app==='admin'&&typeof window.ZaviAdminLanguage?.set==='function'){
+   window.ZaviAdminLanguage.set(l);
+ }else{
+   document.dispatchEvent(new CustomEvent('zavi:language-changed',{detail:{language:l}}));
+ }
+ document.documentElement.lang=l;
+ document.documentElement.dir=l==='en'?'ltr':'rtl';
+ document.documentElement.dataset.zaviLang=l;
+ refresh();
+ document.dispatchEvent(new CustomEvent('zavi:language-change',{detail:{language:l}}));
+}
 function setAppearance(t){if(!['light','dark','glass'].includes(t))return;safeWrite('zavi_ui_appearance_v2',t);safeWrite('zavi_theme_preference_v29',t);document.documentElement.dataset.zaviTheme=t;document.documentElement.dataset.zaviAppearance=t;window.ZaviThemeV29?.set?.(t);refresh();document.dispatchEvent(new CustomEvent('zavi:appearance-change',{detail:{appearance:t}}))}
 /* Keep the existing ONE appearance card in sync with the three-mode shared
    picker. Never replace its navigation, storage, finance or event handlers. */
