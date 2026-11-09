@@ -1,6 +1,7 @@
 name: ZAVI mobile-installable OFFLINE PREVIEW APK (not Release)
 # Owner has requested a new installable APK in the current conversation.
 # This branch-scoped one-shot preview remains OFFLINE-PREVIEW-NOT-RELEASE.
+# 2026-11-09 owner-requested 12-image design QA rebuild from CURRENT dev (not prior artifact).
 on:
   workflow_dispatch:
   push:
