@@ -54,6 +54,13 @@ with Session() as browser:
         image.write_bytes(browser.screenshot())
         assert image.stat().st_size>10000,image
         report['apps'][f'one-{theme}']={'visual':mode,'navigation':bottom}
+    # Obsolete legacy design customizer and repair menu are absent from new UI.
+    browser.route('settings')
+    obsolete=browser.eval("""(()=>({custom:!!document.querySelector('#z637DesignForm'),
+     oldFonts:!!document.querySelector('.z6515-font-card'),
+     repairMenu:!!document.querySelector('#sidebarLinks [data-go="repairs"],#sidebarLinks2 [data-go="repairs"]')}))()""")
+    assert not any(obsolete.values()),obsolete
+    report['one_removed_legacy_presentation']=obsolete
     browser.navigate('admin')
     browser.until("!!document.getElementById('demoBtn')",
                   'ADMIN localhost-only demo button')
