@@ -61,6 +61,16 @@ with Session() as browser:
      repairMenu:!!document.querySelector('#sidebarLinks [data-go="repairs"],#sidebarLinks2 [data-go="repairs"]')}))()""")
     assert not any(obsolete.values()),obsolete
     report['one_removed_legacy_presentation']=obsolete
+    browser.until("!!document.querySelector('#zaviCleanSettingsSearch')",
+                  'ONE eight-section settings hub')
+    sections=browser.eval("""(()=>{
+      const groups=[...document.querySelectorAll('#content .zavi-clean-settings-group')];
+      return {count:groups.length,expanded:groups.filter(g=>g.open).length,
+        keys:groups.map(g=>g.dataset.group),
+        search:!!document.getElementById('zaviCleanSettingsSearch')};
+    })()""")
+    assert sections['count']==8 and sections['expanded']==0 and sections['search'],sections
+    report['one_12_reference_settings']=sections
     browser.navigate('admin')
     browser.until("!!document.getElementById('demoBtn')",
                   'ADMIN localhost-only demo button')

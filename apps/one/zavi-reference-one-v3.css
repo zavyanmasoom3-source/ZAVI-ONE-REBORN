@@ -157,3 +157,93 @@ html[data-zavi-theme] #mobileBottom .bottom-btn.active{
  html[data-zavi-theme] :is(#mobileBottom,.sidebar,.topbar){display:none!important}
  html[data-zavi-theme] #content{padding:0!important;max-width:none!important}
 }
+
+
+/* Twelve-image Settings page: eight compact, independent rows.
+   Original form nodes and save handlers remain inside expandable sections. */
+html[data-zavi-theme] #content .zavi-clean-settings-hub{
+ max-width:800px!important;display:grid!important;gap:9px!important;
+ margin:0 auto 18px!important;color:var(--zav-ink)!important;
+}
+html[data-zavi-theme] #content .zavi-clean-settings-title{
+ background:transparent!important;border:0!important;padding:4px 1px 2px!important;
+ margin:0!important;box-shadow:none!important;display:grid!important;gap:3px!important;
+}
+html[data-zavi-theme] #content .zavi-clean-settings-title strong{
+ font-size:clamp(17px,3vw,21px)!important;color:var(--zav-ink)!important;
+}
+html[data-zavi-theme] #content .zavi-clean-settings-title span{
+ color:var(--zav-muted)!important;font-size:11px!important;
+}
+html[data-zavi-theme] #content .zavi-clean-search-label{
+ font-size:12px!important;color:var(--zav-muted)!important;
+}
+html[data-zavi-theme] #content #zaviCleanSettingsSearch{
+ min-height:44px!important;width:100%!important;max-width:100%!important;
+ border:1px solid var(--zav-border)!important;border-radius:13px!important;
+ background:var(--zav-surface)!important;color:var(--zav-ink)!important;
+ box-shadow:none!important;padding:9px 13px!important;
+}
+html[data-zavi-theme] #content .zavi-clean-search-help{
+ display:none!important;
+}
+html[data-zavi-theme] #content .zavi-clean-settings-groups{
+ display:grid!important;gap:8px!important;
+}
+html[data-zavi-theme] #content .zavi-clean-settings-group{
+ background:var(--zav-surface)!important;border:1px solid var(--zav-border)!important;
+ color:var(--zav-ink)!important;border-radius:13px!important;
+ box-shadow:var(--zav-shadow)!important;margin:0!important;overflow:hidden!important;
+}
+html[data-zavi-theme] #content .zavi-clean-settings-group>summary{
+ position:relative;display:grid!important;grid-template-columns:36px 1fr auto!important;
+ align-items:center!important;column-gap:10px!important;row-gap:2px!important;
+ min-height:62px!important;padding:11px 14px!important;
+ list-style:none!important;cursor:pointer;
+}
+html[data-zavi-theme] #content .zavi-clean-settings-group>summary::-webkit-details-marker{
+ display:none!important;
+}
+html[data-zavi-theme] #content .zavi-clean-settings-group>summary::before{
+ content:'◈';display:grid;place-items:center;
+ width:34px;height:34px;border-radius:10px;
+ background:var(--zav-blue-soft);color:var(--zav-blue);font-size:18px;
+ grid-column:1;grid-row:1 / span 2;
+}
+html[data-zavi-theme] #content .zavi-clean-settings-group[data-group="account"]>summary::before{content:'◉'}
+html[data-zavi-theme] #content .zavi-clean-settings-group[data-group="store"]>summary::before{content:'⌂'}
+html[data-zavi-theme] #content .zavi-clean-settings-group[data-group="look"]>summary::before{content:'☼'}
+html[data-zavi-theme] #content .zavi-clean-settings-group[data-group="security"]>summary::before{content:'♢'}
+html[data-zavi-theme] #content .zavi-clean-settings-group[data-group="cloud"]>summary::before{content:'☁'}
+html[data-zavi-theme] #content .zavi-clean-settings-group[data-group="invoice"]>summary::before{content:'▤'}
+html[data-zavi-theme] #content .zavi-clean-settings-group[data-group="subscription"]>summary::before{content:'♛'}
+html[data-zavi-theme] #content .zavi-clean-settings-group[data-group="advanced"]>summary::before{content:'⚙'}
+html[data-zavi-theme] #content .zavi-clean-settings-group>summary>span:first-child{
+ grid-column:2;grid-row:1;color:var(--zav-ink)!important;
+ font-size:13px!important;font-weight:750!important;
+}
+html[data-zavi-theme] #content .zavi-clean-settings-group>summary>small{
+ grid-column:2;grid-row:2;color:var(--zav-muted)!important;
+ font-size:10px!important;line-height:1.45!important;
+}
+html[data-zavi-theme] #content .zavi-clean-settings-group>summary>.zavi-clean-count{
+ grid-column:3;grid-row:1 / span 2;align-self:center;
+ background:var(--zav-soft);border-radius:999px;color:var(--zav-muted);
+ font-size:10px;min-width:22px;text-align:center;
+}
+html[data-zavi-theme] #content .zavi-clean-settings-group[open]>summary{
+ border-bottom:1px solid var(--zav-border)!important;
+}
+html[data-zavi-theme] #content .zavi-clean-settings-stack{
+ padding:12px!important;display:grid!important;gap:10px!important;
+ background:var(--zav-surface)!important;
+}
+html[data-zavi-theme] #content .zavi-clean-settings-stack>:is(.card,.settings-card,.z20-panel){
+ margin:0!important;max-width:100%!important;
+}
+@media(max-width:450px){
+ html[data-zavi-theme] #content .zavi-clean-settings-group>summary{
+  padding:10px 12px!important;min-height:59px!important;grid-template-columns:33px 1fr auto!important;
+ }
+ html[data-zavi-theme] #content .zavi-clean-settings-stack{padding:8px!important}
+}
