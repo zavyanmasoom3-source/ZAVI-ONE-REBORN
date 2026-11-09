@@ -25,8 +25,16 @@ function language(){
  return raw.startsWith('en')?'en':raw.startsWith('ps')?'ps':'fa';
 }
 function apply(){
- document.documentElement.style.zoom=String(percent/100);
- document.documentElement.dataset.zaviDisplayPercent=String(percent);
+ // Legacy 1-slider module is kept for migrating old preferences only.
+ // The canonical three-slider controller owns the CSS scale; root zoom
+ // breaks viewport width and all modern responsive layouts.
+ const root=document.documentElement;
+ root.style.removeProperty('zoom');
+ if(window.ZaviDisplaySettingsV6588?.set){
+  window.ZaviDisplaySettingsV6588.set('system',percent);
+  return;
+ }
+ root.dataset.zaviDisplayPercent=String(percent);
 }
 function save(n){
  percent=safe(n);try{localStorage.setItem(KEY,String(percent))}catch(_){}
