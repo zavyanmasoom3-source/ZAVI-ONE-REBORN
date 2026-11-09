@@ -104,3 +104,19 @@ No part above is marked `تأیید نهایی`. Every previously functional mod
 3. Test physical Android camera and fallback scanner, thermal/PDF printing and WhatsApp handoff on devices.
 4. Test owner/staff authorization, multi-device offline conflict/idempotence, decimal FX precision, and signed package contents.
 5. Obtain **explicit owner authorization** before merging to a branch that automatically builds an APK.
+
+## Latest verified review — 2026-11-09 08:51 UTC
+
+Reviewed actual code and reference images IMG_3460–3466; no test data is written to production.
+
+- Source branch: `feature/approved-sales-v6662-ui`; draft PR #1, **never merged to dev** by this activity.
+- Browser QA run [42588941984](https://github.com/zavyanmasoom3-source/ZAVI-ONE-REBORN/actions/runs/42588941984): `success`; artifact [13659624298](https://github.com/zavyanmasoom3-source/ZAVI-ONE-REBORN/actions/runs/42588941984/artifacts/13659624298).
+- Real route smoke: **59 screenshots / 59 mapped routes and entrypoints opened in disposable Chrome**. A route opening is **not** proof of pixel-perfect visual similarity, correct database posting or permission security.
+- Sale UI: photo-inspired vertically scrolling date/customer → products/barcode → calculation/payment → receipt, native scanner retained, explicit quantity/price labels, per-item totals and a full-width final amount. Original handlers remain.
+- Visual/functional assertions: the camera button and barcode input do not overlap at 420px; all groups remain visible and scroll; Dari/Pashto/English language events update headings and dual Afghan solar/Gregorian date; light/dark/glass form widths pass; zero price blocked; cash/bank/credit select real local ledger accounts.
+- Accounting-only disposable browser fixture: 10 opening product units, 2 units sold, ending 8, invoice AFN 34, paid AFN 20, receivable AFN 14, persisted once; attempted duplicate submit does not create another document.
+- Regression check: purchase / sale return / purchase return modal form control callbacks are unaffected by sale-only visual skin.
+- Additional integrity gate [42588158479](https://github.com/zavyanmasoom3-source/ZAVI-ONE-REBORN/actions/runs/42588158479): `success`, including shell caching, three-profile mock offline sync and baseline 10-route accounting snapshots.
+- **Not certified:** financial RPC/posting on a real staging Supabase workspace; per-warehouse available stock checked by server; actual Android/iPad camera and label printer; signed Android package; end-to-end real multi-currency split; pixel-by-pixel reference comparison. The status remains **آزمایش شده و دارای مشکل**.
+
+The current reference version `V66.62` and REBORN source commit versions **must not be conflated**. No new APK was built or published by this review workflow.
