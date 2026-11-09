@@ -106,10 +106,57 @@ with Session() as browser:
     assert result['posted']==2 and result['localStock']==0,result
     browser.until("document.querySelector('[data-zv-status]').textContent.includes('Over-receipt')",
                   'over-receipt blocked by real client handler')
-    browser.screenshot()
     screenshot=out/'order-partial-receipt.png'
     screenshot.write_bytes(browser.screenshot())
     assert screenshot.stat().st_size>10000
+    # Simulate a server that committed receipt 2, but the network dropped its ACK.
+    # A retry must carry the SAME idempotency UUID and cannot double-post goods.
+    browser.eval(r"""(()=>{
+      const original=window.fetch;
+      window.__zvTransitQA.dropAcknowledgement=true;
+      window.fetch=async(url,opts)=>{
+        if(String(url).includes('/rpc/zavi_v671_receive_in_transit')&&window.__zvTransitQA.dropAcknowledgement){
+          window.__zvTransitQA.dropAcknowledgement=false;
+          await original(url,opts); // synthetic server committed the transaction
+          throw Error('QA: network dropped after server commit');
+        }
+        return original(url,opts);
+      };
+      const f=document.querySelector('[data-zv-receive]');
+      f.elements.quantity.value='1';
+      f.elements.note.value='Last unit';
+      f.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
+    })()""")
+    browser.until("window.__zvTransitQA.receipts.length===2",'mock server second receipt committed')
+    browser.until("document.querySelector('[data-zv-status]').textContent.includes('network dropped')",
+                  'lost acknowledgement shows uncertainty')
+    browser.eval("document.querySelector('[data-zv-refresh]').click()")
+    browser.until("!!document.querySelector('[data-zv-retry]')",'retry same pending operation button')
+    before_retry=browser.eval(r"""(()=>{
+      const o=window.__zvTransitQA;
+      return {posted:o.posted,receipts:o.receipts.length,
+        pending:JSON.parse(localStorage.getItem('zavi-in-transit-pending-v1:'+o.uid+':'+o.workspace)||'null')};
+    })()""")
+    assert before_retry['posted']==3 and before_retry['receipts']==2 and before_retry['pending']
+    last_id=before_retry['pending']['params']['p_receipt_id']
+    browser.eval("document.querySelector('[data-zv-retry]').click()")
+    browser.until("document.querySelector('[data-zv-retry]')===null",'pending operation cleared after same-id retry')
+    after_retry=browser.eval(r"""(()=>{
+      const o=window.__zvTransitQA;
+      return {posted:o.posted,receipts:o.receipts.length,
+        status:o.orders[0].status,
+        last_id:o.receipts[1].p_receipt_id,
+        pending:localStorage.getItem('zavi-in-transit-pending-v1:'+o.uid+':'+o.workspace),
+        legacyStock:stockState()[o.product.id]?.qty||0};
+    })()""")
+    assert after_retry['posted']==3 and after_retry['receipts']==2,after_retry
+    assert after_retry['status']=='received',after_retry
+    assert after_retry['last_id']==last_id and after_retry['pending'] is None,after_retry
+    assert after_retry['legacyStock']==0,after_retry
+    final_screenshot=out/'order-received-after-dropped-ack.png'
+    final_screenshot.write_bytes(browser.screenshot())
+    assert final_screenshot.stat().st_size>10000
+    print('PASS: synthetic network drops server ACK; retry reuses original receipt UUID and posts exactly once')
     print('PASS: real Chrome creates mock server order and partially receives 2/3 units')
     print('PASS: client blocks 1.25-unit overreceipt; legacy stock remains 0')
     (out/'result.json').write_text(json.dumps({
