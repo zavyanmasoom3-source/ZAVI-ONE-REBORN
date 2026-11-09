@@ -84,7 +84,7 @@
       const a=mk('article','zsal-stat'),b=mk('article','zsal-stat');
       a.append(mk('span','',tr('today')),mk('strong','',nativeCurrency(stats.today)));
       b.append(mk('span','',tr('count')),mk('strong','',String(stats.count)));
-      wrap.append(b,a);root.insertBefore(wrap,original);
+      wrap.append(a,b);root.insertBefore(wrap,original);
       const details=mk('details','zsal-allstats');
       details.append(mk('summary','',tr('allStats')),original);
       root.insertBefore(details,listing);
@@ -272,11 +272,43 @@
         lang()==='ps'?'د توکي نوم یا بارکوډ':'نام محصول یا اسکن بارکد';
     }
   }
+  function refreshLabels(){
+    // Language switches must repaint new controls, without replacing native inputs.
+    const set=(el,value)=>{
+      if(el&&el.textContent!==value)el.textContent=value;
+    };
+    const root=document.querySelector('#content .zsal-approved-page');
+    if(root){
+      set(root.querySelector('.page-head h2'),tr('heading'));
+      set(root.querySelector('.page-head p'),tr('subtitle'));
+      set(root.querySelector('.page-head [data-action="sale"]'),'＋  '+tr('newSale'));
+      const cards=root.querySelectorAll('.zsal-stat');
+      if(cards.length===2){set(cards[0].querySelector('span'),tr('today'));set(cards[1].querySelector('span'),tr('count'))}
+      set(root.querySelector('.zsal-allstats summary'),tr('allStats'));
+      for(const [i,tab] of [...root.querySelectorAll('.zsal-list-tab')].entries())
+        set(tab,tr(i===0?'records':'manual'));
+    }
+    const modal=document.querySelector('#overlay .zsal-approved-modal');
+    if(!modal)return;
+    set(modal.querySelector('.modal-head h3'),tr('newSale'));
+    const label=modal.querySelector('.zsal-customer-select label');
+    if(label?.firstChild?.nodeType===3)set(label.firstChild,tr('selectCustomer'));
+    set(modal.querySelector('.zsal-customer-select option[value=""]'),tr('cashCustomer'));
+    set(modal.querySelector('.zsal-payment legend'),tr('payment'));
+    for(const [i,k] of ['cash','bank','credit'].entries())
+      set(modal.querySelectorAll('.zsal-payment-option span')[i],tr(k));
+    set(modal.querySelector('.zsal-currency-note'),tr('currency')+': '+String(db.currency||'AFN'));
+    const btn=modal.querySelector('.zsal-preview-button');
+    if(btn)set(btn,btn.getAttribute('aria-expanded')==='true'?tr('close'):tr('preview'));
+    for(const [i,row] of [...modal.querySelectorAll('.order-line')].entries()){
+      set(row.querySelector('.zsal-line-title'),tr('item')+' '+(i+1));
+    }
+  }
   let queued=false;
   function schedule(){
     if(queued)return;queued=true;
     queueMicrotask(()=>{queued=false;
-      try{salesPage();saleModal()}catch(e){console.warn('Approved sales UI:',e?.message||e)}
+      try{salesPage();saleModal();refreshLabels()}catch(e){console.warn('Approved sales UI:',e?.message||e)}
     });
   }
   function start(){
