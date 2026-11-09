@@ -129,10 +129,16 @@ with Session() as b:
     # Ensure the enhancement's fallback line cannot duplicate it.
     duplication=b.eval("""(()=>{
       const note=document.querySelector('.zsal-dual-date');
-      return {exists:!!note,hidden:!!note&&getComputedStyle(note).display==='none'};
+      const hint=document.querySelector('#dialogForm input[name=date]')?.closest('.field')?.querySelector('.field-hint');
+      const beforePseudo=note?getComputedStyle(note,'::before').content:'missing';
+      return {exists:!!note,visible:!!note&&getComputedStyle(note).display!=='none',
+        nativeTutorialHidden:!!hint&&getComputedStyle(hint).display==='none',
+        pseudoEmpty:beforePseudo==='none'||beforePseudo==='normal'||beforePseudo==='""',
+        text:note?.textContent||''};
     })()""")
-    assert duplication['exists'] and duplication['hidden'],duplication
-    print('PASS: single visible dual-date line; sales-only fallback does not duplicate shared date widget')
+    assert duplication['exists'] and duplication['visible'] and duplication['nativeTutorialHidden'],duplication
+    assert duplication['pseudoEmpty'] and '|' in duplication['text'],duplication
+    print('PASS: exactly one visible Afghan solar/Gregorian date label and no tutorial/pseudo duplicate')
     date_nodes=b.eval(r"""(()=>{
       const field=document.querySelector('#dialogForm input[name=date]')?.closest('.field');
       return [...field.querySelectorAll('*')].map(el=>({
