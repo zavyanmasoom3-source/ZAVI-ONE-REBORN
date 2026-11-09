@@ -12,7 +12,7 @@
       payment:'روش پرداخت',cash:'نقدی',bank:'بانکی / حواله',credit:'قرض / پرداخت بعدی',
       received:'مبلغ دریافت‌شده',currency:'ارز فاکتور',preview:'پیش‌نمایش فاکتور',
       close:'بستن پیش‌نمایش',receipt:'پیش‌نمایش رسید',item:'محصول',qty:'تعداد',
-      unit:'قیمت واحد',quantity:'تعداد',lineTotal:'جمع محصول',calcInvoice:'محاسبه فاکتور',total:'مبلغ نهایی فاکتور',balance:'باقی‌مانده مشتری',
+      unit:'قیمت واحد',quantity:'تعداد',lineTotal:'جمع محصول',calcInvoice:'محاسبه فاکتور',details:'یادداشت و گزینه‌های بیشتر',total:'مبلغ نهایی فاکتور',balance:'باقی‌مانده مشتری',
       nameRequired:'محصول را از گدام انتخاب کنید.',qtyRequired:'تعداد باید بیشتر از صفر باشد.',
       priceRequired:'قیمت واحد باید بیشتر از صفر باشد.',bankRequired:'یک حساب بانکی یا حواله معتبر لازم است.',overpaid:'مبلغ دریافت‌شده نمی‌تواند از کل بیشتر باشد.',creditName:'برای فروش قرضی، نام مشتری را وارد کنید.',
       stock:'موجودی کافی نیست.',noItems:'حداقل یک محصول لازم است.',notSaved:'پیش‌نمایش است؛ هنوز هیچ معامله‌ای ثبت نشده است.'},
@@ -23,7 +23,7 @@
       payment:'د تادیې ډول',cash:'نغدي',bank:'بانک / حواله',credit:'پور / وروسته تادیه',
       received:'ترلاسه شوې پیسې',currency:'د بل اسعار',preview:'د بل مخکتنه',
       close:'مخکتنه بندول',receipt:'د رسید مخکتنه',item:'توکی',qty:'شمېر',
-      unit:'د واحد بیه',quantity:'شمېر',lineTotal:'د توکي ټول',calcInvoice:'د بل حساب',total:'د بل وروستۍ اندازه',balance:'د پېرودونکي پاتې',
+      unit:'د واحد بیه',quantity:'شمېر',lineTotal:'د توکي ټول',calcInvoice:'د بل حساب',details:'یادښت او نور انتخابونه',total:'د بل وروستۍ اندازه',balance:'د پېرودونکي پاتې',
       nameRequired:'توکی له ګدامه وټاکئ.',qtyRequired:'شمېر باید له صفر څخه لوړ وي.',
       priceRequired:'د واحد بیه باید له صفر څخه لوړه وي.',bankRequired:'د بانک یا حوالې معتبر حساب اړین دی.',overpaid:'ترلاسه شوې پیسې له ټول مبلغ څخه ډېرې نشي.',creditName:'د پور پلور لپاره د پېرودونکي نوم ولیکئ.',
       stock:'موجودي کمه ده.',noItems:'لږ تر لږه یو توکی اړین دی.',notSaved:'دا مخکتنه ده؛ معامله لا نه ده ثبت شوې.'},
@@ -34,7 +34,7 @@
       payment:'Payment method',cash:'Cash',bank:'Bank / remittance',credit:'Credit / pay later',
       received:'Amount received',currency:'Invoice currency',preview:'Invoice preview',
       close:'Close preview',receipt:'Receipt preview',item:'Product',qty:'Quantity',
-      unit:'Unit price',quantity:'Quantity',lineTotal:'Line total',calcInvoice:'Invoice calculation',total:'Invoice final amount',balance:'Customer balance',
+      unit:'Unit price',quantity:'Quantity',lineTotal:'Line total',calcInvoice:'Invoice calculation',details:'Notes and more options',total:'Invoice final amount',balance:'Customer balance',
       nameRequired:'Select a product from the warehouse.',qtyRequired:'Quantity must be greater than zero.',
       priceRequired:'Unit price must be greater than zero.',bankRequired:'A valid bank or remittance account is required.',overpaid:'Received amount cannot exceed total.',creditName:'A customer name is required for credit sales.',
       stock:'Not enough inventory.',noItems:'At least one product is required.',notSaved:'Preview only; no transaction has been saved.'}
@@ -293,6 +293,12 @@
       // discount and account controls kept in the same original form.
       if(totals)totals.after(payBox);
       else paymentPane.append(payBox);
+      const originalNote=paymentPane.querySelector(':scope > .tiny-note');
+      if(originalNote){
+        const details=mk('details','zsal-payment-notes');
+        details.append(mk('summary','',tr('details')),originalNote);
+        paymentPane.append(details);
+      }
       const account=form.elements.accountId,paid=form.elements.paid;
       const modesByName=()=>[...payBox.querySelectorAll('input[name=zsalMode]')];
       const chosenMode=()=>modesByName().find(x=>x.checked)?.value||'cash';
@@ -477,6 +483,7 @@
     const btn=modal.querySelector('.zsal-preview-button');
     if(btn)set(btn,btn.getAttribute('aria-expanded')==='true'?tr('close'):tr('preview'));
     set(modal.querySelector('.zsal-payment-heading'),tr('calcInvoice'));
+    set(modal.querySelector('.zsal-payment-notes summary'),tr('details'));
     for(const [i,row] of [...modal.querySelectorAll('.order-line')].entries()){
       set(row.querySelector('.zsal-line-title'),tr('item')+' '+(i+1));
       set(row.querySelector('.zsal-qty-label'),tr('quantity'));
