@@ -131,6 +131,19 @@ with Session() as browser:
             assert all(scanner.values()),scanner
             report['apps']['one-products-compact-barcode']=scanner
 
+            header=browser.eval("""(()=>{
+              const bar=document.querySelector('.topbar');
+              const dual=document.querySelector('#zaviDateBanner .zavi-date-compact');
+              return {height:bar?.getBoundingClientRect().height,
+                compact:!!dual,separator:!!dual?.textContent?.includes('·'),
+                legacyParts:document.querySelectorAll('#zaviDateBanner .zavi-date-part').length,
+                visible:!!bar && getComputedStyle(bar).display!=='none'};
+            })()""")
+            assert header['compact'] and header['separator'] and header['legacyParts']==0,header
+            assert header['height']<=55 and header['visible'],header
+            report['apps']['one-products-one-line-dual-date']=header
+
+
     # Obsolete legacy design customizer and repair menu are absent from new UI.
     browser.route('settings')
     obsolete=browser.eval("""(()=>({custom:!!document.querySelector('#z637DesignForm'),
