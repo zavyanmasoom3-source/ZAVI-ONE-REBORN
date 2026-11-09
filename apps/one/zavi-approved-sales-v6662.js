@@ -173,14 +173,14 @@
     const panels=[...flow.querySelectorAll(':scope > .zavi-flow-panel')];
     if(panels.length!==3)return;
     if(!form.dataset.zsalApproved){
-      form.dataset.zsalApproved='true';
       modal.classList.add('zsal-approved-modal');
       const title=modal.querySelector('.modal-head h3');
       if(title)title.textContent=tr('newSale');
       const customerPane=panels[1],paymentPane=panels[2];
       const pickerWrap=mk('div','zsal-customer-select');
       const lbl=mk('label','',tr('selectCustomer')),picker=mk('select');
-      picker.type='select-one';picker.setAttribute('aria-label',tr('selectCustomer'));
+      // HTMLSelectElement.type is read-only in strict mode.
+      picker.setAttribute('aria-label',tr('selectCustomer'));
       const option=(id,name)=>{
         const item=mk('option','',name);item.value=id;return item;
       };
@@ -264,6 +264,7 @@
           receipt.scrollIntoView({block:'nearest'});
         }catch(e){const note=mk('p','zsal-error',e.message||tr('noItems'));receipt.replaceChildren(note);receipt.hidden=false}
       });
+      form.dataset.zsalApproved='true';
     }
     for(const [i,row] of currentRows().entries()){
       if(row.dataset.zsalApproved)continue;
