@@ -150,7 +150,22 @@ for app,field_id in [('one','zawiPinOne'),('admin','authPassword')]:
                 screenshot=OUT/('one-owner-gate-'+choice+'.png')
                 screenshot.write_bytes(browser.screenshot())
                 assert screenshot.stat().st_size>10000,screenshot
-            print('PASS: owner-referenced real ONE PIN entry, 3 appearance buttons, 3 languages')
+            # Reload the real app: the older preferences boot used to reset
+            # saved glass to dark. Catch that regression on a fresh page load.
+            browser.navigate('one')
+            browser.until("""document.readyState==='complete' &&
+              typeof window.ZaviThemeV29?.get==='function' &&
+              !!document.getElementById('zawiPrivateGate')""",
+              'real ONE PIN gate after persisted theme reload',seconds=20)
+            persisted=browser.eval("""(()=>({
+              theme:document.documentElement.dataset.zaviTheme,
+              appearance:document.documentElement.dataset.zaviAppearance,
+              uiStorage:localStorage.getItem('zavi_ui_appearance_v2'),
+              themeStorage:localStorage.getItem('zavi_theme_preference_v29'),
+              runtime:window.ZaviThemeV29.get()
+            }))()""")
+            assert all(v=='glass' for v in persisted.values()),persisted
+            print('PASS: owner-referenced ONE PIN entry, 3 themes, 3 locales, persisted glass reload')
 
 print('PASS: both apps, two theme runtime screenshots and three localized password/advanced labels')
 print('NOT VERIFIED: all surrounding login prose translations, biometric authentication, real owner login.')
