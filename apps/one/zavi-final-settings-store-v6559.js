@@ -6,7 +6,7 @@ fa:{title:'تنظیمات',desc:'بخش مورد نیاز را باز کنید.'
 en:{title:'Settings',desc:'Open the section you need.',search:'Search settings',placeholder:'Search an option',help:'Choose a settings section.',none:'No matching option.',found:'matching settings',groups:[['account','Account & profile','Personal details'],['store','Store & business','Name, currency and type'],['look','Appearance & language','Light, dark, glass and sizes'],['security','Security & access','Lock, credentials and roles'],['cloud','Cloud & devices','Sync and devices'],['invoice','Accounting & invoices','Cash, printing and receipts'],['subscription','Subscription & support','Renewal and help'],['advanced','Advanced & backups','Additional tools']]},
 ps:{title:'تنظیمات',desc:'اړینه برخه پرانیزئ.',search:'تنظیمات ولټوئ',placeholder:'د انتخاب نوم ولیکئ',help:'اړینه برخه وټاکئ.',none:'څه ونه موندل شول.',found:'انتخابونه وموندل شول',groups:[['account','حساب او پېژندپاڼه','شخصي معلومات'],['store','دوکان او کاروبار','نوم، پیسې او ډول'],['look','بڼه او ژبه','روښانه، تیاره، ښیښه‌یي او اندازې'],['security','امنیت او لاسرسی','قفل، رمز او اجازې'],['cloud','کلاوډ او وسایل','همغږي او وسایل'],['invoice','حسابداري او بلونه','صندوق، چاپ او رسیدونه'],['subscription','ګډون او ملاتړ','تمدید او مرسته'],['advanced','پرمختللي او بیک اپ','نور وسایل']]}
 };
-function locale(){const v=(document.querySelector('#zaviTopLanguage')?.value||document.documentElement.lang||'fa').toLowerCase();return v.startsWith('en')?'en':v.startsWith('ps')?'ps':'fa'}
+function locale(){const v=(document.documentElement.lang||document.querySelector('#zaviTopLanguage')?.value||'fa-AF').toLowerCase();return v.startsWith('en')?'en':v.startsWith('ps')?'ps':'fa'}
 function group(el){
  const s=String(el.querySelector('h1,h2,h3,h4')?.textContent||el.getAttribute('aria-label')||'').trim().toLowerCase();
  const key=String(el.id||'')+' '+String(el.className||'');
@@ -28,6 +28,32 @@ function shorten(root){
  if(locale()!=='fa')return;
  const map={'فونت دلخواه خود را انتخاب کنید؛ این انتخاب برای همین حساب در این دستگاه محفوظ می‌ماند.':'فونت دلخواه را انتخاب کنید.','تنظیم بخش‌ها و امکانات فروشگاه.':'مدیریت امکانات','زبان و بخش‌های دلخواه خود را انتخاب کنید.':'زبان و بخش‌ها را انتخاب کنید.'};
  root.querySelectorAll('p,.tiny-note').forEach(el=>{if(el.children.length)return;const r=map[el.textContent.trim()];if(r)el.textContent=r});
+}
+/* Repaint the eight native group headings after instant Dari/Pashto/English
+ * switching. The live controls inside each group must not be re-created. */
+function translateHub(hub){
+ if(!hub?.isConnected)return;
+ const dict=D[locale()],current=hub.dataset.locale;
+ if(current===locale())return;
+ hub.dataset.locale=locale();
+ const title=hub.querySelector('.zavi-clean-settings-title');
+ if(title){
+  title.querySelector('strong').textContent=dict.title;
+  title.querySelector('span').textContent=dict.desc;
+ }
+ const label=hub.querySelector('label[for="zaviCleanSettingsSearch"]');
+ if(label)label.textContent=dict.search;
+ const input=hub.querySelector('#zaviCleanSettingsSearch');
+ if(input)input.placeholder=dict.placeholder;
+ for(const [key,name,description] of dict.groups){
+  const group=hub.querySelector('.zavi-clean-settings-group[data-group="'+key+'"]');
+  const summary=group?.querySelector(':scope > summary');
+  if(summary){
+   summary.children[0].textContent=name;
+   summary.children[1].textContent=description;
+  }
+ }
+ if(input)search(hub,input.value);
 }
 function counts(hub){
  hub.querySelectorAll('.zavi-clean-settings-group').forEach(d=>{
@@ -73,6 +99,7 @@ function enhance(){
  }
  if(candidates.length)removeBulkActions(hub);
  counts(hub);
+ translateHub(hub);
 }
 function search(hub,query){
  const lang=D[locale()],q=query.trim().toLowerCase();let total=0;
@@ -91,6 +118,17 @@ function ready(){
   queueMicrotask(()=>{queued=false;try{enhance()}catch(e){console.warn('ZAVI Settings:',e)}});
  }).observe(root,{childList:true});
  enhance();
+ function updateLocale(){
+  const hub=root.querySelector(':scope > .zavi-clean-settings-hub');
+  if(hub)translateHub(hub);
+ }
+ document.addEventListener('zavi:language-change',updateLocale);
+ document.addEventListener('change',event=>{
+  if(['zaviTopLanguage','zaviSettingsLanguage','zaviGateLanguage'].includes(event.target?.id))
+   requestAnimationFrame(updateLocale);
+ });
+ new MutationObserver(updateLocale).observe(document.documentElement,{
+  attributes:true,attributeFilter:['lang']});
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',ready,{once:true});else ready();
 })();
