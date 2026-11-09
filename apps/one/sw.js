@@ -5,7 +5,7 @@
  */
 'use strict';
 const APK_ORIGIN='https://appassets.androidplatform.net';
-const CACHE_NAME='zavi-one-design-tokens-unified-20261109-subscription-request2';;;
+const CACHE_NAME='zavi-one-design-tokens-unified-20261109-phase2-i18n-pin-recovery';;;
 const SHELL_PROTOCOL='zavi-shell-v2';
 const CACHE_PREFIX='zavi-one-';
 const CORE=[
