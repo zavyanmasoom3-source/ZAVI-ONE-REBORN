@@ -237,6 +237,35 @@ for app,field_id in [('one','zawiPinOne'),('admin','authPassword')]:
                 assert proof['dir']==('ltr' if lang=='en' else 'rtl'),proof
                 assert proof['focused']=='z24Email' and proof['password']=='password',proof
                 assert proof['askDisabled'] and proof['loadDisabled'],proof
+
+                # A real store-selection status must follow the active locale,
+                # and must update again if the language changes while open.
+                note=browser.eval("""(()=>{
+                  document.getElementById('z24Workspace').dispatchEvent(
+                    new Event('change',{bubbles:true}));
+                  return document.getElementById('z24RecoveryStatus')?.textContent;
+                })()""")
+                expected={'fa-AF':'دوکان خود را انتخاب کرده',
+                          'ps-AF':'خپل دوکان وټاکئ',
+                          'en':'Select your store'}[lang]
+                assert expected in note,(lang,note)
+                if lang=='fa-AF':
+                    switched=browser.eval("""(()=>{
+                      document.documentElement.lang='en';
+                      document.documentElement.dir='ltr';
+                      document.dispatchEvent(new CustomEvent('zavi:language-change',
+                        {detail:{language:'en'}}));
+                      const before=document.getElementById('z24RecoveryStatus')?.textContent;
+                      document.documentElement.lang='fa-AF';
+                      document.documentElement.dir='rtl';
+                      document.dispatchEvent(new CustomEvent('zavi:language-change',
+                        {detail:{language:'fa-AF'}}));
+                      return {english:before,
+                        dari:document.getElementById('z24RecoveryStatus')?.textContent};
+                    })()""")
+                    assert 'Select your store' in switched['english'],switched
+                    assert 'دوکان خود را انتخاب کرده' in switched['dari'],switched
+
                 for mode in ['light','dark','glass']:
                     display=browser.eval("""(()=>{
                       window.ZaviThemeV29.set(%s);
