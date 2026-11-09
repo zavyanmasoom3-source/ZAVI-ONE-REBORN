@@ -386,3 +386,67 @@ html[data-zavi-theme] body #overlay .modal.zsal-approved-modal
   .zsal-vertical > .zavi-flow-panel{
   margin-block:0 10px!important;
 }
+
+
+/* Native product row: explicit labels sit directly over the real numeric fields. */
+html body #overlay .modal.zsal-approved-modal .order-row .zsal-qty-label{
+  grid-column:1!important;grid-row:2!important;
+}
+html body #overlay .modal.zsal-approved-modal .order-row .zsal-price-label{
+  grid-column:2!important;grid-row:2!important;
+}
+html body #overlay .modal.zsal-approved-modal .order-row .zsal-field-label{
+  font-size:12px!important;font-weight:700!important;line-height:1.45!important;
+  margin:3px 4px 0!important;color:var(--zsal-muted)!important;max-width:100%;
+  min-width:0;white-space:normal;
+}
+html body #overlay .modal.zsal-approved-modal .order-row input[data-field="qty"]{
+  grid-column:1!important;grid-row:3!important;
+}
+html body #overlay .modal.zsal-approved-modal .order-row input[data-field="price"]{
+  grid-column:2!important;grid-row:3!important;
+}
+html body #overlay .modal.zsal-approved-modal .zsal-line-subtotal{
+  display:flex!important;justify-content:space-between!important;align-items:center!important;
+  flex-wrap:wrap!important;gap:6px!important;padding:11px 2px 2px!important;
+  color:var(--zsal-muted)!important;font-size:12px!important;
+}
+html body #overlay .modal.zsal-approved-modal .zsal-line-subtotal strong{
+  color:var(--zsal-ink)!important;font-weight:900!important;font-size:17px!important;
+}
+html body #overlay .modal.zsal-approved-modal .zsal-payment-heading{
+  font-size:18px!important;line-height:1.5!important;font-weight:900!important;
+  color:var(--zsal-ink)!important;margin:0!important;
+}
+html body #overlay .modal.zsal-approved-modal .zsal-payment-option input[type="radio"]{
+  appearance:none!important;-webkit-appearance:none!important;
+  display:inline-block!important;position:relative!important;
+  width:20px!important;height:20px!important;min-width:20px!important;
+  max-width:20px!important;min-height:20px!important;max-height:20px!important;
+  flex:0 0 20px!important;border:2px solid var(--zsal-outline)!important;
+  border-radius:50%!important;box-shadow:none!important;transform:none!important;
+  background:var(--zsal-paper)!important;padding:0!important;margin:0!important;
+}
+html body #overlay .modal.zsal-approved-modal .zsal-payment-option input[type="radio"]:checked{
+  border-color:var(--zsal-ink)!important;
+  background:radial-gradient(circle at center,var(--zsal-ink) 0 5px,transparent 5.6px)!important;
+}
+html body #overlay .modal.zsal-approved-modal .zsal-payment-option input[type="radio"]:focus-visible{
+  outline:3px solid var(--zsal-blue)!important;outline-offset:3px!important;
+}
+html body #overlay .modal.zsal-approved-modal .zavi-flow-panel .totals
+  > div:has(#sumTotal){
+  display:grid!important;grid-template-columns:1fr!important;justify-items:end!important;
+  gap:3px!important;background:#eaf4ff!important;color:#284f8c!important;
+  padding:13px 15px!important;border-radius:16px!important;margin:9px 0!important;
+}
+html body #overlay .modal.zsal-approved-modal .zavi-flow-panel .totals #sumTotal{
+  color:#245da7!important;font-size:clamp(22px,4vw,30px)!important;font-weight:950!important;
+  overflow-wrap:anywhere;
+}
+html[data-zavi-theme="dark"] body #overlay .modal.zsal-approved-modal
+  .zavi-flow-panel .totals > div:has(#sumTotal){
+  background:#153a60!important;color:#e9f4ff!important;
+}
+html[data-zavi-theme="dark"] body #overlay .modal.zsal-approved-modal
+  .zavi-flow-panel .totals #sumTotal{color:#a9d5ff!important}
