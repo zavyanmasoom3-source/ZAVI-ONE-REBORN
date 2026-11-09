@@ -55,7 +55,6 @@ const CORE=[
   "zavi-auto-update-v18.js",
   "style.css",
   "graphic-v24-1.css",
-  "zavi-graphic-refresh.css",
   "zavi-android-v5-fix.css",
   "zavi-android-v6-fix.css",
   "zavi-android-v7-fix.css",

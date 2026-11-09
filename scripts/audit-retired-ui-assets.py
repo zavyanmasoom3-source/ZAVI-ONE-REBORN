@@ -9,7 +9,7 @@ from pathlib import Path
 import json
 root=Path(__file__).resolve().parents[1]
 retired={
- 'zavi-release-polish-v19.css','zavi-dark-executive-v18.css',
+ 'zavi-graphic-refresh.css','zavi-release-polish-v19.css','zavi-dark-executive-v18.css',
  'zavi-dark-executive-v23.css','zavi-theme-v29.css',
  'zavi-final-light-v30.css','zavi-light-production-v31.css',
  'zavi-light-hotfix-v32.css','zavi-light-finish-v33.css',
