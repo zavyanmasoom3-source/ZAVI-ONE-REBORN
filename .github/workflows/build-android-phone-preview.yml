@@ -127,6 +127,9 @@ jobs:
           # The app source may already use the packaged path or the web-host path.
           s=s.replace('../../packages/shared/','./packages/shared/')
           s=s.replace('../packages/shared/','./packages/shared/')
+          # Remove nonessential live-service preconnect from this isolated
+          # preview without changing the real app or its deployed config.
+          s=s.replace('<link rel="preconnect" href="https://wbbmwfnmurpphwxesssx.supabase.co" crossorigin>','')
           p.write_text(s,encoding='utf-8')
           # The installable preview is local-data-only: never connect to the
           # production Supabase project, send customer data or request real auth.
