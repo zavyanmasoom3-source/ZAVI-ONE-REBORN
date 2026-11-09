@@ -26,8 +26,7 @@ with Session() as browser:
             heading:document.querySelector('#z70-store-status .z70-store-title strong')
               ?.textContent};
         })()""" %(json.dumps(lang),json.dumps(lang)))
-        browser.until("""document.querySelector('#z70-store-status
-           .z70-store-title strong')?.textContent===%s"""%json.dumps(heading),
+        browser.until("""document.querySelector('#z70-store-status .z70-store-title strong')?.textContent===%s"""%json.dumps(heading),
            'live offline licence language '+lang)
         assert result['lang']==lang,result
 
