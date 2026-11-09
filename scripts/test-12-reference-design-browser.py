@@ -254,6 +254,39 @@ with Session() as browser:
           return getComputedStyle(document.getElementById('zaviSubscriptionHub')).direction;
         })()""" % (json.dumps(language),json.dumps(direction)))
         assert status==direction,(language,status)
+    # A request link is NOT an activation/renewal operation. Validate
+    # the live 7/180/365-day UI in three locales, without opening WhatsApp.
+    for language,label in [('fa-AF','درخواست تمدید'),
+                           ('ps-AF','د تمدید غوښتنه'),
+                           ('en','Request renewal')]:
+        requests=browser.eval("""(()=>{
+          const l=%s;
+          document.documentElement.lang=l;
+          document.documentElement.dir=l==='en'?'ltr':'rtl';
+          document.dispatchEvent(new CustomEvent('zavi:language-change',
+            {detail:{language:l}}));
+          go('subscription');
+          const hub=document.getElementById('zaviSubscriptionHub');
+          return {label:hub.querySelector('.zsh-renewal-note')?.textContent,
+            requests:[...hub.querySelectorAll('[data-zavi-renew-request]')].map(el=>({
+              duration:+el.dataset.zaviRenewRequest,
+              target:el.target,rel:el.rel,
+              href:el.href,
+              message:new URL(el.href).searchParams.get('text'),
+              height:Math.round(el.getBoundingClientRect().height),
+              text:el.textContent.trim()
+            })),authButton:!!hub.querySelector('#zaviAnnualRefresh')};
+        })()""" %json.dumps(language))
+        assert [x['duration'] for x in requests['requests']]==[7,180,365],requests
+        assert requests['authButton'] and requests['label'],requests
+        for entry in requests['requests']:
+            assert entry['target']=='_blank' and 'noopener' in entry['rel'],entry
+            assert entry['href'].startswith('https://wa.me/'),entry
+            assert str(entry['duration']) in entry['message'],entry
+            assert label in entry['text'],(language,entry)
+            assert entry['height']>=44,entry
+    print('PASS: original subscription 7/180/365-day renewal requests, 3 languages, no local grants')
+
     report['one_subscription_theme_repair']={
         'themes':['light','dark','glass'],'directions':['rtl','rtl','ltr'],
         'renewal_or_server_changes':False}
