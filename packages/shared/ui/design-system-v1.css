@@ -256,3 +256,112 @@ html[data-zavi-appearance="glass"] :is(.zds-card,.zds-stat,.zds-sheet,.zds-dialo
 @media(prefers-reduced-motion:reduce){
  .zds-skeleton{background-image:none!important}
 }
+
+/* Twelve-reference shared component contracts — 2026-11-09.
+ * Presentation only: no mock values, transaction handlers, synthetic charts
+ * or implicit permissions. All controls are driven by their existing modules.
+ * The zds- prefix prevents collisions with legacy HTML and CSS while sections
+ * migrate; do not use it to hide or rename a live business action.
+ */
+.zds-search,.zds-filterbar,.zds-pagination,.zds-input-row{
+ display:flex;align-items:center;gap:var(--zds-space-2);min-width:0;
+ flex-wrap:wrap;box-sizing:border-box;
+}
+.zds-search{
+ background:var(--zds-surface);color:var(--zds-text);
+ border:1px solid var(--zds-border);border-radius:var(--zds-radius-sm);
+ padding-inline:var(--zds-space-3);min-height:var(--zds-touch-target);
+}
+.zds-search :is(input[type="search"],input:not([type])){
+ min-height:var(--zds-touch-target);flex:1 1 160px;min-width:0;
+ border:0;outline-offset:0;background:transparent;color:inherit;
+ font:inherit;max-width:100%;
+}
+.zds-filterbar{padding-block:var(--zds-space-2)}
+.zds-select,.zds-date-input,.zds-number-input{
+ min-height:var(--zds-touch-target);max-width:100%;min-width:0;
+ box-sizing:border-box;background:var(--zds-input);color:var(--zds-text);
+ border:1px solid var(--zds-border);border-radius:var(--zds-radius-sm);
+ padding:8px 12px;font:inherit;font-size:var(--zds-font-base);
+}
+.zds-field > label{font-size:var(--zds-font-sm);font-weight:750;
+ color:var(--zds-text)}
+.zds-field [aria-describedby]{scroll-margin-block:var(--zds-space-4)}
+.zds-field-error{overflow-wrap:anywhere}
+.zds-required{color:var(--zds-danger)}
+.zds-pagination{
+ padding:var(--zds-space-2) var(--zds-space-3);
+ border-top:1px solid var(--zds-border);
+ justify-content:space-between;color:var(--zds-muted);
+ font-variant-numeric:tabular-nums;
+}
+.zds-pagination :is(button,select){
+ min-height:var(--zds-touch-target);border-radius:var(--zds-radius-sm);
+ border:1px solid var(--zds-border);background:var(--zds-surface-alt);
+ color:var(--zds-text);padding:6px 12px;font:inherit;
+}
+.zds-pagination button:disabled{opacity:.5;cursor:not-allowed}
+.zds-table :is(th,td){overflow-wrap:anywhere}
+.zds-table [aria-sort] {white-space:nowrap}
+.zds-calendar{
+ display:grid;gap:var(--zds-space-2);background:var(--zds-surface);
+ color:var(--zds-text);border:1px solid var(--zds-border);
+ border-radius:var(--zds-radius-md);padding:var(--zds-space-3);
+ min-width:0;
+}
+.zds-calendar-grid{
+ display:grid;grid-template-columns:repeat(7,minmax(0,1fr));
+ gap:var(--zds-space-1);text-align:center;min-width:0;
+}
+.zds-calendar-grid button{
+ min-width:0;min-height:var(--zds-touch-target);padding:4px;
+ border-radius:var(--zds-radius-sm);border:1px solid transparent;
+ background:transparent;color:var(--zds-text);font:inherit;
+}
+.zds-calendar-grid button[aria-selected="true"]{
+ background:var(--zds-button);color:var(--zds-button-text);
+}
+.zds-calendar-grid button:disabled{opacity:.5;cursor:not-allowed}
+.zds-date-pair{display:inline-flex;gap:var(--zds-space-1);
+ align-items:baseline;flex-wrap:wrap;max-width:100%;
+ color:var(--zds-muted);font-variant-numeric:tabular-nums;
+ unicode-bidi:plaintext;overflow-wrap:anywhere}
+.zds-two-col{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:var(--zds-space-4);min-width:0}
+.zds-actions{display:flex;flex-wrap:wrap;gap:var(--zds-space-2);
+ align-items:center;min-width:0}
+.zds-inline-error{color:var(--zds-danger);font-size:var(--zds-font-sm);
+ font-weight:650;overflow-wrap:anywhere}
+.zds-chart-legend{display:flex;align-items:center;
+ flex-wrap:wrap;gap:var(--zds-space-2);color:var(--zds-muted);
+ font-size:var(--zds-font-sm)}
+.zds-chart-legend > *{min-width:0}
+.zds-chart :is(svg,canvas){max-width:100%;height:auto}
+.zds-chart [role="img"]{max-width:100%}
+.zds-stat :is(.zds-stat-label,.zds-stat-value){min-width:0}
+.zds-toast[role="status"]{overflow-wrap:anywhere}
+.zds-banner{
+ display:flex;gap:var(--zds-space-3);align-items:center;
+ background:var(--zds-surface-alt);color:var(--zds-text);
+ border:1px solid var(--zds-border);border-radius:var(--zds-radius-md);
+ padding:var(--zds-space-3);min-height:var(--zds-touch-target);
+}
+.zds-dialog[open]{box-sizing:border-box;width:min(100%,520px)}
+.zds-sheet{padding-inline:max(var(--zds-space-4),env(safe-area-inset-left))
+ max(var(--zds-space-4),env(safe-area-inset-right))}
+.zds-app-bottom{
+ padding-bottom:max(var(--zds-space-2),env(safe-area-inset-bottom));
+}
+html[dir="rtl"] :is(.zds-pagination,.zds-calendar,.zds-search,
+ .zds-filterbar,.zds-date-pair,.zds-actions,.zds-input-row){direction:rtl}
+html[dir="ltr"] :is(.zds-pagination,.zds-calendar,.zds-search,
+ .zds-filterbar,.zds-date-pair,.zds-actions,.zds-input-row){direction:ltr}
+@media(max-width:720px){
+ .zds-two-col{grid-template-columns:minmax(0,1fr)}
+ .zds-pagination{justify-content:center}
+ .zds-filterbar > :is(.zds-select,.zds-search){flex:1 1 145px}
+}
+@media(prefers-reduced-motion:reduce){
+ .zds-calendar-grid button,.zds-chart *{animation:none!important;
+ transition:none!important}
+}
