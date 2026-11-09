@@ -1,0 +1,40 @@
+name: Approved sales UI review — browser only (NO APK)
+on:
+  pull_request:
+    branches: [dev]
+    paths:
+      - 'apps/one/**'
+      - 'scripts/test-approved-sales-browser.py'
+      - '.github/workflows/approved-sales-review.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  sales-chrome:
+    name: REAL Chromium sale workflow — no APK
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify approved JS and core source are syntactically valid
+        run: |
+          node --check apps/one/zavi-approved-sales-v6662.js
+          node --check apps/one/zavi-compact-workflow-v1.js
+          python3 scripts/check-offline-shell-assets.py
+      - name: Run actual sales form and modal on Chromium
+        run: python3 scripts/test-approved-sales-browser.py
+      - name: Verify approved sales did not break the 59 mapped navigation routes
+        run: python3 scripts/test-pdf-59-route-coverage.py
+      - name: Upload review evidence, NOT a package
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: APPROVED-SALES-CHROME-REVIEW-NO-APK
+          path: |
+            qa-approved-sales/
+            qa-pdf-routes/
+          retention-days: 7
+          if-no-files-found: warn
+# Deliberately no Android Gradle, no signed/unsigned APK build, no deployment.
