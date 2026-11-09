@@ -19,7 +19,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p downloads/one downloads/admin public
-          for spec in 'one:13669896549' 'admin:13670295199'; do
+          for spec in 'one:13674111311' 'admin:13672414968'; do
             app="$(cut -d: -f1 <<< "$spec")"
             id="$(cut -d: -f2 <<< "$spec")"
             curl --fail --location --silent --show-error --retry 3 --retry-all-errors \
@@ -30,16 +30,16 @@ jobs:
             unzip -q "downloads/$app.zip" -d "downloads/$app"
             (cd "downloads/$app" && sha256sum --check SHA256SUMS.txt)
           done
-          cp downloads/one/ZAVI_one_OFFLINE-PREVIEW-NOT-RELEASE.apk public/ZAVI_ONE_12_PHOTOS_TEST.apk
-          cp downloads/admin/ZAVI_admin_OFFLINE-PREVIEW-NOT-RELEASE.apk public/ZAVI_ONE_ADMIN_12_PHOTOS_TEST.apk
+          cp downloads/one/ZAVI_one_OFFLINE-PREVIEW-NOT-RELEASE.apk public/ZAVI_ONE_NEW_UI_QA_20261109.apk
+          cp downloads/admin/ZAVI_admin_OFFLINE-PREVIEW-NOT-RELEASE.apk public/ZAVI_ONE_ADMIN_NEW_UI_QA_20261109.apk
           printf '%s  %s\n' \
-            'efdc7488bcd040a9063f4e3c9d0f2d599c4a84f22b576b5f4e1f32fd9c723688' 'public/ZAVI_ONE_12_PHOTOS_TEST.apk' \
-            '7748ae372908ec611b39951eca467e2d8c3e2144eaef6be1977ff2ef7e9dc86a' 'public/ZAVI_ONE_ADMIN_12_PHOTOS_TEST.apk' | sha256sum -c
+            'd0d674da6b7066ccc05712e2124ab29ac8e6804f7097f925808101d5f1199165' 'public/ZAVI_ONE_NEW_UI_QA_20261109.apk' \
+            '8dbd14e14afaf5f986d8cedead9f11a689f5e2546ef5d89787422ac600927def' 'public/ZAVI_ONE_ADMIN_NEW_UI_QA_20261109.apk' | sha256sum -c
           python3 - <<'PY'
           import json,zipfile
-          expected='0313beb66ea0b11a1e3277f316bc3feeff96375a'
-          for app,file in [('one','public/ZAVI_ONE_12_PHOTOS_TEST.apk'),
-                           ('admin','public/ZAVI_ONE_ADMIN_12_PHOTOS_TEST.apk')]:
+          expected='f096b04f6267d8a28a70afbed3381f6c77e6dc36'
+          for app,file in [('one','public/ZAVI_ONE_NEW_UI_QA_20261109.apk'),
+                           ('admin','public/ZAVI_ONE_ADMIN_NEW_UI_QA_20261109.apk')]:
               with zipfile.ZipFile(file) as z:
                   assert z.testzip() is None
                   info=json.loads(z.read('assets/zavi-build-info.json'))
@@ -54,15 +54,15 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          tag='zavi-12photos-offline-preview-20261109-0313beb6'
+          tag='zavi-12photos-offline-preview-20261109-f096b04f'
           if gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             gh release upload "$tag" public/*.apk --repo "$GITHUB_REPOSITORY" --clobber
           else
             gh release create "$tag" public/*.apk \
               --repo "$GITHUB_REPOSITORY" \
-              --target 0313beb66ea0b11a1e3277f316bc3feeff96375a \
-              --title 'ZAVI ONE + ADMIN | 12-photo OFFLINE TEST ONLY — NOT RELEASE' \
-              --notes 'For UI tests on Android only. Offline preview, no production Supabase, not an upgrade. Do not enter real financial data. Verified against exact build commit 0313beb66ea0b11a1e3277f316bc3feeff96375a.' \
+              --target f096b04f6267d8a28a70afbed3381f6c77e6dc36 \
+              --title 'ZAVI ONE + ADMIN | 12-photo UPDATED UI | OFFLINE QA — NOT RELEASE' \
+              --notes 'UI QA ONLY, not pixel-parity certified. Android-only offline preview, no production Supabase, not an upgrade. Do not enter real financial data. Verified against exact build commit f096b04f6267d8a28a70afbed3381f6c77e6dc36.' \
               --prerelease
           fi
           gh release view "$tag" --repo "$GITHUB_REPOSITORY" --json tagName,isPrerelease,assets,url > release.json
@@ -70,7 +70,7 @@ jobs:
           import json
           v=json.load(open('release.json'))
           assert v['isPrerelease']
-          expected={'ZAVI_ONE_12_PHOTOS_TEST.apk','ZAVI_ONE_ADMIN_12_PHOTOS_TEST.apk'}
+          expected={'ZAVI_ONE_NEW_UI_QA_20261109.apk','ZAVI_ONE_ADMIN_NEW_UI_QA_20261109.apk'}
           assets={a['name']:a for a in v['assets']}
           assert expected.issubset(assets)
           for name in sorted(expected):
