@@ -1578,6 +1578,11 @@ body{font-size:15px;line-height:1.9}button,input,select,textarea{font-size:14px;
    <button type="submit" class="zawi-pin-btn" id="zawiPinSubmit">ایجاد رمز و ورود</button>
   </form>
   <div style="text-align:center;margin:12px 0"><button type="button" id="zawiForgotPinBtn" style="border:1px solid #8bcfdf;border-radius:12px;background:#e8f7fb;color:#084a6d;font:700 13px Tahoma;padding:12px 18px;cursor:pointer">🔐 رمز خصوصی را فراموش کرده‌اید؟ درخواست بازیابی</button></div>
+  <div class="zavi-gate-appearance" role="group" aria-label="انتخاب ظاهر / Theme">
+   <button type="button" data-zavi-theme-choice="light" aria-pressed="false"><span class="zavi-gate-theme-icon" aria-hidden="true">☀</span><span lang="fa-AF" class="zavi-gate-lang zavi-gate-fa">روشن</span><span lang="ps-AF" class="zavi-gate-lang zavi-gate-ps">روښانه</span><span lang="en" class="zavi-gate-lang zavi-gate-en">Light</span></button>
+   <button type="button" data-zavi-theme-choice="dark" aria-pressed="false"><span class="zavi-gate-theme-icon" aria-hidden="true">☾</span><span lang="fa-AF" class="zavi-gate-lang zavi-gate-fa">تیره</span><span lang="ps-AF" class="zavi-gate-lang zavi-gate-ps">تیاره</span><span lang="en" class="zavi-gate-lang zavi-gate-en">Dark</span></button>
+   <button type="button" data-zavi-theme-choice="glass" aria-pressed="false"><span class="zavi-gate-theme-icon" aria-hidden="true">◈</span><span lang="fa-AF" class="zavi-gate-lang zavi-gate-fa">شیشه‌ای</span><span lang="ps-AF" class="zavi-gate-lang zavi-gate-ps">ښیښه‌یي</span><span lang="en" class="zavi-gate-lang zavi-gate-en">Glass</span></button>
+  </div>
   
  </div>
 </section>
@@ -4100,6 +4105,7 @@ document.addEventListener('change',e=>{if(e.target.dataset.moduleId){zaviSaveMod
 <!-- Owner's 12 reference images: final visual layer; preserve data and handlers. -->
 <link rel="stylesheet" href="../../packages/shared/ui/zavi-reference-v3.css?v=12refs-20261109">
 <link rel="stylesheet" href="./zavi-reference-one-v3.css?v=12refs-20261109">
+<link rel="stylesheet" href="./zavi-owner-reference-login-v1.css?v=12refs-login-20261109">
 <script defer src="../../packages/shared/ui/zavi-reference-navigation-v3.js?v=12refs-20261109" data-zavi-reference-app="one"></script>
 </body>
 </html>
