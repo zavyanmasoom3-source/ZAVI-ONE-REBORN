@@ -1,52 +1,49 @@
-/* ZAVI ONE / ADMIN: presentation-only light/dark mode.
- * The theme preference is local to this browser/origin; no accounting data or auth state is changed.
- */
+/* ZAVI approved interface: light/dark only, with the existing public theme API.
+   Legacy glass preference is migrated to dark without touching account data. */
 (()=>{'use strict';
- const KEY='zavi_theme_preference_v29';
- const isValid=x=>x==='light'||x==='dark'||x==='glass';
- let current=document.documentElement.getAttribute('data-zavi-theme');
- try{current=localStorage.getItem(KEY)||current}catch(_){}
- if(!isValid(current))current='dark';
+ const KEY='zavi_theme_preference_v29',UI_KEY='zavi_ui_appearance_v2';
+ const normalize=value=>value==='light'?'light':'dark';
+ let current=normalize(document.documentElement.getAttribute('data-zavi-theme'));
+ try{current=normalize(localStorage.getItem(UI_KEY)||localStorage.getItem(KEY)||current)}catch(_){}
  function syncControls(){
-  document.querySelectorAll('.zavi-theme-picker').forEach(group=>{
-   if(!group.querySelector('[data-zavi-theme-choice="glass"]')){
-    const button=document.createElement('button');button.type='button';button.className='zavi-theme-choice';button.setAttribute('data-zavi-theme-choice','glass');
-    group.appendChild(button);
-   }
-  });
-  const lang=(document.documentElement.lang||'fa').toLowerCase();
-  const glassLabel=lang.startsWith('en')?'Glass':lang.startsWith('ps')?'ښیښه‌یي':'شیشه‌ای';
-  document.querySelectorAll('[data-zavi-theme-choice="glass"]').forEach(el=>{if(el.textContent!==glassLabel)el.textContent=glassLabel});
-  document.querySelectorAll('[data-zavi-theme-choice]').forEach(el=>{
-   const active=el.getAttribute('data-zavi-theme-choice')===current;
-   if(el.getAttribute('aria-pressed')!==String(active))el.setAttribute('aria-pressed',String(active));
-   el.classList.toggle('is-selected',active);
-  });
+   // Old settings may contain hard-coded glass buttons, not merely dynamic ones.
+   document.querySelectorAll('[data-zavi-theme-choice="glass"]').forEach(el=>el.remove());
+   document.querySelectorAll('[data-zavi-theme-choice]').forEach(el=>{
+     const active=el.getAttribute('data-zavi-theme-choice')===current;
+     if(el.getAttribute('aria-pressed')!==String(active))
+       el.setAttribute('aria-pressed',String(active));
+     el.classList.toggle('is-selected',active);
+   });
  }
- function setTheme(next){
-  if(!isValid(next))return;
-  current=next;
-  document.documentElement.setAttribute('data-zavi-theme',next==='glass'?'dark':next);
-  document.documentElement.setAttribute('data-zavi-appearance',next);
-  try{localStorage.setItem(KEY,next)}catch(_){/* private browser mode */}
-  syncControls();
-  document.dispatchEvent(new CustomEvent('zavi:theme-changed',{detail:{theme:next}}));
+ function setTheme(requested){
+   const next=normalize(requested);
+   current=next;
+   const root=document.documentElement;
+   root.setAttribute('data-zavi-theme',next);
+   root.setAttribute('data-zavi-appearance',next);
+   try{localStorage.setItem(KEY,next);localStorage.setItem(UI_KEY,next)}catch(_){}
+   syncControls();
+   document.dispatchEvent(new CustomEvent('zavi:theme-changed',{detail:{theme:next}}));
  }
- document.addEventListener('click',e=>{
-  const el=e.target.closest?.('[data-zavi-theme-choice]');
-  if(el)setTheme(el.getAttribute('data-zavi-theme-choice'));
+ document.addEventListener('click',event=>{
+   const control=event.target.closest?.('[data-zavi-theme-choice]');
+   if(control && control.dataset.zaviThemeChoice!=='glass')
+     setTheme(control.dataset.zaviThemeChoice);
  });
- window.addEventListener('storage',e=>{if(e.key===KEY&&isValid(e.newValue))setTheme(e.newValue)});
+ window.addEventListener('storage',event=>{
+   if(event.key===KEY||event.key===UI_KEY)setTheme(event.newValue);
+ });
  function init(){
-  setTheme(current);
-  let queued=false;
-  const mo=new MutationObserver(mutations=>{
-   const hasThemeControls=mutations.some(m=>[...m.addedNodes].some(node=>
-    node.nodeType===1&&(node.matches?.('.zavi-theme-picker,[data-zavi-theme-choice]')||node.querySelector?.('.zavi-theme-picker,[data-zavi-theme-choice]'))));
-   if(hasThemeControls&&!queued){queued=true;requestAnimationFrame(()=>{queued=false;syncControls()});}
-  });
-  mo.observe(document.body,{childList:true,subtree:true});
-  new MutationObserver(syncControls).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
+   setTheme(current);
+   let queued=false;
+   const observer=new MutationObserver(mutations=>{
+     if(queued||!mutations.some(m=>[...m.addedNodes].some(node=>
+       node.nodeType===1 && (node.matches?.('.zavi-theme-picker,[data-zavi-theme-choice]')||
+       node.querySelector?.('.zavi-theme-picker,[data-zavi-theme-choice]')))))return;
+     queued=true;requestAnimationFrame(()=>{queued=false;syncControls()});
+   });
+   observer.observe(document.body,{childList:true,subtree:true});
+   new MutationObserver(syncControls).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
  window.ZaviThemeV29={get:()=>current,set:setTheme};

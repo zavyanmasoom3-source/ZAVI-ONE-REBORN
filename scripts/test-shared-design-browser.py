@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Browser-computed design contract: 3 themes × 3 locales × ONE/ADMIN.
+"""Browser-computed design contract: 2 themes × 3 locales × ONE/ADMIN.
 
 Disposable Chrome fixture uses the shipped shared CSS/JS and REAL index.html
 origins. Checks computed text/background colors, direction and compact date.
@@ -11,7 +11,7 @@ import re
 from pathlib import Path
 
 LANGS=('fa-AF','ps-AF','en')
-THEMES=('light','dark','glass')
+THEMES=('light','dark')
 ROWS=[]
 
 EXAMINE="""(function(){
@@ -24,7 +24,7 @@ EXAMINE="""(function(){
  fixture.style.cssText='position:relative;display:grid;gap:8px;padding:12px;max-width:360px';
  fixture.innerHTML='<div class="zds-card"><p class="zds-muted">معلومات / Information</p><button class="zds-action">عملیات / Action</button><div class="zds-field"><label for="qaField">نام / Name</label><input id="qaField" placeholder="Name"></div><div class="zds-empty">هیچ موردی نیست</div></div>';
  document.body.appendChild(fixture);
- const themes=['light','dark','glass'],languages=['fa-AF','ps-AF','en'];
+ const themes=['light','dark'],languages=['fa-AF','ps-AF','en'];
  const checks=[];
  function rgba(str){
    const m=str.match(/^rgba?\\(\\s*([\\d.]+)[, ]+([\\d.]+)[, ]+([\\d.]+)(?:[, /]+([\\d.]+))?\\s*\\)$/);
@@ -44,7 +44,7 @@ EXAMINE="""(function(){
  function contrast(a,b){let x=lum(a),y=lum(b);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05)}
  for(const theme of themes){
    root.setAttribute('data-zavi-appearance',theme);
-   root.setAttribute('data-zavi-theme',theme==='glass'?'dark':theme);
+   root.setAttribute('data-zavi-theme',theme);
    for(const lang of languages){
      root.lang=lang;root.dir=lang==='en'?'ltr':'rtl';
      const api=window.ZaviDesignSystemV1;
@@ -92,7 +92,7 @@ with Session() as browser:
         if 'qaError' in result:
             raise AssertionError(app+' shared design browser check: '+result['qaError']+' '+result.get('qaStack',''))
         ROWS.append({'app':app,'contrasts':result['checks'],'dates':result['dates']})
-        print('PASS:',app,'3 themes x 3 languages x 5 computed contrast pairs, Afghan dual dates and inline errors')
+        print('PASS:',app,'2 themes x 3 languages x 5 computed contrast pairs, Afghan dual dates and inline errors')
 
 out=Path(__file__).resolve().parents[1]/'qa-design-contrast'
 out.mkdir(exist_ok=True)

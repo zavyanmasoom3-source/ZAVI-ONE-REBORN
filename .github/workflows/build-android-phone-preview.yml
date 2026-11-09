@@ -1,15 +1,9 @@
 name: ZAVI mobile-installable OFFLINE PREVIEW APK (not Release)
+# Owner approval is required before ANY installable binary is built.
+# Visual/contract QA workflows remain automatic; release/preview is manual only.
 on:
-  push:
-    branches: [dev]
-    paths:
-      - 'apps/one/**'
-      - 'apps/admin/**'
-      - 'packages/shared/**'
-      - 'android-build/**'
-      - 'scripts/check-public-source-security.py'
-      - '.github/workflows/build-android-phone-preview.yml'
   workflow_dispatch:
+
 permissions:
   contents: read
 jobs:

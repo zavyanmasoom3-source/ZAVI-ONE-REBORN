@@ -1,0 +1,310 @@
+/* Approved 2026 ZAVI ONE visual language.
+   Existing routes, financial forms, PDF rendering and event handlers are retained. */
+html[data-zavi-theme] body,
+html[data-zavi-theme] .app,
+html[data-zavi-theme] .main{
+ background:var(--zav-bg)!important;color:var(--zav-ink)!important;
+ font-family:Vazirmatn,Estedad,Tahoma,Arial,system-ui,sans-serif!important;
+}
+html[data-zavi-theme] .sidebar{
+ background:#0c1729!important;color:#edf4ff!important;
+ border-inline-start:1px solid #1a2e49!important;
+ box-shadow:3px 0 20px #00000018!important;
+}
+html[data-zavi-theme] .sidebar :is(.brand-name,.brand-sub,.section-nav,.sidebar-footer){color:#e8f0ff!important}
+html[data-zavi-theme] .sidebar .nav-btn{
+ background:transparent!important;color:#ced8e8!important;border-radius:11px!important;
+ min-height:43px!important;margin:2px 0!important;padding:10px 13px!important;
+ box-shadow:none!important;transition:background .15s!important;
+}
+html[data-zavi-theme] .sidebar .nav-btn.active,
+html[data-zavi-theme] .sidebar .nav-btn[aria-current="page"]{
+ background:linear-gradient(120deg,#247fff,#0759d8)!important;color:#fff!important;
+}
+html[data-zavi-theme] .topbar{
+ background:var(--zav-surface)!important;border-bottom:1px solid var(--zav-border)!important;
+ color:var(--zav-ink)!important;box-shadow:none!important;
+}
+html[data-zavi-theme] .topbar :is(.topbar-title,.mobile-brand,.brand-name){
+ color:var(--zav-ink)!important;font-weight:850!important;
+}
+html[data-zavi-theme] .topbar :is(.topbar-sub,.top-label){color:var(--zav-muted)!important}
+html[data-zavi-theme] .topbar :is(select,button):not(.primary){
+ border-color:var(--zav-border)!important;background:var(--zav-surface)!important;
+ color:var(--zav-ink)!important;box-shadow:none!important;
+}
+html[data-zavi-theme] #content{
+ background:var(--zav-bg)!important;color:var(--zav-ink)!important;
+ max-width:1300px;margin-inline:auto!important;
+ padding:18px clamp(12px,2.6vw,28px) calc(96px + env(safe-area-inset-bottom))!important;
+}
+html[data-zavi-theme] #content :is(.card,.panel,.settings-card,.form-card,.form-section,
+ .order-card,.invoice-card,.record-card,.account-box,.zv-feature-card,.z20-panel,
+ .zavi-dash-cash-card,.zavi-clean-settings-group){
+ background:var(--zav-surface)!important;color:var(--zav-ink)!important;
+ border:1px solid var(--zav-border)!important;border-radius:var(--zav-radius)!important;
+ box-shadow:var(--zav-shadow)!important;
+}
+html[data-zavi-theme] #content :is(.card,.panel,.settings-card){padding:16px!important;margin-bottom:12px!important}
+html[data-zavi-theme] #content :is(.page-head,.panel-head,.zui-section-heading){
+ background:none!important;color:var(--zav-ink)!important;box-shadow:none!important;
+ border:0!important;padding:5px 0 10px!important;margin-bottom:9px!important;
+}
+html[data-zavi-theme] #content :is(h1,h2,h3,.panel-head h3,.page-head h2){
+ color:var(--zav-ink)!important;letter-spacing:-.025em;
+}
+html[data-zavi-theme] #content :is(.muted,.small-muted,.tiny-note,.field-hint,.zui-eyebrow,.page-head p){
+ color:var(--zav-muted)!important;
+}
+html[data-zavi-theme] #content .welcome{
+ background:var(--zav-surface)!important;color:var(--zav-ink)!important;
+ border:1px solid var(--zav-border)!important;border-radius:23px!important;
+ box-shadow:var(--zav-shadow)!important;padding:17px!important;
+ min-height:0!important;margin:0 0 12px!important;
+}
+html[data-zavi-theme] #content .welcome :is(h2,p,.eyebrow,.zv-today){color:var(--zav-ink)!important}
+html[data-zavi-theme] #content .welcome .eyebrow{color:var(--zav-blue)!important}
+html[data-zavi-theme] #content :is(.btn.primary,button.primary,.zavi-dash-fast-button.primary,
+ .welcome .btn,.zavi-dash-fast-button[data-zavi-fast-action="sales"]){
+ background:linear-gradient(120deg,var(--zav-blue-2),#0753d6)!important;
+ border:1px solid #216de7!important;color:white!important;
+ box-shadow:0 5px 13px rgba(14,92,218,.17)!important;
+}
+html[data-zavi-theme] #content :is(.btn.subtle,.btn.ghost,button.subtle,button.ghost){
+ background:var(--zav-surface)!important;color:var(--zav-ink)!important;
+ border:1px solid var(--zav-border)!important;box-shadow:none!important;
+}
+html[data-zavi-theme] #content :is(.btn,button){border-radius:12px!important;min-height:var(--zav-tap)!important}
+html[data-zavi-theme] #content :is(input,select,textarea){
+ background:var(--zav-input)!important;color:var(--zav-ink)!important;
+ border:1px solid var(--zav-border)!important;border-radius:var(--zav-field-radius)!important;
+ min-height:44px!important;box-shadow:none!important;
+}
+html[data-zavi-theme] #content :is(.field label,.form-field label,.form-group label){
+ font-size:12px!important;font-weight:700!important;color:var(--zav-muted)!important;
+}
+html[data-zavi-theme] #content :is(.stat-grid,.accounts-grid,.report-grid,.zv-feature-row){gap:10px!important}
+html[data-zavi-theme] #content :is(.stat,.stat-card,.report-stat,.account-box,.zv-feature-card){
+ background:var(--zav-surface)!important;color:var(--zav-ink)!important;
+ border:1px solid var(--zav-border)!important;border-radius:16px!important;
+ box-shadow:var(--zav-shadow)!important;min-height:0!important;
+}
+html[data-zavi-theme] #content :is(.stat-label,.stat-foot,.report-stat small){color:var(--zav-muted)!important}
+html[data-zavi-theme] #content :is(.stat-value,.account-box b,.report-stat strong,.zv-feature-card strong){
+ color:var(--zav-ink)!important;font-weight:850!important;
+}
+html[data-zavi-theme] #content .zavi-dash-fast-actions{
+ display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
+ gap:8px!important;margin:0 0 12px!important;
+}
+html[data-zavi-theme] #content .zavi-dash-fast-button{
+ display:flex!important;flex-direction:column!important;gap:6px!important;
+ justify-content:center!important;min-width:0!important;min-height:64px!important;
+ background:var(--zav-surface)!important;color:var(--zav-ink)!important;
+ border:1px solid var(--zav-border)!important;border-radius:15px!important;
+ box-shadow:var(--zav-shadow)!important;padding:8px 4px!important;font-size:11px!important;
+}
+html[data-zavi-theme] #content .zavi-dash-fast-button svg{color:var(--zav-blue)!important;width:21px!important;height:21px!important}
+html[data-zavi-theme] #content .zavi-dash-cash-card{
+ border-radius:16px!important;padding:14px!important;
+}
+html[data-zavi-theme] #content :is(.searchbox,.table-bar,.filterbar,.table-wrap,.table-scroll){
+ background:var(--zav-surface)!important;color:var(--zav-ink)!important;
+ border-color:var(--zav-border)!important;border-radius:14px!important;
+}
+html[data-zavi-theme] #content :is(.record-card,.stock-item,.zv-journal-item,.admin-item){
+ background:var(--zav-soft)!important;color:var(--zav-ink)!important;
+ border:1px solid var(--zav-border)!important;border-radius:14px!important;
+ box-shadow:none!important;margin-block:6px!important;
+}
+html[data-zavi-theme] #content :is(th,.transaction-table th){
+ background:var(--zav-soft)!important;color:var(--zav-muted)!important;
+ border-color:var(--zav-border)!important;
+}
+html[data-zavi-theme] #content :is(td,.transaction-table td){
+ background:var(--zav-surface)!important;color:var(--zav-ink)!important;
+ border-color:var(--zav-border)!important;
+}
+html[data-zavi-theme] .mobile-bottom{
+ background:var(--zav-surface)!important;color:var(--zav-muted)!important;
+ border:1px solid var(--zav-border)!important;
+ box-shadow:0 -5px 23px #081e3914!important;
+ border-radius:18px 18px 0 0!important;
+}
+html[data-zavi-theme] #mobileBottom .bottom-btn{
+ border-radius:12px!important;color:var(--zav-muted)!important;min-width:0!important;
+}
+html[data-zavi-theme] #mobileBottom .bottom-btn.active{
+ background:linear-gradient(120deg,var(--zav-blue-2),#0b58d7)!important;
+ color:#fff!important;box-shadow:0 3px 13px #0757d13d!important;
+}
+html[data-zavi-theme] #overlay .modal-backdrop{
+ background:rgba(7,16,32,.57)!important;backdrop-filter:blur(3px)!important;
+}
+html[data-zavi-theme] #overlay .modal{
+ background:var(--zav-surface)!important;color:var(--zav-ink)!important;
+ border:1px solid var(--zav-border)!important;
+ border-radius:22px!important;box-shadow:0 20px 70px rgba(0,0,0,.27)!important;
+}
+html[data-zavi-theme] #overlay :is(.modal-head,.modal-foot,.modal-body){
+ background:var(--zav-surface)!important;color:var(--zav-ink)!important;
+ border-color:var(--zav-border)!important;
+}
+html[data-zavi-theme] #overlay :is(.modal-head h3,.form-section-title,.line-status){color:var(--zav-ink)!important}
+html[data-zavi-theme] #overlay :is(input,select,textarea){
+ background:var(--zav-input)!important;color:var(--zav-ink)!important;
+ border:1px solid var(--zav-border)!important;border-radius:12px!important;
+ min-height:44px!important;box-shadow:none!important;
+}
+html[data-zavi-theme] #overlay :is(.field label,.field-hint,.tiny-note){color:var(--zav-muted)!important}
+html[data-zavi-theme] #overlay :is(.order-line,.zavi-barcode-box,.totals,.form-grid.zavi-flow-payment-fields){
+ background:var(--zav-soft)!important;color:var(--zav-ink)!important;
+ border:1px solid var(--zav-border)!important;border-radius:15px!important;
+}
+html[data-zavi-theme] #overlay :is(.btn.primary,button.primary,button[type="submit"]){
+ background:linear-gradient(120deg,var(--zav-blue-2),#0753d6)!important;
+ color:#fff!important;border:1px solid #236edc!important;border-radius:12px!important;
+}
+html[data-zavi-theme] #overlay :is(.btn.subtle,button.subtle,.icon-button,.remove-line){
+ background:var(--zav-surface)!important;color:var(--zav-ink)!important;
+ border:1px solid var(--zav-border)!important;border-radius:12px!important;
+}
+html[data-zavi-theme] .zavi-flow-tabs,
+html[data-zavi-theme] #overlay .zavi-flow-tabs{
+ background:var(--zav-soft)!important;color:var(--zav-ink)!important;
+ border:1px solid var(--zav-border)!important;border-radius:13px!important;
+}
+html[data-zavi-theme] .zavi-flow-tab{color:var(--zav-muted)!important;background:transparent!important;border-radius:10px!important}
+html[data-zavi-theme] .zavi-flow-tab[aria-selected="true"]{
+ background:var(--zav-blue)!important;color:#fff!important;border-color:transparent!important;
+}
+html[data-zavi-theme] :is(.zds-field-error,[aria-invalid="true"]){--zds-danger:var(--zav-negative)}
+@media(max-width:760px){
+ html[data-zavi-theme] #content{padding:11px 10px calc(104px + env(safe-area-inset-bottom))!important}
+ html[data-zavi-theme] #content .welcome{padding:12px!important;border-radius:17px!important}
+ html[data-zavi-theme] #content :is(.card,.panel,.settings-card){padding:12px!important;border-radius:16px!important}
+ html[data-zavi-theme] #content .zavi-dash-fast-button{min-height:59px!important;font-size:10.5px!important}
+ html[data-zavi-theme] #content :is(.stat-grid,.accounts-grid,.report-grid){grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ html[data-zavi-theme] #overlay .modal{width:min(100%,720px)!important;max-height:92dvh!important;border-radius:18px!important}
+ html[data-zavi-theme] #overlay .modal-body{overflow-y:auto!important}
+ html[data-zavi-theme] .zavi-flow-panel .form-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ html[data-zavi-theme] #overlay .zavi-flow-tab{font-size:12px!important}
+}
+@media(max-width:390px){
+ html[data-zavi-theme] #content .zavi-dash-fast-button{padding-inline:2px!important}
+ html[data-zavi-theme] #overlay .zavi-flow-panel .form-grid{grid-template-columns:1fr!important}
+}
+@media(min-width:761px){
+ html[data-zavi-theme] #overlay .modal{width:min(760px,95vw)!important;max-width:760px!important}
+}
+@media print{
+ html[data-zavi-theme] #content{max-width:none!important;padding:0!important}
+ html[data-zavi-theme] .mobile-bottom,html[data-zavi-theme] .sidebar,html[data-zavi-theme] .topbar{display:none!important}
+}
+
+/* Approved home dashboard overrides. The original buttons still navigate to real modules. */
+html[data-zavi-theme] #content.zrf-dashboard{
+ --zrf-text:var(--zav-ink);--zrf-muted:var(--zav-muted);
+ --zrf-page:var(--zav-bg);--zrf-paper:var(--zav-surface);
+ --zrf-paper2:var(--zav-soft);--zrf-border:var(--zav-border);
+ --zrf-shadow:var(--zav-shadow);
+ background:var(--zav-bg)!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard>.zrf-home{
+ animation:none!important;padding:0!important;margin:0 auto 12px!important;
+ color:var(--zav-ink)!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-search-wrap{
+ min-height:44px!important;max-width:none!important;border-radius:13px!important;
+ border:1px solid var(--zav-border)!important;background:var(--zav-surface)!important;
+ box-shadow:none!important;padding:3px 7px!important;margin:0 0 11px!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-search-wrap :is(input,button){
+ background:transparent!important;color:var(--zav-ink)!important;
+ box-shadow:none!important;border:0!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-primary-row{
+ gap:9px!important;margin:0 0 11px!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-primary{
+ min-height:67px!important;border-radius:14px!important;padding:10px!important;
+ background:var(--zav-surface)!important;border:1px solid var(--zav-border)!important;
+ color:var(--zav-ink)!important;box-shadow:var(--zav-shadow)!important;
+ transform:none!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-invoice{
+ background:linear-gradient(120deg,var(--zav-blue-2),#0753d6)!important;
+ color:#fff!important;border-color:#236fe5!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-primary-icon{
+ width:37px!important;height:37px!important;min-width:37px!important;
+ border-radius:10px!important;background:var(--zav-blue-soft)!important;
+ color:var(--zav-blue)!important;font-size:19px!important;box-shadow:none!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-invoice .zrf-primary-icon{
+ background:#ffffff30!important;color:#fff!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-primary :is(b,small){
+ color:inherit!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-primary b{font-size:13px!important}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-primary small{font-size:10px!important}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-section-head>b{
+ color:var(--zav-ink)!important;font-size:15px!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-tiles{
+ grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:9px!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-tile{
+ min-height:72px!important;padding:9px!important;gap:6px!important;
+ background:var(--zav-surface)!important;border:1px solid var(--zav-border)!important;
+ border-radius:14px!important;box-shadow:var(--zav-shadow)!important;
+ transform:none!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-tile-icon{
+ width:35px!important;height:35px!important;min-width:35px!important;
+ border-radius:10px!important;box-shadow:none!important;font-size:19px!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-tile-copy b{
+ font-size:12px!important;color:var(--zav-ink)!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-tile-copy small{
+ font-size:10px!important;color:var(--zav-muted)!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-store-banner{
+ min-height:58px!important;padding:9px 12px!important;margin:11px 0!important;
+ background:var(--zav-surface)!important;color:var(--zav-ink)!important;
+ border:1px solid var(--zav-border)!important;border-radius:14px!important;
+ box-shadow:none!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-store-banner :is(b,small){
+ color:var(--zav-ink)!important;font-size:12px!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-store-icon{
+ width:35px!important;height:35px!important;border-radius:10px!important;
+ background:var(--zav-blue-soft)!important;color:var(--zav-blue)!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-usd-shell,
+html[data-zavi-theme] #content.zrf-dashboard .zrf-details-toggle{
+ background:var(--zav-surface)!important;color:var(--zav-ink)!important;
+ border:1px solid var(--zav-border)!important;border-radius:13px!important;
+ box-shadow:none!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zrf-usd-shell .zrf-dollar-current{
+ background:var(--zav-soft)!important;color:var(--zav-ink)!important;
+}
+/* Never cover accounting dashboard content with the assistant launcher.
+   The assistant and its keyboard-command functionality remain available
+   on other authorized pages. */
+body.zavi-approved-dashboard #z605-launch{display:none!important}
+@media(max-width:760px){
+ html[data-zavi-theme] #content.zrf-dashboard .zrf-tiles{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ }
+ html[data-zavi-theme] #content.zrf-dashboard .zrf-primary-row{
+  grid-template-columns:1fr 1fr!important;
+ }
+ html[data-zavi-theme] #content.zrf-dashboard .zrf-primary{
+  min-height:61px!important;padding:8px!important;gap:7px!important;
+ }
+}

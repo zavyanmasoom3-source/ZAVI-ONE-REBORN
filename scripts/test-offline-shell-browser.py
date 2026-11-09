@@ -35,6 +35,6 @@ with Session() as browser:
    raise SystemExit(app+': offline shell incomplete: '+str(status.get('missing',status)))
   if status.get('required')!=status.get('cached'):
    raise SystemExit(app+': mismatched offline asset count')
-  if not str(status.get('version','')).startswith('zavi-'+app+'-shell-reborn-'):
+  if not str(status.get('version','')).startswith('zavi-'+app+'-shell-approved-ui-v2-'):
    raise SystemExit(app+': stale offline cache version '+str(status.get('version')))
  print('PASS: both PWA shells installed and all mandatory assets cached in Chrome')
