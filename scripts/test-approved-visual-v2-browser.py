@@ -55,6 +55,22 @@ with Session() as browser:
             bottom:[...document.querySelectorAll('#mobileBottom [data-go]')]
               .map(b=>b.dataset.go),head:document.querySelector('#content')?.innerText.slice(0,90)};
         })()""")
+        browser.until("!!document.querySelector('#zavApprovedHomeSummary .zav-new-stats')",
+                      'read-only real ledger dashboard summary')
+        accounting=browser.eval("""(()=>{
+          const ledger=summary(),balances=totals();
+          const cards=[...document.querySelectorAll('#zavApprovedHomeSummary .zav-new-stat')];
+          const actual=cards.map(c=>c.querySelector('strong')?.textContent?.trim());
+          const expected=[ledger.sales,ledger.profit,balances.receivable,balances.payable]
+            .map(n=>currency(n).trim());
+          const chartCount=document.querySelectorAll('#zavApprovedHomeSummary .zav-new-chart svg').length;
+          const normalized=x=>String(x).replace(/[۰-۹]/g,c=>String('۰۱۲۳۴۵۶۷۸۹'.indexOf(c)))
+             .replace(/[٠-٩]/g,c=>String('٠١٢٣٤٥٦٧٨٩'.indexOf(c)));
+          return {actual,expected,chartCount,
+            sameValues:actual.every((v,i)=>normalized(v)===normalized(expected[i]))};
+        })()""")
+        assert accounting['sameValues'] and accounting['chartCount']==2,accounting
+        report['apps']['one-'+mode+'-ledger-evidence']=accounting
         assert not dash['preferences'],('preferences leaked onto dashboard',dash)
         assert dash['assistant'] in (None,'none'),('assistant covers dashboard',dash)
         assert set(['dashboard','sales','products','purchases']).issubset(dash['bottom']),dash
