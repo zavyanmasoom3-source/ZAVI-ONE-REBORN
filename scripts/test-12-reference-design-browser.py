@@ -52,6 +52,21 @@ with Session() as browser:
         })()""")
         assert [x['route'] for x in quick]==['sales','purchases','contacts','products'],quick
         assert all(x['hasIcon'] and x['text'] for x in quick),quick
+        native=browser.eval("""(()=>{
+          const home=document.querySelector('#content.zrf-dashboard>.zrf-home');
+          const oldQuick=document.querySelector('#content.zrf-dashboard .z63-quick-panel');
+          const fixed=[...document.querySelectorAll('body button,body a')]
+            .filter(el=>{const cs=getComputedStyle(el),r=el.getBoundingClientRect();
+              return cs.position==='fixed' && r.width>=18 && r.height>=18})
+            .slice(0,35).map(el=>({tag:el.tagName,id:el.id,
+              classes:String(el.className).slice(0,120),
+              title:(el.getAttribute('aria-label')||el.textContent||'').trim().slice(0,65),
+              rect:(()=>{const r=el.getBoundingClientRect();return [Math.round(r.x),Math.round(r.y),Math.round(r.width),Math.round(r.height)]})()}));
+          return {homeChildren:[...home.children].map(el=>({id:el.id,className:el.className})),
+            oldQuickExists:!!oldQuick,oldQuickDisplay:oldQuick?getComputedStyle(oldQuick).display:null,fixed};
+        })()""")
+        assert native['oldQuickDisplay'] in (None,'none'),native
+        report['apps'][f'one-{theme}-layout-diagnostic']=native
         bottom=browser.eval("""(()=>{
           const nav=document.getElementById('mobileBottom');
           return {destinations:[...nav.querySelectorAll('[data-go]')].map(b=>b.dataset.go),

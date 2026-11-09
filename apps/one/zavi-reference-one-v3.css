@@ -313,3 +313,9 @@ html[data-zavi-theme] #content.zrf-dashboard .zrf-search-wrap{
  html[data-zavi-theme] #content.zrf-dashboard .zrf-quick-action{min-height:77px;padding:7px 2px}
  html[data-zavi-theme] #content.zrf-dashboard .zrf-quick-label{font-size:10px!important}
 }
+
+/* New four-route home supersedes native legacy quick actions.
+   Do not remove native action handlers: only the duplicate dashboard widget. */
+html[data-zavi-theme] #content.zrf-dashboard .z63-quick-panel {
+ display:none!important;
+}
