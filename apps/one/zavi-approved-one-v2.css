@@ -308,3 +308,130 @@ body.zavi-approved-dashboard #z605-launch{display:none!important}
   min-height:61px!important;padding:8px!important;gap:7px!important;
  }
 }
+
+/* Replace the former bright marketing banner with the compact financial home
+   header from the owner's approved blue-and-white/charcoal concepts. */
+html[data-zavi-theme] body #content.zrf-dashboard .z62-hero{
+ position:relative!important;isolation:isolate!important;
+ background:var(--zav-surface)!important;background-image:none!important;
+ color:var(--zav-ink)!important;border:1px solid var(--zav-border)!important;
+ box-shadow:var(--zav-shadow)!important;border-radius:17px!important;
+ min-height:0!important;padding:15px!important;margin:0 0 10px!important;
+ gap:10px!important;animation:none!important;
+}
+html[data-zavi-theme] body #content.zrf-dashboard .z62-hero::before{
+ display:none!important;animation:none!important;content:none!important;
+}
+html[data-zavi-theme] body #content.zrf-dashboard .z62-hero :is(.z62-eyebrow,.z62-title,.z62-subtitle){
+ color:var(--zav-ink)!important;-webkit-text-fill-color:var(--zav-ink)!important;
+ text-shadow:none!important;opacity:1!important;
+}
+html[data-zavi-theme] body #content.zrf-dashboard .z62-hero .z62-eyebrow{
+ color:var(--zav-blue)!important;-webkit-text-fill-color:var(--zav-blue)!important;
+}
+html[data-zavi-theme] body #content.zrf-dashboard .z62-hero .z62-title{
+ font-size:clamp(17px,2.4vw,23px)!important;line-height:1.45!important;
+}
+html[data-zavi-theme] body #content.zrf-dashboard .z62-hero .z62-date{
+ background:var(--zav-soft)!important;color:var(--zav-muted)!important;
+ border:1px solid var(--zav-border)!important;border-radius:10px!important;
+ box-shadow:none!important;
+}
+html[data-zavi-theme] body #content.zrf-dashboard .z62-hero button.z62-sale{
+ color:#fff!important;background:linear-gradient(125deg,var(--zav-blue-2),#0753d6)!important;
+ border:1px solid #236fe5!important;box-shadow:0 4px 14px #0757d122!important;
+ border-radius:11px!important;
+}
+html[data-zavi-theme] body #content.zrf-dashboard .z62-hero button.z62-sale :is(span,.z62-sale-label){
+ color:#fff!important;-webkit-text-fill-color:#fff!important;background:transparent!important;
+}
+html[data-zavi-theme] body #content.zrf-dashboard .z63-quick-panel{
+ background:var(--zav-surface)!important;color:var(--zav-ink)!important;
+ border:1px solid var(--zav-border)!important;box-shadow:var(--zav-shadow)!important;
+ padding:12px!important;border-radius:15px!important;margin:0 0 10px!important;
+}
+html[data-zavi-theme] body #content.zrf-dashboard .z63-quick-panel :is(h2,h3,strong){
+ color:var(--zav-ink)!important;
+}
+html[data-zavi-theme] body #content.zrf-dashboard .z63-quick-grid{
+ display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
+ gap:7px!important;
+}
+html[data-zavi-theme] body #content.zrf-dashboard .z63-quick-tile{
+ min-height:72px!important;padding:7px 5px!important;
+ display:flex!important;flex-direction:column!important;justify-content:center!important;
+ align-items:center!important;text-align:center!important;
+ gap:4px!important;background:var(--zav-soft)!important;
+ color:var(--zav-ink)!important;border:1px solid var(--zav-border)!important;
+ border-radius:12px!important;box-shadow:none!important;
+}
+html[data-zavi-theme] body #content.zrf-dashboard .z63-quick-tile :is(b,small,span){
+ color:var(--zav-ink)!important;
+}
+html[data-zavi-theme] body #content.zrf-dashboard .z63-quick-glyph{
+ width:31px!important;height:31px!important;display:grid!important;
+ place-items:center!important;font-size:18px!important;
+}
+@media(max-width:390px){
+ html[data-zavi-theme] body #content.zrf-dashboard .z63-quick-grid{
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:4px!important;
+ }
+ html[data-zavi-theme] body #content.zrf-dashboard .z63-quick-tile{
+  min-height:67px!important;font-size:10px!important;padding:4px 2px!important;
+ }
+}
+
+/* Real, non-synthetic dashboard metrics and 7-day mini charts. Always inherit
+   both approved modes and use the original accounting ledger for numbers. */
+html[data-zavi-theme] #content.zrf-dashboard .zav-home-real-summary{
+ min-width:0;margin:0 0 12px!important;padding:0!important;
+ display:grid!important;gap:10px!important;color:var(--zav-ink)!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zav-new-charts{
+ display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zav-new-chart{
+ display:flex!important;flex-direction:column!important;justify-content:space-between!important;
+ min-width:0!important;min-height:112px!important;padding:12px 12px 9px!important;
+ background:var(--zav-surface)!important;border:1px solid var(--zav-border)!important;
+ border-radius:15px!important;color:var(--zav-blue)!important;box-shadow:var(--zav-shadow)!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zav-new-chart[data-approved-chart="purchases"]{
+ color:var(--zav-positive)!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zav-new-chart-label{
+ color:var(--zav-ink)!important;font-size:11px!important;font-weight:800!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zav-new-chart-svg{
+ display:block!important;width:100%!important;height:65px!important;overflow:visible!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zav-new-chart-area{
+ opacity:.12!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zav-new-stats{
+ display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zav-new-stat{
+ min-width:0;min-height:65px;padding:10px!important;display:flex!important;
+ flex-direction:column!important;gap:4px!important;justify-content:center!important;
+ background:var(--zav-surface)!important;border:1px solid var(--zav-border)!important;
+ border-radius:13px!important;box-shadow:var(--zav-shadow)!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zav-new-stat-label{
+ color:var(--zav-muted)!important;font-size:11px!important;font-weight:700!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zav-new-stat-value{
+ color:var(--zav-ink)!important;font-size:clamp(14px,4vw,19px)!important;font-weight:850!important;
+ font-variant-numeric:tabular-nums!important;overflow-wrap:anywhere!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zav-new-stat[data-approved-stat="1"] .zav-new-stat-value{
+ color:var(--zav-positive)!important;
+}
+html[data-zavi-theme] #content.zrf-dashboard .zav-new-stat[data-approved-stat="3"] .zav-new-stat-value{
+ color:var(--zav-negative)!important;
+}
+@media(min-width:760px){
+ html[data-zavi-theme] #content.zrf-dashboard .zav-new-stats{
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+ }
+}
