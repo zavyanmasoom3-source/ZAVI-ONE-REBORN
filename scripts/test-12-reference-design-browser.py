@@ -219,6 +219,45 @@ with Session() as browser:
       'modes':['light','dark','glass'],'locales':['fa-AF','ps-AF','en'],
       'native_and_preferences_synchronized':True}
 
+    # Owner reference 11: the native subscription view must NOT render dark
+    # neon cards when the user has selected light mode. UI-only test: it
+    # deliberately never requests a plan, writes a licence or touches RPC.
+    browser.route('subscription')
+    browser.until("!!document.querySelector('#zaviSubscriptionHub .zsh-card')",
+                  'ONE actual subscription cards')
+    for theme in ('light','dark','glass'):
+        proof=browser.eval("""(()=>{
+          window.ZaviThemeV29.set(%s);
+          const hub=document.getElementById('zaviSubscriptionHub');
+          const card=hub.querySelector('.zsh-card');
+          const s=getComputedStyle(card);
+          const account=document.querySelector('[data-zavi-auto-offline-card]');
+          return {theme:document.documentElement.dataset.zaviTheme,
+             card:s.backgroundColor,text:s.color,
+             refresh:!!hub.querySelector('#zaviAnnualRefresh'),
+             offline:!!account,hiddenTransfer:hub.querySelector('[data-zavi-offline-transfer]')?.hidden,
+             dates:hub.querySelectorAll('.zsh-row').length};
+        })()""" %json.dumps(theme))
+        assert proof['theme']==theme,proof
+        assert (proof['card']=='rgb(255, 255, 255)')==(theme=='light'),proof
+        assert proof['text']!=proof['card'],proof
+        assert proof['refresh'] and proof['offline'] and proof['dates']>=4,proof
+        assert proof['hiddenTransfer'] is True,proof
+        shot=out/('one-subscription-'+theme+'.png')
+        shot.write_bytes(browser.screenshot())
+        assert shot.stat().st_size>10000,shot
+    for language,direction in [('fa-AF','rtl'),('ps-AF','rtl'),('en','ltr')]:
+        status=browser.eval("""(()=>{
+          const lang=%s,dir=%s;
+          document.documentElement.lang=lang;
+          document.documentElement.dir=dir;
+          return getComputedStyle(document.getElementById('zaviSubscriptionHub')).direction;
+        })()""" % (json.dumps(language),json.dumps(direction)))
+        assert status==direction,(language,status)
+    report['one_subscription_theme_repair']={
+        'themes':['light','dark','glass'],'directions':['rtl','rtl','ltr'],
+        'renewal_or_server_changes':False}
+
     browser.route('sales')
     browser.until("!!document.querySelector('#content .zavi-sales-reference')",
                   'ONE reference sales uses native list')
