@@ -125,6 +125,27 @@ with Session() as b:
     assert layout['firstGroupContainsDate'] and layout['secondGroupContainsBarcode'] and layout['thirdGroupContainsPaid'],layout
     assert layout['overlappingScanAndCamera']==0 and layout['cameraX']>=0 and layout['cameraRight']<=layout['screenWidth'],layout
     assert layout['dualDate'] and '|' in layout['dualDate'],layout
+    approved_layout=b.eval(r"""(()=>{
+      const dialog=document.querySelector('#overlay .zsal-approved-modal');
+      const body=dialog.querySelector('.modal-body');
+      const heading=body.querySelector('.zui-section-heading.zui-invoice-form');
+      const nativeForm=dialog.querySelector('#dialogForm');
+      const groups=[...dialog.querySelectorAll('.zavi-flow-panel')];
+      const duplicateHeaderVisible=!!heading&&getComputedStyle(heading).display!=='none';
+      const submit=dialog.querySelector('.modal-foot [type=submit]');
+      const before=body.scrollTop;
+      body.scrollTop=body.scrollHeight;
+      const end=body.scrollTop,scrollable=body.scrollHeight>body.clientHeight+50;
+      const hasPayments=groups[2].contains(nativeForm.elements.paid);
+      body.scrollTop=before;
+      return {duplicateHeaderVisible,scrollable,end,hasPayments,
+        nativeSubmitVisible:!!submit&&getComputedStyle(submit).display!=='none',
+        scrollHeight:body.scrollHeight,viewportHeight:body.clientHeight};
+    })()""")
+    assert not approved_layout['duplicateHeaderVisible'],approved_layout
+    assert approved_layout['scrollable'] and approved_layout['end']>0,approved_layout
+    assert approved_layout['hasPayments'] and approved_layout['nativeSubmitVisible'],approved_layout
+    print('PASS: approved long-form scroll, no duplicate visual invoice card and original save/payment controls accessible')
     (out/'sale-product-form.png').write_bytes(b.screenshot())
     b.eval("""(()=>{const m=document.querySelector('.zsal-approved-modal .modal-body');
       const item=m.querySelector('#orderItems');m.scrollTop=item.getBoundingClientRect().top-
@@ -287,10 +308,33 @@ with Session() as b:
     assert posted['total']==34 and posted['paid']==20 and posted['due']==14,posted
     assert posted['customer']=='QA LOCAL CREDIT CUSTOMER' and posted['savedInLocalStorage'],posted
     print('PASS: real native local sale commits once, stock 10 -> 8, paid 20, receivable 14, durable localStorage')
+    # The visual enhancer must NEVER attach to purchase or sale-return forms.
+    # The same native form machinery is shared between these routes.
+    adjacent=b.eval(r"""(()=>{
+      const results={};
+      for(const kind of ['purchase','sale_return','purchase_return']){
+        openOrder(kind);
+        const modal=document.querySelector('#overlay .modal');
+        const form=modal?.querySelector('#dialogForm');
+        results[kind]={
+          kind:modal?.dataset.zaviOrderKind,
+          enhanced:modal?.classList.contains('zsal-approved-modal'),
+          radios:modal?.querySelectorAll('input[name=zsalMode]').length,
+          nativeSubmit:!!form&&typeof form.onsubmit==='function',
+          nativeBarcode:!!modal?.querySelector('#zaviBarcodeScan')};
+      }
+      return results;
+    })()""")
+    assert all(adjacent[k]['kind']==k and not adjacent[k]['enhanced'] and
+      adjacent[k]['radios']==0 and adjacent[k]['nativeSubmit'] and
+      adjacent[k]['nativeBarcode'] for k in adjacent),adjacent
+    print('PASS: new sale skin cannot corrupt purchase, sale return or purchase return forms')
+
     # Confirm no user data can be sent to the backend by this test.
     proof.update({
       "source_screen":"real sales route and original HTML form",
-      "visual_structure":layout,"bank_cash_credit":bank,"language_switch":locales,
+      "visual_structure":layout,"approved_layout":approved_layout,
+      "adjacent_order_regression":adjacent,"bank_cash_credit":bank,"language_switch":locales,
       "browser_screenshots":sorted(p.name for p in out.glob('*.png')),
       "barcode_scan":"synthetic keyboard scan, not tested physical camera",
       "observed_quantity":qty['qty'],"expected_preview_total":34,
