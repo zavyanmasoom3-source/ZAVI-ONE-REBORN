@@ -1,23 +1,8 @@
 name: REBORN clean Android QA builds
 
+# Owner approval is required before ANY installable binary is built.
+# Visual/contract QA workflows remain automatic; release/preview is manual only.
 on:
-  push:
-    branches: [dev]
-    paths:
-      - 'apps/**'
-      - 'packages/**'
-      - 'android-build/**'
-      - 'scripts/**'
-      - 'supabase/**'
-      - 'gradle/**'
-      - 'gradlew'
-      - 'gradlew.bat'
-      - 'build.gradle'
-      - 'settings.gradle'
-      - 'gradle.properties'
-      - '.github/workflows/build-reborn-qa.yml'
-  pull_request:
-    branches: [main]
   workflow_dispatch:
 
 permissions:
