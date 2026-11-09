@@ -14,6 +14,20 @@ const ZAVI_SELLER_WHATSAPP_E164='93764713434';
 function renewalMessage(){return isEnglish()?'Hello, I would like to renew my ZAVI ONE subscription.':isPashto()?'سلام، د ZAVI ONE کلنی ګډون نوي کول غواړم.':'سلام، می‌خواهم اشتراک ZAVI ONE را تمدید کنم.'}
 function renewalLink(){return 'https://wa.me/'+ZAVI_SELLER_WHATSAPP_E164+'?text='+encodeURIComponent(renewalMessage())}
 
+/* WhatsApp draft only: duration choice does not write a local entitlement
+   or grant offline access, which stays server-authorized. */
+function renewalRequestLink(days){
+ if(![7,180,365].includes(days))throw new RangeError('Unsupported renewal duration');
+ const l=String(document.documentElement.lang||lang()).toLowerCase();
+ const msg=l.startsWith('en')?
+  'Hello, I would like to request a '+days+'-day ZAVI ONE subscription renewal. Please confirm the price and activation.':
+  l.startsWith('ps')?
+  'سلام، د ZAVI ONE ګډون د '+days+' ورځو لپاره نوي کول غواړم. مهرباني وکړئ بیه او فعالول تایید کړئ.':
+  'سلام، می‌خواهم اشتراک ZAVI ONE را برای '+days+' روز تمدید کنم. لطفاً قیمت و فعال‌سازی را تأیید کنید.';
+ return 'https://wa.me/'+ZAVI_SELLER_WHATSAPP_E164+'?text='+encodeURIComponent(msg);
+}
+
+
 const AFGHAN_MONTHS=['حمل','ثور','جوزا','سرطان','اسد','سنبله','میزان','عقرب','قوس','جدی','دلو','حوت'];
 const jdate=s=>{if(!s)return '—';const p=new Intl.DateTimeFormat('en-US-u-ca-persian',{year:'numeric',month:'numeric',day:'numeric',timeZone:'Asia/Kabul'}).formatToParts(new Date(s));let m={};p.forEach(x=>{if(['year','month','day'].includes(x.type))m[x.type]=+x.value});return isEnglish()?`${m.day} ${AFGHAN_MONTHS[m.month-1]} ${m.year}`:`${String(m.day).replace(/\d/g,c=>'۰۱۲۳۴۵۶۷۸۹'[+c])} ${AFGHAN_MONTHS[m.month-1]} ${String(m.year).replace(/\d/g,c=>'۰۱۲۳۴۵۶۷۸۹'[+c])}`};
 // V10: render Afghan Solar and Gregorian (عیسوی) for the same UTC timestamp.
@@ -198,6 +212,18 @@ function subscriptionView(){
  const duration=p==='trial'?7:p==='semiannual'?180:p==='annual'?365:0;
  const used=duration?Math.min(100,Math.max(0,Math.round((duration-days)/duration*100))):0;
  const stateText=checking?'در حال بررسی':status==='active'?'فعال':status==='warning'?'نزدیک پایان':status==='blocked'?'غیرفعال / تعلیق':status==='error'?'نیاز به اتصال':'در حال بررسی';
+ const requestLanguage=String(document.documentElement.lang||lang()).toLowerCase();
+ const renewalCopy=requestLanguage.startsWith('en')?
+  {day:'days',request:'Request renewal',hint:'Request only — management must activate the plan on the server.'}:
+  requestLanguage.startsWith('ps')?
+  {day:'ورځې',request:'د تمدید غوښتنه',hint:'دا یوازې غوښتنه ده؛ مدیریت باید ګډون په سرور کې فعال کړي.'}:
+  {day:'روز',request:'درخواست تمدید',hint:'این فقط درخواست است؛ اشتراک تنها با تأیید مدیریت در سرور فعال می‌شود.'};
+ const renewalRequests=[7,180,365].map(n=>`<a class="zsh-duration-request"
+  data-zavi-renew-request="${n}" href="${renewalRequestLink(n)}"
+  target="_blank" rel="noopener noreferrer"
+  aria-label="${n} ${renewalCopy.day} — ${renewalCopy.request}">
+  <strong>${n}</strong><span>${renewalCopy.day}</span><small>${renewalCopy.request}</small></a>`).join('');
+
  return `<div id="zaviSubscriptionHub" class="zsh" dir="rtl">
  <div class="zsh-hero"><div class="zsh-hero-top"><div><span class="zsh-eyebrow">ZAVI ONE • MEMBERSHIP</span><h2>اشتراک من</h2><p>مدیریت اعتبار، تمدید و دستگاه اصلی در یک مکان</p></div><div class="zsh-emblem">✦</div></div><div class="zsh-state"><span class="zsh-dot"></span>${escapes(stateText)} ${offlineMode?'· حالت آفلاین':''}</div></div>
  <section class="zsh-card z46-offline-card" data-zavi-auto-offline-card data-state="working" aria-label="دسترسی بدون اینترنت">
@@ -223,7 +249,7 @@ function subscriptionView(){
  </section>
  <div class="zsh-grid"><section class="zsh-card zsh-main"><span class="zsh-caption">نوع اشتراک</span><h3>${escapes(planName)}</h3><div class="zsh-days">${p==='lifetime'?'∞':p==='none'?'—':escapes(days)}<small>${p==='lifetime'?'بدون انقضا':'روز باقی‌مانده'}</small></div><div class="zsh-progress"><span style="width:${used}%"></span></div><div class="zsh-progress-note">محاسبه یک‌بار، بر اساس روز تقویمی کابل (همان روز در هر دو تقویم).</div><div class="zsh-progress-note">${duration?'مدت برنامه: '+duration+' روز':'اطلاعات اعتبار از سرور دریافت می‌شود'}</div><div class="zsh-progress-note" aria-live="polite">${info().pending?'⏳ تغییرات محلی در انتظار همگام‌سازی با ابر هستند.':offlineMode?'📴 بدون اینترنت: ذخیره محلی فعال است، ارسال ابری بعداً انجام می‌شود.':'☁️ پس از وصل‌شدن اینترنت، وضعیت تغییرات ابری بررسی می‌شود.'}</div><div class="zsh-progress-note" role="status">${offlineAllowed()?'✅ آفلاین فعال است':active&&p!=='none'?'مجوز آفلاین در حال آماده‌سازی است.':'اشتراک معتبر نیاز است.'}</div></section>
  <section class="zsh-card"><span class="zsh-caption">تاریخ‌ها و وضعیت</span><div class="zsh-row"><span>شروع اشتراک</span><strong>${dualDate(start)}</strong></div><div class="zsh-row"><span>آخرین تمدید / پرداخت</span><strong>${renewal?dualDate(renewal):'—'}</strong></div><div class="zsh-row"><span>پایان اشتراک</span><strong>${p==='lifetime'?'بدون انقضا':dualDate(e.expires_at)}</strong></div><div class="zsh-row"><span>وضعیت</span><strong>${escapes(stateText)}</strong></div><div class="zsh-note">${message()} ${!active?word('backup'):''}</div></section></div>
- <div class="zsh-grid"><section class="zsh-card"><div class="zsh-section-title"><span class="zsh-icon">↻</span><div><h3>تمدید و بررسی اشتراک</h3><p>اعتبار اشتراک از سرور مرکزی بررسی می‌شود.</p></div></div><p class="zsh-hint">نوع و مدت اشتراک فقط پس از ثبت و تأیید پرداخت توسط مدیریت تعیین می‌شود.</p><div class="zsh-actions"><button id="zaviAnnualRefresh" class="zsh-btn zsh-btn-primary" type="button">↻ بررسی دوباره اشتراک</button><a class="zsh-btn zsh-btn-light" href="${renewalLink()}" target="_blank" rel="noopener noreferrer">✆ تماس برای تمدید</a></div></section>
+ <div class="zsh-grid"><section class="zsh-card"><div class="zsh-section-title"><span class="zsh-icon">↻</span><div><h3>تمدید و بررسی اشتراک</h3><p>اعتبار اشتراک از سرور مرکزی بررسی می‌شود.</p></div></div><p class="zsh-hint">نوع و مدت اشتراک فقط پس از ثبت و تأیید پرداخت توسط مدیریت تعیین می‌شود.</p><div class="zsh-actions"><button id="zaviAnnualRefresh" class="zsh-btn zsh-btn-primary" type="button">↻ بررسی دوباره اشتراک</button><a class="zsh-btn zsh-btn-light" href="${renewalLink()}" target="_blank" rel="noopener noreferrer">✆ تماس برای تمدید</a></div><nav class="zsh-renewal-requests" aria-label="${renewalCopy.request}">${renewalRequests}</nav><p class="zsh-renewal-note">${renewalCopy.hint}</p></section>
  <section class="zsh-card z46-security-note"><div class="zsh-section-title"><span class="zsh-icon">✓</span><div><h3>دسترسی امن</h3><p>برنامه دستگاه و مجوز آفلاین را خودکار مدیریت می‌کند. انتقال از دستگاه دیگری فقط با تأیید مالک انجام می‌شود.</p></div></div></section></div>
  </div>`;
 }
