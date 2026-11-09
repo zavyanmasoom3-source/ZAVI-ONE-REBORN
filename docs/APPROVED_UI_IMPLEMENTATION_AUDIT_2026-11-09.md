@@ -120,3 +120,24 @@ Reviewed actual code and reference images IMG_3460–3466; no test data is writt
 - **Not certified:** financial RPC/posting on a real staging Supabase workspace; per-warehouse available stock checked by server; actual Android/iPad camera and label printer; signed Android package; end-to-end real multi-currency split; pixel-by-pixel reference comparison. The status remains **آزمایش شده و دارای مشکل**.
 
 The current reference version `V66.62` and REBORN source commit versions **must not be conflated**. No new APK was built or published by this review workflow.
+
+
+## 2026-11-09 later QA addendum — verified, still not final acceptance
+
+The owner-approved sales screen was rebased/merged safely onto the newer REBORN approved-UI sources without writing to production or triggering any APK from this review branch. The source and official PWA pre-cache include both the new dashboard design and the approved sales form.
+
+**Actual successful browser run at commit `9bc37fc17a107990cac3590ce50216041c75d04a`:**
+https://github.com/zavyanmasoom3-source/ZAVI-ONE-REBORN/actions/runs/42589365462
+
+- One vertically scrolling sale invoice: date + customer, products and barcode, payment, editable existing fields, original native save. No duplicated tutorial header.
+- Only one visible Afghan Solar/Gregorian date line, immediately responsive to the actual live language preference switch (Dari/Pashto/English).
+- Native cash/bank/credit account mapping and automatic paid total after two repeated barcode scans.
+- Invalid zero unit price refused; an unsaved receipt preview causes no financial posting.
+- Native offline sale transaction posted once in a disposable, network-blocked browser: stock **10 → 8**, invoice **AFN 34**, paid **AFN 20**, customer receivable **AFN 14**; double-click/submit did not duplicate.
+- Purchase, sale return and purchase return retain their own native form/handler, never receiving the sale-only UI enhancer.
+- Light/dark/glass at 420×915 browser viewport; no scanner/camera overlap. Physical Android device not tested.
+- Browser opened/captured **59/59 mapped navigation entries**, not 59 pixel-matched pages or 59 passing financial functional cases.
+
+**Remaining acceptance gates:** production-equivalent **disposable staging** RPC transaction/RLS and per-warehouse server stock; purchase/sale return integration; real physical Android rear/front camera scan and printer/WhatsApp handoff; exact reference pixel comparison and tablet/desktop test; production signing materials and explicit user authorization before any APK. Do not merge into `dev` while its push workflows can build APKs without permission.
+
+**UI visual adjustment still required:** the actual screenshot-based evidence continues to differ from the owner references in some spacing, cards and number of visible actions; each discrepancy must be manually signed off, not inferred from route smoke checks.
