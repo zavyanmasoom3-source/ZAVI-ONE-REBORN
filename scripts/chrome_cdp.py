@@ -80,6 +80,22 @@ class Session:
         self.leftover=buf.split(b'\r\n\r\n',1)[1]
         self.next_id=1
         self.command('Page.enable');self.command('Runtime.enable')
+        # Early-script errors are otherwise lost before tests can attach listeners.
+        self.command('Page.addScriptToEvaluateOnNewDocument',{'source':"""
+          window.__zaviCIBootErrors=[];
+          window.addEventListener('error',function(e){
+            window.__zaviCIBootErrors.push({
+              kind:'error',message:String(e.message||''),
+              file:String(e.filename||''),line:e.lineno||0,column:e.colno||0
+            });
+          },true);
+          window.addEventListener('unhandledrejection',function(e){
+            window.__zaviCIBootErrors.push({
+              kind:'rejection',message:String(e.reason?.message||e.reason||'')
+            });
+          });
+        """})
+
         self.command('Emulation.setDeviceMetricsOverride',{'width':420,'height':915,
           'deviceScaleFactor':1,'mobile':True,'screenWidth':420,'screenHeight':915})
         return self
@@ -135,7 +151,28 @@ class Session:
         self.until('document.readyState==="complete"&&location.pathname==="/apps/'+app+'/index.html"',app+' ready')
     def unlock_one(self):
         self.navigate('one')
-        self.until('typeof go==="function"&&!!document.getElementById("zawiPinForm")','app initialized')
+        try:
+            self.until('typeof go==="function"&&!!document.getElementById("zawiPinForm")','app initialized')
+        except RuntimeError as error:
+            try:
+                info=self.eval("""(()=>{
+                  const lock=document.getElementById('zawiPinForm');
+                  const scripts=[...document.scripts];
+                  return {
+                    path:location.pathname,state:document.readyState,go:typeof go,
+                    locked:document.documentElement.classList.contains('zawi-locked'),
+                    pinForm:!!lock,pinOne:!!document.getElementById('zawiPinOne'),
+                    content:document.querySelector('#content')?.innerText.slice(0,180),
+                    scriptCount:scripts.length,
+                    bodyText:document.body?.innerText.slice(0,180),
+                    bootErrors:window.__zaviCIBootErrors||[],
+                    brokenScripts:scripts.filter(x=>x.src&&x.dataset.qaLoadError).map(x=>x.src)
+                  };
+                })()""")
+                print('ZAVI_BROWSER_BOOT_DIAGNOSTIC='+json.dumps(info,ensure_ascii=False),flush=True)
+            except Exception as diagnostic_error:
+                print('ZAVI_BROWSER_BOOT_DIAGNOSTIC_FAILED='+repr(diagnostic_error),flush=True)
+            raise error
         status=self.eval("""(()=>{
           const pass=document.getElementById('zawiPinOne'),repeat=document.getElementById('zawiPinRepeat'),form=document.getElementById('zawiPinForm');
           if(!pass||!repeat||!form)return false;
