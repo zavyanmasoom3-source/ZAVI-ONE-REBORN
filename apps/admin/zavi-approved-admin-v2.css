@@ -246,3 +246,68 @@ html[dir="ltr"][data-zavi-theme] .workspace{margin-right:0!important;margin-left
 @media(prefers-reduced-motion:reduce){
  html[data-zavi-theme] .sidebar .nav-item{transition:none!important}
 }
+
+/* Approved ADMIN dashboard: remove obsolete hero illustration and replace
+   oversized marketing banner with one compact header + real KPI cards. */
+html[data-zavi-theme] #view .admin-hero{
+ opacity:1!important;filter:none!important;
+ display:flex!important;align-items:center!important;justify-content:space-between!important;
+ gap:14px!important;min-height:0!important;
+ border:1px solid var(--zav-border)!important;
+ background:var(--zav-surface)!important;background-image:none!important;
+ color:var(--zav-ink)!important;
+ box-shadow:var(--zav-shadow)!important;
+ border-radius:16px!important;padding:13px 18px!important;margin-bottom:12px!important;
+}
+html[data-zavi-theme] #view .admin-hero::before{content:none!important;display:none!important}
+html[data-zavi-theme] #view .admin-hero-art{display:none!important}
+html[data-zavi-theme] #view .admin-hero :is(h1,h2,h3,.admin-hero-kicker,p){
+ color:var(--zav-ink)!important;text-shadow:none!important;
+ -webkit-text-fill-color:var(--zav-ink)!important;opacity:1!important;
+}
+html[data-zavi-theme] #view .admin-hero :is(h1,h2){
+ font-size:clamp(16px,1.8vw,22px)!important;line-height:1.45!important;
+}
+html[data-zavi-theme] #view .admin-hero :is(.admin-hero-kicker,p){
+ color:var(--zav-muted)!important;-webkit-text-fill-color:var(--zav-muted)!important;
+ font-size:11px!important;line-height:1.5!important;
+}
+html[data-zavi-theme] #view .admin-hero :is(h1 em,h2 em){
+ color:var(--zav-blue)!important;-webkit-text-fill-color:var(--zav-blue)!important;
+}
+html[data-zavi-theme] #view .admin-hero button.button.primary{
+ background:linear-gradient(115deg,var(--zav-blue-2),#0753d6)!important;
+ color:#fff!important;-webkit-text-fill-color:#fff!important;
+ border:1px solid #216de7!important;box-shadow:0 3px 10px #145ee824!important;
+}
+html[data-zavi-theme] #view .admin-kpis{
+ opacity:1!important;filter:none!important;gap:9px!important;
+}
+html[data-zavi-theme] #view .admin-kpi{
+ opacity:1!important;filter:none!important;mix-blend-mode:normal!important;
+ background:var(--zav-surface)!important;background-image:none!important;
+ color:var(--zav-ink)!important;border:1px solid var(--zav-border)!important;
+ box-shadow:var(--zav-shadow)!important;min-height:90px!important;
+ padding:11px 12px!important;
+}
+html[data-zavi-theme] #view .admin-kpi strong,
+html[data-zavi-theme] #view .admin-kpi b{
+ opacity:1!important;color:var(--zav-ink)!important;
+ -webkit-text-fill-color:var(--zav-ink)!important;
+ font-weight:850!important;
+}
+html[data-zavi-theme] #view .admin-kpi :is(small,.kpi-foot){
+ opacity:1!important;color:var(--zav-muted)!important;
+ -webkit-text-fill-color:var(--zav-muted)!important;font-weight:600!important;
+}
+html[data-zavi-theme] #view .admin-kpi .kpi-ico{
+ opacity:1!important;color:var(--zav-blue)!important;
+ -webkit-text-fill-color:var(--zav-blue)!important;
+ background:var(--zav-blue-soft)!important;
+}
+@media(max-width:760px){
+ html[data-zavi-theme] #view .admin-hero{
+  flex-direction:column!important;align-items:stretch!important;padding:12px!important;
+ }
+ html[data-zavi-theme] #view .admin-hero button.button.primary{width:100%!important}
+}
