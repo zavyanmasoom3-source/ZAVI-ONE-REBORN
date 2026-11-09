@@ -25,9 +25,11 @@ with Session() as b:
     original=b.eval(r"""(()=>{
       const pid='qa-approved-sale-product';
       if(!db.products.find(p=>p.id===pid)){
-        db.products.push({id:pid,name:'QA_LOCAL_APPROVED_SALE_PRODUCT',
+        // Real stockState uses immutable-workspace memoization. Replace the
+        // throwaway in-memory db snapshot, instead of mutating its array.
+        db={...db,products:[...db.products,{id:pid,name:'QA_LOCAL_APPROVED_SALE_PRODUCT',
           sku:'QA-SALE-APPROVED-01',barcodes:['9050403020103'],openingQty:10,
-          openingCost:2,purchasePrice:2,salePrice:17,reorder:1,category:'General'});
+          openingCost:2,purchasePrice:2,salePrice:17,reorder:1,category:'General'}]};
       }
       return {productId:pid,stock:stockOf(pid),transactionCount:db.tx.length,
         initialCurrency:db.currency,products:db.products.length};
