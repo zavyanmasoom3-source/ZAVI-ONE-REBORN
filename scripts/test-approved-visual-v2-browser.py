@@ -36,7 +36,11 @@ def theme_proof(browser,app,mode):
     assert proof['theme']==mode and proof['appearance']==mode,(app,mode,proof)
     assert proof['surface'] and proof['brand'] and proof['navScript'],proof
     assert len(proof['styles'])==2 and all('approved' in s for s in proof['styles']),proof
-    assert 'glass' not in proof['buttons'],proof
+    # The older V2 fixture expected only two appearance controls.
+    # Owner's final reference sheet now explicitly requires three modes on
+    # ONE's real PIN gate, while the legacy Settings picker remains intact.
+    required={'light','dark','glass'} if app=='one' else {'light','dark'}
+    assert required.issubset(set(proof['buttons'])),(app,required,proof)
     return proof
 
 with Session() as browser:
