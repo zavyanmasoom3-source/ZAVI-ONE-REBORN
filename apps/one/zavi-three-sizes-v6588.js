@@ -3,7 +3,7 @@
    No zoom(), body transform, viewport width override, or external dependencies. */
 (()=>{'use strict';
 const APP=document.currentScript?.getAttribute('data-zavi-app')==='admin'?'admin':'one';
-const MIN=50,MAX=150,STEP=5;
+const MIN=50,MAX=APP==='one'?115:150,STEP=5;
 const KEY={text:'zavi_'+APP+'_size_text_v6588',system:'zavi_'+APP+'_size_system_v6588',icons:'zavi_'+APP+'_size_icons_v6588'};
 const defaults={text:100,system:100,icons:100};
 const lex={
@@ -12,19 +12,19 @@ const lex={
       system:'اندازۀ بخش‌های سیستم',systemHint:'دکمه‌ها، کارت‌ها و فاصله‌های صفحه',
       icons:'اندازۀ آیکن‌ها',iconsHint:'آیکن‌های منوها و دکمه‌ها',
       close:'بستن تنظیم اندازه',open:'بازکردن تنظیم اندازه',reset:'عادی ۱۰۰٪',smaller:'کوچک‌تر',larger:'بزرگ‌تر',
-      resetAll:'بازگشت هر سه به ۱۰۰٪',size:'تغییر اندازه',summary:'تنظیم سه اندازۀ مستقل از ۵۰ تا ۱۵۰ درصد'},
+      resetAll:'بازگشت هر سه به ۱۰۰٪',size:'تغییر اندازه',summary:'تنظیم سه اندازۀ مستقل از ۵۰ تا ۱۱۵ درصد'},
  ps:{heading:'د سیسټم د ښودلو اندازې',hint:'لیکنې، د سیسټم برخې او نښانونه هر یو په جلا ډول بدل کړئ.',
       text:'د لیکنو اندازه',textHint:'سرلیکونه، متنونه او د تڼیو لیکنې',
       system:'د سیسټم برخو اندازه',systemHint:'تڼۍ، کارتونه او واټنونه',
       icons:'د نښانونو اندازه',iconsHint:'د مینو او تڼیو نښانونه',
       close:'د اندازو تنظیم بندول',open:'د اندازو تنظیم پرانیستل',reset:'عادي ۱۰۰٪',smaller:'کوچنی',larger:'لوی',
-      resetAll:'درې واړه ۱۰۰٪ ته ستنول',size:'اندازه بدلول',summary:'له ۵۰ تر ۱۵۰ سلنې درې خپلواک اندازې'},
+      resetAll:'درې واړه ۱۰۰٪ ته ستنول',size:'اندازه بدلول',summary:'له ۵۰ تر ۱۱۵ سلنې درې خپلواک اندازې'},
  en:{heading:'Display and size',hint:'Adjust text, interface size and icons separately without shrinking the page.',
       text:'Text size',textHint:'Headings, body text and button labels',
       system:'Interface size',systemHint:'Cards, buttons and spacing',
       icons:'Icon size',iconsHint:'Navigation and button icons',
       close:'Close size controls',open:'Open size controls',reset:'Normal 100%',smaller:'Smaller',larger:'Larger',
-      resetAll:'Reset all three to 100%',size:'Adjust size',summary:'Three independent scales from 50 to 150 percent'}
+      resetAll:'Reset all three to 100%',size:'Adjust size',summary:'Three independent scales from 50 to 115 percent'}
 };
 const clamp=v=>Math.max(MIN,Math.min(MAX,Math.round(Number(v)/STEP)*STEP));
 const safe=v=>Number.isFinite(Number(v))?clamp(v):100;
@@ -49,6 +49,9 @@ function lang(){
 function apply(){
  const root=document.documentElement;
  root.style.removeProperty('zoom');
+ // The actual REBORN html never carried this legacy class. Without it, the
+ // three computed CSS scales were inert and the obsolete panel stayed visible.
+ if(APP==='one')root.classList.add('zavi-design-84');
  root.style.setProperty('--z87-text-scale',String(values.text/100));
  root.style.setProperty('--z87-system-scale',String(values.system/100));
  root.style.setProperty('--z87-icon-scale',String(values.icons/100));
@@ -72,8 +75,8 @@ function panelMarkup(){
  '<div class="z87-body" id="z88-body">'+
  ['text','system','icons'].map(k=>'<div class="z87-row" data-size-row="'+k+'">'+
  '<div class="z87-label-line"><div><label for="z87-'+k+'" class="z87-title"></label><p class="z87-hint"></p></div><output class="z87-value" for="z87-'+k+'">100%</output></div>'+
- '<input class="z87-slider" type="range" id="z87-'+k+'" min="50" max="150" step="5" value="100" data-size-key="'+k+'">'+
- '<div class="z87-ticks"><span>50%</span><span>100%</span><span>150%</span></div>'+
+ '<input class="z87-slider" type="range" id="z87-'+k+'" min="50" max="'+MAX+'" step="5" value="100" data-size-key="'+k+'">'+
+ '<div class="z87-ticks"><span>50%</span><span>100%</span><span>'+MAX+'%</span></div>'+
  '<div class="z87-actions"><button type="button" class="z87-step" data-step-key="'+k+'" data-dir="-1">−</button>'+
  '<button type="button" class="z87-reset-one" data-reset-key="'+k+'"></button>'+
  '<button type="button" class="z87-step" data-step-key="'+k+'" data-dir="1">+</button></div></div>').join('')+
