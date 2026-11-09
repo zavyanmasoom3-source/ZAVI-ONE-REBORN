@@ -133,6 +133,15 @@ with Session() as b:
     })()""")
     assert duplication['exists'] and duplication['hidden'],duplication
     print('PASS: single visible dual-date line; sales-only fallback does not duplicate shared date widget')
+    date_nodes=b.eval(r"""(()=>{
+      const field=document.querySelector('#dialogForm input[name=date]')?.closest('.field');
+      return [...field.querySelectorAll('*')].map(el=>({
+        tag:el.tagName,id:el.id,cls:String(el.className).slice(0,80),
+        display:getComputedStyle(el).display,text:el.textContent.slice(0,110)
+      })).filter(x=>x.text&&/\d|[۰-۹]/.test(x.text)).slice(0,14);
+    })()""")
+    print('DATE FIELD NON-PRIVATE QA STRUCTURE: '+json.dumps(date_nodes,ensure_ascii=False))
+
     approved_layout=b.eval(r"""(()=>{
       const dialog=document.querySelector('#overlay .zsal-approved-modal');
       const body=dialog.querySelector('.modal-body');
