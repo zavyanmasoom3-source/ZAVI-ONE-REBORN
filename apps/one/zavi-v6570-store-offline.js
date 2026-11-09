@@ -66,7 +66,18 @@ async function load(){
    if(!sameView()){pendingReload=true;return}
    function field(key,value){let row=el('div','z70-field');row.append(el('span','',key),el('strong','',String(value)));out.append(row)}
    if(data){
-    field(d.duration,data.offline_allowed_days?data.offline_allowed_days+' '+(locale()==='en'?'days':'روز'):'—');
+    // Display the signed-lease EFFECTIVE window, not the raw policy limit.
+    // In particular a 7-day trial may inherit an older 180-day policy,
+    // but the server correctly caps expiry to the subscription end.
+    const policyDays=Number(data.offline_allowed_days)||0;
+    const serverNow=Date.parse(data.server_time||'');
+    const allowedUntil=Date.parse(data.offline_expires_at||'');
+    const cappedDays=Number.isFinite(serverNow)&&Number.isFinite(allowedUntil)
+      ?Math.max(0,Math.min(policyDays,Math.ceil((allowedUntil-serverNow)/86400000)))
+      :policyDays;
+    const effectiveDays=data.offline_enabled===false||data.can_use_offline===false?0:cappedDays;
+    const dayLabel=locale()==='en'?'days':locale()==='ps'?'ورځې':'روز';
+    field(d.duration,effectiveDays>0?effectiveDays+' '+dayLabel:'—');
     field(d.expired,time(data.subscription_expires_at));
    }
    field(d.effective,signed?time(cache.claims.exp*1000):'—');
