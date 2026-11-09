@@ -8,6 +8,7 @@ on:
       - 'apps/one/index.html'
       - 'apps/one/sw.js'
       - 'scripts/test-in-transit-contract.cjs'
+      - 'scripts/test-in-transit-browser.py'
       - '.github/workflows/transit-contract-qa.yml'
   workflow_dispatch:
 permissions:
@@ -24,3 +25,12 @@ jobs:
         run: node scripts/test-in-transit-contract.cjs
       - name: Check PWA asset references
         run: python3 scripts/check-offline-shell-assets.py
+      - name: Verify real Chrome purchase-order interactions with synthetic server
+        run: python3 scripts/test-in-transit-browser.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ZAVI-IN-TRANSIT-CHROME-QA
+          path: qa-in-transit/
+          if-no-files-found: ignore
+          retention-days: 7
