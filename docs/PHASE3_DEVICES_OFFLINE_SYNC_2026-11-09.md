@@ -43,3 +43,79 @@ Target project was resolved from the public app configuration, not inferred from
 **Stage 3 source fixes and isolated browser/Node contract checks are progressing, but Stage 3 is NOT release-certified.** Outstanding items include a consistently successful full integration workflow at the final SHA, an authenticated end-to-end test with two distinct owner-device sessions and server denial/approval, a real signed lease on Android, physical offline sale and post-reconnect sync checks, and review of the trial policy's raw 180-day metadata. A disconnected old device may continue using a previously issued unexpired offline lease until it reconnects; instantaneous remote revocation cannot be guaranteed offline.
 
 Do not proceed to Stage 4 or announce a stable APK based solely on this checkpoint.
+
+
+## Stage 3 follow-up hardening and applied server changes — 2026-11-09
+
+### Production policy: 7 / 180 / 365 days
+
+The previously noted trial-policy inconsistency has now been fixed in the
+**actual primary Supabase project** (selected from apps/one/cloud-config.js),
+using the named schema migration phase3_trial_offline_policy. Committed source:
+supabase/migrations/20261109_phase3_trial_offline_policy.sql.
+
+- Trial 7 days, semiannual 180 days, annual/lifetime 365-day renewable
+  policy; a trial-to-paid upgrade switches to the newly paid duration
+- A separately configured seven-day limit on an **existing paid** plan
+  remains unchanged by ordinary renewal updates
+- The policy change does **not** extend subscriptions, issue ES256 tokens,
+  enable archived customers, or mutate accounting rows
+- Direct post-migration introspection verified deployed trial=7, upgraded
+  plan handling, preserved manual paid limits and **zero trial mismatches**
+- **42676403739 PASSED**: executes migration SQL against synthetic active,
+  expired, suspended, archived, manual-override and upgraded subscriptions
+  on disposable PostgreSQL 17
+
+### Revocation must also be confirmed synced
+
+Stage 3 security audit found that public.zavi_v652_owner_revoke_device checked
+fresh heartbeat and zero pending, but **not last confirmed cloud sync**.
+This differed from primary-device transfer and could mislead the owner.
+
+- The customer app now uses isVerifiedSynced for both transfer eligibility
+  and device revocation preflight in apps/one/zavi-devices-v652.js
+- Production RPC updated with migration phase3_device_revoke_sync_guard,
+  committed in supabase/migrations/20261109_phase3_device_revoke_sync_guard.sql
+- Server requires workspace owner authentication, zero pending, recent
+  heartbeat and last confirmed cloud sync within 15 minutes of the
+  heartbeat; unknown/future/missing sync evidence fails closed
+- Explicit authenticated owner guard and fixed empty search_path remain;
+  repeated revocation is idempotent
+- **42677108250 PASSED**: verifies both migrations on disposable PostgreSQL 17,
+  including wrong-owner rejection, stale/future, pending and idempotent cases
+- Direct post-migration introspection verified new live server function
+- Only function definitions were replaced: no existing device,
+  accounting, customer or subscription rows were updated
+
+### Signed-lease verifier and browser QA
+
+- **42676876385 PASSED**: actual app browser routes and Settings, scoped
+  offline status, three locales and effective expiry
+- scripts/test-phase3-signed-lease.cjs tests real client-side ES256
+  verification code with a fixture signature-success stub, plus actual
+  WebCrypto import of the pinned *public* P-256 JWK
+- Verifies tenant/workspace/device claims, expired/future timestamps,
+  subscription cutoff, denied write, invalid signature and 403-denial
+  cache retention. It cannot prove a *live* signer matches the client key
+- Existing CAS/dropped-ACK, three-device and offline shell tests remain in
+  the Migration integrity gate, requiring a green run for final source QA
+
+### Release boundary — real hardware tests are still required
+
+Passing isolated tests is **not equivalent** to real on-device certification.
+A dedicated test business, authorized owner accounts and Android devices
+must validate actual Supabase Auth sessions, real server-approved/rejected
+transfer, a live ES256 lease, offline sale/purchase persistence, reconnect
+upload and no duplicate financial transactions. Such hardware and owner
+credentials were **not** available during this chat. No APK was built,
+installed or designated stable as part of Stage 3.
+
+An unreachable previous device may retain a previously issued unexpired
+offline lease until it reconnects or expires: remote instant revocation
+cannot be guaranteed during a true disconnection.
+
+The broader Supabase security-advisor scan also reports pre-existing
+notices for public SECURITY DEFINER RPCs and some RLS tables with no
+direct policies. These are not all proven vulnerabilities (owner-gated
+RPCs and denied tables may be intentional), but Stage 3 does not claim
+to certify every unrelated function and table.
