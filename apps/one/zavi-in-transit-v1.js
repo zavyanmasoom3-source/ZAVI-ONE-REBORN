@@ -96,6 +96,11 @@
     savePending(id,job); // persist BEFORE network so a timeout cannot duplicate an operation
     const result=await rest(id,'/rest/v1/rpc/'+job.rpc,'POST',job.params);
     if(!result||result.success!==true)throw Error(L().error);
+    // Never acknowledge a different server operation: preserve the original
+    // pending UUID so network retries cannot silently lose a paid/stock action.
+    const expected=job.rpc==='zavi_v671_create_in_transit'?job.params.p_order_id:job.params.p_receipt_id;
+    const actual=job.rpc==='zavi_v671_create_in_transit'?result.order_id:result.receipt_id;
+    if(!UUID.test(expected)||actual!==expected)throw Error('Server acknowledgement ID mismatch');
     root.localStorage.removeItem(storageKey(id));
     return result;
   }
