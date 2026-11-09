@@ -7,6 +7,7 @@ Checks applied CSS on actual DOM and original navigation, not pixel parity.
 from chrome_cdp import Session, ROOT
 from pathlib import Path
 import json
+import time
 
 out=ROOT/'qa-12-references'
 out.mkdir(exist_ok=True)
@@ -36,6 +37,7 @@ def check_styles(browser, app, theme):
 with Session() as browser:
     browser.navigate('one')
     browser.unlock_one()
+    time.sleep(3)  # Wait for real screen; do not screenshot the splash overlay.
     for theme in ('light','dark'):
         mode=check_styles(browser,'one',theme)
         browser.route('dashboard')
@@ -72,6 +74,7 @@ with Session() as browser:
     assert sections['count']==8 and sections['expanded']==0 and sections['search'],sections
     report['one_12_reference_settings']=sections
     browser.navigate('admin')
+    time.sleep(3)  # Wait for ADMIN launch overlay to finish.
     browser.until("!!document.getElementById('demoBtn')",
                   'ADMIN localhost-only demo button')
     browser.eval("document.getElementById('demoBtn').click()")

@@ -29,6 +29,20 @@
   const heading=document.createElement('summary');more.append(heading);
   for(const p of ['finance','health','brand'])if(nodes.has(p))more.append(nodes.get(p));
   if(more.querySelector('.nav-item'))nav.append(more);
+  // Older extensions may add extra sidebar entries (some after DOMContentLoaded).
+  // Move their original live buttons into the collapsed area; never delete the
+  // buttons or their original listeners. This is only presentation.
+  const primarySet=new Set(['overview','customers','payments','devices',
+    'support','activity','security','settings']);
+  function compactLegacy(){
+   for(const button of [...nav.children]){
+    if(button===more || !button.classList?.contains('nav-item'))continue;
+    if(button.dataset.page && primarySet.has(button.dataset.page))continue;
+    more.append(button);
+   }
+  }
+  compactLegacy();
+  new MutationObserver(compactLegacy).observe(nav,{childList:true});
   function translate(){
    const dict=words[lang()];heading.textContent=dict.more;
    for(const [key,button] of nodes){
