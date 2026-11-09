@@ -92,5 +92,23 @@ with Session() as browser:
     assert 'owner-two' in result['scope'],result
     assert '7' in result['body'] and '365' not in result['body'],result
     assert result['title']=='My offline licence',result
+    browser.eval("document.getElementById('z70-store-refresh').click()")
+    browser.until("window.__p3requests?.length===3",
+                  'effective expiry fixture reloaded')
+    browser.eval("""(()=>{
+      window.__p3requests[2].resolve({
+        ok:true,json:async()=>({
+          offline_enabled:true,can_use_offline:true,
+          offline_allowed_days:180,
+          server_time:'2030-01-01T00:00:00Z',
+          offline_expires_at:'2030-01-08T00:00:00Z',
+          subscription_expires_at:'2030-01-08T00:00:00Z'})
+      });
+    })()""")
+    browser.until("""(()=>{
+       const text=document.getElementById('z70-store-details')?.textContent||'';
+       return text.includes('7 days')&&!text.includes('180 days');
+    })()""",'trial subscription caps an older 180-day raw policy to 7 days')
     print('PASS: offline status follows 3 locales and discards cross-account late results')
+    print('PASS: effective offline days never exceed subscription expiry')
     print('NOT VERIFIED: real Supabase owner session, issued ES256 token or Android hardware')
