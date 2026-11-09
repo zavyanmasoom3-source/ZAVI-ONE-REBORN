@@ -1,0 +1,36 @@
+name: Stage 3 offline policy contract
+on:
+  push:
+    branches: [dev]
+    paths:
+      - 'supabase/migrations/20261109_phase3_trial_offline_policy.sql'
+      - 'scripts/test-phase3-offline-policy.sql'
+      - '.github/workflows/phase3-offline-policy.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  policy-postgres:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_DB: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: synthetic-policy-only
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify offline policy and trial-to-paid transition on disposable PostgreSQL
+        env:
+          PGPASSWORD: synthetic-policy-only
+        run: |
+          psql -h 127.0.0.1 -U postgres -d postgres -v ON_ERROR_STOP=1 -f scripts/test-phase3-offline-policy.sql
