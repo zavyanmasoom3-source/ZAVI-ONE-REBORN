@@ -163,7 +163,7 @@
   function saleModal(){
     const modal=document.querySelector('#overlay .modal');
     if(!modal||!modal.querySelector('.zui-invoice-form[data-module="sales"]'))return;
-    if(!modal.querySelector('.modal-head h3')?.textContent.includes('فاکتور فروش جدید'))return;
+    if(modal.dataset.zaviOrderKind!=='sale')return;
     const form=modal.querySelector('#dialogForm');
     const flow=form?.querySelector('[data-zavi-flow="order"]');
     if(!flow)return;
@@ -212,14 +212,14 @@
         const paid=form.elements.paid,account=form.elements.accountId;
         if(input.value==='credit')paid.value='0';
         else {
-          try{paid.value=String(orderTotals({...form,elements:{...form.elements,paid:{value:'0'}}}).total)}
-          catch(_){
-            const sum=window.ZaviDecimal?.sumLineTotals(currentRows().map(r=>({
-              qty:r.querySelector('[data-field="qty"]').value,
-              price:r.querySelector('[data-field="price"]').value
-            })))||0;
-            paid.value=String(Math.max(0,sum-safeNum(form.elements.discount.value)));
-          }
+          try{
+            const rows=currentRows().map(r=>({
+              qty:r.querySelector('[data-field="qty"]').value||'0',
+              price:r.querySelector('[data-field="price"]').value||'0'
+            }));
+            paid.value=String(window.ZaviDecimal.invoiceTotals(
+              rows,form.elements.discount?.value||'0','0','0').total);
+          }catch(_){paid.value='0';}
           if(input.value==='bank'&&account){
             const bank=[...account.options].find(o=>/bank|بانک|بانکی|بانک/iu.test(o.textContent)||/bank/i.test(o.value));
             if(bank)account.value=bank.value;
