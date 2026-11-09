@@ -42,6 +42,8 @@ def isolatedSigning = isolatedTestEnv.collectEntries { field, name ->
 boolean isolatedSigningPresent = isolatedSigning.values().every { it }
 boolean isolatedTestFlag = providers.gradleProperty('zaviIsolatedTestOnly')
     .map { it == 'true' }.getOrElse(false)
+boolean installablePreviewFlag = providers.gradleProperty('zaviInstallablePreview')
+    .map { it == 'true' }.getOrElse(false)
 boolean qaSigningPresent = qaSigning.values().every { it }
 if (!qaSigningPresent && qaSigning.values().any { it }) {
     throw new GradleException('Incomplete stable QA signing credentials; all four variables are required.')
@@ -122,6 +124,20 @@ android {
                 signingConfig signingConfigs.isolatedTestOnly
             }
         }
+        installablePreview {
+            // Fresh, separately installed QA preview for phone-only testing.
+            // NEVER RELEASE: temporary signature cannot upgrade a real install.
+            // Staging workflow strips live cloud configuration from packaged assets.
+            initWith debug
+            applicationIdSuffix '.offlinepreview'
+            versionNameSuffix '-OFFLINE-PREVIEW-NOT-RELEASE'
+            debuggable true
+            resValue 'string', 'app_name',
+                admin ? 'ZAVI ADMIN OFFLINE PREVIEW' : 'ZAVI ONE OFFLINE PREVIEW'
+            if (isolatedSigningPresent) {
+                signingConfig signingConfigs.isolatedTestOnly
+            }
+        }
         release {
             minifyEnabled true
             shrinkResources true
@@ -150,6 +166,15 @@ gradle.taskGraph.whenReady { graph ->
         }
         if (!isolatedSigningPresent || !file(isolatedSigning.storeFile).isFile()) {
             throw new GradleException('TEST-NOT-FOR-RELEASE requires its OWN ephemeral key; no stable QA/release fallback allowed.')
+        }
+    }
+    if (graph.allTasks.any { it.project == project &&
+            it.name.toLowerCase() ==~ /.*(assemble|package|install|bundle).*installablepreview.*/ }) {
+        if (!installablePreviewFlag || System.getenv('CI') != 'true') {
+            throw new GradleException('Offline mobile preview requires explicit isolated CI flag; never a Release.')
+        }
+        if (!isolatedSigningPresent || !file(isolatedSigning.storeFile).isFile()) {
+            throw new GradleException('Offline mobile preview requires separate ephemeral signing; no production fallback.')
         }
     }
     if (graph.allTasks.any { it.project == project &&
