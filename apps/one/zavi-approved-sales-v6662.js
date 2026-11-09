@@ -40,7 +40,11 @@
       stock:'Not enough inventory.',noItems:'At least one product is required.',notSaved:'Preview only; no transaction has been saved.'}
   };
   const lang=()=>{
-    const l=(document.documentElement.lang||'fa').toLowerCase();
+    // The app's real locale controller is authoritative. document.lang alone
+    // can be transient during a genuine runtime language switch.
+    const l=String(window.zaviPublicLanguage?.()||
+      window.ZaviLocaleV22?.get?.()||
+      document.documentElement.lang||'fa-AF').toLowerCase();
     return l.startsWith('en')?'en':l.startsWith('ps')?'ps':'fa';
   };
   const tr=k=>I18N[lang()][k]||k;
