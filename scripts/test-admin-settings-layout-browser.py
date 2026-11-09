@@ -49,6 +49,21 @@ with Session() as browser:
     assert all(state[k] for k in [
       'passwordForm','supportButton','receiptButton','logoutButton','filtered','restored'
     ]),state
+    browser.until("!!document.querySelector('#view #zavi-ui-preferences-v2 [data-zui-theme=glass]')",
+                  'real ADMIN appearance settings provide glass mode')
+    appearance=browser.eval("""(()=>{
+      const panel=document.getElementById('zavi-ui-preferences-v2');
+      const buttons=[...panel.querySelectorAll('[data-zui-theme]')];
+      panel.querySelector('[data-zui-theme="glass"]').click();
+      return {choices:buttons.map(x=>x.dataset.zuiTheme),
+        selected:buttons.filter(x=>x.getAttribute('aria-pressed')==='true')
+          .map(x=>x.dataset.zuiTheme),
+        runtime:window.ZaviThemeV29.get(),
+        stored:localStorage.getItem('zavi_ui_appearance_v2')};
+    })()""")
+    assert appearance['choices']==['light','dark','glass'],appearance
+    assert appearance['selected']==['glass'],appearance
+    assert appearance['runtime']=='glass' and appearance['stored']=='glass',appearance
     # Real local demo workflow, not a manually unhidden unauthorized screen.
     browser.eval("document.querySelector('[data-zah-group=\"security\"]').open=true")
     (out/'admin-settings-template-only.png').write_bytes(browser.screenshot())
@@ -56,5 +71,17 @@ with Session() as browser:
       'test':'localhost-only demo, real settings navigation, no server authorization',
       'result':state,'server_authorization_tested':False,'customer_data_accessed':False
     },ensure_ascii=False,indent=2)+'\n',encoding='utf8')
+    browser.navigate('admin')
+    browser.until("""document.readyState==='complete' &&
+      typeof window.ZaviThemeV29?.get==='function'""",
+      'ADMIN appearance after full page reload',seconds=20)
+    persisted=browser.eval("""(()=>({
+      theme:document.documentElement.dataset.zaviTheme,
+      appearance:document.documentElement.dataset.zaviAppearance,
+      stored:localStorage.getItem('zavi_ui_appearance_v2'),
+      runtime:window.ZaviThemeV29.get()
+    }))()""")
+    assert all(v=='glass' for v in persisted.values()),persisted
+    print('PASS: ADMIN three theme choices and glass persistence after full reload')
     print('PASS: ADMIN five active compact settings groups + advanced fallback; original forms and buttons survive')
     print('NOT TESTED: owner access, server permissions, actual payment or customer records')
