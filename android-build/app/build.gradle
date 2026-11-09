@@ -177,8 +177,14 @@ gradle.taskGraph.whenReady { graph ->
             throw new GradleException('Offline mobile preview requires separate ephemeral signing; no production fallback.')
         }
     }
-    if (graph.allTasks.any { it.project == project &&
-            it.name.toLowerCase() ==~ /.*(assemble|package|install|bundle).*debug.*/ }) {
+    // An explicitly requested installablePreview build must not inherit the
+    // persistent debug signing gate merely because AGP adds debug-ish tasks.
+    // Conversely, a command that requests Debug (even together with a preview)
+    // still MUST provide the original pinned persistent QA certificate.
+    boolean explicitDebugBuild = gradle.startParameter.taskNames.any { taskName ->
+        taskName.toLowerCase() ==~ /.*(assemble|package|install|bundle).*debug.*/
+    }
+    if (explicitDebugBuild) {
         if (!qaSigningPresent) {
             throw new GradleException('Persistent QA signing key required; ephemeral debug signing is forbidden.')
         }
