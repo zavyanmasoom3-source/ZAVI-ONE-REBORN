@@ -124,3 +124,30 @@ for(const rule of ['.zds-field-error','[aria-invalid="true"]',
   assert.ok(css.includes(rule),'Missing shared design rule: '+rule);
 }
 console.log('PASS: Afghan month, dual date, digits, FX order, international phone, three-theme contrast and RTL shared design');
+
+// Twelve-reference shared component regression (2026-11-09).
+const requiredComponents=[
+ '.zds-button--secondary','.zds-button--danger','.zds-search',
+ '.zds-filterbar','.zds-pagination','.zds-select','.zds-date-input',
+ '.zds-calendar-grid','.zds-date-pair','.zds-two-col','.zds-actions',
+ '.zds-status--success','.zds-status--warning','.zds-status--danger',
+ '.zds-table','.zds-stepper','.zds-dialog','.zds-sheet',
+ '.zds-skeleton','.zds-toast','.zds-offline-banner'
+];
+for (const item of requiredComponents) {
+ assert.ok(css.includes(item),'Shared component absent: '+item);
+}
+for (const app of ['one','admin']) {
+ const html=fs.readFileSync(path.join(__dirname,'../apps',app,'index.html'),'utf8');
+ const tokens='../../packages/shared/ui/design-system-v1.css';
+ const finalSkin='./zavi-reference-'+app+'-v3.css';
+ assert.ok(html.includes(tokens),'Missing shared token import: '+app);
+ assert.ok(html.includes(finalSkin),'Missing reference stylesheet: '+app);
+ assert.ok(html.indexOf(tokens)<html.indexOf(finalSkin),
+  'Shared design must load before final app skin: '+app);
+ if (html.includes('https://fonts.googleapis.com')) {
+  console.warn('FONT GATE OPEN:',app,
+   'online Google Fonts still referenced; locally bundled font not yet proven');
+ }
+}
+console.log('PASS: source-linked shared design, forms, calendars, responsive filters and status contracts');
