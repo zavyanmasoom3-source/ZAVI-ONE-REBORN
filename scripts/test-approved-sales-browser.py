@@ -69,6 +69,8 @@ with Session() as b:
     b.eval("document.querySelector('.zsal-approved-page [data-action=sale]').click()")
     b.until("!!document.querySelector('#overlay .zsal-approved-modal [data-zavi-flow=order]')",
             'real sale modal and original 3-stage form')
+    b.until("document.querySelectorAll('#overlay .zsal-approved-modal input[name=zsalMode]').length===3",
+            'approved payment options attached to the real sale form')
     modal=b.eval(r"""(()=>{
       const d=document.querySelector('#overlay .zsal-approved-modal');
       const f=d.querySelector('#dialogForm');
