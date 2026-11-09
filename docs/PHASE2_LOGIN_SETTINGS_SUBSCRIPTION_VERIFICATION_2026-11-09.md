@@ -61,6 +61,46 @@ verified reference-image pixel parity and signed APK installation remain
 unverified release-acceptance items. Phase 3 device/offline behavior was not
 modified in this checkpoint.
 
+## Final three-slider acceptance — 2026-11-09
+
+The last owner-approved Stage 2 display requirement was inspected **after** the
+previous source/browser checkpoint. A new real-browser regression exposed two
+genuine defects: the ONE sliders allowed 50–150 instead of 50–115 percent,
+and the obsolete one-slider panel was still visible because the source had not
+activated the CSS scope required by the three-slider component.
+
+Implemented and verified on the actual ONE application route:
+
+- Text, interface, and icons have **three independent controls**, 50–115%
+  in 5% increments, with real computed text-size, card-padding, and SVG-icon
+  changes — not merely changed labels or stored values.
+- The original pre-three-slider control is hidden, while existing preferences
+  are migrated. The old module no longer applies root `zoom`; the main
+  viewport stays at normal scale.
+- User selections survive a full app reload (verified independently at
+  text 105%, interface 110%, icons 115%) and can be reset to 100%.
+- The fix does not alter accounting records, licence verification, cloud
+  synchronization or Supabase permissions. The cached app shell identifier was
+  refreshed to deliver the corrected source.
+
+Latest verified application-code commit:
+`2b59192d5ce88168fa7597657981f15a61056842`
+
+GitHub Actions, all **completed successfully** for that exact SHA:
+
+- `42669589780` — REBORN PDF visual QA screenshots; includes
+  `scripts/test-phase2-display-sizes-browser.py` and every earlier Phase 2
+  login/recovery, settings and subscription browser check.
+- `42669589714` — Migration integrity gate; includes accounting, routes,
+  backup and offline-bundle checks.
+- `42669589658` — ZAVI transit contract checks.
+
+**Stage 2 source implementation and isolated CI acceptance: COMPLETE.**
+Remaining real-server multi-account authorization, device biometric hardware,
+literal image pixel parity and signed APK/device installation checks are
+**release acceptance**, not covered by these browser tests and not claimed
+as complete.
+
 ## Hard limits / what has not been certified
 
 - Production owner/staff account sign-in, the **real** admin approval and consume RPC under distinct authorized and unauthorized user accounts have not been exercised end-to-end.
