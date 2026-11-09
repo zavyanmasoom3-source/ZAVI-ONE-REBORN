@@ -285,20 +285,23 @@ with Session() as browser:
             '#zavi-ui-preferences-v2 [data-zui-language="'+value+'"]');
           if(!b)return {buttonFound:false};
           b.click();
-          const hub=document.querySelector('#content .zavi-clean-settings-hub');
           return {buttonFound:true,lang:document.documentElement.lang,
              direction:document.documentElement.dir,
              stored:localStorage.getItem('zavi_public_language_v11'),
-             title:hub?.querySelector('.zavi-clean-settings-title strong')?.textContent,
-             selected:[...document.querySelectorAll(
-              '#zavi-ui-preferences-v2 [data-zui-language]')]
-              .filter(x=>x.getAttribute('aria-pressed')==='true')
-              .map(x=>x.dataset.zuiLanguage)};
+             canonical:window.zaviPublicLanguage?.()};
         })()""" %json.dumps(value))
         assert clicked['buttonFound'] and clicked['lang']==value,clicked
         assert clicked['direction']==('ltr' if value=='en' else 'rtl'),clicked
-        assert clicked['stored']==value and clicked['title']==visible_title,clicked
-        assert clicked['selected']==[value],clicked
+        assert clicked['stored']==value and clicked['canonical']==value,clicked
+        # The canonical language engine re-renders the live Settings route.
+        # Wait for the original cards to be grouped again before inspecting UI.
+        browser.until("document.querySelector('#content .zavi-clean-settings-title strong')?.textContent==="+
+                      json.dumps(visible_title),'canonical i18n settings route re-render')
+        selected=browser.eval("""[...document.querySelectorAll(
+          '#zavi-ui-preferences-v2 [data-zui-language]')]
+          .filter(x=>x.getAttribute('aria-pressed')==='true')
+          .map(x=>x.dataset.zuiLanguage)""")
+        assert selected==[value],(value,selected)
     # Navigation out and back must not reset the actual selected locale.
     browser.route('dashboard')
     browser.route('settings')
