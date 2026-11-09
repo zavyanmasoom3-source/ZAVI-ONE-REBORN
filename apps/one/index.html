@@ -2601,64 +2601,64 @@ function renderDashboard(){
  const day=escapeHtml(window.ZaviDesignSystemV1?.formatDualDate(nowISO(),
     {language:document.documentElement.lang})||fmtDate(nowISO()));
  const item=(route,title,ico,tone)=>`<button type="button"
-    class="zrf-quick-action zrf-quick-${{tone}" data-zrf-go="${{route}"
-    ${{!zaviModuleEnabled(route)?'disabled aria-disabled="true"':''}>
-    <span class="zrf-quick-icon">${{icon(ico)}</span><span
-    class="zrf-quick-label">${{escapeHtml(title)}</span></button>`;
+    class="zrf-quick-action zrf-quick-${tone}" data-zrf-go="${route}"
+    ${!zaviModuleEnabled(route)?'disabled aria-disabled="true"':''}>
+    <span class="zrf-quick-icon">${icon(ico)}</span><span
+    class="zrf-quick-label">${escapeHtml(title)}</span></button>`;
  const activity=recent.length?recent.map(t=>`<button type="button"
-    class="zavi-native-activity-row" data-detail="${{escapeHtml(t.id)}">
-    <span class="zavi-native-activity-icon">${{icon(t.type==='sale'?'sale':t.type==='purchase'?'purchase':'wallet')}</span>
-    <span class="zavi-native-activity-main"><b>${{escapeHtml(txLabel(t))}</b>
-      <small>${{escapeHtml(fmtDate(t.date))}</small></span>
-    <strong>${{currency(txValue(t))}</strong></button>`).join(''):
-   `<p class="zavi-native-empty">${{L.noActivity}</p>`;
+    class="zavi-native-activity-row" data-detail="${escapeHtml(t.id)}">
+    <span class="zavi-native-activity-icon">${icon(t.type==='sale'?'sale':t.type==='purchase'?'purchase':'wallet')}</span>
+    <span class="zavi-native-activity-main"><b>${escapeHtml(txLabel(t))}</b>
+      <small>${escapeHtml(fmtDate(t.date))}</small></span>
+    <strong>${currency(txValue(t))}</strong></button>`).join(''):
+   `<p class="zavi-native-empty">${L.noActivity}</p>`;
  return `<main class="zui-phase1 zui-dashboard-page zrf-home zavi-native-home"
   data-module="dashboard" aria-label="ZAVI ONE">
   <header class="welcome zavi-native-welcome">
     <div class="zavi-native-greeting">
-      <span class="zavi-native-greeting-title">${{L.welcome}</span>
-      <strong>${{escapeHtml(configuredShopName())}</strong>
-      <small class="zv-today">${{day}</small>
+      <span class="zavi-native-greeting-title">${L.welcome}</span>
+      <strong>${escapeHtml(configuredShopName())}</strong>
+      <small class="zv-today">${day}</small>
     </div>
     <button type="button" class="btn primary zavi-native-new-sale" data-action="sale"
-      ${{!zaviModuleEnabled('sales')?'disabled aria-disabled="true"':''}>
-      ${{icon('plus')} ${{L.sale}</button>
+      ${!zaviModuleEnabled('sales')?'disabled aria-disabled="true"':''}>
+      ${icon('plus')} ${L.sale}</button>
   </header>
-  <nav class="zrf-primary-row zrf-quick-actions" aria-label="${{L.summary}">
-    ${{item('sales',L.quickSale,'sale','green')}
-    ${{item('purchases',L.quickBuy,'purchase','purple')}
-    ${{item('contacts',L.quickCustomers,'users','blue')}
-    ${{item('products',L.quickStock,'product','orange')}
+  <nav class="zrf-primary-row zrf-quick-actions" aria-label="${L.summary}">
+    ${item('sales',L.quickSale,'sale','green')}
+    ${item('purchases',L.quickBuy,'purchase','purple')}
+    ${item('contacts',L.quickCustomers,'users','blue')}
+    ${item('products',L.quickStock,'product','orange')}
   </nav>
   <section id="zavApprovedHomeSummary" class="zav-home-real-summary zavi-native-summary"
-    aria-label="${{L.summary}">
-    <h2 class="zavi-native-section-title">${{L.summary}</h2>
+    aria-label="${L.summary}">
+    <h2 class="zavi-native-section-title">${L.summary}</h2>
     <div class="zav-new-stats" data-zavi-native-ledger="true"></div>
     <div class="zav-new-charts" data-zavi-native-charts="true"></div>
   </section>
-  <div class="zavi-native-cash">${{zaviDashboardCashCard()||
-    `<button class="zavi-native-cash-placeholder" type="button" data-go="money">${{L.cash} ‹</button>`}</div>
+  <div class="zavi-native-cash">${zaviDashboardCashCard()||
+    `<button class="zavi-native-cash-placeholder" type="button" data-go="money">${L.cash} ‹</button>`}</div>
   <div class="zavi-native-mini-grid">
-    <section class="zavi-native-rate">${{zaviUsdRateDashboardCard()}</section>
+    <section class="zavi-native-rate">${zaviUsdRateDashboardCard()}</section>
     <button class="zavi-native-stock" type="button" data-go="products">
-      <span>${{L.low}</span><strong>${{fmtQty(low.length)}</strong>
+      <span>${L.low}</span><strong>${fmtQty(low.length)}</strong>
     </button>
   </div>
   <section class="zavi-native-activities">
-    <header><h2 class="zavi-native-section-title">${{L.activities}</h2>
-    <button type="button" data-go="journal">${{L.more} ‹</button></header>
-    ${{activity}
+    <header><h2 class="zavi-native-section-title">${L.activities}</h2>
+    <button type="button" data-go="journal">${L.more} ‹</button></header>
+    ${activity}
   </section>
   <div class="zrf-search-wrap zavi-native-search">
     <button class="zrf-magnifier" type="button" data-zrf-focus
-     aria-label="${{L.search}">⌕</button>
+     aria-label="${L.search}">⌕</button>
     <input class="zrf-search" type="search" autocomplete="off"
-     placeholder="${{L.search}" aria-label="${{L.search}" maxlength="75">
+     placeholder="${L.search}" aria-label="${L.search}" maxlength="75">
     <div class="zrf-search-results" hidden role="listbox"></div>
   </div>
-  ${{!db.storeConfigured?`<button type="button" class="zavi-native-setup"
-    data-go="settings">${{L.configure} ‹</button>`:''}
-  ${{!storageOk?'<p class="notice">ذخیره‌سازی دستگاه در دسترس نیست؛ اطلاعات واقعی ثبت نکنید.</p>':''}
+  ${!db.storeConfigured?`<button type="button" class="zavi-native-setup"
+    data-go="settings">${L.configure} ‹</button>`:''}
+  ${!storageOk?'<p class="notice">ذخیره‌سازی دستگاه در دسترس نیست؛ اطلاعات واقعی ثبت نکنید.</p>':''}
  </main>`;
 }
 function recordsTable(rows){if(!rows.length)return `<div class="empty">${icon('expense')}<strong>هنوز موردی ثبت نشده است</strong><span>پس از اولین معامله نمایش داده می‌شود.</span></div>`;return `<div class="table-wrap"><table class="transaction-table"><thead><tr><th>شماره</th><th>تاریخ</th><th>نوع</th><th>طرف حساب</th><th>مبلغ</th><th>جزئیات</th></tr></thead><tbody>${rows.map(t=>`<tr><td><span class="badge">${escapeHtml(t.code)}</span></td><td>${fmtDate(t.date)}</td><td><span class="pill ${TR[t.type]?.[1]||'blue'}">${txLabel(t)}</span></td><td>${escapeHtml(t.contactId?contactName(t.contactId):t.type==='expense'?(t.category||'—'):t.type==='transfer'?accountName(t.fromAccountId)+' ← '+accountName(t.toAccountId):'—')}</td><td class="amount">${currency(txValue(t))}${t.originalCurrency&&t.originalCurrency!==db.currency?`<small style="display:block;color:#8291a9;font-size:10px">${origMoney(t.originalAmount,t.originalCurrency)}</small>`:''}</td><td><button class="btn tiny" data-detail="${t.id}">نمایش</button></td></tr>`).join('')}</tbody></table></div><div class="list-mobile">${rows.map(t=>`<div class="record-card" data-detail="${t.id}"><div class="rec-top"><div><strong>${txLabel(t)}</strong> <span class="badge">${escapeHtml(t.code)}</span></div><b class="amount">${currency(txValue(t))}</b></div><div class="rec-detail"><span>${fmtDate(t.date)} · ${escapeHtml(t.contactId?contactName(t.contactId):t.category||'—')}</span><span style="color:var(--primary)">جزئیات ${icon('arrow')}</span></div></div>`).join('')}</div>`}
