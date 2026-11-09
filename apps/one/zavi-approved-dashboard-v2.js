@@ -67,7 +67,7 @@ function makeChart(label,values,color){
 }
 function paint(){
   if(document.documentElement.classList.contains('zawi-locked'))return;
-  const home=document.querySelector('#content.zrf-dashboard>.zrf-home');
+  const home=document.querySelector('#content > .zavi-native-home');
   if(!home||typeof summary!=='function'||typeof totals!=='function'||typeof currency!=='function')return;
   const state=summary(),accounts=totals();
   if(!state||!accounts||!Number.isFinite(state.sales)||!Number.isFinite(accounts.receivable))return;
