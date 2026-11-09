@@ -72,14 +72,8 @@ function paint(){
   const state=summary(),accounts=totals();
   if(!state||!accounts||!Number.isFinite(state.sales)||!Number.isFinite(accounts.receivable))return;
   const t=L[language()];
-  let block=home.querySelector('#zavApprovedHomeSummary');
-  if(!block){
-    block=document.createElement('section');
-    block.id='zavApprovedHomeSummary';block.className='zav-home-real-summary';
-    block.setAttribute('aria-label',t.summary);
-    const after=home.querySelector('.zrf-primary-row')||home.querySelector('.zrf-search-wrap');
-    if(after)after.insertAdjacentElement('afterend',block);else home.prepend(block);
-  }
+  const block=home.querySelector('#zavApprovedHomeSummary');
+  if(!block)return;
   const metrics=document.createElement('div');metrics.className='zav-new-stats';
   metrics.setAttribute('aria-label',t.summary);
   [
@@ -95,7 +89,9 @@ function paint(){
     charts.append(makeChart(t.sales,values(days,'sale'),'sales'),
                   makeChart(t.purchases,values(days,'purchase'),'purchase'));
   }
-  block.replaceChildren(charts,metrics);
+  const heading=document.createElement('h2');
+  heading.className='zavi-native-section-title';heading.textContent=t.summary;
+  block.replaceChildren(heading,metrics,charts);
 }
 let scheduled=false;
 function queue(){

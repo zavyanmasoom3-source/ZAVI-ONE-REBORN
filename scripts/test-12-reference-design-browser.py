@@ -66,6 +66,8 @@ with Session() as browser:
             oldQuickExists:!!oldQuick,oldQuickDisplay:oldQuick?getComputedStyle(oldQuick).display:null,fixed};
         })()""")
         assert native['oldQuickDisplay'] in (None,'none'),native
+        assert native['homeChildren'][0]['className'].find('zavi-native-welcome')>=0,native
+        assert not any(x['className'].find('zrf-brandbar')>=0 for x in native['homeChildren']),native
         assistant=browser.eval("""(()=>{
           const btn=document.getElementById('z637AiButton');
           const bot=document.getElementById('z605-launch');

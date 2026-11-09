@@ -2575,7 +2575,92 @@ function zaviDashboardCashCard(){
   '<div><small>'+labels[4]+'</small><strong data-zavi-cash-paid>'+currency(outTotal)+'</strong></div>'+
   '</div></details></section>';
 }
-function renderDashboard(){let s=summary(),t=totals(),inv=stockState(),low=db.products.filter(p=>inv[p.id]?.qty<=num(p.reorder));let recent=orderByDate(db.tx.filter(t=>!t.voided)).slice(0,6);return `<div class="zui-phase1 zui-dashboard-page" data-module="dashboard"><section class="welcome"><div><div class="eyebrow">به ZAVI ONE خوش آمدید</div><h2>${escapeHtml(window.ZaviIndustryFocus?.plan(zaviBusinessTypeV638())?.title||'حساب‌های فروشگاه، یک‌جا')}</h2><p>${escapeHtml(window.ZaviIndustryFocus?.plan(zaviBusinessTypeV638())?.subtitle||'فروش، خرید، موجودی و حساب‌ها')}</p><div class="zv-today">📆 ${escapeHtml(window.ZaviDesignSystemV1?.formatDualDate(nowISO(),{language:document.documentElement.lang})||fmtDate(nowISO()))}</div></div>${z20Option('quickSale')?`<button class="btn" data-action="sale">${icon('plus')} ثبت فروش</button>`:''}</section>${zaviDashboardFastActions()}${zaviUsdRateDashboardCard()}${!db.storeConfigured?`<div class="backup-reminder"><div><b>اول مشخصات فروشگاه را تنظیم کنید</b><p>نام فروشگاه، شماره واتساپ، آدرس و لوگوی هر خریدار در فاکتورهای خودش ثبت می‌شود.</p></div><button class="btn primary" data-go="settings">تنظیم فروشگاه</button></div>`:''}${backupReminder()}${z20Option('dashboardPhone')&&db.shopPhone?`<div class="zv-phone-strip">📞 شماره فروشگاه: <b dir="ltr">${escapeHtml(db.shopPhone)}</b></div>`:''}${zaviModuleEnabled('repairs')?`<div class="card" style="padding:14px 17px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><span><b>🔧 تعمیرات</b></span><button class="btn subtle" data-go="repairs">دیدن تعمیرات</button></div>`:''}${!storageOk?'<div class="notice">هشدار: ذخیره‌سازی مرورگر در دسترس نیست. از این محیط برای ثبت حساب واقعی استفاده نکنید.</div>':''}<div class="stat-grid">${stat('فروش خالص',s.sales,'همه روزها','sale','blue')}${z20Option('profit')?stat('سود تقریبی خالص',s.profit,'بعد از مصارف','chart','green'):''}${stat('موجودی حساب‌ها',t.cash,'مجموع صندوق‌ها','wallet','orange')}${stat('طلب از مشتریان',t.receivable,'مانده حساب‌ها','users','pink')}${stat('بدهی ما به دیگران',t.payable,'مانده قرض ما','purchase','orange')}</div>${zaviDashboardCashCard()}${renderUSDOverview()}${zaviTransactionDonutV6539()}${window.ZaviFinanceStockV18?.inventory(inv,db.products)||''}<div class="layout-2" style="margin-bottom:18px"><section class="card"><div class="panel-head"><h3>فروش ماهوار</h3></div><div class="panel-body">${z20Option('chart')?dashboardChart():'<div class="muted">نمودار در تنظیمات خاموش است.</div>'}</div></section><section class="card" style="${z20Option('lowStock')?'':'display:none'}"><div class="panel-head"><h3>محصولهای رو به اتمام</h3><span class="pill ${low.length?'amber':'green'}">${fmtQty(low.length)} محصول</span></div><div class="panel-body">${low.length?low.slice(0,5).map(p=>`<div class="stock-item"><div class="stock-left"><div class="mini-circle">${icon('product')}</div><div><div class="prod-title">${escapeHtml(p.name)}</div><div class="stock-sub">حداقل مطلوب: ${fmtQty(p.reorder)}</div></div></div><span class="pill amber">${fmtQty(inv[p.id]?.qty)} عدد</span></div>`).join(''):`<div class="empty" style="padding:28px">${icon('check')}<strong>کمبود ثبت نشده</strong><span>با ثبت محصول، اخطار موجودی در این‌جا دیده می‌شود.</span></div>`}<button class="btn" style="width:100%;margin-top:12px" data-go="products">دیدن گدام ${icon('arrow')}</button></div></section></div><div class="card" style="margin-bottom:17px;padding:14px 17px;display:flex;justify-content:space-between;gap:13px;align-items:center;flex-wrap:wrap"><div><b style="font-size:14px">حساب مشتریان</b><div class="muted" style="font-size:11px">دیدن حساب و ارسال در واتساپ</div></div><button class="btn primary" data-go="debtors">${icon('users')} مدیریت قرضداران</button></div><section class="card"><div class="panel-head"><h3>آخرین فعالیت‌ها</h3><button class="btn tiny" data-go="money">همه معاملات ${icon('arrow')}</button></div>${z20Option('recent')?recordsTable(recent):'<div class="muted" style="padding:16px">این بخش خاموش است.</div>'}</section><div class="tiny-note" style="margin-top:15px">سود تقریبی است و مانده بانک خودکار بررسی نمی‌شود.</div><section class="z649-dashboard-extras" id="z649DashboardExtras" aria-label="راهنمای تجارت و ابزارهای تکمیلی"><div class="z649-extras-header"><h3>ابزارهای تکمیلی تجارت</h3><p>پروفایل فعلی، تغییر نوع تجارت، مرکز هشدارها و راهنمای کار در پایان داشبورد قرار دارند.</p></div>${zaviBusinessRibbonV638()}${zaviIndustryFocusCardV639()}${z643WorkflowDashboardHTML()}${z644DashboardAlertsHTML()}${z642SmartBusinessDashboardHTML()}</section</div>`}
+function renderDashboard(){
+ const lang=(document.documentElement.lang||'fa-AF').toLowerCase();
+ const key=lang.startsWith('en')?'en':lang.startsWith('ps')?'ps':'fa';
+ const L={
+  fa:{welcome:'به ZAVI ONE خوش آمدید',sale:'ثبت فروش جدید',quickSale:'فروش',
+   quickBuy:'خرید',quickCustomers:'مشتریان',quickStock:'محصولات',
+   summary:'خلاصه حساب‌ها',cash:'صندوق نقدی',activities:'فعالیت‌های اخیر',
+   more:'بیشتر',low:'موجودی کم',search:'جستجوی محصول، مشتری، فاکتور...',
+   noActivity:'هنوز معامله‌ای ثبت نشده است',configure:'تنظیمات فروشگاه را تکمیل کنید'},
+  ps:{welcome:'ZAVI ONE ته ښه راغلاست',sale:'نوی پلور ثبت کړئ',quickSale:'پلور',
+   quickBuy:'پېرود',quickCustomers:'پېرودونکي',quickStock:'توکي',
+   summary:'د حسابونو لنډیز',cash:'نغدي صندوق',activities:'وروستي فعالیتونه',
+   more:'نور',low:'لږ موجودي',search:'توکي، پېرودونکي یا فاکتور ولټوئ...',
+   noActivity:'تر اوسه معامله نه ده ثبت شوې',configure:'د دوکان تنظیمات بشپړ کړئ'},
+  en:{welcome:'Welcome to ZAVI ONE',sale:'New sale',quickSale:'Sales',
+   quickBuy:'Purchases',quickCustomers:'Customers',quickStock:'Products',
+   summary:'Accounts overview',cash:'Cash register',activities:'Recent activity',
+   more:'More',low:'Low stock',search:'Find a product, customer, invoice...',
+   noActivity:'No transactions recorded yet',configure:'Complete store setup'}
+ }[key];
+ const inv=stockState(),low=db.products.filter(p=>num(p.reorder)>0&&
+    num(inv[p.id]?.qty)<=num(p.reorder));
+ const recent=orderByDate(db.tx.filter(t=>!t.voided)).slice(0,2);
+ const day=escapeHtml(window.ZaviDesignSystemV1?.formatDualDate(nowISO(),
+    {language:document.documentElement.lang})||fmtDate(nowISO()));
+ const item=(route,title,ico,tone)=>`<button type="button"
+    class="zrf-quick-action zrf-quick-${{tone}" data-zrf-go="${{route}"
+    ${{!zaviModuleEnabled(route)?'disabled aria-disabled="true"':''}>
+    <span class="zrf-quick-icon">${{icon(ico)}</span><span
+    class="zrf-quick-label">${{escapeHtml(title)}</span></button>`;
+ const activity=recent.length?recent.map(t=>`<button type="button"
+    class="zavi-native-activity-row" data-detail="${{escapeHtml(t.id)}">
+    <span class="zavi-native-activity-icon">${{icon(t.type==='sale'?'sale':t.type==='purchase'?'purchase':'wallet')}</span>
+    <span class="zavi-native-activity-main"><b>${{escapeHtml(txLabel(t))}</b>
+      <small>${{escapeHtml(fmtDate(t.date))}</small></span>
+    <strong>${{currency(txValue(t))}</strong></button>`).join(''):
+   `<p class="zavi-native-empty">${{L.noActivity}</p>`;
+ return `<main class="zui-phase1 zui-dashboard-page zrf-home zavi-native-home"
+  data-module="dashboard" aria-label="ZAVI ONE">
+  <header class="welcome zavi-native-welcome">
+    <div class="zavi-native-greeting">
+      <span class="zavi-native-greeting-title">${{L.welcome}</span>
+      <strong>${{escapeHtml(configuredShopName())}</strong>
+      <small class="zv-today">${{day}</small>
+    </div>
+    <button type="button" class="btn primary zavi-native-new-sale" data-action="sale"
+      ${{!zaviModuleEnabled('sales')?'disabled aria-disabled="true"':''}>
+      ${{icon('plus')} ${{L.sale}</button>
+  </header>
+  <nav class="zrf-primary-row zrf-quick-actions" aria-label="${{L.summary}">
+    ${{item('sales',L.quickSale,'sale','green')}
+    ${{item('purchases',L.quickBuy,'purchase','purple')}
+    ${{item('contacts',L.quickCustomers,'users','blue')}
+    ${{item('products',L.quickStock,'product','orange')}
+  </nav>
+  <section id="zavApprovedHomeSummary" class="zav-home-real-summary zavi-native-summary"
+    aria-label="${{L.summary}">
+    <h2 class="zavi-native-section-title">${{L.summary}</h2>
+    <div class="zav-new-stats" data-zavi-native-ledger="true"></div>
+    <div class="zav-new-charts" data-zavi-native-charts="true"></div>
+  </section>
+  <div class="zavi-native-cash">${{zaviDashboardCashCard()||
+    `<button class="zavi-native-cash-placeholder" type="button" data-go="money">${{L.cash} ‹</button>`}</div>
+  <div class="zavi-native-mini-grid">
+    <section class="zavi-native-rate">${{zaviUsdRateDashboardCard()}</section>
+    <button class="zavi-native-stock" type="button" data-go="products">
+      <span>${{L.low}</span><strong>${{fmtQty(low.length)}</strong>
+    </button>
+  </div>
+  <section class="zavi-native-activities">
+    <header><h2 class="zavi-native-section-title">${{L.activities}</h2>
+    <button type="button" data-go="journal">${{L.more} ‹</button></header>
+    ${{activity}
+  </section>
+  <div class="zrf-search-wrap zavi-native-search">
+    <button class="zrf-magnifier" type="button" data-zrf-focus
+     aria-label="${{L.search}">⌕</button>
+    <input class="zrf-search" type="search" autocomplete="off"
+     placeholder="${{L.search}" aria-label="${{L.search}" maxlength="75">
+    <div class="zrf-search-results" hidden role="listbox"></div>
+  </div>
+  ${{!db.storeConfigured?`<button type="button" class="zavi-native-setup"
+    data-go="settings">${{L.configure} ‹</button>`:''}
+  ${{!storageOk?'<p class="notice">ذخیره‌سازی دستگاه در دسترس نیست؛ اطلاعات واقعی ثبت نکنید.</p>':''}
+ </main>`;
+}
 function recordsTable(rows){if(!rows.length)return `<div class="empty">${icon('expense')}<strong>هنوز موردی ثبت نشده است</strong><span>پس از اولین معامله نمایش داده می‌شود.</span></div>`;return `<div class="table-wrap"><table class="transaction-table"><thead><tr><th>شماره</th><th>تاریخ</th><th>نوع</th><th>طرف حساب</th><th>مبلغ</th><th>جزئیات</th></tr></thead><tbody>${rows.map(t=>`<tr><td><span class="badge">${escapeHtml(t.code)}</span></td><td>${fmtDate(t.date)}</td><td><span class="pill ${TR[t.type]?.[1]||'blue'}">${txLabel(t)}</span></td><td>${escapeHtml(t.contactId?contactName(t.contactId):t.type==='expense'?(t.category||'—'):t.type==='transfer'?accountName(t.fromAccountId)+' ← '+accountName(t.toAccountId):'—')}</td><td class="amount">${currency(txValue(t))}${t.originalCurrency&&t.originalCurrency!==db.currency?`<small style="display:block;color:#8291a9;font-size:10px">${origMoney(t.originalAmount,t.originalCurrency)}</small>`:''}</td><td><button class="btn tiny" data-detail="${t.id}">نمایش</button></td></tr>`).join('')}</tbody></table></div><div class="list-mobile">${rows.map(t=>`<div class="record-card" data-detail="${t.id}"><div class="rec-top"><div><strong>${txLabel(t)}</strong> <span class="badge">${escapeHtml(t.code)}</span></div><b class="amount">${currency(txValue(t))}</b></div><div class="rec-detail"><span>${fmtDate(t.date)} · ${escapeHtml(t.contactId?contactName(t.contactId):t.category||'—')}</span><span style="color:var(--primary)">جزئیات ${icon('arrow')}</span></div></div>`).join('')}</div>`}
 function renderOrdersCore(type){const sale=type==='sale';const rows=orderByDate(db.tx.filter(t=>!t.voided&&(t.type===type||t.type===type+'_return'))).filter(t=>{let q=search.toLowerCase();return (t.code+' '+(t.customerName||contactName(t.contactId))+' '+(t.items||[]).map(x=>x.productName||productName(x.productId)).join(' ')).toLowerCase().includes(q)});const result=z647Limit(rows,sale?'sales':'purchases'),visible=result.rows;const selected=db.tx.filter(t=>!t.voided&&t.type===type);const total=selected.reduce((a,t)=>a+txTotal(t),0);const purchTotals={};if(!sale)for(const t of selected){const unit=t.originalCurrency||db.currency;purchTotals[unit]=money((purchTotals[unit]||0)+(t.originalAmount??txTotal(t)))}const purchaseCurrencyView=sale?'':`<div class="card" style="padding:14px 18px;margin-bottom:18px"><b>خرید ثبت‌شده بر اساس واحد پول فاکتور</b><div class="action-group" style="margin-top:10px">${Object.entries(purchTotals).map(([k,n])=>`<span class="pill blue">${escapeHtml(k==='CNY'?'RMB':k)}: ${fmt(n)}</span>`).join('')||'<span class="muted">هنوز خریدی ثبت نشده است.</span>'}</div></div>`;return `<div class="zui-phase1 zui-order-page" data-module="${sale?'sales':'purchases'}"><div class="zui-section-heading"><span class="zui-eyebrow">ZAVI ONE · ${zaviOrderStageLabel(sale)}</span><p>${sale?'فاکتور، پرداخت و حساب مشتری':'فاکتور، عرضه‌کننده و مصارف خرید'}</p></div>${header(sale?'مدیریت فروش':'مدیریت خرید',sale?'فاکتورهای فروش، مشتریان و قرض':'خرید داخلی و خارجی، ارز و مصارف خرید',`${button(type,sale?'فروش جدید':'خرید جدید')} ${sale?'':button('local_purchase','خرید داخلی','purchase','subtle')} ${sale?'':button('foreign_purchase','خرید خارجی','purchase','subtle')} ${button(sale?'sale_return':'purchase_return',sale?'برگشت فروش':'برگشت خرید','return','subtle')}`)}<div class="stat-grid" style="grid-template-columns:repeat(2,minmax(0,1fr))">${stat(sale?'کل فاکتورهای فروش':'کل فاکتورهای خرید',total,'قبل از برگشت‌ها',sale?'sale':'purchase','blue')}${stat('تعداد فاکتور',selected.length,'ثبت‌شده', 'expense','green').replace(currency(selected.length),fmtQty(selected.length))}</div>${purchaseCurrencyView}<section class="card"><div class="table-bar"><div class="searchbox">${icon('search')}<input id="searchInput" placeholder="جستجوی فاکتور، محصول یا طرف حساب" value="${escapeHtml(search)}"></div><span class="pill blue">${rows.length} رکورد</span></div>${recordsTable(visible)}${z647Paging().controls(result,sale?'sales':'purchases')}</section></div>`}
 function zaviOrderStageLabel(isSale){

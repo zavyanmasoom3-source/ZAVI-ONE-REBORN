@@ -16,49 +16,6 @@ function link(id){return [...document.querySelectorAll('#sidebarLinks [data-go],
 function action(id){const x=link(id);if(x){x.click();return} if(id==='settings'){document.querySelector('#side [data-go="settings"]')?.click()}}
 function moduleButton(id,title,sub,ico,color){return '<button type="button" class="zrf-tile" data-zrf-go="'+id+'"><span class="zrf-tile-icon zrf-'+color+'" aria-hidden="true">'+ico+'</span><span class="zrf-tile-copy"><b>'+title+'</b><small>'+sub+'</small></span><span class="zrf-arrow" aria-hidden="true">‹</span></button>'}
 const symbols={sale:'🛍',purchase:'🛒',products:'⬡',contacts:'♙',repairs:'⚙',settings:'☷',money:'▣',chart:'▥',journal:'▤'};
-/* Static SVGs keep all icons sharp at mobile and desktop DPI. */
-const quickIcons={
- sale:'<svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2 3h2l3 13h12l3-10H5"/></svg>',
- buy:'<svg aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5a4 4 0 0 1 8 0v2"/></svg>',
- customer:'<svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M2 20v-2a7 7 0 0 1 14 0v2"/><circle cx="18" cy="9" r="2"/><path d="M17 15c3 0 5 2 5 5"/></svg>',
- warehouse:'<svg aria-hidden="true" viewBox="0 0 24 24"><path d="m12 2 9 5v10l-9 5-9-5V7zM3 7l9 5 9-5m-9 5v10"/></svg>'
-};
-function quickAction(route,title,icon,tone){
- return '<button type="button" class="zrf-quick-action zrf-quick-'+tone+'" data-zrf-go="'+route+'">'+
- '<span class="zrf-quick-icon">'+quickIcons[icon]+'</span><span class="zrf-quick-label">'+title+'</span></button>';
-}
-function homeMarkup(t){
- return '<section class="zrf-home" aria-label="ZAVI ONE home dashboard">'+
- '<header class="zrf-brandbar"><img src="./icon-192.png" width="38" height="38" alt="" loading="lazy">'+
- '<span><strong>ZAVI ONE</strong><small>'+t.brandSub+'</small></span></header>'+
- '<div class="zrf-primary-row zrf-quick-actions" aria-label="'+t.sections+'">'+
- quickAction('sales',t.sell,'sale','green')+
- quickAction('purchases',t.buy,'buy','purple')+
- quickAction('contacts',t.customer,'customer','blue')+
- quickAction('products',t.stock,'warehouse','orange')+
- '</div>'+
- '<div class="zrf-search-wrap"><button class="zrf-magnifier" type="button" data-zrf-focus aria-label="'+t.search+'">⌕</button>'+
- '<input class="zrf-search" type="search" aria-label="'+t.search+'" placeholder="'+t.placeholder+'" autocomplete="off" maxlength="75">'+
- '<div class="zrf-search-results" hidden role="listbox"></div></div>'+
- '<button type="button" class="zrf-usd-shell" data-zrf-dollar hidden>'+
- '<span class="zrf-dollar-symbol">$</span><span class="zrf-dollar-copy"><b>'+t.rate+
- '</b><small>'+t.rateSub+'</small></span><b class="zrf-dollar-current"></b>'+
- '<span aria-hidden="true" class="zrf-dollar-chevron">‹</span></button></section>';
-}
-function escaped(s){return String(s||'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))}
-function updateDollar(content,t){
- const form=content.querySelector('#usdRateDashboardForm');
- const candidates=[...content.querySelectorAll('section,article,div')].filter(el=>el.children.length<9&&/نرخ امروز دالر|Today's USD rate|د ډالر نرخ/i.test(el.textContent||'') && !el.classList.contains('zrf-home'));
- const src=form?.closest('.card,.panel,section,article')||candidates.find(el=>el.querySelector('input')&&el.querySelector('button'))||null;
- const wrapper=content.querySelector('.zrf-usd-shell');
- if(!wrapper)return;
- let val='';
- if(form){val=form.querySelector('input')?.value||''}
- if(!val&&src){val=src.querySelector('input[type=number]')?.value||src.querySelector('strong')?.textContent||''}
- if(val){wrapper.hidden=false;wrapper.querySelector('.zrf-dollar-current').textContent=val.replace(/[^\d۰-۹٠-٩.,]/g,'').slice(0,12)||t.noRate}
- else if(src){wrapper.hidden=false;wrapper.querySelector('.zrf-dollar-current').textContent=t.noRate}
- if(src)src.classList.add('zrf-native-dollar');
-}
 function originalSearch(query,results){
  const q=query.trim().toLocaleLowerCase();results.replaceChildren();
  if(!q){results.hidden=true;return}
@@ -79,20 +36,10 @@ function originalSearch(query,results){
  results.hidden=false;
 }
 function updateHome(){
- const content=document.querySelector('#content');if(!content)return;
- const dash=!!content.querySelector('.welcome');
- document.body.classList.toggle('zavi-reference-dashboard-active',dash);
- if(!dash){content.classList.remove('zrf-dashboard');return}
- if(content.querySelector(':scope > .zrf-home'))return;
- const t=I[language()];
- const shell=document.createElement('div');shell.innerHTML=homeMarkup(t);
- const card=shell.firstElementChild;content.prepend(card);content.classList.add('zrf-dashboard');
- for(const n of content.children){if(n!==card)n.classList.add('zrf-legacy-dashboard')}
- content.classList.remove('zrf-details-open');
- // Hidden from the dashboard only; unchanged in Settings and assistant routes.
- for(const el of content.querySelectorAll('.z6524-launch,[aria-label="ZAVI SMART CARE"]')){el.hidden=true;el.setAttribute('aria-hidden','true')}
- updateDollar(content,t);
- card.querySelectorAll('[data-zrf-go]').forEach(btn=>{const id=btn.dataset.zrfGo;const target=id==='phonebook'?(has('phonebook')?'phonebook':'contacts'):id; if(!has(target)&&id!=='settings'){btn.hidden=true}});
+ const content=document.getElementById('content');if(!content)return;
+ const native=!!content.querySelector(':scope > .zavi-native-home');
+ document.body.classList.toggle('zavi-reference-dashboard-active',native);
+ content.classList.toggle('zrf-dashboard',native);
 }
 function getSidebarEntries(){
  const options=[...document.querySelectorAll('#side .nav-btn')];
