@@ -147,6 +147,18 @@ with Session() as browser:
         image.write_bytes(browser.screenshot())
         assert image.stat().st_size>10000,image
         report['apps'][f'admin-{theme}']={'visual':mode,'navigation':nav}
+    browser.route('sales')
+    browser.until("!!document.querySelector('#content .zavi-sales-reference')",
+                  'ONE reference sales uses native list')
+    sales=browser.eval("""(()=>({
+      title:document.querySelector('.zavi-sales-top h1')?.textContent,
+      tabs:[...document.querySelectorAll('[data-zavi-sales-view]')].map(x=>x.dataset.zaviSalesView),
+      newSale:!!document.querySelector('.zavi-sales-new[data-action="sale"]'),
+      search:!!document.getElementById('searchInput'),
+      legacyHeader:!!document.querySelector('#content .zui-order-page')
+    }))()""")
+    assert sales['tabs']==['all','paid','credit'] and sales['newSale'] and sales['search'] and not sales['legacyHeader'],sales
+    report['one_reference_sales']=sales
     # Core delegated navigation still opens native, functional route:
     browser.eval("""document.querySelector(
        '#appScreen .nav-item[data-page="devices"]').click()""")

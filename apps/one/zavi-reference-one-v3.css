@@ -574,3 +574,137 @@ html[data-zavi-theme] #content.zrf-dashboard .zavi-native-new-sale :is(svg,span)
   display:none!important;
  }
 }
+
+/* Reference sales: one header, functional tabs, native invoice list and no
+   competing oversized legacy stats cards. No financial data is duplicated. */
+html[data-zavi-theme] #content .zavi-sales-reference{
+ display:grid;gap:11px;max-width:1080px;margin:auto;
+ color:var(--zav-ink);padding:0 0 18px;
+}
+html[data-zavi-theme] #content .zavi-sales-top{
+ display:flex;gap:9px;align-items:center;justify-content:space-between;
+ margin:0;padding:3px 0 5px;
+}
+html[data-zavi-theme] #content .zavi-sales-top h1{
+ flex:1;font-size:17px!important;line-height:1.5;margin:0!important;
+ color:var(--zav-ink)!important;font-weight:850;
+}
+html[data-zavi-theme] #content .zavi-sales-back{
+ border:0;background:transparent;color:var(--zav-ink);
+ font-size:24px;min-width:29px;min-height:36px;
+}
+html[data-zavi-theme] #content .zavi-sales-new{
+ border-radius:11px!important;min-height:42px!important;
+ padding:7px 13px!important;background:linear-gradient(100deg,#2c88fa,#075dd6)!important;
+ color:white!important;opacity:1!important;
+}
+html[data-zavi-theme] #content .zavi-sales-filters{
+ display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+ border-radius:12px;background:var(--zav-soft);gap:5px;padding:4px;
+}
+html[data-zavi-theme] #content .zavi-sales-filter{
+ min-height:37px;border:0;border-radius:10px;
+ background:transparent;color:var(--zav-muted);font:750 12px/1.4 inherit;
+}
+html[data-zavi-theme] #content .zavi-sales-filter.selected{
+ color:white;background:linear-gradient(115deg,#318afa,#075fdb);
+ box-shadow:0 2px 9px #075fdc30;
+}
+html[data-zavi-theme] #content .zavi-sales-summary{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;
+}
+html[data-zavi-theme] #content .zavi-sales-summary>div{
+ border:1px solid var(--zav-border);border-radius:12px;
+ background:var(--zav-surface);padding:12px 14px;min-height:72px;
+ display:grid;gap:5px;box-shadow:none;
+}
+html[data-zavi-theme] #content .zavi-sales-summary small{
+ font-size:11px;color:var(--zav-muted);
+}
+html[data-zavi-theme] #content .zavi-sales-summary strong{
+ font-size:clamp(13px,3.5vw,19px);font-weight:850;color:var(--zav-ink);
+}
+html[data-zavi-theme] #content .zavi-sales-list{
+ border:1px solid var(--zav-border);border-radius:13px;
+ background:var(--zav-surface);padding:12px;display:grid;gap:10px;
+}
+html[data-zavi-theme] #content .zavi-sales-search{
+ display:flex;align-items:center;gap:8px;
+ border:1px solid var(--zav-border);border-radius:11px;
+ padding:5px 10px;min-height:40px;color:var(--zav-muted);
+ background:var(--zav-input);
+}
+html[data-zavi-theme] #content .zavi-sales-search input{
+ min-width:0;flex:1;margin:0!important;border:0!important;
+ outline:0!important;background:transparent!important;
+ color:var(--zav-ink)!important;font-size:12px!important;
+ box-shadow:none!important;padding:2px!important;
+}
+html[data-zavi-theme] #content .zavi-sales-invoices{display:grid;gap:5px}
+html[data-zavi-theme] #content .zavi-sales-invoice{
+ width:100%;display:flex;align-items:center;gap:10px;text-align:start;
+ border:0;border-bottom:1px solid var(--zav-border);
+ padding:10px 2px;background:transparent;color:var(--zav-ink);font:inherit;
+}
+html[data-zavi-theme] #content .zavi-sales-invoice:last-child{border-bottom:0}
+html[data-zavi-theme] #content .zavi-sales-invoice-icon{
+ display:grid;place-items:center;width:35px;height:35px;flex:none;
+ border-radius:10px;color:var(--zav-blue);background:var(--zav-blue-soft);
+}
+html[data-zavi-theme] #content .zavi-sales-invoice-body{
+ display:grid;gap:2px;flex:1;min-width:0;
+}
+html[data-zavi-theme] #content .zavi-sales-invoice-body strong{
+ font-size:12px;font-weight:800;overflow-wrap:anywhere;
+}
+html[data-zavi-theme] #content .zavi-sales-invoice-body small{
+ font-size:10px;color:var(--zav-muted);overflow-wrap:anywhere;
+}
+html[data-zavi-theme] #content .zavi-sales-invoice-amount{
+ display:grid;justify-items:end;gap:3px;min-width:75px;
+}
+html[data-zavi-theme] #content .zavi-sales-invoice-amount strong{
+ font-size:12px;white-space:nowrap;color:var(--zav-ink);
+}
+html[data-zavi-theme] #content .zavi-sales-invoice-state{
+ font-size:10px;border-radius:20px;padding:3px 6px;
+ background:var(--zav-positive-bg);color:var(--zav-positive);
+}
+html[data-zavi-theme] #content .zavi-sales-invoice-state.credit{
+ background:var(--zav-warn-bg);color:var(--zav-warn);
+}
+html[data-zavi-theme] #content .zavi-sales-invoice-state.return{
+ background:var(--zav-negative-bg);color:var(--zav-negative);
+}
+html[data-zavi-theme] #content .zavi-sales-invoice-chevron{color:var(--zav-muted)}
+html[data-zavi-theme] #content .zavi-sales-empty{
+ display:flex;flex-direction:column;align-items:center;justify-content:center;
+ gap:8px;padding:28px 8px;min-height:150px;text-align:center;color:var(--zav-muted);
+}
+html[data-zavi-theme] #content .zavi-sales-empty>span svg{
+ width:26px;height:26px;color:var(--zav-muted);
+}
+html[data-zavi-theme] #content .zavi-sales-empty strong{
+ color:var(--zav-ink);font-size:13px;
+}
+html[data-zavi-theme] #content .zavi-sales-empty small{
+ color:var(--zav-muted);font-size:11px;
+}
+html[data-zavi-theme] #content .zavi-sales-archive{
+ max-width:1080px;margin:13px auto;border:1px solid var(--zav-border);
+ border-radius:12px;background:var(--zav-surface);padding:12px;
+}
+html[data-zavi-theme] #content .zavi-sales-archive>summary{
+ cursor:pointer;font-weight:750;font-size:12px;
+}
+html[data-zavi-theme] #content .zavi-sales-archive .card{margin-top:10px!important}
+@media(max-width:760px){
+ html[data-zavi-theme] body.zavi-reference-sales-active .topbar{display:none!important}
+ html[data-zavi-theme] body.zavi-reference-sales-active #content{
+  padding:12px 11px calc(89px + env(safe-area-inset-bottom))!important;
+ }
+ html[data-zavi-theme] body.zavi-reference-sales-active #z637AiButton,
+ html[data-zavi-theme] body.zavi-reference-sales-active #z605-launch{
+  display:none!important;
+ }
+}

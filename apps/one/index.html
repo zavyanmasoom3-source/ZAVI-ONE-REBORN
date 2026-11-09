@@ -2052,7 +2052,7 @@ function zuiEnhanceAccountingForms(){
  root.querySelectorAll('input,select,textarea').forEach(el=>{el.classList.add('zui-input-v3')});
  root.querySelectorAll('table').forEach(el=>{el.classList.add('zui-table-v3')});
 }
-function render(){zaviApplyDesign();if(!zaviModuleEnabled(page)&&page!=='settings'&&page!=='subscription')page='settings';renderNav();document.getElementById('content').innerHTML=({dashboard:renderDashboard,sales:()=>renderOrders('sale'),purchases:()=>renderOrders('purchase'),products:renderProducts,contacts:renderContacts,phonebook:()=>window.zaviPhonebookRender?.()||renderContacts(),debtors:renderDebtors,creditors:renderCreditors,money:renderMoney,hawala:renderHawala,expenses:renderExpenses,reports:renderReports,journal:renderJournal,repairs:renderRepairs,waste:renderWaste,settings:renderSettings,subscription:()=>window.zaviSubscriptionView?.()||'<section class="card">در حال آماده‌سازی صفحه اشتراک...</section>'}[page]||renderDashboard)();zuiEnhanceAccountingForms();if(window.zaviCloudAfterRender)window.zaviCloudAfterRender();if(page==='products')window.ZaviWarehouseV1?.afterRender();if(page==='settings')window.ZaviDevices652?.onSettingsRendered?.();z660UpdateDailyMenu();window.ZaviResponsiveDesignV6533?.refresh();window.ZaviI18nPaintV6516?.();document.getElementById('topSaleBtn').style.display=z20Option('quickSale')&&zaviModuleEnabled('sales')?'':'none';}
+function render(){zaviApplyDesign();document.body.classList.toggle('zavi-reference-sales-active',page==='sales');if(!zaviModuleEnabled(page)&&page!=='settings'&&page!=='subscription')page='settings';renderNav();document.getElementById('content').innerHTML=({dashboard:renderDashboard,sales:()=>renderOrders('sale'),purchases:()=>renderOrders('purchase'),products:renderProducts,contacts:renderContacts,phonebook:()=>window.zaviPhonebookRender?.()||renderContacts(),debtors:renderDebtors,creditors:renderCreditors,money:renderMoney,hawala:renderHawala,expenses:renderExpenses,reports:renderReports,journal:renderJournal,repairs:renderRepairs,waste:renderWaste,settings:renderSettings,subscription:()=>window.zaviSubscriptionView?.()||'<section class="card">در حال آماده‌سازی صفحه اشتراک...</section>'}[page]||renderDashboard)();zuiEnhanceAccountingForms();if(window.zaviCloudAfterRender)window.zaviCloudAfterRender();if(page==='products')window.ZaviWarehouseV1?.afterRender();if(page==='settings')window.ZaviDevices652?.onSettingsRendered?.();z660UpdateDailyMenu();window.ZaviResponsiveDesignV6533?.refresh();window.ZaviI18nPaintV6516?.();document.getElementById('topSaleBtn').style.display=z20Option('quickSale')&&zaviModuleEnabled('sales')?'':'none';}
 function header(title,desc,buttons=''){return `<div class="page-head"><div><h2>${title}</h2><p>${desc}</p></div><div class="action-group">${buttons}</div></div>`}
 const button=(action,label,ic='plus',cl='primary')=>`<button class="btn ${cl}" data-action="${action}">${icon(ic)}${label}</button>`;
 const stat=(title,value,foot,ic,col)=>`<div class="card stat"><div class="stat-top"><div class="stat-icon ${col}">${icon(ic)}</div><span class="top-label">${foot}</span></div><div class="stat-label">${title}</div><div class="stat-value">${currency(value)}</div></div>`;
@@ -2662,14 +2662,104 @@ function renderDashboard(){
  </main>`;
 }
 function recordsTable(rows){if(!rows.length)return `<div class="empty">${icon('expense')}<strong>هنوز موردی ثبت نشده است</strong><span>پس از اولین معامله نمایش داده می‌شود.</span></div>`;return `<div class="table-wrap"><table class="transaction-table"><thead><tr><th>شماره</th><th>تاریخ</th><th>نوع</th><th>طرف حساب</th><th>مبلغ</th><th>جزئیات</th></tr></thead><tbody>${rows.map(t=>`<tr><td><span class="badge">${escapeHtml(t.code)}</span></td><td>${fmtDate(t.date)}</td><td><span class="pill ${TR[t.type]?.[1]||'blue'}">${txLabel(t)}</span></td><td>${escapeHtml(t.contactId?contactName(t.contactId):t.type==='expense'?(t.category||'—'):t.type==='transfer'?accountName(t.fromAccountId)+' ← '+accountName(t.toAccountId):'—')}</td><td class="amount">${currency(txValue(t))}${t.originalCurrency&&t.originalCurrency!==db.currency?`<small style="display:block;color:#8291a9;font-size:10px">${origMoney(t.originalAmount,t.originalCurrency)}</small>`:''}</td><td><button class="btn tiny" data-detail="${t.id}">نمایش</button></td></tr>`).join('')}</tbody></table></div><div class="list-mobile">${rows.map(t=>`<div class="record-card" data-detail="${t.id}"><div class="rec-top"><div><strong>${txLabel(t)}</strong> <span class="badge">${escapeHtml(t.code)}</span></div><b class="amount">${currency(txValue(t))}</b></div><div class="rec-detail"><span>${fmtDate(t.date)} · ${escapeHtml(t.contactId?contactName(t.contactId):t.category||'—')}</span><span style="color:var(--primary)">جزئیات ${icon('arrow')}</span></div></div>`).join('')}</div>`}
-function renderOrdersCore(type){const sale=type==='sale';const rows=orderByDate(db.tx.filter(t=>!t.voided&&(t.type===type||t.type===type+'_return'))).filter(t=>{let q=search.toLowerCase();return (t.code+' '+(t.customerName||contactName(t.contactId))+' '+(t.items||[]).map(x=>x.productName||productName(x.productId)).join(' ')).toLowerCase().includes(q)});const result=z647Limit(rows,sale?'sales':'purchases'),visible=result.rows;const selected=db.tx.filter(t=>!t.voided&&t.type===type);const total=selected.reduce((a,t)=>a+txTotal(t),0);const purchTotals={};if(!sale)for(const t of selected){const unit=t.originalCurrency||db.currency;purchTotals[unit]=money((purchTotals[unit]||0)+(t.originalAmount??txTotal(t)))}const purchaseCurrencyView=sale?'':`<div class="card" style="padding:14px 18px;margin-bottom:18px"><b>خرید ثبت‌شده بر اساس واحد پول فاکتور</b><div class="action-group" style="margin-top:10px">${Object.entries(purchTotals).map(([k,n])=>`<span class="pill blue">${escapeHtml(k==='CNY'?'RMB':k)}: ${fmt(n)}</span>`).join('')||'<span class="muted">هنوز خریدی ثبت نشده است.</span>'}</div></div>`;return `<div class="zui-phase1 zui-order-page" data-module="${sale?'sales':'purchases'}">${header(sale?'مدیریت فروش':'مدیریت خرید',sale?'فاکتورهای فروش، مشتریان و قرض':'خرید داخلی و خارجی، ارز و مصارف خرید',`${button(type,sale?'فروش جدید':'خرید جدید')} ${sale?'':button('local_purchase','خرید داخلی','purchase','subtle')} ${sale?'':button('foreign_purchase','خرید خارجی','purchase','subtle')} ${button(sale?'sale_return':'purchase_return',sale?'برگشت فروش':'برگشت خرید','return','subtle')}`)}<div class="stat-grid" style="grid-template-columns:repeat(2,minmax(0,1fr))">${stat(sale?'کل فاکتورهای فروش':'کل فاکتورهای خرید',total,'قبل از برگشت‌ها',sale?'sale':'purchase','blue')}${stat('تعداد فاکتور',selected.length,'ثبت‌شده', 'expense','green').replace(currency(selected.length),fmtQty(selected.length))}</div>${purchaseCurrencyView}<section class="card"><div class="table-bar"><div class="searchbox">${icon('search')}<input id="searchInput" placeholder="جستجوی فاکتور، محصول یا طرف حساب" value="${escapeHtml(search)}"></div><span class="pill blue">${rows.length} رکورد</span></div>${recordsTable(visible)}${z647Paging().controls(result,sale?'sales':'purchases')}</section></div>`}
+let zaviSalesView='all';
+function zaviSalesMatchesView(t){
+ if(zaviSalesView==='all')return true;
+ if(t.type!=='sale')return false;
+ const outstanding=txTotal(t)-num(t.paid);
+ return zaviSalesView==='credit'?outstanding>0.000001:outstanding<=0.000001;
+}
+document.addEventListener('click',event=>{
+ const button=event.target.closest?.('[data-zavi-sales-view]');
+ if(!button)return;
+ const view=button.dataset.zaviSalesView;
+ if(!['all','paid','credit'].includes(view))return;
+ event.preventDefault();
+ zaviSalesView=view;
+ if(Object.hasOwn(z647Pages,'sales'))z647Pages.sales=0;
+ render();
+},true);
+function renderSalesReference(rows,selected,total){
+ const lang=(document.documentElement.lang||'fa-AF').toLowerCase();
+ const k=lang.startsWith('en')?'en':lang.startsWith('ps')?'ps':'fa';
+ const L={
+  fa:{title:'فاکتورهای فروش',newSale:'فروش جدید',all:'همه',paid:'نقدی',
+   credit:'قرضی',total:'مجموع فروش',count:'تعداد فاکتور',
+   search:'جستجوی فاکتور، محصول یا مشتری',empty:'هنوز فاکتوری ثبت نشده است',
+   after:'با ثبت فروش، فاکتورها در اینجا نمایش داده می‌شوند',
+   paidStatus:'پرداخت‌شده',creditStatus:'باقیمانده',returnStatus:'برگشت فروش'},
+  ps:{title:'د پلور فاکتورونه',newSale:'نوی پلور',all:'ټول',paid:'نغدي',
+   credit:'پور',total:'ټول پلور',count:'د فاکتورونو شمېر',
+   search:'فاکتور، توکي یا پېرودونکی ولټوئ',empty:'تر اوسه فاکتور نشته',
+   after:'له پلور وروسته دلته ښکاره کېږي',
+   paidStatus:'ورکړل شوی',creditStatus:'پاتې',returnStatus:'پلور بېرته'},
+  en:{title:'Sales invoices',newSale:'New sale',all:'All',paid:'Cash',
+   credit:'Credit',total:'Total sales',count:'Invoice count',
+   search:'Search invoice, product or customer',empty:'No invoices recorded',
+   after:'Invoices will appear here after a sale',
+   paidStatus:'Paid',creditStatus:'Outstanding',returnStatus:'Sales return'}
+ }[k];
+ const filtered=rows.filter(zaviSalesMatchesView),result=z647Limit(filtered,'sales');
+ const view=[['all',L.all],['paid',L.paid],['credit',L.credit]];
+ const tabbar=view.map(([id,label])=>`<button type="button"
+  class="zavi-sales-filter ${{zaviSalesView===id?'selected':''}"
+  data-zavi-sales-view="${{id}" aria-pressed="${{zaviSalesView===id}">${{label}</button>`).join('');
+ const invoices=result.rows.map(t=>{
+  const outstanding=Math.max(0,money(txTotal(t)-num(t.paid)));
+  const isReturn=t.type==='sale_return';
+  const state=isReturn?'return':outstanding>0.000001?'credit':'paid';
+  const status=isReturn?L.returnStatus:outstanding>0.000001?L.creditStatus:L.paidStatus;
+  const customer=t.customerName||contactName(t.contactId)||'—';
+  const day=window.ZaviDesignSystemV1?.formatDualDate(t.date,
+     {language:document.documentElement.lang})||fmtDate(t.date);
+  return `<button type="button" class="zavi-sales-invoice" data-detail="${{escapeHtml(t.id)}">
+    <span class="zavi-sales-invoice-icon">${{icon('expense')}</span>
+    <span class="zavi-sales-invoice-body">
+      <strong>${{escapeHtml(t.code||'—')}</strong>
+      <small>${{escapeHtml(customer)}</small>
+      <small class="zavi-sales-invoice-date">${{escapeHtml(day)}</small>
+    </span>
+    <span class="zavi-sales-invoice-amount">
+      <strong>${{currency(txTotal(t))}</strong>
+      <small class="zavi-sales-invoice-state ${{state}">${{status}</small>
+    </span>
+    <span aria-hidden="true" class="zavi-sales-invoice-chevron">‹</span>
+  </button>`;
+ }).join('');
+ return `<main class="zavi-sales-reference" data-module="sales" aria-label="${{L.title}">
+  <header class="zavi-sales-top">
+    <button type="button" data-go="dashboard" class="zavi-sales-back"
+     aria-label="بازگشت">‹</button>
+    <h1>${{L.title}</h1>
+    <button type="button" class="btn primary zavi-sales-new" data-action="sale">
+      ${{icon('plus')} ${{L.newSale}</button>
+  </header>
+  <nav class="zavi-sales-filters" aria-label="${{L.title}">${{tabbar}</nav>
+  <section class="zavi-sales-summary">
+    <div><small>${{L.total}</small><strong>${{currency(total)}</strong></div>
+    <div><small>${{L.count}</small><strong>${{fmtQty(selected.length)}</strong></div>
+  </section>
+  <section class="zavi-sales-list">
+    <label class="zavi-sales-search"><span>${{icon('search')}</span>
+      <input id="searchInput" type="search" autocomplete="off"
+       placeholder="${{L.search}" value="${{escapeHtml(search)}"></label>
+    <div class="zavi-sales-invoices">
+      ${{invoices||`<div class="zavi-sales-empty">
+        <span>${{icon('expense')}</span><strong>${{L.empty}</strong>
+        <small>${{L.after}</small></div>`}
+    </div>
+    ${{z647Paging().controls(result,'sales')}
+  </section>
+ </main>`;
+}
+function renderOrdersCore(type){const sale=type==='sale';const rows=orderByDate(db.tx.filter(t=>!t.voided&&(t.type===type||t.type===type+'_return'))).filter(t=>{let q=search.toLowerCase();return (t.code+' '+(t.customerName||contactName(t.contactId))+' '+(t.items||[]).map(x=>x.productName||productName(x.productId)).join(' ')).toLowerCase().includes(q)});const result=z647Limit(rows,sale?'sales':'purchases'),visible=result.rows;const selected=db.tx.filter(t=>!t.voided&&t.type===type);const total=selected.reduce((a,t)=>a+txTotal(t),0);if(sale)return renderSalesReference(rows,selected,total);const purchTotals={};if(!sale)for(const t of selected){const unit=t.originalCurrency||db.currency;purchTotals[unit]=money((purchTotals[unit]||0)+(t.originalAmount??txTotal(t)))}const purchaseCurrencyView=sale?'':`<div class="card" style="padding:14px 18px;margin-bottom:18px"><b>خرید ثبت‌شده بر اساس واحد پول فاکتور</b><div class="action-group" style="margin-top:10px">${Object.entries(purchTotals).map(([k,n])=>`<span class="pill blue">${escapeHtml(k==='CNY'?'RMB':k)}: ${fmt(n)}</span>`).join('')||'<span class="muted">هنوز خریدی ثبت نشده است.</span>'}</div></div>`;return `<div class="zui-phase1 zui-order-page" data-module="${sale?'sales':'purchases'}">${header(sale?'مدیریت فروش':'مدیریت خرید',sale?'فاکتورهای فروش، مشتریان و قرض':'خرید داخلی و خارجی، ارز و مصارف خرید',`${button(type,sale?'فروش جدید':'خرید جدید')} ${sale?'':button('local_purchase','خرید داخلی','purchase','subtle')} ${sale?'':button('foreign_purchase','خرید خارجی','purchase','subtle')} ${button(sale?'sale_return':'purchase_return',sale?'برگشت فروش':'برگشت خرید','return','subtle')}`)}<div class="stat-grid" style="grid-template-columns:repeat(2,minmax(0,1fr))">${stat(sale?'کل فاکتورهای فروش':'کل فاکتورهای خرید',total,'قبل از برگشت‌ها',sale?'sale':'purchase','blue')}${stat('تعداد فاکتور',selected.length,'ثبت‌شده', 'expense','green').replace(currency(selected.length),fmtQty(selected.length))}</div>${purchaseCurrencyView}<section class="card"><div class="table-bar"><div class="searchbox">${icon('search')}<input id="searchInput" placeholder="جستجوی فاکتور، محصول یا طرف حساب" value="${escapeHtml(search)}"></div><span class="pill blue">${rows.length} رکورد</span></div>${recordsTable(visible)}${z647Paging().controls(result,sale?'sales':'purchases')}</section></div>`}
 function zaviOrderStageLabel(isSale){
  const language=(document.documentElement.lang||'fa').toLowerCase();
  if(language.startsWith('en'))return isSale?'SALES':'PURCHASES';
  if(language.startsWith('ps'))return isSale?'پلور':'پېرود';
  return isSale?'فروش':'خرید';
 }
-function renderOrders(type){const html=renderOrdersCore(type);if(type!=='sale')return html;const saved=(db.invoiceArchive||[]).filter(x=>db.tx.some(t=>t.id===x.txId&&!t.voided)).slice(-20).reverse();return html+`<section class="card" style="margin-top:18px"><div class="panel-head"><h3>🧾 فاکتورهای ذخیره‌شده در سیستم</h3><span class="pill blue">${faDigits(saved.length)} فاکتور</span></div><div class="zv-journal-list">${saved.length?saved.map(x=>`<article class="zv-journal-item"><div><strong>${escapeHtml(x.code)} · ${escapeHtml(x.customer||'مشتری')}</strong><small>${fmtDate(x.date)}</small></div><button class="btn tiny subtle" data-detail="${escapeHtml(x.txId)}">دیدن فاکتور</button></article>`).join(''):'<p class="muted" style="padding:16px">پس از ثبت فروش، فاکتور را باز کنید و «ذخیره در سیستم» را بزنید.</p>'}</div></section><section class="card" style="margin-top:16px"><div class="panel-head"><h3>🗂 فاکتورهای دستی </h3></div><div class="zv-journal-list">${(db.manualInvoices||[]).length?(db.manualInvoices||[]).slice(-20).reverse().map(x=>`<article class="zv-journal-item"><div><strong>${escapeHtml(x.customer||'مشتری')} · ${escapeHtml(x.code||'بدون شماره')}</strong><small>${escapeHtml(x.date||'—')}</small></div><a class="btn tiny subtle" target="_blank" rel="noopener" href="./invoice.html?id=${encodeURIComponent(x.id)}">بازکردن فاکتور</a></article>`).join(''):'<p class="muted" style="padding:15px">فاکتورهای ساخته‌شده در قالب دستی  در این بخش نمایش داده می‌شوند.</p>'}</div></section>`}
+function renderOrders(type){const html=renderOrdersCore(type);if(type!=='sale')return html;const saved=(db.invoiceArchive||[]).filter(x=>db.tx.some(t=>t.id===x.txId&&!t.voided)).slice(-20).reverse();return html+`<details class="zavi-sales-archive"><summary>🧾 فاکتورهای ذخیره‌شده و دستی</summary><section class="card" style="margin-top:18px"><div class="panel-head"><h3>🧾 فاکتورهای ذخیره‌شده در سیستم</h3><span class="pill blue">${faDigits(saved.length)} فاکتور</span></div><div class="zv-journal-list">${saved.length?saved.map(x=>`<article class="zv-journal-item"><div><strong>${escapeHtml(x.code)} · ${escapeHtml(x.customer||'مشتری')}</strong><small>${fmtDate(x.date)}</small></div><button class="btn tiny subtle" data-detail="${escapeHtml(x.txId)}">دیدن فاکتور</button></article>`).join(''):'<p class="muted" style="padding:16px">پس از ثبت فروش، فاکتور را باز کنید و «ذخیره در سیستم» را بزنید.</p>'}</div></section><section class="card" style="margin-top:16px"><div class="panel-head"><h3>🗂 فاکتورهای دستی </h3></div><div class="zv-journal-list">${(db.manualInvoices||[]).length?(db.manualInvoices||[]).slice(-20).reverse().map(x=>`<article class="zv-journal-item"><div><strong>${escapeHtml(x.customer||'مشتری')} · ${escapeHtml(x.code||'بدون شماره')}</strong><small>${escapeHtml(x.date||'—')}</small></div><a class="btn tiny subtle" target="_blank" rel="noopener" href="./invoice.html?id=${encodeURIComponent(x.id)}">بازکردن فاکتور</a></article>`).join(''):'<p class="muted" style="padding:15px">فاکتورهای ساخته‌شده در قالب دستی  در این بخش نمایش داده می‌شوند.</p>'}</div></section></details>`}
 
 
 /* عکس محصول: فقط اختیاری؛ عکس کوچک شده در دیتابیس همین دستگاه و فایل JSON پشتیبان ذخیره می‌شود. */
