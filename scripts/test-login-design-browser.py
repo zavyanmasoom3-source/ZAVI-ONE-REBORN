@@ -202,9 +202,9 @@ for app,field_id in [('one','zawiPinOne'),('admin','authPassword')]:
                       window.ZaviThemeV29.set(%s);
                       const el=document.querySelector('#z24Recovery .z24-pbox');
                       const s=getComputedStyle(el);
-                      return {background:s.backgroundColor,visible:el.getBoundingClientRect().width>0};
+                      return {background:s.backgroundColor,token:getComputedStyle(document.documentElement).getPropertyValue('--zds-surface').trim(),styleLoaded:!!document.getElementById('z24RecoveryStyle'),visible:el.getBoundingClientRect().width>0};
                     })()""" %json.dumps(mode))
-                    assert display['visible'],display
+                    assert display['visible'] and display['styleLoaded'] and display['token'],display
                     assert (display['background']=='rgb(255, 255, 255)')==(mode=='light'),display
                     if lang=='fa-AF':
                         shot=OUT/('one-recovery-'+mode+'.png')

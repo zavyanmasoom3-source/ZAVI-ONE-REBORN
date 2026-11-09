@@ -14,7 +14,7 @@ const css=`
 #z24Recovery *,#z24Recovery *::before,#z24Recovery *::after{box-sizing:border-box}
 #z24Recovery .z24-pbox{width:min(460px,100%);min-width:0;margin:auto;
  padding:clamp(16px,4vw,25px);border-radius:22px;
- background:var(--zds-surface);color:var(--zds-text);
+ background:var(--zds-surface,#fff)!important;color:var(--zds-text)!important;
  border:1px solid var(--zds-border);box-shadow:0 24px 68px #0005}
 #z24Recovery .z24-ph{background:var(--zds-surface-alt);border:1px solid var(--zds-border);
  border-radius:15px;text-align:center;padding:13px 14px;color:var(--zds-text)}
@@ -126,6 +126,6 @@ async function finish(){if(!requestId||!chosen)throw Error('درخواست مع�
 async function handle(e){const b=e.target.closest('button');if(!b||busy)return;const id=b.id;if(id==='z24Cancel'){close();return}if(!['z24Login','z24Load','z24Ask','z24Check','z24Finish'].includes(id))return;e.preventDefault();busy=true;const controls=$('z24Recovery')?.querySelectorAll('button');controls?.forEach(x=>{if(x.id!=='z24Cancel')x.disabled=true});try{
  if(id==='z24Login')await login();if(id==='z24Load')await fetchWorkspaces();if(id==='z24Ask')await ask();if(id==='z24Check')await status();if(id==='z24Finish')await finish();
  }catch(err){state('خطا: '+err.message,true)}finally{busy=false;if($('z24Recovery')){const logged=!!selectedToken();$('z24Login').disabled=false;$('z24Load').disabled=!logged;$('z24Ask').disabled=!chosen;$('z24Check').disabled=!requestId;$('z24Finish').disabled=!requestId}}}
-function open(){if(visible)return;returnFocus=document.activeElement;visible=true;makeShell();$('z24Email')?.focus();if(selectedToken()&&selectedUser()?.id)fetchWorkspaces().catch(e=>state('برای بازیابی ابتدا با حساب آنلاین وارد شوید: '+e.message,true));}
+function open(){if(visible)return;returnFocus=$('zawiForgotPinBtn')||document.activeElement;visible=true;makeShell();$('z24Email')?.focus();if(selectedToken()&&selectedUser()?.id)fetchWorkspaces().catch(e=>state('برای بازیابی ابتدا با حساب آنلاین وارد شوید: '+e.message,true));}
 document.addEventListener('click',e=>{if(e.target.closest('#zawiForgotPinBtn')){e.preventDefault();open()}});
 })();
