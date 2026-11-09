@@ -54,9 +54,15 @@ The full browser suite checked:
 - barcode keyboard-scanner same-code twice -> quantity increments;
 - unit price zero -> inline error and no transaction;
 - unsaved preview with current real input values and no recorded transaction;
-- three style selectors and 420px mobile overflow.
+- three style selectors and 420px mobile overflow;
+- native local-only sale saved **exactly once** in a disposable browser after explicit test-only permission stub, with recorded test figures: opening stock 10, sale quantity 2, ending stock 8, invoice total AFN 34, paid AFN 20, customer receivable AFN 14, durable localStorage transaction; network to production Supabase domains explicitly blocked.
 
-**Not proven:** physical phone camera scan, actual server RLS, SQL atomic posting, concurrent device reconciliation, per-warehouse server sale inventory, true mixed FX payments, and pixel-level screenshot parity. Test uses real Chrome DOM and a **disposable browser-only** synthetic stock item; no client financial write is presented as a real-world accounting acceptance test.
+**Not proven:** physical phone camera scan, actual server RLS, SQL atomic posting, concurrent device reconciliation, per-warehouse server sale inventory, true mixed FX payments, and pixel-level screenshot parity.
+
+Browser QA run at commit `ff8ea500244771052613156246304ef1d40a980c`:
+- https://github.com/zavyanmasoom3-source/ZAVI-ONE-REBORN/actions/runs/42584929337 — passed (real Chrome app, real local native save only).
+- https://github.com/zavyanmasoom3-source/ZAVI-ONE-REBORN/actions/runs/42584929340 — passed (migration/security integrity gate).
+- Later CSS-only scanner placement revisions still require their own capture/review before any acceptance. Test uses real Chrome DOM and a **disposable browser-only** synthetic stock item; no client financial write is presented as a real-world accounting acceptance test.
 
 ## 15-section acceptance register
 
