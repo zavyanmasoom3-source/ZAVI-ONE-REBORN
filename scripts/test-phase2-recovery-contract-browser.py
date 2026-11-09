@@ -69,7 +69,7 @@ with Session() as browser:
     assert mocked=={'modal':True,'title':'Recover private PIN'},mocked
     # Missing credentials remain a client-side validation failure: no request.
     browser.eval("document.getElementById('z24Login').click()")
-    browser.until("'Enter your online account email and password.' in (document.getElementById('z24RecoveryStatus')?.textContent||'')",
+    browser.until("(document.getElementById('z24RecoveryStatus')?.textContent||'').includes('Enter your online account email and password.')",
                   'no-credentials refusal')
     assert browser.eval('window.__phase2RecoveryRequests.length')==0
     browser.eval("""(()=>{
@@ -94,21 +94,21 @@ with Session() as browser:
       'server-approved request ID stored')
     assert browser.eval("!!localStorage.getItem('zawi_store_personal_pin_v1')")
     browser.eval("document.getElementById('z24Check').click()")
-    browser.until("'Waiting for management approval.' in (document.getElementById('z24RecoveryStatus')?.textContent||'')",
+    browser.until("(document.getElementById('z24RecoveryStatus')?.textContent||'').includes('Waiting for management approval.')",
                   'pending request cannot reset PIN')
     assert browser.eval("!!localStorage.getItem('zawi_store_personal_pin_v1')")
     browser.eval("""(()=>{
       window.__phase2Approval='denied';
       document.getElementById('z24Check').click();
     })()""")
-    browser.until("'Request denied.' in (document.getElementById('z24RecoveryStatus')?.textContent||'')",
+    browser.until("(document.getElementById('z24RecoveryStatus')?.textContent||'').includes('Request denied.')",
                   'denied request cannot reset PIN')
     assert browser.eval("!!localStorage.getItem('zawi_store_personal_pin_v1')")
     browser.eval("""(()=>{
       window.__phase2Approval='approved';
       document.getElementById('z24Check').click();
     })()""")
-    browser.until("'Management approved your request.' in (document.getElementById('z24RecoveryStatus')?.textContent||'')",
+    browser.until("(document.getElementById('z24RecoveryStatus')?.textContent||'').includes('Management approved your request.')",
                   'approved status available')
     assert browser.eval("!!localStorage.getItem('zawi_store_personal_pin_v1')")
     # Actual consume action must be the sole path that deletes the local PIN.
