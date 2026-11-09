@@ -2039,7 +2039,7 @@ function z660UpdateDailyMenu(){
  });
  menu.hidden=!visible;menu.setAttribute('aria-hidden',String(!visible));
 }
-function renderProducts(){const html=zuiLegacy_renderProducts();return `<main class="zui-phase2 zui-phase1" data-module="warehouse" aria-label="گدام و موجودی"><header class="zui-section-heading"><span class="zui-eyebrow">ZAVI ONE</span><h2>گدام و موجودی</h2><p>محصولات، موجودی و حرکت گدام</p></header><div class="zui-phase2-content">${html}</div></main>`;}
+function renderProducts(){const html=zuiLegacy_renderProducts();return `<main class="zui-phase2 zui-phase1" data-module="warehouse" aria-label="گدام و موجودی"><div class="zui-phase2-content">${html}</div></main>`;}
 function renderContacts(){const html=zuiLegacy_renderContacts();return `<main class="zui-phase2 zui-phase1" data-module="customers" aria-label="مشتریان و اشخاص"><header class="zui-section-heading"><span class="zui-eyebrow">ZAVI ONE</span><h2>مشتریان و اشخاص</h2><p>حساب‌ها و اطلاعات تماس</p></header><div class="zui-phase2-content">${html}</div></main>`;}
 function renderDebtors(){const html=zuiLegacy_renderDebtors();return `<main class="zui-phase2 zui-phase1" data-module="debtors" aria-label="طلب‌های ما"><header class="zui-section-heading"><span class="zui-eyebrow">ZAVI ONE</span><h2>طلب‌های ما</h2><p>باقی مشتریان و دریافت‌ها</p></header><div class="zui-phase2-content">${html}</div></main>`;}
 function renderCreditors(){const html=zuiLegacy_renderCreditors();return `<main class="zui-phase2 zui-phase1" data-module="creditors" aria-label="قرض‌های ما"><header class="zui-section-heading"><span class="zui-eyebrow">ZAVI ONE</span><h2>قرض‌های ما</h2><p>طلبداران و پرداخت‌ها</p></header><div class="zui-phase2-content">${html}</div></main>`;}
