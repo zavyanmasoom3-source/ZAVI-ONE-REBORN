@@ -262,3 +262,103 @@ html body #overlay .modal.zsal-approved-modal .modal-body .zavi-barcode-actions 
 @media(prefers-reduced-motion:reduce){
  #overlay .zsal-approved-modal *,#content .zsal-approved-page *{animation:none!important;transition:none!important}
 }
+
+
+/* Approved seven-screen reference: one vertically scrolling invoice.
+   Every live input remains inside its original form and original submit hook. */
+html body #overlay .modal.zsal-approved-modal .zavi-flow-layout.zsal-vertical{
+  display:flex!important;flex-direction:column!important;gap:13px!important;
+  margin:0 0 12px!important;min-width:0!important;
+}
+html body #overlay .modal.zsal-approved-modal .zavi-flow-layout.zsal-vertical
+  > .zavi-flow-tabs{display:none!important}
+html body #overlay .modal.zsal-approved-modal .zavi-flow-layout.zsal-vertical
+  > .zavi-flow-panel{
+  display:grid!important;position:static!important;visibility:visible!important;
+  min-width:0!important;padding:15px!important;border-radius:21px!important;
+  background:var(--zsal-paper)!important;border:1px solid var(--zsal-outline)!important;
+}
+html body #overlay .modal.zsal-approved-modal .zsal-dual-date{
+  display:block;color:var(--zsal-muted)!important;font-size:11px!important;
+  line-height:1.6!important;margin:5px 0 0!important;white-space:normal;
+}
+html body #overlay .modal.zsal-approved-modal .zsal-customer-select{
+  margin:0 0 7px!important;
+}
+html body #overlay .modal.zsal-approved-modal .zsal-scan-actions{
+  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:9px!important;min-width:0!important;padding:0!important;margin:0!important;
+  border:0!important;position:static!important;
+}
+html body #overlay .modal.zsal-approved-modal .zsal-scan-field{
+  display:grid!important;grid-template-columns:minmax(0,1fr) 48px!important;
+  gap:9px!important;grid-column:1/-1!important;align-items:center!important;
+  min-width:0!important;position:relative!important;
+}
+html body #overlay .modal.zsal-approved-modal .zsal-scan-field #zaviBarcodeScan{
+  display:block!important;grid-column:1!important;position:static!important;
+  width:100%!important;max-width:100%!important;min-width:0!important;
+  margin:0!important;height:46px!important;min-height:46px!important;
+  padding:10px 13px!important;transform:none!important;font-size:14px!important;
+  text-align:start!important;box-sizing:border-box!important;
+}
+html body #overlay .modal.zsal-approved-modal .zsal-scan-field
+  > button[data-zavi-camera-open]{
+  display:flex!important;grid-column:2!important;position:static!important;
+  min-width:48px!important;max-width:48px!important;width:48px!important;
+  min-height:48px!important;max-height:48px!important;height:48px!important;
+  margin:0!important;padding:0!important;transform:none!important;
+  align-items:center!important;justify-content:center!important;
+  border-radius:50%!important;border:0!important;box-shadow:none!important;
+  background:#181818!important;color:#fff!important;font-size:0!important;
+  text-indent:-9999px!important;overflow:hidden!important;white-space:nowrap!important;
+}
+html body #overlay .modal.zsal-approved-modal .zsal-scan-field
+  > button[data-zavi-camera-open]::before{
+  content:"▣";display:block;font-size:23px!important;line-height:1!important;
+  text-indent:0!important;color:white!important;position:relative!important;
+}
+html body #overlay .modal.zsal-approved-modal .zsal-scan-actions
+  > :is(#z659BarcodeConfirm,#z650ManualProduct){
+  position:static!important;grid-row:2!important;width:100%!important;
+  max-width:100%!important;min-width:0!important;height:auto!important;
+  min-height:43px!important;padding:8px 9px!important;
+  font-size:12px!important;white-space:normal!important;transform:none!important;
+}
+html body #overlay .modal.zsal-approved-modal .zsal-scan-actions #z659BarcodeConfirm{
+  grid-column:1!important;background:var(--zsal-primary)!important;
+  border:1px solid var(--zsal-primary)!important;color:var(--zsal-paper)!important;
+}
+html body #overlay .modal.zsal-approved-modal .zsal-scan-actions #z650ManualProduct{
+  grid-column:2!important;background:var(--zsal-soft)!important;
+  color:var(--zsal-ink)!important;border:1px solid var(--zsal-outline)!important;
+}
+html[data-zavi-theme] body #content .zsal-approved-page
+  .page-head button[data-action="sale"]{
+  background:#181818!important;color:#fff!important;border-color:#181818!important;
+  box-shadow:none!important;min-height:46px!important;border-radius:999px!important;
+}
+html[data-zavi-theme="dark"] body #content .zsal-approved-page
+  .page-head button[data-action="sale"]{
+  background:#eef5ff!important;color:#0b1725!important;border-color:#eef5ff!important;
+}
+html[data-zavi-theme] body #overlay .modal.zsal-approved-modal #dialogForm
+  .modal-foot button[type="submit"]{
+  background:#181818!important;border-color:#181818!important;color:#fff!important;
+  border-radius:999px!important;box-shadow:none!important;
+}
+html[data-zavi-theme="dark"] body #overlay .modal.zsal-approved-modal #dialogForm
+  .modal-foot button[type="submit"]{
+  background:#eef5ff!important;color:#0b1725!important;border-color:#eef5ff!important;
+}
+html[data-zavi-appearance="glass"] body #overlay .modal.zsal-approved-modal
+  .zavi-flow-panel{
+  background:rgba(12,32,53,.76)!important;color:#eef6ff!important;
+  border-color:rgba(255,255,255,.3)!important;
+}
+@media(max-width:520px){
+  html body #overlay .modal.zsal-approved-modal .modal-body{padding:9px!important}
+  html body #overlay .modal.zsal-approved-modal .zavi-flow-layout.zsal-vertical
+    > .zavi-flow-panel{padding:11px!important}
+  html body #overlay .modal.zsal-approved-modal .zsal-scan-actions{gap:7px!important}
+}
