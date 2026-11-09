@@ -1,0 +1,80 @@
+name: Direct ZAVI 12-photo offline preview APK downloads
+on:
+  push:
+    branches: [dev]
+    paths:
+      - '.github/workflows/publish-12refs-offline-apks.yml'
+  workflow_dispatch:
+permissions:
+  actions: read
+  contents: write
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch and validate existing Android preview APKs
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p downloads/one downloads/admin public
+          for spec in 'one:13669896549' 'admin:13670295199'; do
+            app="$(cut -d: -f1 <<< "$spec")"
+            id="$(cut -d: -f2 <<< "$spec")"
+            curl --fail --location --silent --show-error --retry 3 --retry-all-errors \
+              -H "Authorization: Bearer $GH_TOKEN" \
+              -H 'Accept: application/vnd.github+json' \
+              "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/artifacts/$id/zip" \
+              -o "downloads/$app.zip"
+            unzip -q "downloads/$app.zip" -d "downloads/$app"
+            (cd "downloads/$app" && sha256sum --check SHA256SUMS.txt)
+          done
+          cp downloads/one/ZAVI_one_OFFLINE-PREVIEW-NOT-RELEASE.apk public/ZAVI_ONE_12_PHOTOS_TEST.apk
+          cp downloads/admin/ZAVI_admin_OFFLINE-PREVIEW-NOT-RELEASE.apk public/ZAVI_ONE_ADMIN_12_PHOTOS_TEST.apk
+          printf '%s  %s\n' \
+            'efdc7488bcd040a9063f4e3c9d0f2d599c4a84f22b576b5f4e1f32fd9c723688' 'public/ZAVI_ONE_12_PHOTOS_TEST.apk' \
+            '7748ae372908ec611b39951eca467e2d8c3e2144eaef6be1977ff2ef7e9dc86a' 'public/ZAVI_ONE_ADMIN_12_PHOTOS_TEST.apk' | sha256sum -c
+          python3 - <<'PY'
+          import json,zipfile
+          expected='0313beb66ea0b11a1e3277f316bc3feeff96375a'
+          for app,file in [('one','public/ZAVI_ONE_12_PHOTOS_TEST.apk'),
+                           ('admin','public/ZAVI_ONE_ADMIN_12_PHOTOS_TEST.apk')]:
+              with zipfile.ZipFile(file) as z:
+                  assert z.testzip() is None
+                  info=json.loads(z.read('assets/zavi-build-info.json'))
+                  assert info['commit']==expected and info['app']==app
+                  assert info['kind']=='OFFLINE-PREVIEW-NOT-RELEASE'
+                  assert info['package'].endswith('.offlinepreview')
+                  print('VALIDATED',app,info['commit'])
+          PY
+      - name: Publish non-production prerelease with direct .apk assets
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          tag='zavi-12photos-offline-preview-20261109-0313beb6'
+          if gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release upload "$tag" public/*.apk --repo "$GITHUB_REPOSITORY" --clobber
+          else
+            gh release create "$tag" public/*.apk \
+              --repo "$GITHUB_REPOSITORY" \
+              --target 0313beb66ea0b11a1e3277f316bc3feeff96375a \
+              --title 'ZAVI ONE + ADMIN | 12-photo OFFLINE TEST ONLY — NOT RELEASE' \
+              --notes 'For UI tests on Android only. Offline preview, no production Supabase, not an upgrade. Do not enter real financial data. Verified against exact build commit 0313beb66ea0b11a1e3277f316bc3feeff96375a.' \
+              --prerelease
+          fi
+          gh release view "$tag" --repo "$GITHUB_REPOSITORY" --json tagName,isPrerelease,assets,url > release.json
+          python3 - <<'PY'
+          import json
+          v=json.load(open('release.json'))
+          assert v['isPrerelease']
+          expected={'ZAVI_ONE_12_PHOTOS_TEST.apk','ZAVI_ONE_ADMIN_12_PHOTOS_TEST.apk'}
+          assets={a['name']:a for a in v['assets']}
+          assert expected.issubset(assets)
+          for name in sorted(expected):
+              assert assets[name]['size']>3000000
+              print('DIRECT_LINK',assets[name]['url'])
+          print('RELEASE',v['url'])
+          PY
