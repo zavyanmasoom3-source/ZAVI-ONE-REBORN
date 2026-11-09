@@ -7,7 +7,7 @@
   const I18N={
     fa:{heading:'مدیریت فروش',subtitle:'فاکتورها و معاملات شما',newSale:'ثبت فروش جدید',
       today:'فروش امروز',count:'تعداد فاکتور',records:'فاکتورهای فروش',manual:'فاکتورهای دستی',
-      archive:'فاکتورهای ذخیره‌شده',allStats:'آمار کلی',customer:'مشتری',
+      archive:'فاکتورهای ذخیره‌شده',allStats:'آمار کلی',more:'بیشتر',guide:'راهنمای بیشتر',items:'محصولات فاکتور',addToSale:'افزودن محصول به فروش',customer:'مشتری',
       cashCustomer:'مشتری نقدی',selectCustomer:'انتخاب مشتری ثبت‌شده',
       payment:'روش پرداخت',cash:'نقدی',bank:'بانکی / حواله',credit:'قرض / پرداخت بعدی',
       received:'مبلغ دریافت‌شده',currency:'ارز فاکتور',preview:'پیش‌نمایش فاکتور',
@@ -18,7 +18,7 @@
       stock:'موجودی کافی نیست.',noItems:'حداقل یک محصول لازم است.',notSaved:'پیش‌نمایش است؛ هنوز هیچ معامله‌ای ثبت نشده است.'},
     ps:{heading:'د پلور مدیریت',subtitle:'ستاسې بلونه او معاملې',newSale:'نوی پلور ثبتول',
       today:'د نن پلور',count:'د بلونو شمېر',records:'د پلور بلونه',manual:'لاسي بلونه',
-      archive:'ساتل شوي بلونه',allStats:'ټولې شمېرې',customer:'پېرودونکی',
+      archive:'ساتل شوي بلونه',allStats:'ټولې شمېرې',more:'نور',guide:'نورې لارښوونې',items:'د بل توکي',addToSale:'پلور ته توکی زیاتول',customer:'پېرودونکی',
       cashCustomer:'نغدي پېرودونکی',selectCustomer:'ثبت شوی پېرودونکی وټاکئ',
       payment:'د تادیې ډول',cash:'نغدي',bank:'بانک / حواله',credit:'پور / وروسته تادیه',
       received:'ترلاسه شوې پیسې',currency:'د بل اسعار',preview:'د بل مخکتنه',
@@ -29,7 +29,7 @@
       stock:'موجودي کمه ده.',noItems:'لږ تر لږه یو توکی اړین دی.',notSaved:'دا مخکتنه ده؛ معامله لا نه ده ثبت شوې.'},
     en:{heading:'Sales management',subtitle:'Your invoices and transactions',newSale:'New sale',
       today:'Sales today',count:'Invoice count',records:'Sales invoices',manual:'Manual invoices',
-      archive:'Saved invoices',allStats:'All-time totals',customer:'Customer',
+      archive:'Saved invoices',allStats:'All-time totals',more:'More',guide:'More guidance',items:'Invoice products',addToSale:'Add a product to sale',customer:'Customer',
       cashCustomer:'Cash customer',selectCustomer:'Choose an existing customer',
       payment:'Payment method',cash:'Cash',bank:'Bank / remittance',credit:'Credit / pay later',
       received:'Amount received',currency:'Invoice currency',preview:'Invoice preview',
@@ -78,6 +78,13 @@
     if(h)h.textContent=tr('heading');if(sub)sub.textContent=tr('subtitle');
     const first=root.querySelector('.page-head [data-action="sale"]');
     if(first)first.textContent='＋  '+tr('newSale');
+    const secondary=root.querySelector('.page-head [data-action="sale_return"]');
+    if(secondary){
+      const extra=mk('details','zsal-sale-more');
+      const caption=mk('summary','',tr('more'));extra.append(caption);
+      secondary.parentNode.insertBefore(extra,secondary);
+      extra.append(secondary);
+    }
     const original=root.querySelector(':scope > .stat-grid');
     if(original){
       const stats=salesStats(),wrap=mk('div','zsal-stat-pair');
@@ -176,7 +183,21 @@
       modal.classList.add('zsal-approved-modal');
       const title=modal.querySelector('.modal-head h3');
       if(title)title.textContent=tr('newSale');
-      const customerPane=panels[1],paymentPane=panels[2];
+      const productPane=panels[0],customerPane=panels[1],paymentPane=panels[2];
+      const heading=productPane.querySelector('.form-section-title');
+      if(heading)heading.textContent=tr('items');
+      const barcodeBox=productPane.querySelector('.zavi-barcode-box');
+      const scanLabel=barcodeBox?.querySelector('label[for="zaviBarcodeScan"]');
+      if(scanLabel)scanLabel.textContent=tr('addToSale');
+      // Long prototype guidance stays available under one compact disclosure.
+      // Do not delete existing barcode or product-validation elements.
+      const guidance=mk('details','zsal-guide');
+      guidance.append(mk('summary','',tr('guide')));
+      let found=0;
+      for(const hint of productPane.querySelectorAll('.z629-line-note,.zawi-inline-tip')){
+        guidance.append(hint);found++;
+      }
+      if(found)productPane.append(guidance);
       const pickerWrap=mk('div','zsal-customer-select');
       const lbl=mk('label','',tr('selectCustomer')),picker=mk('select');
       // HTMLSelectElement.type is read-only in strict mode.
@@ -289,12 +310,16 @@
       const cards=root.querySelectorAll('.zsal-stat');
       if(cards.length===2){set(cards[0].querySelector('span'),tr('today'));set(cards[1].querySelector('span'),tr('count'))}
       set(root.querySelector('.zsal-allstats summary'),tr('allStats'));
+      set(root.querySelector('.zsal-sale-more summary'),tr('more'));
       for(const [i,tab] of [...root.querySelectorAll('.zsal-list-tab')].entries())
         set(tab,tr(i===0?'records':'manual'));
     }
     const modal=document.querySelector('#overlay .zsal-approved-modal');
     if(!modal)return;
     set(modal.querySelector('.modal-head h3'),tr('newSale'));
+    set(modal.querySelector('.zsal-guide summary'),tr('guide'));
+    set(modal.querySelector('.zavi-flow-panel .form-section-title'),tr('items'));
+    set(modal.querySelector('.zavi-barcode-box label[for="zaviBarcodeScan"]'),tr('addToSale'));
     const label=modal.querySelector('.zsal-customer-select label');
     if(label?.firstChild?.nodeType===3)set(label.firstChild,tr('selectCustomer'));
     set(modal.querySelector('.zsal-customer-select option[value=""]'),tr('cashCustomer'));
@@ -312,7 +337,10 @@
   function schedule(){
     if(queued)return;queued=true;
     queueMicrotask(()=>{queued=false;
-      try{salesPage();saleModal();refreshLabels()}catch(e){console.warn('Approved sales UI:',e?.message||e)}
+      try{salesPage();saleModal();refreshLabels();
+        document.body.classList.toggle('zsal-on-sales',
+          !!document.querySelector('#content .zui-order-page[data-module="sales"]'));
+      }catch(e){console.warn('Approved sales UI:',e?.message||e)}
     });
   }
   function start(){
