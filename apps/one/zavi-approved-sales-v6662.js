@@ -14,7 +14,7 @@
       close:'بستن پیش‌نمایش',receipt:'پیش‌نمایش رسید',item:'محصول',qty:'تعداد',
       unit:'قیمت واحد',total:'مبلغ نهایی فاکتور',balance:'باقی‌مانده مشتری',
       nameRequired:'محصول را از گدام انتخاب کنید.',qtyRequired:'تعداد باید بیشتر از صفر باشد.',
-      priceRequired:'قیمت واحد باید بیشتر از صفر باشد.',overpaid:'مبلغ دریافت‌شده نمی‌تواند از کل بیشتر باشد.',
+      priceRequired:'قیمت واحد باید بیشتر از صفر باشد.',overpaid:'مبلغ دریافت‌شده نمی‌تواند از کل بیشتر باشد.',creditName:'برای فروش قرضی، نام مشتری را وارد کنید.',
       stock:'موجودی کافی نیست.',noItems:'حداقل یک محصول لازم است.',notSaved:'پیش‌نمایش است؛ هنوز هیچ معامله‌ای ثبت نشده است.'},
     ps:{heading:'د پلور مدیریت',subtitle:'ستاسې بلونه او معاملې',newSale:'نوی پلور ثبتول',
       today:'د نن پلور',count:'د بلونو شمېر',records:'د پلور بلونه',manual:'لاسي بلونه',
@@ -25,7 +25,7 @@
       close:'مخکتنه بندول',receipt:'د رسید مخکتنه',item:'توکی',qty:'شمېر',
       unit:'د واحد بیه',total:'د بل وروستۍ اندازه',balance:'د پېرودونکي پاتې',
       nameRequired:'توکی له ګدامه وټاکئ.',qtyRequired:'شمېر باید له صفر څخه لوړ وي.',
-      priceRequired:'د واحد بیه باید له صفر څخه لوړه وي.',overpaid:'ترلاسه شوې پیسې له ټول مبلغ څخه ډېرې نشي.',
+      priceRequired:'د واحد بیه باید له صفر څخه لوړه وي.',overpaid:'ترلاسه شوې پیسې له ټول مبلغ څخه ډېرې نشي.',creditName:'د پور پلور لپاره د پېرودونکي نوم ولیکئ.',
       stock:'موجودي کمه ده.',noItems:'لږ تر لږه یو توکی اړین دی.',notSaved:'دا مخکتنه ده؛ معامله لا نه ده ثبت شوې.'},
     en:{heading:'Sales management',subtitle:'Your invoices and transactions',newSale:'New sale',
       today:'Sales today',count:'Invoice count',records:'Sales invoices',manual:'Manual invoices',
@@ -36,7 +36,7 @@
       close:'Close preview',receipt:'Receipt preview',item:'Product',qty:'Quantity',
       unit:'Unit price',total:'Invoice final amount',balance:'Customer balance',
       nameRequired:'Select a product from the warehouse.',qtyRequired:'Quantity must be greater than zero.',
-      priceRequired:'Unit price must be greater than zero.',overpaid:'Received amount cannot exceed total.',
+      priceRequired:'Unit price must be greater than zero.',overpaid:'Received amount cannot exceed total.',creditName:'A customer name is required for credit sales.',
       stock:'Not enough inventory.',noItems:'At least one product is required.',notSaved:'Preview only; no transaction has been saved.'}
   };
   const lang=()=>{
@@ -157,6 +157,9 @@
     }
     const totals=orderTotals(form);
     if(totals.paid>totals.total){error(form.elements.paid,tr('overpaid'));return null}
+    if(totals.total-totals.paid>0.009&&!form.elements.freeContactName.value.trim()){
+      error(form.elements.freeContactName,tr('creditName'));return null;
+    }
     if(totals.total<=0)return null;
     return totals;
   }
