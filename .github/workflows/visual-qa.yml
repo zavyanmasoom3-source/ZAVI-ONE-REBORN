@@ -14,6 +14,7 @@ on:
       - 'scripts/test-approved-visual-v2-browser.py'
       - 'scripts/test-12-reference-design-browser.py'
       - 'scripts/check-reference-runtime-css.py'
+      - 'scripts/check-inline-javascript-syntax.py'
       - 'scripts/test-reference-auxiliary-pages.py'
       - 'scripts/audit-retired-ui-assets.py'
       - 'packages/shared/ui/**'
@@ -32,6 +33,8 @@ jobs:
         run: python3 scripts/audit-retired-ui-assets.py
       - name: Reject retired page-wide CSS and check reference-only entrypoints
         run: python3 scripts/check-reference-runtime-css.py
+      - name: Parse embedded ONE and ADMIN JavaScript before expensive browser tests
+        run: python3 scripts/check-inline-javascript-syntax.py
       - name: Diagnose actual applied appearance and CSS
         run: python3 scripts/diagnose-theme-qa.py
       - name: Render real app screens with Chrome
