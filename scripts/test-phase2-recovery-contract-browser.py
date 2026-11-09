@@ -23,6 +23,46 @@ with Session() as browser:
        locked:document.documentElement.classList.contains('zawi-locked')
     }))()""")
     assert initial=={'stored':True,'locked':True},initial
+    # Genuine PBKDF2 login guard: five invalid PINs must enforce the
+    # one-minute cooldown. This is ONLY a disposable browser profile.
+    for attempt in range(1,6):
+        browser.eval("""(()=>{
+          document.getElementById('zawiPinOne').value='000000';
+          document.getElementById('zawiPinForm').dispatchEvent(
+            new Event('submit',{bubbles:true,cancelable:true}));
+        })()""")
+        if attempt<5:
+            browser.until("""(()=>{
+              const s=JSON.parse(localStorage.getItem(
+                'zawi_store_private_attempts_v1')||'{}');
+              return s.count==%d && !document.getElementById('zawiPinSubmit').disabled;
+            })()""" % attempt,'incorrect PIN attempt %d counted' % attempt,seconds=15)
+        else:
+            browser.until("""(()=>{
+              const s=JSON.parse(localStorage.getItem(
+                'zawi_store_private_attempts_v1')||'{}');
+              return s.count===0 && s.until>Date.now() &&
+                !document.getElementById('zawiPinSubmit').disabled;
+            })()""",'fifth invalid PIN starts cooldown',seconds=15)
+        assert browser.eval("document.documentElement.classList.contains('zawi-locked')")
+        assert browser.eval("!!localStorage.getItem('zawi_store_personal_pin_v1')")
+    blocked=browser.eval("""(()=>{
+       document.getElementById('zawiPinOne').value='987654321';
+       document.getElementById('zawiPinForm').dispatchEvent(
+         new Event('submit',{bubbles:true,cancelable:true}));
+       return {
+         locked:document.documentElement.classList.contains('zawi-locked'),
+         message:document.getElementById('zawiPinError').textContent,
+         until:JSON.parse(localStorage.getItem(
+           'zawi_store_private_attempts_v1')).until
+       };
+    })()""")
+    assert blocked['locked'] and blocked['until']>0 and blocked['message'],blocked
+    # Only in-memory test state is cleared: this code never changes the app.
+    browser.eval("""(()=>{
+      localStorage.removeItem('zawi_store_private_attempts_v1');
+      document.getElementById('zawiPinOne').value='';
+    })()""")
     mocked=browser.eval("""(()=>{
       window.zaviPublicSetLang('en');
       document.dispatchEvent(new CustomEvent('zavi:language-change',

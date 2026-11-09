@@ -401,10 +401,12 @@ with Session() as browser:
             plan:hub.querySelector('.zsh-main .zsh-caption')?.textContent,
             firstDate:hub.querySelector('.zsh-row span')?.textContent,
             direction:getComputedStyle(hub).direction,
+            semanticDirection:hub.getAttribute('dir'),
             offline:hub.querySelector('[data-zavi-auto-offline-card] h3')?.textContent};
         })()""")
         assert details['heading']==expected_heading and details['plan']==expected_plan,details
         assert details['direction']==('ltr' if language=='en' else 'rtl'),details
+        assert details['semanticDirection']==details['direction'],details
         assert details['offline'] and details['firstDate'],details
 
         for entry in requests['requests']:
