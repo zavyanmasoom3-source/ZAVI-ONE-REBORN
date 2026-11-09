@@ -4,7 +4,7 @@
    previous-device freshness policy. Uses synthetic rows only, no DB writes.
  */
 const assert=require('node:assert/strict');
-const {classifyOtherDevices,isFresh}=require('../apps/one/zavi-devices-v652.js');
+const {classifyOtherDevices,isFresh,isVerifiedSynced}=require('../apps/one/zavi-devices-v652.js');
 const now=Date.parse('2026-11-09T18:00:00.000Z');
 const at=mins=>new Date(now-mins*60000).toISOString();
 const other='device-previous';
@@ -18,6 +18,13 @@ function state(rows){
 }
 assert.equal(isFresh(at(4),now),true);
 assert.equal(isFresh(at(16),now),false);
+assert.equal(isVerifiedSynced(previous(),now),true,'complete recent cloud sync');
+assert.equal(isVerifiedSynced(previous({last_sync_at:at(30)}),now),false,'stale sync blocks revocation');
+assert.equal(isVerifiedSynced(previous({last_report_at:at(16)}),now),false,'stale heartbeat blocks revocation');
+assert.equal(isVerifiedSynced(previous({reported_pending_count:2}),now),false,'pending records block revocation');
+assert.equal(isVerifiedSynced(previous({reported_pending_count:null}),now),false,'unknown pending count blocks revocation');
+assert.equal(isVerifiedSynced(previous({last_sync_at:null}),now),false,'missing proof blocks revocation');
+
 assert.equal(state([previous()]),'clear','fresh successful sync');
 assert.equal(state([previous({reported_pending_count:2})]),'pending','unsent ledger');
 assert.equal(state([previous({reported_pending_count:null})]),'unknown','unknown queue');
