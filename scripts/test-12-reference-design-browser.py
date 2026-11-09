@@ -262,6 +262,18 @@ with Session() as browser:
     report['one_settings_8_group_languages']={'locales':['fa-AF','ps-AF','en'],
        'live_controls_preserved':True,'open_state_preserved':True}
 
+    only_one_theme=browser.eval("""(()=>{
+      const native=document.querySelector('#content .zavi-theme-settings .zavi-theme-picker');
+      const duplicate=document.querySelector('#zavi-ui-preferences-v2 .zui-pref-theme-row');
+      const language=document.querySelector('#zavi-ui-preferences-v2 [data-zui-language="en"]');
+      return {native:!!native&&getComputedStyle(native).display!=='none',
+        duplicateHidden:!!duplicate&&getComputedStyle(duplicate).display==='none',
+        languageVisible:!!language&&getComputedStyle(language).display!=='none'};
+    })()""")
+    assert all(only_one_theme.values()),only_one_theme
+    report['one_settings_unique_appearance'] = only_one_theme
+
+
     # Click the actual language controls rather than only changing <html>
     # attributes. Locale and direction must persist without restarting.
     for value,visible_title in [
@@ -296,6 +308,20 @@ with Session() as browser:
        title:document.querySelector('#content .zavi-clean-settings-title strong')?.textContent
     }))()""")
     assert persisted_locale=={'lang':'fa-AF','stored':'fa-AF','title':'تنظیمات'},persisted_locale
+
+    # Full reload uses the real PIN lock, then revisits Settings. No
+    # synthetic user data and no bypass of the app PIN.
+    browser.unlock_one()
+    browser.route('settings')
+    after_reload=browser.eval("""(()=>({
+      lang:document.documentElement.lang,
+      persisted:localStorage.getItem('zavi_public_language_v11'),
+      title:document.querySelector('#content .zavi-clean-settings-title strong')?.textContent,
+      theme:document.documentElement.dataset.zaviTheme
+    }))()""")
+    assert after_reload['lang']=='fa-AF' and after_reload['persisted']=='fa-AF',after_reload
+    assert after_reload['title']=='تنظیمات',after_reload
+
 
 
 
