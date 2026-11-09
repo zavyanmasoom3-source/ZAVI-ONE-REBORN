@@ -377,10 +377,13 @@
     set(modal.querySelector('.zsal-currency-note'),tr('currency')+': '+String(db.currency||'AFN'));
     const dual=modal.querySelector('.zsal-dual-date');
     if(dual){
-      try{dual.textContent=window.ZaviDesignSystemV1?.formatDualDate(
-        modal.querySelector('#dialogForm').elements.date.value,{
-          language:lang()==='fa'?'fa-AF':lang()==='ps'?'ps-AF':'en',timezone:'Asia/Kabul'
-        })||'';}catch(_){dual.textContent='';}
+      try{
+        const next=window.ZaviDesignSystemV1?.formatDualDate(
+          modal.querySelector('#dialogForm').elements.date.value,{
+            language:lang()==='fa'?'fa-AF':lang()==='ps'?'ps-AF':'en',timezone:'Asia/Kabul'
+          })||'';
+        if(dual.textContent!==next)dual.textContent=next;
+      }catch(_){if(dual.textContent)dual.textContent='';}
     }
     const btn=modal.querySelector('.zsal-preview-button');
     if(btn)set(btn,btn.getAttribute('aria-expanded')==='true'?tr('close'):tr('preview'));
