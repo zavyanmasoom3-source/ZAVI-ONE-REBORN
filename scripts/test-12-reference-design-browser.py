@@ -100,6 +100,22 @@ with Session() as browser:
         image.write_bytes(browser.screenshot())
         assert image.stat().st_size>10000,image
         report['apps'][f'one-{theme}']={'visual':mode,'navigation':bottom}
+    # Retired floating assistants must never cover forms or the mobile navigation.
+    # This is a UI assertion only: accounting commands/permissions are unchanged.
+    for route in ('sales','products','purchases'):
+        browser.route(route)
+        overlay=browser.eval("""(()=>{
+          const ids=['z637AiButton','z605-launch'];
+          const active=ids.map(id=>document.getElementById(id))
+             .filter(el=>el && getComputedStyle(el).display!=='none' &&
+                     !el.hidden && getComputedStyle(el).visibility!=='hidden');
+          return {route:document.querySelector('#content [data-module]')?.dataset.module,
+                  active:active.map(el=>el.id),
+                  navVisible:getComputedStyle(document.getElementById('mobileBottom')).display!=='none'};
+        })()""")
+        assert not overlay['active'] and overlay['navVisible'], (route, overlay)
+        report['apps'][f'one-{route}-floating-buttons']=overlay
+
     # Obsolete legacy design customizer and repair menu are absent from new UI.
     browser.route('settings')
     obsolete=browser.eval("""(()=>({custom:!!document.querySelector('#z637DesignForm'),
