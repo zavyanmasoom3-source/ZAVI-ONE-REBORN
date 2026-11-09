@@ -167,6 +167,46 @@ for app,field_id in [('one','zawiPinOne'),('admin','authPassword')]:
             assert all(v=='glass' for v in persisted.values()),persisted
             print('PASS: owner-referenced ONE PIN entry, 3 themes, 3 locales, persisted glass reload')
 
+            # The real PBKDF2 PIN gate must localize all labels immediately.
+            # Switching locale mid-entry may not clear a typed PIN.
+            for language,title,submit in [
+                ('fa-AF','ورود به ZAVI ONE','ثبت رمز و ورود'),
+                ('ps-AF','ZAVI ONE ته ننوتل','رمز جوړول او ننوتل'),
+                ('en','Sign in to ZAVI ONE','Save PIN & enter')
+            ]:
+                gate_text=browser.eval("""(()=>{
+                  const l=%s;
+                  const pass=document.getElementById('zawiPinOne');
+                  pass.value='123456';
+                  document.documentElement.lang=l;
+                  document.documentElement.dir=l==='en'?'ltr':'rtl';
+                  document.dispatchEvent(new CustomEvent('zavi:language-change',
+                    {detail:{language:l}}));
+                  const e=id=>document.getElementById(id);
+                  return {title:e('zawiGateTitle')?.textContent,
+                    button:e('zawiPinSubmit')?.textContent,
+                    help:e('zawiGateHelp')?.textContent,
+                    label:e('zawiPinLabel')?.textContent,
+                    repeat:e('zawiPinRepeatRow')?.querySelector('label')?.textContent,
+                    forgotten:e('zawiForgotPinBtn')?.textContent,
+                    typed:pass.value,
+                    theme:e('zawiPrivateGate')?.querySelector('.zavi-gate-appearance')
+                      ?.getAttribute('aria-label')};
+                })()""" %json.dumps(language))
+                assert gate_text['title']==title and gate_text['button']==submit,gate_text
+                assert gate_text['typed']=='123456' and gate_text['help'],gate_text
+                assert gate_text['label'] and gate_text['repeat'] and gate_text['theme'],gate_text
+                assert gate_text['forgotten'],gate_text
+            browser.eval("""(()=>{
+              document.documentElement.lang='fa-AF';
+              document.documentElement.dir='rtl';
+              document.dispatchEvent(new CustomEvent('zavi:language-change',
+                {detail:{language:'fa-AF'}}));
+              document.getElementById('zawiPinOne').value='';
+            })()""")
+            print('PASS: native PIN login labels and guarded PIN input survive three language changes')
+
+
             # Exercise the real recovery dialog without submitting a credential
             # or calling the production PIN-reset RPC.
             for lang, heading in [('fa-AF','بازیابی رمز خصوصی'),
