@@ -1,62 +1,15 @@
-/* ZAVI ONE + ZAVI ONE ADMIN — approved 2026 visual replacement.
-   Pure presentation: no account state, hidden business controls, or synthetic totals.
-   Two themes only. Screens use the SAME tokens across web/Android/desktop. */
-:root,html[data-zavi-theme="light"]{
- --zav-bg:#f4f7fc;--zav-surface:#ffffff;--zav-soft:#f0f5fc;
- --zav-input:#ffffff;--zav-ink:#101f37;--zav-muted:#58697e;
- --zav-border:#dce5f2;--zav-blue:#0764e9;--zav-blue-2:#2e8eff;
- --zav-blue-soft:#e7f0ff;--zav-link:#135fc8;
- --zav-positive:#137a49;--zav-positive-bg:#e8f8ef;
- --zav-negative:#b3263e;--zav-negative-bg:#ffebef;
- --zav-warn:#945e08;--zav-warn-bg:#fff4d9;
- --zav-shadow:0 3px 14px rgba(24,49,98,.055),0 14px 40px rgba(23,55,112,.04);
- --zav-radius:18px;--zav-field-radius:12px;--zav-tap:44px;
- --zds-bg:var(--zav-bg);--zds-surface:var(--zav-surface);
- --zds-surface-alt:var(--zav-soft);--zds-text:var(--zav-ink);
- --zds-muted:var(--zav-muted);--zds-border:var(--zav-border);
- --zds-link:var(--zav-link);--zds-button:var(--zav-blue);
- --zds-button-text:#fff;--zds-focus:#176ce8;
- --zpdf-bg:var(--zav-bg);--zpdf-paper:var(--zav-surface);
+/* ZAVI approved visual compatibility: presentation rules only.
+ * The 12-reference light/dark/glass tokens live EXCLUSIVELY in
+ * packages/shared/ui/design-system-v1.css.
+ * No legacy palette or --zds-button overrides are allowed here.
+ */
+html[data-zavi-theme]{
  --zpdf-soft:var(--zav-soft);--zpdf-soft-blue:var(--zav-blue-soft);
- --zpdf-ink:var(--zav-ink);--zpdf-muted:var(--zav-muted);
- --zpdf-line:var(--zav-border);--zpdf-blue:var(--zav-blue);
  --zpdf-shadow:var(--zav-shadow);--zpdf-radius:var(--zav-radius);
- --zad-bg:var(--zav-bg);--zad-paper:var(--zav-surface);
- --zad-soft:var(--zav-soft);--zad-ink:var(--zav-ink);
- --zad-muted:var(--zav-muted);--zad-line:var(--zav-border);
- --zad-blue:var(--zav-blue);--zad-shadow:var(--zav-shadow);
+ --zad-soft:var(--zav-soft);--zad-shadow:var(--zav-shadow);
  --za-bg:var(--zav-bg);--za-panel:var(--zav-surface);
  --za-text:var(--zav-ink);--za-muted:var(--zav-muted);
  --za-line:var(--zav-border);--za-shadow:var(--zav-shadow);
- color-scheme:light;
-}
-html[data-zavi-theme="dark"]{
- --zav-bg:#080d16;--zav-surface:#131922;--zav-soft:#1a2330;
- --zav-input:#151e2b;--zav-ink:#f4f7fc;--zav-muted:#bac7d9;
- --zav-border:#29394d;--zav-blue:#2379f7;--zav-blue-2:#4e9dff;
- --zav-blue-soft:#122b52;--zav-link:#a7d2ff;
- --zav-positive:#6ee8ad;--zav-positive-bg:#16362d;
- --zav-negative:#ff9bac;--zav-negative-bg:#40202a;
- --zav-warn:#f9cf7d;--zav-warn-bg:#393020;
- --zav-shadow:0 10px 32px rgba(0,0,0,.23);
- --zds-bg:var(--zav-bg);--zds-surface:var(--zav-surface);
- --zds-surface-alt:var(--zav-soft);--zds-text:var(--zav-ink);
- --zds-muted:var(--zav-muted);--zds-border:var(--zav-border);
- --zds-link:var(--zav-link);--zds-button:var(--zav-blue);
- --zds-button-text:#fff;--zds-focus:#7cb8ff;
- --zpdf-bg:var(--zav-bg);--zpdf-paper:var(--zav-surface);
- --zpdf-soft:var(--zav-soft);--zpdf-soft-blue:var(--zav-blue-soft);
- --zpdf-ink:var(--zav-ink);--zpdf-muted:var(--zav-muted);
- --zpdf-line:var(--zav-border);--zpdf-blue:var(--zav-blue);
- --zpdf-shadow:var(--zav-shadow);--zpdf-radius:var(--zav-radius);
- --zad-bg:var(--zav-bg);--zad-paper:var(--zav-surface);
- --zad-soft:var(--zav-soft);--zad-ink:var(--zav-ink);
- --zad-muted:var(--zav-muted);--zad-line:var(--zav-border);
- --zad-blue:var(--zav-blue);--zad-shadow:var(--zav-shadow);
- --za-bg:var(--zav-bg);--za-panel:var(--zav-surface);
- --za-text:var(--zav-ink);--za-muted:var(--zav-muted);
- --za-line:var(--zav-border);--za-shadow:var(--zav-shadow);
- color-scheme:dark;
 }
 html[data-zavi-theme] :is(button,input,select,textarea){font-family:inherit}
 html[data-zavi-theme] :is(button,a,input,select,textarea):focus-visible{
