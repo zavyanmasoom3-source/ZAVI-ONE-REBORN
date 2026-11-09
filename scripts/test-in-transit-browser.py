@@ -161,7 +161,8 @@ with Session() as browser:
     print('PASS: client blocks 1.25-unit overreceipt; legacy stock remains 0')
     (out/'result.json').write_text(json.dumps({
         'scope':'Real Chrome app UI; intercepted localhost-only synthetic server response; no customer data or Supabase writes',
-        'orders':result['countOrders'],'receipts':result['receiptCount'],
-        'server_mock_posted':result['posted'],'legacy_stock_unchanged':result['localStock']==0,
+        'orders':result['countOrders'],'receipts':after_retry['receipts'],
+        'server_mock_posted':after_retry['posted'],'legacy_stock_unchanged':after_retry['legacyStock']==0,
+        'dropped_ack_same_receipt_id_retried':True,'double_post_prevented_in_mock':True,
         'server_rpc_execution_verified':False,'physical_device_verified':False
     },indent=2)+'\n')
