@@ -177,13 +177,47 @@ with Session() as b:
       assert result['width']<=result['maxWidth'] and result['panelWidth']<=result['width'],result
       (out/('sale-'+theme+'-mobile.png')).write_bytes(b.screenshot())
     print('PASS: form remains within 420px phone viewport across light/dark/glass style selectors')
+    # Exercise actual native localStorage transaction posting in the disposable
+    # browser. This is not an RLS test and does NOT have production credentials.
+    b.command('Network.enable')
+    b.command('Network.setBlockedURLs',{'urls':['*supabase.co/*','*supabase.in/*']})
+    posted=b.eval(r"""(()=>{
+      const form=document.querySelector('#overlay .zsal-approved-modal #dialogForm');
+      const before=db.tx.length,stockBefore=stockOf('qa-approved-sale-product');
+      if(!form)return {error:'Native sale form missing'};
+      const original=window.zaviCloudCanEdit;
+      // Test-only authenticated-owner permission stub. The real server is
+      // blocked by Chromium, and this browser profile is disposable.
+      window.zaviCloudCanEdit=()=>true;
+      form.elements.freeContactName.value='QA LOCAL CREDIT CUSTOMER';
+      form.elements.paid.value='20';
+      form.elements.paid.dispatchEvent(new Event('input',{bubbles:true}));
+      form.requestSubmit();
+      const after=db.tx.length,stockAfter=stockOf('qa-approved-sale-product');
+      const sale=db.tx.at(-1),contact=db.contacts.find(c=>c.id===sale?.contactId);
+      const due=contact?contactBalances()[contact.id]?.receivable:null;
+      form.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
+      const afterDoubleSubmit=db.tx.length;
+      window.zaviCloudCanEdit=original;
+      return {before,after,afterDoubleSubmit,stockBefore,stockAfter,
+        type:sale?.type,invoice:sale?.code,customer:contact?.name,
+        paid:sale?.paid,due,total:txTotal(sale||{}),
+        savedInLocalStorage:localStorage.getItem(KEY)?.includes(sale?.id||'not-saved')||false};
+    })()""")
+    assert not posted.get('error'),posted
+    assert posted['after']==posted['before']+1 and posted['afterDoubleSubmit']==posted['after'],posted
+    assert posted['stockBefore']==10 and posted['stockAfter']==8,posted
+    assert posted['total']==34 and posted['paid']==20 and posted['due']==14,posted
+    assert posted['customer']=='QA LOCAL CREDIT CUSTOMER' and posted['savedInLocalStorage'],posted
+    print('PASS: real native local sale commits once, stock 10 -> 8, paid 20, receivable 14, durable localStorage')
     # Confirm no user data can be sent to the backend by this test.
     proof.update({
       "source_screen":"real sales route and original HTML form",
       "browser_screenshots":sorted(p.name for p in out.glob('*.png')),
       "barcode_scan":"synthetic keyboard scan, not tested physical camera",
       "observed_quantity":qty['qty'],"expected_preview_total":34,
-      "save_side_effects":False,"native_submit_listener_preserved":modal['hasSubmit'],
+      "save_side_effects":"one local-only, disposable committed sale after preview",
+      "local_financial_posting":posted,"native_submit_listener_preserved":modal['hasSubmit'],
       "remaining":["real physical camera permission","cloud stock-per-warehouse enforcement",
                    "mixed FX payment","end-to-end real RLS and update/rollback",
                    "pixel comparison against source screenshots"]
