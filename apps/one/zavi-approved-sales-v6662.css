@@ -233,6 +233,32 @@ body.zsal-on-sales #z605-launch{display:none!important}
  #overlay .zsal-approved-modal .zavi-flow-panel{padding:11px!important}
  #overlay .zsal-approved-modal .modal-head h3{font-size:18px!important}
 }
+/* Override high-specificity legacy scanner toolbar layout without replacing its controls. */
+html body #overlay .modal.zsal-approved-modal .modal-body .zavi-barcode-actions{
+  display:grid!important;grid-template-columns:minmax(0,1fr) 48px!important;
+  align-items:center!important;gap:8px!important;direction:inherit!important;
+}
+html body #overlay .modal.zsal-approved-modal .modal-body .zavi-barcode-actions #zaviBarcodeScan{
+  grid-column:1!important;grid-row:1!important;min-width:0!important;
+  width:100%!important;max-width:100%!important;display:block!important;
+}
+html body #overlay .modal.zsal-approved-modal .modal-body .zavi-barcode-actions [data-zavi-camera-open]{
+  grid-column:2!important;grid-row:1!important;
+  width:48px!important;max-width:48px!important;min-width:48px!important;
+  height:48px!important;min-height:48px!important;
+  border-radius:50%!important;display:flex!important;
+  align-items:center!important;justify-content:center!important;
+  font-size:0!important;line-height:0!important;
+  background:#181818!important;color:#fff!important;border:0!important;box-shadow:none!important;
+}
+html body #overlay .modal.zsal-approved-modal .modal-body .zavi-barcode-actions [data-zavi-camera-open]::before{
+  content:"▣";display:block;font-size:22px!important;line-height:1!important;color:#fff!important;
+}
+html body #overlay .modal.zsal-approved-modal .modal-body .zavi-barcode-actions #z659BarcodeConfirm,
+html body #overlay .modal.zsal-approved-modal .modal-body .zavi-barcode-actions #z650ManualProduct{
+  grid-row:2!important;grid-column:auto!important;min-width:0!important;
+  font-size:12px!important;line-height:1.5!important;
+}
 @media(prefers-reduced-motion:reduce){
  #overlay .zsal-approved-modal *,#content .zsal-approved-page *{animation:none!important;transition:none!important}
 }
