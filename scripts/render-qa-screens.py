@@ -9,7 +9,7 @@ OUT.mkdir(exist_ok=True)
 ROUTES=('dashboard','sales','purchases','products','money','debtors','settings')
 with Session() as browser:
     entries=[]
-    for theme in ('light','dark','glass'):
+    for theme in ('light','dark'):
         # Use actual Settings preference in a disposable local test profile.
         browser.navigate('one')
         # Both keys are part of the v2 appearance contract. The previous test
