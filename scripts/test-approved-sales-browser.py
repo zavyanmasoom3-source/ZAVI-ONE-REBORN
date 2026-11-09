@@ -234,17 +234,24 @@ with Session() as b:
       assert result['width']<=result['maxWidth'] and result['panelWidth']<=result['width'],result
       (out/('sale-'+theme+'-mobile.png')).write_bytes(b.screenshot())
     print('PASS: form remains within 420px phone viewport across light/dark/glass style selectors')
-    locales=b.eval(r"""(()=>{
-      const d=document.documentElement,header=document.querySelector('.zsal-approved-modal .modal-head h3');
-      const test=(language,phrase)=>{
-        d.lang=language;document.dispatchEvent(new Event('zavi:language-change'));
-        return {translated:header.textContent===phrase,
-          date:document.querySelector('.zsal-dual-date')?.textContent||''};
-      };
-      const english=test('en','New sale'),pashto=test('ps','نوی پلور ثبتول'),
-        dari=test('fa-AF','ثبت فروش جدید');
-      return {english,pashto,dari};
-    })()""")
+    locales={}
+    for lang_id,locale_name,expected in (
+      ('en','english','New sale'),
+      ('ps-AF','pashto','نوی پلور ثبتول'),
+      ('fa-AF','dari','ثبت فروش جدید')
+    ):
+      b.eval("document.documentElement.lang="+json.dumps(lang_id,ensure_ascii=False)+
+             ";document.dispatchEvent(new Event('zavi:language-change'))")
+      b.until("document.querySelector('.zsal-approved-modal .modal-head h3')?.textContent===" +
+              json.dumps(expected,ensure_ascii=False),
+              'live sales translation to '+locale_name,seconds=8)
+      state=b.eval("""(()=>({
+        translated:document.querySelector('.zsal-approved-modal .modal-head h3').textContent,
+        date:document.querySelector('.zsal-dual-date')?.textContent||'',
+        lang:document.documentElement.lang
+      }))()""")
+      locales[locale_name]={'translated':state['translated']==expected,
+                            'date':state['date'],'lang':state['lang']}
     assert all(locales[k]['translated'] and locales[k]['date'] for k in ('english','pashto','dari')),locales
     print('PASS: real-time Dari/Pashto/English sales header and dual Afghan/Gregorian date update without reload')
     # Exercise actual native localStorage transaction posting in the disposable
