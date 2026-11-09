@@ -239,9 +239,110 @@
     document.addEventListener('zavi:language-changed',update);
     document.addEventListener('DOMContentLoaded',update);
   }
+
+  /* Safe shared DOM components; not financial, auth or server-side actions.
+   * No dummy data and no implicit success actions are created.
+   */
+  const iconPaths = Object.freeze({
+    home:[['path','M3 10 12 3l9 7v11H3z'],['path','M9 21v-7h6v7']],
+    search:[['circle','11 11 7'],['path','m20 20-4-4']],
+    plus:[['path','M12 5v14'],['path','M5 12h14']],
+    check:[['path','M20 6 9 17l-5-5']],
+    close:[['path','M18 6 6 18'],['path','M6 6l12 12']],
+    users:[['path','M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2'],['circle','9 7 4'],['path','M22 21v-2a4 4 0 0 0-3-3.87'],['path','M16 3.13a4 4 0 0 1 0 7.75']],
+    box:[['path','m12 2 9 5-9 5-9-5 9-5z'],['path','M3 7v10l9 5 9-5V7'],['path','M12 12v10']],
+    shoppingCart:[['path','M3 3h2l2 12h12l3-9H6'],['circle','10 20 1'],['circle','19 20 1']],
+    wallet:[['rect','3 6 18 15 2'],['path','M3 10h18'],['path','M16 15h2']],
+    calendar:[['rect','3 5 18 16 2'],['path','M16 3v4'],['path','M8 3v4'],['path','M3 10h18']],
+    shield:[['path','M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z']],
+    settings:[['circle','12 12 3'],['path','M12 2v3m0 14v3M2 12h3m14 0h3M5 5l2 2m10 10 2 2M19 5l-2 2M7 17l-2 2']],
+    document:[['path','M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'],['path','M14 2v6h6'],['path','M8 13h8'],['path','M8 17h8']]
+  });
+  function uiIcon(name) {
+    const shape=iconPaths[name];
+    if (!shape || typeof document==='undefined') throw new RangeError('Unknown local SVG icon');
+    const ns='http://www.w3.org/2000/svg', svg=document.createElementNS(ns,'svg');
+    svg.setAttribute('viewBox','0 0 24 24');
+    svg.setAttribute('aria-hidden','true');svg.setAttribute('class','zds-svg-icon');
+    for(const [kind,definition] of shape){
+      const node=document.createElementNS(ns,kind);
+      const args=definition.split(' ');
+      if(kind==='path')node.setAttribute('d',definition);
+      else if(kind==='circle'){node.setAttribute('cx',args[0]);node.setAttribute('cy',args[1]);node.setAttribute('r',args[2]);}
+      else if(kind==='rect'){
+        node.setAttribute('x',args[0]);node.setAttribute('y',args[1]);
+        node.setAttribute('width',args[2]);node.setAttribute('height',args[3]);
+        node.setAttribute('rx',args[4]);
+      }
+      svg.append(node);
+    }
+    return svg;
+  }
+  function uiNode(tag,className,text){
+    if(typeof document==='undefined')throw new TypeError('Browser document required');
+    const node=document.createElement(tag);
+    if(className)node.className=className;
+    if(text!==undefined&&text!==null)node.textContent=String(text);
+    return node;
+  }
+  function uiButton({label,variant='primary',onClick,disabled=false,icon}={}){
+    if(typeof label!=='string'||!label.trim())throw new TypeError('Accessible button label required');
+    if(typeof onClick!=='function'&&!disabled)throw new TypeError('Real action callback or disabled=true required');
+    const variants=['primary','secondary','danger'];
+    if(!variants.includes(variant))throw new RangeError('Unsupported button variant');
+    const node=uiNode('button','zds-button zds-button--'+variant);
+    node.type='button';node.disabled=!!disabled;node.setAttribute('aria-label',label);
+    if(icon)node.append(uiIcon(icon));
+    node.append(document.createTextNode(label));
+    if(typeof onClick==='function')node.addEventListener('click',onClick);
+    return node;
+  }
+  function uiField({label,name,id,type='text',value='',required=false,placeholder=''}={}){
+    if(!label||!name)throw new TypeError('Field label and name required');
+    const root=uiNode('div','zds-field');
+    root.dataset.zdsField='true';
+    const input=uiNode('input');
+    input.type=type;input.name=name;
+    input.id=id||'zds-'+String(name).replace(/[^a-zA-Z0-9_-]/g,'-');
+    input.value=String(value);input.required=!!required;input.placeholder=placeholder;
+    const lab=uiNode('label','',label);lab.setAttribute('for',input.id);
+    root.append(lab,input);
+    return {root,input,setError(message){return setFieldError(input,message)}};
+  }
+  function uiStatus({label,state='neutral'}={}){
+    if(!label)throw new TypeError('Visible status label required');
+    if(!['neutral','success','warning','danger'].includes(state))throw new RangeError('Invalid status');
+    return uiNode('span','zds-status'+(state==='neutral'?'':' zds-status--'+state),label);
+  }
+  function uiEmpty({message,icon='document'}={}){
+    if(!message)throw new TypeError('Empty state message required');
+    const panel=uiNode('div','zds-empty');
+    panel.append(uiIcon(icon),uiNode('p','',message));return panel;
+  }
+  function uiStepper({steps,active=0}={}){
+    if(!Array.isArray(steps)||!steps.length||active<0||active>=steps.length)throw new RangeError('Steps and active index required');
+    const list=uiNode('ol','zds-stepper');
+    steps.forEach((label,index)=>{
+      const item=uiNode('li','',label);
+      if(index===active)item.setAttribute('aria-current','step');
+      list.append(item);
+    });
+    return list;
+  }
+  function uiConfirmDialog({title,message,onConfirm,cancelLabel='Cancel',confirmLabel='Confirm'}={}){
+    if(!title||!message||typeof onConfirm!=='function')throw new TypeError('Real confirmation callback required');
+    const panel=uiNode('dialog','zds-dialog');
+    const heading=uiNode('h2','',title),desc=uiNode('p','',message);
+    const controls=uiNode('div','zds-dialog-actions');
+    const cancel=uiButton({label:cancelLabel,variant:'secondary',onClick:()=>panel.close()});
+    const confirm=uiButton({label:confirmLabel,onClick:()=>onConfirm(panel)});
+    controls.append(cancel,confirm);panel.append(heading,desc,controls);
+    return panel;
+  }
   return Object.freeze({
     normalizeLanguage,direction,digits,formatDualDate,formatNumber,
     formatExchangeRate,normalizeAfghanPhone,whatsappDigits,setFieldError,
-    refreshDualDateNodes,passwordVisibilityLabel,localizedLabel
+    refreshDualDateNodes,passwordVisibilityLabel,localizedLabel,
+    uiIcon,uiButton,uiField,uiStatus,uiEmpty,uiStepper,uiConfirmDialog
   });
 });

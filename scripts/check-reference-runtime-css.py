@@ -33,6 +33,9 @@ for app in ('one','admin'):
     else:must.update({'zavi-admin-settings-hub-v1.css','style.css'})
     assert must.issubset(hrefs),(app,'missing functional CSS',sorted(must-set(hrefs)))
     assert not any(('"'+name+'"') in sw or ("'"+name+"'") in sw for name in obsolete)
-    assert f"zavi-{app}-ref-12-design-reset-{'v5' if app=='one' else 'v4'}-20261109" in sw
+    cache=re.search(r"const CACHE_NAME='([^']+)'",sw)
+    assert cache and cache.group(1).startswith(f'zavi-{app}-design-tokens-unified-'),(app,'stale design token cache')
+    assert '"../../packages/shared/ui/design-system-v1.css"' in sw,(app,'shared design not offline cached')
+    assert '"../../packages/shared/ui/design-system-v1.js"' in sw,(app,'shared design helpers not offline cached')
     print(f'PASS {app}: {len(hrefs)} active CSS links, retired theme files removed from root')
 print('PASS: reference theme is the final active design in ONE and ADMIN')
