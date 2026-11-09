@@ -1,10 +1,14 @@
-name: Stage 3 offline policy contract
+name: Stage 3 offline and device safety contracts
 on:
   push:
     branches: [dev]
     paths:
       - 'supabase/migrations/20261109_phase3_trial_offline_policy.sql'
       - 'scripts/test-phase3-offline-policy.sql'
+      - 'supabase/migrations/20261109_phase3_device_revoke_sync_guard.sql'
+      - 'scripts/test-phase3-revoke-device.sql'
+      - 'scripts/test-phase3-device-freshness.cjs'
+      - 'apps/one/zavi-devices-v652.js'
       - '.github/workflows/phase3-offline-policy.yml'
   workflow_dispatch:
 permissions:
@@ -29,8 +33,15 @@ jobs:
           --health-retries 12
     steps:
       - uses: actions/checkout@v4
+      - name: Verify previous-device fresh sync policy in browser logic
+        run: node scripts/test-phase3-device-freshness.cjs
       - name: Verify offline policy and trial-to-paid transition on disposable PostgreSQL
         env:
           PGPASSWORD: synthetic-policy-only
         run: |
           psql -h 127.0.0.1 -U postgres -d postgres -v ON_ERROR_STOP=1 -f scripts/test-phase3-offline-policy.sql
+      - name: Verify owner device revocation with zero pending and recent real sync
+        env:
+          PGPASSWORD: synthetic-policy-only
+        run: |
+          psql -h 127.0.0.1 -U postgres -d postgres -v ON_ERROR_STOP=1 -f scripts/test-phase3-revoke-device.sql
