@@ -1,9 +1,9 @@
 /* Owner-approved sales screen. Scoped to the live sales route and native invoice modal.
  * Reference images: seven screenshots on 2026-11-09; not a replacement financial form. */
 .zsal-approved-page,.zsal-approved-modal{
-  --zsal-paper:var(--zds-surface,#fff);--zsal-soft:var(--zds-surface-alt,#f2f3f5);
-  --zsal-ink:var(--zds-text,#171717);--zsal-muted:var(--zds-muted,#5c6067);
-  --zsal-outline:var(--zds-border,#d5d7db);--zsal-primary:#181818;
+  --zsal-paper:#ffffff;--zsal-soft:#f1f2f4;
+  --zsal-ink:#171717;--zsal-muted:#555b64;
+  --zsal-outline:#d6d9dd;--zsal-primary:#181818;
   --zsal-blue:#2f76c8;--zsal-success:#1e703e;
   color:var(--zsal-ink)!important;min-width:0;
 }
@@ -22,6 +22,22 @@ html[data-zavi-appearance="glass"] .zsal-approved-modal{
   --zsal-primary:#fff;--zsal-blue:#a7d0ff;--zsal-success:#9ee9ba;
 }
 #content .zsal-approved-page{max-width:1060px;margin-inline:auto;display:block;direction:inherit}
+#content .zsal-approved-page>.zui-section-heading{display:none!important}
+#content .zsal-sale-more{display:inline-block;color:var(--zsal-ink)}
+#content .zsal-sale-more summary{
+  display:flex;align-items:center;justify-content:center;min-height:42px;
+  border:1px solid var(--zsal-outline);border-radius:999px;padding:8px 15px;
+  background:var(--zsal-paper);font-size:12px;font-weight:700;cursor:pointer;
+}
+#content .zsal-sale-more[open]{position:relative}
+#content .zsal-sale-more [data-action="sale_return"]{
+  display:flex!important;margin-top:6px!important;min-height:40px!important;
+  padding:7px 10px!important;background:var(--zsal-paper)!important;
+  border:1px solid var(--zsal-outline)!important;border-radius:12px!important;
+  font-size:12px!important;white-space:nowrap;
+}
+body.zsal-on-sales #z605-launch{display:none!important}
+
 #content .zsal-approved-page .zui-section-heading{border:0!important;margin:0!important;padding:0 4px 6px!important}
 #content .zsal-approved-page .zui-section-heading .zui-eyebrow{font-size:11px;color:var(--zsal-muted)!important}
 #content .zsal-approved-page .page-head{padding:9px 4px 15px!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:16px!important;flex-wrap:wrap!important}
@@ -95,6 +111,16 @@ html[data-zavi-appearance="glass"] .zsal-approved-modal{
 #overlay .zsal-approved-modal .zavi-flow-panel .field label{color:var(--zsal-muted)!important;font-weight:750!important}
 #overlay .zsal-approved-modal .zavi-flow-panel .form-section-title{font-size:16px!important;font-weight:900!important;color:var(--zsal-ink)!important}
 #overlay .zsal-approved-modal .zavi-flow-panel :is(.z629-line-note,.zawi-inline-tip,.tiny-note){font-size:11px!important;color:var(--zsal-muted)!important;line-height:1.65!important}
+#overlay .zsal-approved-modal .zsal-guide{
+  padding:8px 11px!important;border:1px solid var(--zsal-outline)!important;
+  border-radius:12px!important;background:var(--zsal-paper)!important;
+  color:var(--zsal-muted)!important;font-size:12px!important;
+}
+#overlay .zsal-approved-modal .zsal-guide summary{
+  cursor:pointer;font-weight:750;min-height:28px;display:flex;align-items:center;color:var(--zsal-ink)!important;
+}
+#overlay .zsal-approved-modal .zsal-guide :is(p,small){font-size:11px!important;line-height:1.65!important}
+#overlay .zsal-approved-modal .zawi-order-heading{display:none!important}
 #overlay .zsal-approved-modal #orderItems{display:grid;gap:12px;min-width:0}
 #overlay .zsal-approved-modal .order-line{
   display:block!important;background:var(--zsal-soft)!important;color:var(--zsal-ink)!important;
