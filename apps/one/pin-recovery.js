@@ -11,6 +11,8 @@ const css=`
  padding:calc(16px + env(safe-area-inset-top)) 14px calc(16px + env(safe-area-inset-bottom));
  background:rgba(8,19,37,.75);color:var(--zds-text);
  font:14px var(--zds-font-family,Vazirmatn,Tahoma,Arial,sans-serif);direction:inherit;box-sizing:border-box}
+html[dir="ltr"] #z24Recovery{direction:ltr!important}
+html[dir="rtl"] #z24Recovery{direction:rtl!important}
 #z24Recovery *,#z24Recovery *::before,#z24Recovery *::after{box-sizing:border-box}
 #z24Recovery .z24-pbox{width:min(460px,100%);min-width:0;margin:auto;
  padding:clamp(16px,4vw,25px);border-radius:22px;
