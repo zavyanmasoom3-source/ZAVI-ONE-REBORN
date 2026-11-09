@@ -50,11 +50,21 @@ class Session:
                 '--remote-debugging-port=0','--user-data-dir='+self.tmp.name,'about:blank'],
                 stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
             f=Path(self.tmp.name)/'DevToolsActivePort'
+            # Chrome first creates DevToolsActivePort and then writes the
+            # port. An empty but existing file caused intermittent CI failures.
+            port=None
             for _ in range(180):
-                if f.exists():break
+                if f.exists():
+                    try:
+                        lines=f.read_text().splitlines()
+                        if lines and lines[0].isdigit() and int(lines[0])>0:
+                            port=int(lines[0])
+                            break
+                    except (OSError,ValueError,IndexError):
+                        pass
                 if self.proc.poll() is not None:break
                 time.sleep(.1)
-            if f.exists():break
+            if port is not None:break
             with suppress(Exception):
                 self.proc.terminate()
                 self.proc.wait(timeout=4)
@@ -63,8 +73,14 @@ class Session:
             if attempt<2:time.sleep(.6)
         else:
             raise RuntimeError('Chrome CDP port unavailable after 3 isolated attempts')
-        port=int(f.read_text().splitlines()[0])
-        targets=json.loads(urlopen(f'http://127.0.0.1:{port}/json/list').read())
+        # A valid port file may appear just before Chrome serves /json/list.
+        for request_attempt in range(12):
+            try:
+                targets=json.loads(urlopen(f'http://127.0.0.1:{port}/json/list',timeout=5).read())
+                break
+            except (OSError,ValueError):
+                if request_attempt==11:raise
+                time.sleep(.15)
         page=next((x for x in targets if x.get('type')=='page'),None)
         if not page:raise RuntimeError('No CDP page')
         from urllib.parse import urlparse
