@@ -23,6 +23,8 @@ for app in ('one','admin'):
         r'<link\b[^>]*\brel=["\']stylesheet["\'][^>]*\bhref=["\']([^"\']+)',html,re.I)]
     violations=obsolete.intersection(hrefs)
     assert not violations,(app,'obsolete loaded',sorted(violations))
+    for name in obsolete:
+        assert not (ROOT/'apps'/app/name).exists(),(app,'retired CSS physically present',name)
     assert len(hrefs)==len(set(hrefs)),(app,'duplicate runtime CSS links')
     assert hrefs.index('zavi-reference-v3.css')>hrefs.index('zavi-approved-visual-v2.css')
     assert hrefs[-1]==f'zavi-reference-{app}-v3.css',(app,hrefs[-4:])
@@ -31,6 +33,6 @@ for app in ('one','admin'):
     else:must.update({'zavi-admin-settings-hub-v1.css','style.css'})
     assert must.issubset(hrefs),(app,'missing functional CSS',sorted(must-set(hrefs)))
     assert not any(('"'+name+'"') in sw or ("'"+name+"'") in sw for name in obsolete)
-    assert f"zavi-{app}-ref-12-design-reset-v4-20261109" in sw
-    print(f'PASS {app}: {len(hrefs)} active CSS links, no legacy competing theme, SW v4')
+    assert f"zavi-{app}-ref-12-design-reset-v{'v5' if app=='one' else 'v4'}-20261109" in sw
+    print(f'PASS {app}: {len(hrefs)} active CSS links, retired theme files removed from root')
 print('PASS: reference theme is the final active design in ONE and ADMIN')

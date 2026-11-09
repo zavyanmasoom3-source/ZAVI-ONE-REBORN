@@ -5,7 +5,7 @@
  */
 'use strict';
 const APK_ORIGIN='https://appassets.androidplatform.net';
-const CACHE_NAME='zavi-one-ref-12-design-reset-v4-20261109';;
+const CACHE_NAME='zavi-one-ref-12-design-reset-v5-20261109';;
 const SHELL_PROTOCOL='zavi-shell-v2';
 const CACHE_PREFIX='zavi-one-';
 const CORE=[
@@ -205,7 +205,6 @@ const CORE=[
   "zavi-pdf-final-v6760.css",
   "zavi-reference-store-v6557.js",
   "zavi-final-settings-store-v6559.js",
-  "zavi-cinematic-v2.js",
   "zavi-final-reference-store.js",
   "zavi-dashboard-polish-v6562.js",
   "zavi-mobile-cleanup-v6563.js",
