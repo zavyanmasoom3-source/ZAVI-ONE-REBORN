@@ -94,7 +94,41 @@ with Session() as b:
     assert modal['panes']==3 and modal['keys']==['products','customer','payment'],modal
     assert modal['barcode'] and modal['camera'] and modal['paymentRadios']==3,modal
     assert modal['preview'] and modal['nativeSave'],modal
+    layout=b.eval(r"""(()=>{
+      const d=document.querySelector('#overlay .zsal-approved-modal');
+      const f=d.querySelector('#dialogForm');
+      const flow=f.querySelector('.zsal-vertical');
+      const groups=[...flow.querySelectorAll(':scope > .zavi-flow-panel')];
+      const scan=d.querySelector('#zaviBarcodeScan').getBoundingClientRect();
+      const cam=d.querySelector('[data-zavi-camera-open="zaviBarcodeScan"]').getBoundingClientRect();
+      const overlap=Math.max(0,Math.min(scan.right,cam.right)-Math.max(scan.left,cam.left))*
+        Math.max(0,Math.min(scan.bottom,cam.bottom)-Math.max(scan.top,cam.top));
+      const bounds=d.getBoundingClientRect();
+      const date=f.querySelector('.zsal-dual-date')?.textContent||'';
+      return {scrollGroups:groups.length,shown:groups.every(x=>!x.hidden),
+        firstGroupContainsDate:!!groups[0].querySelector('input[name=date]'),
+        secondGroupContainsBarcode:!!groups[1].querySelector('#zaviBarcodeScan'),
+        thirdGroupContainsPaid:!!groups[2].querySelector('input[name=paid]'),
+        overlappingScanAndCamera:overlap,
+        cameraX:cam.left,cameraRight:cam.right,
+        scannerX:scan.left,scannerRight:scan.right,
+        screenWidth:innerWidth,modalRight:bounds.right,
+        dualDate:date,tabNavHidden:flow.querySelector('.zavi-flow-tabs')?.hidden,
+        buttonBg:getComputedStyle(d.querySelector('.modal-foot [type=submit]')).backgroundColor};
+    })()""")
+    assert layout['scrollGroups']==3 and layout['shown'] and layout['tabNavHidden'],layout
+    assert layout['firstGroupContainsDate'] and layout['secondGroupContainsBarcode'] and layout['thirdGroupContainsPaid'],layout
+    assert layout['overlappingScanAndCamera']==0 and layout['cameraX']>=0 and layout['cameraRight']<=layout['screenWidth'],layout
+    assert layout['dualDate'] and '|' in layout['dualDate'],layout
     (out/'sale-product-form.png').write_bytes(b.screenshot())
+    b.eval("""(()=>{const m=document.querySelector('.zsal-approved-modal .modal-body');
+      const item=m.querySelector('#orderItems');m.scrollTop=item.getBoundingClientRect().top-
+      m.getBoundingClientRect().top+m.scrollTop-20;})()""")
+    (out/'sale-products-scrolled.png').write_bytes(b.screenshot())
+    b.eval("""(()=>{const m=document.querySelector('.zsal-approved-modal .modal-body');
+      m.scrollTop=m.scrollHeight-m.clientHeight;})()""")
+    (out/'sale-payment-scrolled.png').write_bytes(b.screenshot())
+    b.eval("""(()=>{const m=document.querySelector('.zsal-approved-modal .modal-body');m.scrollTop=0})()""")
     print('PASS: original sale handler, account/customer/discount/receipt fields and native barcode camera remain connected')
 
     qty=b.eval(r"""(()=>{
@@ -112,6 +146,24 @@ with Session() as b:
     })()""")
     assert qty['qty']=='2' and qty['product']=='QA_LOCAL_APPROVED_SALE_PRODUCT',qty
     assert float(qty['unit'])==17,qty
+    b.until("document.querySelector('#dialogForm').elements.paid.value==='34'",
+            'cash invoice auto-updates after two barcode scans')
+    bank=b.eval(r"""(()=>{
+      const f=document.querySelector('#dialogForm'),mode=f.querySelector('input[name=zsalMode][value=bank]');
+      mode.checked=true;mode.dispatchEvent(new Event('change',{bubbles:true}));
+      const bankAccount=f.elements.accountId.value,bankPaid=f.elements.paid.value;
+      const cash=f.querySelector('input[name=zsalMode][value=cash]');
+      cash.checked=true;cash.dispatchEvent(new Event('change',{bubbles:true}));
+      const cashAccount=f.elements.accountId.value,cashPaid=f.elements.paid.value;
+      const credit=f.querySelector('input[name=zsalMode][value=credit]');
+      credit.checked=true;credit.dispatchEvent(new Event('change',{bubbles:true}));
+      return {bankAccount,bankPaid,cashAccount,cashPaid,
+        creditPaid:f.elements.paid.value,creditChecked:credit.checked};
+    })()""")
+    assert bank['bankAccount']=='a_bank' and bank['cashAccount']=='a_cash',bank
+    assert bank['bankPaid']=='34' and bank['cashPaid']=='34',bank
+    assert bank['creditPaid']=='0' and bank['creditChecked'],bank
+    print('PASS: live cash/bank account switches, paid amount 34 auto-updates, credit mode posts zero')
     print('PASS: repeated offline barcode input resolves catalog product and increments quantity once per scan')
 
     valid=b.eval(r"""(()=>{
@@ -177,6 +229,19 @@ with Session() as b:
       assert result['width']<=result['maxWidth'] and result['panelWidth']<=result['width'],result
       (out/('sale-'+theme+'-mobile.png')).write_bytes(b.screenshot())
     print('PASS: form remains within 420px phone viewport across light/dark/glass style selectors')
+    locales=b.eval(r"""(()=>{
+      const d=document.documentElement,header=document.querySelector('.zsal-approved-modal .modal-head h3');
+      const test=(language,phrase)=>{
+        d.lang=language;document.dispatchEvent(new Event('zavi:language-change'));
+        return {translated:header.textContent===phrase,
+          date:document.querySelector('.zsal-dual-date')?.textContent||''};
+      };
+      const english=test('en','New sale'),pashto=test('ps','نوی پلور ثبتول'),
+        dari=test('fa-AF','ثبت فروش جدید');
+      return {english,pashto,dari};
+    })()""")
+    assert all(locales[k]['translated'] and locales[k]['date'] for k in ('english','pashto','dari')),locales
+    print('PASS: real-time Dari/Pashto/English sales header and dual Afghan/Gregorian date update without reload')
     # Exercise actual native localStorage transaction posting in the disposable
     # browser. This is not an RLS test and does NOT have production credentials.
     b.command('Network.enable')
@@ -213,6 +278,7 @@ with Session() as b:
     # Confirm no user data can be sent to the backend by this test.
     proof.update({
       "source_screen":"real sales route and original HTML form",
+      "visual_structure":layout,"bank_cash_credit":bank,"language_switch":locales,
       "browser_screenshots":sorted(p.name for p in out.glob('*.png')),
       "barcode_scan":"synthetic keyboard scan, not tested physical camera",
       "observed_quantity":qty['qty'],"expected_preview_total":34,
