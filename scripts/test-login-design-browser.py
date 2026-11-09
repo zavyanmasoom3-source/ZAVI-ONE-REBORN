@@ -96,5 +96,61 @@ for app,field_id in [('one','zawiPinOne'),('admin','authPassword')]:
             if p.stat().st_size<10000:
                 raise SystemExit('Tiny/blank screenshot: '+p.name)
             print('PASS:',app,mode,'real login theme + password control + screenshot',p.name)
+
+        if app=='one':
+            # Owner's last light-reference sheet: test the real gate controls,
+            # not a mock login. All clicks affect appearance only, not auth.
+            controls=browser.eval("""(()=>{
+              const gate=document.getElementById('zawiPrivateGate');
+              const controls=[...gate.querySelectorAll(
+                '.zavi-gate-appearance [data-zavi-theme-choice]')];
+              const links=[...document.querySelectorAll('link[rel="stylesheet"]')]
+                .map(el=>el.getAttribute('href')||'');
+              return {realGate:!!gate,realPin:!!gate?.querySelector('#zawiPinForm'),
+                realRecovery:!!gate?.querySelector('#zawiForgotPinBtn'),
+                stylesheet:links.some(x=>x.includes('zavi-owner-reference-login-v1.css')),
+                themes:controls.map(el=>el.dataset.zaviThemeChoice),
+                minTap:controls.map(el=>Math.round(el.getBoundingClientRect().height))};
+            })()""")
+            assert controls['realGate'] and controls['realPin'] and controls['realRecovery'],controls
+            assert controls['stylesheet'],controls
+            assert controls['themes']==['light','dark','glass'],controls
+            assert all(h>=44 for h in controls['minTap']),controls
+            for language,expected in [('fa-AF','روشن'),('ps-AF','روښانه'),('en','Light')]:
+                label=browser.eval("""(()=>{
+                  document.documentElement.lang=%s;
+                  document.documentElement.dir=%s;
+                  const btn=document.querySelector(
+                    '#zawiPrivateGate [data-zavi-theme-choice="light"]');
+                  return [...btn.querySelectorAll('.zavi-gate-lang')]
+                    .filter(el=>getComputedStyle(el).display!=='none')
+                    .map(el=>el.textContent.trim());
+                })()""" %(json.dumps(language),json.dumps('ltr' if language=='en' else 'rtl')))
+                assert label==[expected],(language,label)
+            browser.eval("document.documentElement.lang='fa-AF';document.documentElement.dir='rtl';")
+            for choice in ['light','dark','glass']:
+                result=browser.eval("""(()=>{
+                  const btn=document.querySelector(
+                    '#zawiPrivateGate [data-zavi-theme-choice=%s]');
+                  btn.click();
+                  const root=document.documentElement;
+                  const state=[...document.querySelectorAll(
+                    '#zawiPrivateGate [data-zavi-theme-choice]')].map(el=>({
+                      theme:el.dataset.zaviThemeChoice,
+                      selected:el.getAttribute('aria-pressed')==='true'
+                    }));
+                  const card=document.querySelector('#zawiPrivateGate .zawi-auth-card');
+                  return {theme:root.dataset.zaviTheme,appearance:root.dataset.zaviAppearance,
+                    selected:state.filter(s=>s.selected).map(s=>s.theme),
+                    cardBg:getComputedStyle(card).backgroundColor,
+                    cardVisible:card.getBoundingClientRect().width>0};
+                })()""" %json.dumps(choice))
+                assert result['theme']==choice and result['appearance']==choice,result
+                assert result['selected']==[choice] and result['cardVisible'],result
+                screenshot=OUT/('one-owner-gate-'+choice+'.png')
+                screenshot.write_bytes(browser.screenshot())
+                assert screenshot.stat().st_size>10000,screenshot
+            print('PASS: owner-referenced real ONE PIN entry, 3 appearance buttons, 3 languages')
+
 print('PASS: both apps, two theme runtime screenshots and three localized password/advanced labels')
 print('NOT VERIFIED: all surrounding login prose translations, biometric authentication, real owner login.')
