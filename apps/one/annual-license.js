@@ -203,15 +203,71 @@ async function hydrate(){const ws=info().workspace;if(ws!==entWorkspace){entitle
 window.zaviCloudAfterRender=function(){baseAfterRender();hydrate()};
 window.zaviCloudAfterSave= function(next){if(!allowed()){console.warn('Unexpected local save without a verified entitlement.');return}baseAfterSave(next)};
 window.zaviCloudPanel=function(){return baseCloudPanel()};
+/* Owner sheet 11 — text-only presentation dictionary. Never edits the
+ * entitlement, server RPCs, signed lease, finance or device permissions. */
+const subscriptionLabels={
+ title:['عضویت و اعتبار','ګډون او اعتبار','Subscription & validity'],
+ headline:['اشتراک، تمدید و دستگاه','ګډون، تمدید او وسیله','Subscription, renewal & device'],
+ active:['فعال','فعال','Active'],warning:['نزدیک پایان','پای ته نږدې','Expiring soon'],
+ blocked:['غیرفعال / تعلیق','غیرفعال / ځنډول شوی','Inactive / suspended'],
+ error:['نیاز به اتصال','اړیکې ته اړتیا ده','Connection required'],
+ checking:['در حال بررسی','کتل کېږي','Checking'],
+ lifetime:['مادام‌العمر','دایمي','Lifetime'],
+ semiannual:['شش‌ماهه','شپږ میاشتې','Six months'],
+ annual:['سالانه','کلنی','Annual'],trial:['آزمایشی ۷روزه','۷ ورځنۍ آزموینه','7-day trial'],
+ none:['هنوز ثبت نشده','لا نه دی ثبت شوی','Not registered'],
+ offline:['حالت آفلاین','آفلاین حالت','Offline mode'],
+ offlineTitle:['حسابداری آفلاین','آفلاین حسابداري','Offline accounting'],
+ offlineInfo:['مجوز آفلاین تنها با تأیید سرور فعال می‌شود.','آفلاین اجازه یوازې د سرور په تایید فعالېږي.','Offline permission requires server approval.'],
+ pending:['در حال بررسی…','کتل کېږي…','Checking…'],
+ prepare:['آماده‌سازی فایل‌های آفلاین','آفلاین فایلونه چمتو کول','Prepare offline files'],
+ files:['وضعیت فایل‌های آفلاین در حال بررسی است…','آفلاین فایلونه کتل کېږي…','Checking offline files…'],
+ retry:['تلاش دوباره','بیا هڅه','Try again'],
+ transfer:['انتقال دستگاه اصلی به این دستگاه','دې وسیلې ته د اصلي وسیلې لېږد','Transfer primary device here'],
+ diagnose:['بررسی مشکل','ستونزه کتل','Check problem'],
+ options:['گزینه‌های رفع مشکل','د ستونزې حل لارې','Recovery options'],
+ license:['دریافت دوباره مجوز','جواز بیا ترلاسه کول','Refresh permission'],
+ device:['بررسی دستگاه','وسیله کتل','Check device'],
+ copy:['کاپی شناسه دستگاه','د وسیلې پېژند کاپي کول','Copy device ID'],
+ plan:['نوع اشتراک','د ګډون ډول','Subscription plan'],
+ days:['روز باقی‌مانده','پاتې ورځې','Days remaining'],never:['بدون انقضا','د پای نېټه نه لري','No expiry'],
+ daysHelp:['روزهای باقی‌مانده بر اساس تقویم کابل محاسبه می‌شوند.','پاتې ورځې د کابل د تقویم له مخې حسابېږي.','Remaining days use the Kabul calendar.'],
+ duration:['مدت طرح','د پلان موده','Plan duration'],calendarDays:['روز','ورځې','days'],
+ fromServer:['اطلاعات اعتبار از سرور دریافت می‌شود.','د اعتبار معلومات له سرور ترلاسه کېږي.','Subscription data comes from the server.'],
+ changes:['تغییرات محلی در انتظار همگام‌سازی است.','سیمه‌ییز بدلونونه د همغږۍ په تمه دي.','Local changes are awaiting sync.'],
+ local:['معلومات محلی محفوظ است؛ بعداً همگام می‌شود.','سیمه‌ییز معلومات خوندي دي؛ وروسته همغږي کېږي.','Local records are safe and will sync later.'],
+ sync:['همگام‌سازی پس از اتصال دوباره بررسی می‌شود.','له اړیکې وروسته همغږي بیا کتل کېږي.','Sync is checked after reconnecting.'],
+ offlineReady:['آفلاین فعال است','آفلاین فعال دی','Offline enabled'],
+ preparing:['مجوز آفلاین در حال آماده‌سازی است.','آفلاین جواز چمتو کېږي.','Preparing offline permission.'],
+ requires:['اشتراک معتبر لازم است.','معتبر ګډون ته اړتیا ده.','A valid subscription is required.'],
+ dates:['تاریخ‌ها و وضعیت','نېټې او حالت','Dates & status'],
+ started:['شروع اشتراک','د ګډون پیل','Subscription started'],
+ last:['آخرین تمدید / پرداخت','وروستی تمدید / تادیه','Last renewal / payment'],
+ expires:['پایان اشتراک','د ګډون پای','Subscription expires'],
+ status:['وضعیت','حالت','Status'],
+ renew:['تمدید و بررسی اشتراک','د ګډون تمدید او کتنه','Renew & check subscription'],
+ server:['اعتبار اشتراک از سرور مرکزی بررسی می‌شود.','د ګډون اعتبار له مرکزي سرور کتل کېږي.','Subscription validity is checked with the central server.'],
+ verify:['مدت اشتراک تنها پس از تأیید مدیریت در سرور تعیین می‌شود.','د ګډون موده یوازې د مدیریت له تایید وروسته ټاکل کېږي.','The plan duration is granted only after server-side management approval.'],
+ refresh:['بررسی دوباره اشتراک','ګډون بیا کتل','Check subscription again'],
+ contact:['تماس برای تمدید','د تمدید لپاره اړیکه','Contact to renew'],
+ secure:['دسترسی امن','خوندي لاسرسی','Secure access'],
+ secureText:['مجوز آفلاین و انتقال دستگاه اصلی فقط با تأیید سرور و مالک انجام می‌شود.','آفلاین جواز او د اصلي وسیلې لېږد یوازې د سرور او مالک په تایید کېږي.','Offline access and primary-device transfer require server and owner authorization.']
+};
+function subscriptionLanguage(){
+ const l=String(document.documentElement.lang||lang()).toLowerCase();
+ return l.startsWith('en')?2:l.startsWith('ps')?1:0;
+}
+function subText(key){return subscriptionLabels[key]?.[subscriptionLanguage()]||key}
+
 function subscriptionView(){
  const status=uiClass(),e=entitlement||{},p=e.plan||'none',active=e.status==='active';
- const planName=p==='lifetime'?'مادام‌العمر':p==='semiannual'?'شش‌ماهه':p==='annual'?'سالانه':p==='trial'?'آزمایشی ۷روزه':'هنوز ثبت نشده';
+ const planName=subText(['lifetime','semiannual','annual','trial'].includes(p)?p:'none');
  const days=active&&e.expires_at?Math.max(0,timeDelta(e.server_time,e.expires_at)):0;
  const start=subscriptionDates?.started_at||null;
  const renewal=subscriptionDates?.last_renewed_at||null;
  const duration=p==='trial'?7:p==='semiannual'?180:p==='annual'?365:0;
  const used=duration?Math.min(100,Math.max(0,Math.round((duration-days)/duration*100))):0;
- const stateText=checking?'در حال بررسی':status==='active'?'فعال':status==='warning'?'نزدیک پایان':status==='blocked'?'غیرفعال / تعلیق':status==='error'?'نیاز به اتصال':'در حال بررسی';
+ const stateText=subText(checking?'checking':(['active','warning','blocked','error'].includes(status)?status:'checking'));
  const requestLanguage=String(document.documentElement.lang||lang()).toLowerCase();
  const renewalCopy=requestLanguage.startsWith('en')?
   {day:'days',request:'Request renewal',hint:'Request only — management must activate the plan on the server.'}:
@@ -224,36 +280,38 @@ function subscriptionView(){
   aria-label="${n} ${renewalCopy.day} — ${renewalCopy.request}">
   <strong>${n}</strong><span>${renewalCopy.day}</span><small>${renewalCopy.request}</small></a>`).join('');
 
- return `<div id="zaviSubscriptionHub" class="zsh" dir="rtl">
- <div class="zsh-hero"><div class="zsh-hero-top"><div><span class="zsh-eyebrow">ZAVI ONE • MEMBERSHIP</span><h2>اشتراک من</h2><p>مدیریت اعتبار، تمدید و دستگاه اصلی در یک مکان</p></div><div class="zsh-emblem">✦</div></div><div class="zsh-state"><span class="zsh-dot"></span>${escapes(stateText)} ${offlineMode?'· حالت آفلاین':''}</div></div>
- <section class="zsh-card z46-offline-card" data-zavi-auto-offline-card data-state="working" aria-label="دسترسی بدون اینترنت">
-   <div class="zsh-section-title"><span class="zsh-icon" aria-hidden="true">◈</span><div><h3>حسابداری آفلاین</h3><p>فعال‌سازی و تمدید مجوز به‌صورت خودکار</p></div></div>
-   <div class="z46-offline-indicator" role="status" aria-live="polite"><span class="z46-indicator-dot" aria-hidden="true"></span><strong data-zavi-auto-offline-status>در حال بررسی…</strong></div>
+ return `<div id="zaviSubscriptionHub" class="zsh" dir="${subscriptionLanguage()===2?"ltr":"rtl"}">
+ <div class="zsh-hero"><div class="zsh-hero-top"><div><span class="zsh-eyebrow">ZAVI ONE • MEMBERSHIP</span><h2>${subText("title")}</h2><p>${subText("headline")}</p></div><div class="zsh-emblem">✦</div></div><div class="zsh-state"><span class="zsh-dot"></span>${escapes(stateText)} ${offlineMode?'· '+subText('offline'):''}</div></div>
+ <section class="zsh-card z46-offline-card" data-zavi-auto-offline-card data-state="working" aria-label="${subText("offlineTitle")}">
+   <div class="zsh-section-title"><span class="zsh-icon" aria-hidden="true">◈</span><div><h3>${subText("offlineTitle")}</h3><p>${subText("offlineInfo")}</p></div></div>
+   <div class="z46-offline-indicator" role="status" aria-live="polite"><span class="z46-indicator-dot" aria-hidden="true"></span><strong data-zavi-auto-offline-status>${subText("pending")}</strong></div>
    <div class="z46-shell-actions" data-zavi-offline-shell-actions>
-     <button type="button" class="zsh-btn zsh-btn-light" data-zavi-shell-prepare>📥 دریافت و آماده‌سازی فایل‌های آفلاین</button>
-     <span class="z46-shell-status" data-zavi-shell-state role="status" aria-live="polite">فایل‌های برنامه در حال بررسی است…</span>
+     <button type="button" class="zsh-btn zsh-btn-light" data-zavi-shell-prepare>📥 ${subText("prepare")}</button>
+     <span class="z46-shell-status" data-zavi-shell-state role="status" aria-live="polite">${subText("files")}</span>
    </div>
    <div class="z46-offline-recovery" data-zavi-offline-recovery hidden>
      <p class="z46-recovery-message" data-zavi-auto-offline-help></p>
      <div class="zsh-actions">
-       <button type="button" class="zsh-btn zsh-btn-primary" data-zavi-auto-retry>تلاش دوباره</button>
-       <button type="button" class="zsh-btn zsh-btn-light" id="zaviDeviceReplace" data-zavi-offline-transfer hidden title="انتقال مجاز + دریافت خودکار مجوز آفلاین">انتقال دستگاه اصلی به این دستگاه</button>
-       <button type="button" class="zsh-btn zsh-btn-light" data-zavi-health-check>بررسی مشکل</button>
+       <button type="button" class="zsh-btn zsh-btn-primary" data-zavi-auto-retry>${subText("retry")}</button>
+       <button type="button" class="zsh-btn zsh-btn-light" id="zaviDeviceReplace" data-zavi-offline-transfer hidden title="${subText("transfer")}">${subText("transfer")}</button>
+       <button type="button" class="zsh-btn zsh-btn-light" data-zavi-health-check>${subText("diagnose")}</button>
      </div>
      <div data-zavi-health role="status" aria-live="polite" class="z46-technical-result"></div>
-     <details class="z46-technical-options"><summary>گزینه‌های رفع مشکل</summary>
-       <div class="zsh-actions"><button type="button" class="zsh-btn zsh-btn-light" id="zaviDeviceActivate">دریافت دوباره مجوز</button><button type="button" class="zsh-btn zsh-btn-light" id="zaviDeviceCheck">بررسی دستگاه</button><button type="button" class="zsh-btn zsh-btn-light" id="zaviDeviceCopyId">کاپی شناسه دستگاه</button></div>
+     <details class="z46-technical-options"><summary>${subText("options")}</summary>
+       <div class="zsh-actions"><button type="button" class="zsh-btn zsh-btn-light" id="zaviDeviceActivate">${subText("license")}</button><button type="button" class="zsh-btn zsh-btn-light" id="zaviDeviceCheck">${subText("device")}</button><button type="button" class="zsh-btn zsh-btn-light" id="zaviDeviceCopyId">${subText("copy")}</button></div>
 
      </details>
    </div>
  </section>
- <div class="zsh-grid"><section class="zsh-card zsh-main"><span class="zsh-caption">نوع اشتراک</span><h3>${escapes(planName)}</h3><div class="zsh-days">${p==='lifetime'?'∞':p==='none'?'—':escapes(days)}<small>${p==='lifetime'?'بدون انقضا':'روز باقی‌مانده'}</small></div><div class="zsh-progress"><span style="width:${used}%"></span></div><div class="zsh-progress-note">محاسبه یک‌بار، بر اساس روز تقویمی کابل (همان روز در هر دو تقویم).</div><div class="zsh-progress-note">${duration?'مدت برنامه: '+duration+' روز':'اطلاعات اعتبار از سرور دریافت می‌شود'}</div><div class="zsh-progress-note" aria-live="polite">${info().pending?'⏳ تغییرات محلی در انتظار همگام‌سازی با ابر هستند.':offlineMode?'📴 بدون اینترنت: ذخیره محلی فعال است، ارسال ابری بعداً انجام می‌شود.':'☁️ پس از وصل‌شدن اینترنت، وضعیت تغییرات ابری بررسی می‌شود.'}</div><div class="zsh-progress-note" role="status">${offlineAllowed()?'✅ آفلاین فعال است':active&&p!=='none'?'مجوز آفلاین در حال آماده‌سازی است.':'اشتراک معتبر نیاز است.'}</div></section>
- <section class="zsh-card"><span class="zsh-caption">تاریخ‌ها و وضعیت</span><div class="zsh-row"><span>شروع اشتراک</span><strong>${dualDate(start)}</strong></div><div class="zsh-row"><span>آخرین تمدید / پرداخت</span><strong>${renewal?dualDate(renewal):'—'}</strong></div><div class="zsh-row"><span>پایان اشتراک</span><strong>${p==='lifetime'?'بدون انقضا':dualDate(e.expires_at)}</strong></div><div class="zsh-row"><span>وضعیت</span><strong>${escapes(stateText)}</strong></div><div class="zsh-note">${message()} ${!active?word('backup'):''}</div></section></div>
- <div class="zsh-grid"><section class="zsh-card"><div class="zsh-section-title"><span class="zsh-icon">↻</span><div><h3>تمدید و بررسی اشتراک</h3><p>اعتبار اشتراک از سرور مرکزی بررسی می‌شود.</p></div></div><p class="zsh-hint">نوع و مدت اشتراک فقط پس از ثبت و تأیید پرداخت توسط مدیریت تعیین می‌شود.</p><div class="zsh-actions"><button id="zaviAnnualRefresh" class="zsh-btn zsh-btn-primary" type="button">↻ بررسی دوباره اشتراک</button><a class="zsh-btn zsh-btn-light" href="${renewalLink()}" target="_blank" rel="noopener noreferrer">✆ تماس برای تمدید</a></div><nav class="zsh-renewal-requests" aria-label="${renewalCopy.request}">${renewalRequests}</nav><p class="zsh-renewal-note">${renewalCopy.hint}</p></section>
- <section class="zsh-card z46-security-note"><div class="zsh-section-title"><span class="zsh-icon">✓</span><div><h3>دسترسی امن</h3><p>برنامه دستگاه و مجوز آفلاین را خودکار مدیریت می‌کند. انتقال از دستگاه دیگری فقط با تأیید مالک انجام می‌شود.</p></div></div></section></div>
+ <div class="zsh-grid"><section class="zsh-card zsh-main"><span class="zsh-caption">${subText("plan")}</span><h3>${escapes(planName)}</h3><div class="zsh-days">${p==='lifetime'?'∞':p==='none'?'—':escapes(days)}<small>${p==='lifetime'?subText('never'):subText('days')}</small></div><div class="zsh-progress"><span style="width:${used}%"></span></div><div class="zsh-progress-note">${subText("daysHelp")}</div><div class="zsh-progress-note">${duration?subText('duration')+': '+duration+' '+subText('calendarDays'):subText('fromServer')}</div><div class="zsh-progress-note" aria-live="polite">${info().pending?'⏳ '+subText('changes'):offlineMode?'📴 '+subText('local'):'☁️ '+subText('sync')}</div><div class="zsh-progress-note" role="status">${offlineAllowed()?'✅ '+subText('offlineReady'):active&&p!=='none'?subText('preparing'):subText('requires')}</div></section>
+ <section class="zsh-card"><span class="zsh-caption">${subText("dates")}</span><div class="zsh-row"><span>${subText("started")}</span><strong>${dualDate(start)}</strong></div><div class="zsh-row"><span>${subText("last")}</span><strong>${renewal?dualDate(renewal):'—'}</strong></div><div class="zsh-row"><span>${subText("expires")}</span><strong>${p==='lifetime'?subText('never'):dualDate(e.expires_at)}</strong></div><div class="zsh-row"><span>${subText("status")}</span><strong>${escapes(stateText)}</strong></div><div class="zsh-note">${message()} ${!active?word('backup'):''}</div></section></div>
+ <div class="zsh-grid"><section class="zsh-card"><div class="zsh-section-title"><span class="zsh-icon">↻</span><div><h3>${subText("renew")}</h3><p>${subText("server")}</p></div></div><p class="zsh-hint">${subText("verify")}</p><div class="zsh-actions"><button id="zaviAnnualRefresh" class="zsh-btn zsh-btn-primary" type="button">↻ ${subText("refresh")}</button><a class="zsh-btn zsh-btn-light" href="${renewalLink()}" target="_blank" rel="noopener noreferrer">✆ ${subText("contact")}</a></div><nav class="zsh-renewal-requests" aria-label="${renewalCopy.request}">${renewalRequests}</nav><p class="zsh-renewal-note">${renewalCopy.hint}</p></section>
+ <section class="zsh-card z46-security-note"><div class="zsh-section-title"><span class="zsh-icon">✓</span><div><h3>${subText("secure")}</h3><p>${subText("secureText")}</p></div></div></section></div>
  </div>`;
 }
 window.zaviSubscriptionView=subscriptionView;
+// Re-render only the visible membership route when the interface language changes.
+document.addEventListener('zavi:language-change',()=>{if(document.getElementById('zaviSubscriptionHub'))paint()});
 document.addEventListener('click',e=>{let t=e.target.closest('#zaviAnnualRefresh,#zaviAnnualContact');if(!t)return;e.preventDefault();if(t.id==='zaviAnnualRefresh')verify(true);else window.open(renewalLink(),'_blank','noopener,noreferrer');});
 window.zaviOfflineStatus=()=>({tenant_bound:!!window.zaviTenantIsBound?.(),workspace:!!info().workspace,offline_mode:offlineMode,has_verified_lease:!!secureLease,valid_now:offlineAllowed(),minutes_left:offlineAllowed()?Math.max(0,Math.ceil((secureLease.claims.exp*1000-Date.now())/60000)):0,preparation_error:offlinePrepError,block_reason:allowed()?'':blockedReason()});
 window.addEventListener('zavi-offline-lease-ready',async e=>{if((e?.detail?.workspace_id||e?.detail?.workspace)!==info().workspace)return;secureLease=await window.zaviSecureOfflineLicense.cached(info().workspace);offlinePrepError='';lastError='';lastPrepAttempt=Date.now();paint();});
