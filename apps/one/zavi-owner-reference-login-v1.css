@@ -122,6 +122,12 @@ html[data-zavi-theme="glass"] #zawiPrivateGate .zawi-auth-card{
 #zawiPrivateGate .zavi-gate-appearance .zavi-gate-theme-icon{
  display:block;font-size:18px;line-height:1.1;
 }
+/* Language-specific text in the PIN gate is CSS-driven, not stored data.
+   Changing the app locale instantly reveals exactly one visible label. */
+#zawiPrivateGate .zavi-gate-lang{display:none}
+html:not([lang^="ps"]):not([lang^="en"]) #zawiPrivateGate .zavi-gate-fa{display:inline}
+html[lang^="ps"] #zawiPrivateGate .zavi-gate-ps{display:inline}
+html[lang^="en"] #zawiPrivateGate .zavi-gate-en{display:inline}
 @media(max-width:360px){
  #zawiPrivateGate{padding-inline:10px!important}
  #zawiPrivateGate .zawi-auth-card{padding:16px!important}
