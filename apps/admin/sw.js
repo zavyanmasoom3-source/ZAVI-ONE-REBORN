@@ -5,8 +5,9 @@
  */
 'use strict';
 const APK_ORIGIN='https://appassets.androidplatform.net';
-const CACHE_NAME='zavi-admin-shell-approved-ui-v2-20261109';
+const CACHE_NAME='zavi-admin-shell-approved-ui-v2-20261109-r2';
 const CORE=[
+  "../../packages/shared/ui/zavi-approved-navigation-v2.js",
   "../../packages/shared/ui/zavi-approved-visual-v2.css",
   "zavi-approved-admin-v2.css",
   "index.html",
