@@ -167,5 +167,58 @@ for app,field_id in [('one','zawiPinOne'),('admin','authPassword')]:
             assert all(v=='glass' for v in persisted.values()),persisted
             print('PASS: owner-referenced ONE PIN entry, 3 themes, 3 locales, persisted glass reload')
 
+            # Exercise the real recovery dialog without submitting a credential
+            # or calling the production PIN-reset RPC.
+            for lang, heading in [('fa-AF','بازیابی رمز خصوصی'),
+                                  ('ps-AF','د شخصي رمز بېرته ترلاسه کول'),
+                                  ('en','Recover private PIN')]:
+                browser.eval("""(()=>{
+                  const lang=%s;
+                  document.documentElement.lang=lang;
+                  document.documentElement.dir=lang==='en'?'ltr':'rtl';
+                  document.dispatchEvent(new CustomEvent('zavi:language-change',
+                    {detail:{language:lang}}));
+                  document.getElementById('zawiForgotPinBtn').click();
+                })()""" %json.dumps(lang))
+                browser.until("!!document.getElementById('z24Recovery')",
+                              'real recovery dialog visible')
+                proof=browser.eval("""(()=>{
+                  const root=document.getElementById('z24Recovery');
+                  return {heading:root.querySelector('h2')?.textContent.trim(),
+                    role:root.getAttribute('role'),modal:root.getAttribute('aria-modal'),
+                    described:!!root.querySelector('#z24RecoveryIntro'),
+                    dir:getComputedStyle(root).direction,focused:document.activeElement?.id,
+                    password:root.querySelector('#z24Password')?.type,
+                    askDisabled:root.querySelector('#z24Ask')?.disabled,
+                    loadDisabled:root.querySelector('#z24Load')?.disabled};
+                })()""")
+                assert proof['heading']==heading and proof['role']=='dialog',proof
+                assert proof['modal']=='true' and proof['described'],proof
+                assert proof['dir']==('ltr' if lang=='en' else 'rtl'),proof
+                assert proof['focused']=='z24Email' and proof['password']=='password',proof
+                assert proof['askDisabled'] and proof['loadDisabled'],proof
+                for mode in ['light','dark','glass']:
+                    display=browser.eval("""(()=>{
+                      window.ZaviThemeV29.set(%s);
+                      const el=document.querySelector('#z24Recovery .z24-pbox');
+                      const s=getComputedStyle(el);
+                      return {background:s.backgroundColor,visible:el.getBoundingClientRect().width>0};
+                    })()""" %json.dumps(mode))
+                    assert display['visible'],display
+                    assert (display['background']=='rgb(255, 255, 255)')==(mode=='light'),display
+                    if lang=='fa-AF':
+                        shot=OUT/('one-recovery-'+mode+'.png')
+                        shot.write_bytes(browser.screenshot())
+                        assert shot.stat().st_size>10000,shot
+                closed=browser.eval("""(()=>{
+                  document.querySelector('#z24Email').dispatchEvent(
+                    new KeyboardEvent('keydown',{key:'Escape',bubbles:true}));
+                  return {closed:!document.getElementById('z24Recovery'),
+                    focused:document.activeElement?.id};
+                })()""")
+                assert closed=={'closed':True,'focused':'zawiForgotPinBtn'},closed
+            print('PASS: recovered PIN modal appearance, English direction, focus and Escape')
+
+
 print('PASS: both apps, two theme runtime screenshots and three localized password/advanced labels')
 print('NOT VERIFIED: all surrounding login prose translations, biometric authentication, real owner login.')
