@@ -210,6 +210,8 @@
     const content=root.document?.querySelector('.zui-order-page[data-module="purchases"]');
     if(!content||content.querySelector('[data-zv-transit]'))return;
     content.insertAdjacentHTML('beforeend',markup());
+    const heading=content.querySelector('.zui-section-heading');
+    if(heading&&!heading.querySelector('[data-zv-open]'))heading.insertAdjacentHTML('beforeend','<button type="button" class="btn subtle zv-transit-launch" data-zv-open>'+escape(L().heading)+'</button>');
     refresh(content.querySelector('[data-zv-transit]'));
   }
   function boot(){
@@ -219,6 +221,7 @@
       mount();
     });
     root.document.addEventListener('click',e=>{
+      if(e.target.closest?.('[data-zv-open]')){e.preventDefault();root.document.querySelector('[data-zv-transit]')?.scrollIntoView({block:'start',behavior:'smooth'});return}
       const host=e.target.closest?.('[data-zv-transit]');if(!host)return;
       if(e.target.closest('[data-zv-refresh]'))refresh(host);
       if(e.target.closest('[data-zv-remove-line]')){const all=host.querySelectorAll('[data-zv-line]');if(all.length>1)e.target.closest('[data-zv-line]').remove()}
