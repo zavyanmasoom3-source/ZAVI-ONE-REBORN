@@ -59,7 +59,7 @@ EXAMINE="""(function(){
        const item=fixture.querySelector(selector);
        const style=getComputedStyle(item),f=rgba(style.color),b=bg(item);
        const ratio=contrast(f,b);
-       if(ratio<4.5)throw Error('WCAG contrast '+theme+' '+lang+' '+selector+' '+ratio.toFixed(2));
+       if(ratio<4.5)throw Error('WCAG contrast '+theme+' '+lang+' '+selector+' '+ratio.toFixed(2)+' computed foreground='+style.color+' raw background='+style.backgroundColor+' composite bg='+JSON.stringify(b)+' root button='+getComputedStyle(root).getPropertyValue('--zds-button')+' appearance='+root.getAttribute('data-zavi-appearance'));
        if(style.direction!==(lang==='en'?'ltr':'rtl') && selector==='.zds-card')
          throw Error('Wrong direction '+theme+' '+lang);
        checks.push({theme,lang,selector,ratio:+ratio.toFixed(2)});
