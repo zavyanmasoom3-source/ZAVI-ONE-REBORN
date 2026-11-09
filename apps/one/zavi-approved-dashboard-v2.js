@@ -48,20 +48,32 @@ function makeStat(label,amount,index){
 }
 function makeChart(label,values,color){
   const card=document.createElement('div');card.className='zav-new-chart';
-  const p=sparkline(values);
+  const hasData=values.some(value=>Number(value)!==0);
+  const p=hasData?sparkline(values):null;
   card.append(text('small','zav-new-chart-label',label));
   const ns='http://www.w3.org/2000/svg',svg=document.createElementNS(ns,'svg');
   svg.setAttribute('viewBox','0 0 200 55');svg.setAttribute('role','img');
   svg.setAttribute('aria-label',label);
   svg.setAttribute('preserveAspectRatio','none');
-  const area=document.createElementNS(ns,'polygon');
-  area.setAttribute('points',p.area);area.setAttribute('fill','currentColor');
-  area.setAttribute('class','zav-new-chart-area');svg.append(area);
-  const line=document.createElementNS(ns,'polyline');
-  line.setAttribute('points',p.line);line.setAttribute('fill','none');
-  line.setAttribute('stroke','currentColor');line.setAttribute('stroke-width','2.5');
-  line.setAttribute('stroke-linecap','round');line.setAttribute('stroke-linejoin','round');
-  svg.append(line);svg.classList.add('zav-new-chart-svg');
+  if(hasData){
+    const area=document.createElementNS(ns,'polygon');
+    area.setAttribute('points',p.area);area.setAttribute('fill','currentColor');
+    area.setAttribute('class','zav-new-chart-area');svg.append(area);
+    const line=document.createElementNS(ns,'polyline');
+    line.setAttribute('points',p.line);line.setAttribute('fill','none');
+    line.setAttribute('stroke','currentColor');line.setAttribute('stroke-width','2.5');
+    line.setAttribute('stroke-linecap','round');line.setAttribute('stroke-linejoin','round');
+    svg.append(line);
+  }else{
+    const nothing=document.createElementNS(ns,'text');
+    nothing.setAttribute('x','100');nothing.setAttribute('y','29');
+    nothing.setAttribute('font-size','8');nothing.setAttribute('text-anchor','middle');
+    nothing.setAttribute('fill','currentColor');nothing.setAttribute('opacity','.65');
+    nothing.textContent=language()==='en'?'No transactions yet':
+      language()==='ps'?'تر اوسه معامله نشته':'هنوز معامله‌ای ثبت نشده';
+    svg.append(nothing);
+  }
+  svg.classList.add('zav-new-chart-svg');
   card.dataset.approvedChart=color;card.append(svg);
   return card;
 }

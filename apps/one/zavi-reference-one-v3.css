@@ -546,3 +546,31 @@ html[data-zavi-theme] #content.zrf-dashboard .zavi-native-new-sale :is(svg,span)
   font-size:14px!important;font-weight:800!important;color:var(--zav-ink)!important;
  }
 }
+
+
+/* Final approved mobile header: small logo/brand, one date line INSIDE
+   dashboard; no second calendar chip row covering the first screen. */
+@media(max-width:760px){
+ html[data-zavi-theme] body.zavi-reference-dashboard-active .topbar #zaviDateBanner,
+ html[data-zavi-theme] body.zavi-reference-dashboard-active .topbar #todayStamp {
+  display:none!important;
+ }
+ html[data-zavi-theme] body.zavi-reference-dashboard-active .topbar > div:first-child,
+ html[data-zavi-theme] body.zavi-reference-dashboard-active .topbar .mobile-brand{
+  display:flex!important;align-items:center!important;min-width:0!important;
+ }
+ html[data-zavi-theme] body.zavi-reference-dashboard-active .topbar .mobile-brand{
+  gap:8px!important;margin:0!important;
+ }
+ html[data-zavi-theme] body.zavi-reference-dashboard-active .topbar .mobile-brand .brand-logo{
+  display:grid!important;place-items:center!important;flex:0 0 31px!important;
+  width:31px!important;height:31px!important;border-radius:9px!important;
+ }
+ html[data-zavi-theme] body.zavi-reference-dashboard-active .topbar .mobile-brand > span{
+  display:block!important;font-size:14px!important;line-height:1.2!important;
+  font-weight:850!important;white-space:nowrap!important;
+ }
+ html[data-zavi-theme] body.zavi-reference-dashboard-active .topbar .mobile-brand small{
+  display:none!important;
+ }
+}

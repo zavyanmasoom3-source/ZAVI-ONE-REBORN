@@ -80,6 +80,12 @@ with Session() as browser:
         })()""")
         assert all(assistant.values()),assistant
         report['apps'][f'one-{theme}-assistant-visibility']=assistant
+        emptyPlot=browser.eval("""(()=>({
+          flat:[...document.querySelectorAll('#zavApprovedHomeSummary .zav-new-chart polyline')]
+            .some(el=>el.getAttribute('points')?.split(' ').every(p=>p.endsWith(',48.0'))),
+          svgCount:document.querySelectorAll('#zavApprovedHomeSummary .zav-new-chart svg').length
+        }))()""")
+        assert emptyPlot['svgCount']==2 and not emptyPlot['flat'],emptyPlot
         report['apps'][f'one-{theme}-layout-diagnostic']=native
         bottom=browser.eval("""(()=>{
           const nav=document.getElementById('mobileBottom');
