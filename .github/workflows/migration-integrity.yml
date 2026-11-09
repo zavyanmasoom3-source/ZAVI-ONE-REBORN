@@ -39,6 +39,8 @@ jobs:
         run: python3 scripts/test-prepare-ci-signing.py
       - name: Verify two consecutive APK certificates and monotonic versions (isolated vectors)
         run: python3 scripts/test-verify-apk-pair.py
+      - name: Match device sync age to safe server transfer rules
+        run: node scripts/test-phase3-device-freshness.cjs
       - name: Validate owner device transfer safety and signed lease sequence
         run: node scripts/test-phase3-device-activation.cjs
       - name: Verify crash-safe cloud synchronization and full workspace acknowledgements
