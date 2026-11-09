@@ -14,7 +14,7 @@
       close:'بستن پیش‌نمایش',receipt:'پیش‌نمایش رسید',item:'محصول',qty:'تعداد',
       unit:'قیمت واحد',total:'مبلغ نهایی فاکتور',balance:'باقی‌مانده مشتری',
       nameRequired:'محصول را از گدام انتخاب کنید.',qtyRequired:'تعداد باید بیشتر از صفر باشد.',
-      priceRequired:'قیمت واحد باید بیشتر از صفر باشد.',overpaid:'مبلغ دریافت‌شده نمی‌تواند از کل بیشتر باشد.',creditName:'برای فروش قرضی، نام مشتری را وارد کنید.',
+      priceRequired:'قیمت واحد باید بیشتر از صفر باشد.',bankRequired:'یک حساب بانکی یا حواله معتبر لازم است.',overpaid:'مبلغ دریافت‌شده نمی‌تواند از کل بیشتر باشد.',creditName:'برای فروش قرضی، نام مشتری را وارد کنید.',
       stock:'موجودی کافی نیست.',noItems:'حداقل یک محصول لازم است.',notSaved:'پیش‌نمایش است؛ هنوز هیچ معامله‌ای ثبت نشده است.'},
     ps:{heading:'د پلور مدیریت',subtitle:'ستاسې بلونه او معاملې',newSale:'نوی پلور ثبتول',
       today:'د نن پلور',count:'د بلونو شمېر',records:'د پلور بلونه',manual:'لاسي بلونه',
@@ -25,7 +25,7 @@
       close:'مخکتنه بندول',receipt:'د رسید مخکتنه',item:'توکی',qty:'شمېر',
       unit:'د واحد بیه',total:'د بل وروستۍ اندازه',balance:'د پېرودونکي پاتې',
       nameRequired:'توکی له ګدامه وټاکئ.',qtyRequired:'شمېر باید له صفر څخه لوړ وي.',
-      priceRequired:'د واحد بیه باید له صفر څخه لوړه وي.',overpaid:'ترلاسه شوې پیسې له ټول مبلغ څخه ډېرې نشي.',creditName:'د پور پلور لپاره د پېرودونکي نوم ولیکئ.',
+      priceRequired:'د واحد بیه باید له صفر څخه لوړه وي.',bankRequired:'د بانک یا حوالې معتبر حساب اړین دی.',overpaid:'ترلاسه شوې پیسې له ټول مبلغ څخه ډېرې نشي.',creditName:'د پور پلور لپاره د پېرودونکي نوم ولیکئ.',
       stock:'موجودي کمه ده.',noItems:'لږ تر لږه یو توکی اړین دی.',notSaved:'دا مخکتنه ده؛ معامله لا نه ده ثبت شوې.'},
     en:{heading:'Sales management',subtitle:'Your invoices and transactions',newSale:'New sale',
       today:'Sales today',count:'Invoice count',records:'Sales invoices',manual:'Manual invoices',
@@ -36,7 +36,7 @@
       close:'Close preview',receipt:'Receipt preview',item:'Product',qty:'Quantity',
       unit:'Unit price',total:'Invoice final amount',balance:'Customer balance',
       nameRequired:'Select a product from the warehouse.',qtyRequired:'Quantity must be greater than zero.',
-      priceRequired:'Unit price must be greater than zero.',overpaid:'Received amount cannot exceed total.',creditName:'A customer name is required for credit sales.',
+      priceRequired:'Unit price must be greater than zero.',bankRequired:'A valid bank or remittance account is required.',overpaid:'Received amount cannot exceed total.',creditName:'A customer name is required for credit sales.',
       stock:'Not enough inventory.',noItems:'At least one product is required.',notSaved:'Preview only; no transaction has been saved.'}
   };
   const lang=()=>{
@@ -279,26 +279,86 @@
       payBox.append(group);
       const info=mk('p','zsal-currency-note',tr('currency')+': '+String(db.currency||'AFN'));
       paymentPane.prepend(info);paymentPane.prepend(payBox);
+      const account=form.elements.accountId,paid=form.elements.paid;
+      const modesByName=()=>[...payBox.querySelectorAll('input[name=zsalMode]')];
+      const chosenMode=()=>modesByName().find(x=>x.checked)?.value||'cash';
+      const setMode=which=>{const target=modesByName().find(x=>x.value===which);
+        if(target)target.checked=true;};
+      const accountMatching=which=>{
+        if(!account)return null;
+        const options=[...account.options];
+        const byIds=which==='bank'?['a_bank','a_hawala']:['a_cash'];
+        const exact=byIds.map(id=>options.find(o=>o.value===id)).find(Boolean);
+        if(exact)return exact;
+        return options.find(o=>which==='bank'
+          ?/bank|بانک|حواله|hawala|remittance|بانکي|حواله/i.test(o.textContent)
+          :/cash|نقد|صندوق|نغدي/i.test(o.textContent))||null;
+      };
+      const currentInvoiceTotal=()=>{
+        const rows=currentRows().map(r=>({
+          qty:r.querySelector('[data-field="qty"]').value||'0',
+          price:r.querySelector('[data-field="price"]').value||'0'
+        }));
+        return window.ZaviDecimal.invoiceTotals(
+          rows,form.elements.discount?.value||'0','0','0').total;
+      };
+      let fromMode=false;
+      const setPaid=value=>{
+        if(!paid)return;
+        const next=String(value);
+        if(paid.value===next)return;
+        fromMode=true;paid.value=next;
+        paid.dispatchEvent(new Event('input',{bubbles:true}));fromMode=false;
+      };
+      const syncFullPayment=()=>{
+        if(chosenMode()==='credit')return;
+        try{setPaid(currentInvoiceTotal())}catch(_){setPaid('0')}
+      };
       payBox.addEventListener('change',e=>{
         const input=e.target;if(!input.matches('input[name=zsalMode]'))return;
-        const paid=form.elements.paid,account=form.elements.accountId;
-        if(input.value==='credit')paid.value='0';
-        else {
-          try{
-            const rows=currentRows().map(r=>({
-              qty:r.querySelector('[data-field="qty"]').value||'0',
-              price:r.querySelector('[data-field="price"]').value||'0'
-            }));
-            paid.value=String(window.ZaviDecimal.invoiceTotals(
-              rows,form.elements.discount?.value||'0','0','0').total);
-          }catch(_){paid.value='0';}
-          if(input.value==='bank'&&account){
-            const bank=[...account.options].find(o=>/bank|بانک|بانکی|بانک/iu.test(o.textContent)||/bank/i.test(o.value));
-            if(bank)account.value=bank.value;
+        const next=input.value;
+        if(next==='bank'||next==='cash'){
+          const match=accountMatching(next);
+          if(!match){
+            // Never silently mark a cashbox transaction as bank transfer.
+            setMode('credit');setPaid('0');
+            if(account)window.ZaviDesignSystemV1?.setFieldError(account,tr('bankRequired'));
+            return;
           }
-        }
-        paid.dispatchEvent(new Event('input',{bubbles:true}));
+          account.value=match.value;
+          window.ZaviDesignSystemV1?.setFieldError(account,'');
+          syncFullPayment();
+        }else if(next==='credit')setPaid('0');
       });
+      form.addEventListener('input',e=>{
+        if(e.target===paid){
+          if(fromMode)return;
+          try{
+            const amount=window.ZaviDecimal.roundMoney(paid.value||'0');
+            if(amount<currentInvoiceTotal())setMode('credit');
+          }catch(_){setMode('credit')}
+          return;
+        }
+        if(e.target.matches?.('[data-field="qty"],[data-field="price"],input[name="discount"]'))
+          queueMicrotask(syncFullPayment);
+      });
+      form.addEventListener('change',e=>{
+        if(e.target===account){
+          const cash=accountMatching('cash'),bank=accountMatching('bank');
+          if(e.target.value===bank?.value)setMode('bank');
+          else if(e.target.value===cash?.value)setMode('cash');
+        }
+        if(e.target.matches?.('[data-field="productName"]'))
+          queueMicrotask(syncFullPayment);
+      });
+      productPane.querySelector('#zaviBarcodeScan')?.addEventListener('keydown',e=>{
+        if(e.key==='Enter')queueMicrotask(syncFullPayment);
+      });
+      productPane.querySelector('#orderItems')?.addEventListener('click',e=>{
+        if(e.target.closest?.('.remove-line'))queueMicrotask(syncFullPayment);
+      });
+      // Bootstrap once, without reassigning actual accounting values on every paint.
+      syncFullPayment();
       const foot=form.querySelector('.modal-foot'),button=mk('button','btn zsal-preview-button',tr('preview'));
       button.type='button';button.setAttribute('aria-expanded','false');
       const receipt=mk('section','zsal-receipt');receipt.hidden=true;
