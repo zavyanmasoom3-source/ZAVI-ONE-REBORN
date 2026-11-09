@@ -3095,7 +3095,7 @@ function openOrder(kind,defaultContactId='',foreignPurchase=false){
  <div class="field"><label>یادداشت فاکتور</label><input name="note" maxlength="350" placeholder="شماره سفارش، بارنامه، یادداشت ..."></div></div>
  <p class="tiny-note">هر فاکتور ۱۵ ردیف در نسخه چاپی دارد و اگر تعداد محصولها بیشتر باشد، ردیف‌های اضافی چاپ می‌شوند. در فروش قرضی، واردکردن اسم مشتری ضروری است.</p>`,'ثبت فاکتور');
  const orderDialog=document.querySelector('#overlay .modal');
- if(orderDialog)orderDialog.classList.add('z645-order-dialog');
+ if(orderDialog){orderDialog.classList.add('z645-order-dialog');orderDialog.dataset.zaviOrderKind=kind;}
  const form=document.getElementById('dialogForm'),f=form.elements,box=document.getElementById('orderItems');let count=0;
  function updateMatchStatus(row){
   const nameInput=row.querySelector('[data-field="productName"]');
