@@ -708,3 +708,15 @@ html[data-zavi-theme] #content .zavi-sales-archive .card{margin-top:10px!importa
   display:none!important;
  }
 }
+
+
+/* Approved twelve-image navigation: retire legacy floating assistants on
+   every ONE route. Dialog/Settings/back-end commands are not modified. */
+body #z637AiButton,
+body #z605-launch,
+body button.z637-ai-button,
+body > button.z6524-launch{
+ display:none!important;
+ visibility:hidden!important;
+ pointer-events:none!important;
+}
