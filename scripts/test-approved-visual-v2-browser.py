@@ -148,14 +148,14 @@ with Session() as browser:
     for mode in ('light','dark'):
         result=theme_proof(browser,'admin',mode)
         browser.eval("document.querySelector('#appScreen .nav-item[data-page=overview]').click()")
-        browser.until("document.querySelector('#view .admin-kpis')!==null",
+        browser.until("document.querySelector('#view .admin-ref-stat-grid')!==null",
                       'ADMIN real dashboard cards')
         browser.until("document.body.classList.contains('zavi-approved-dashboard')",
                       'ADMIN approved route marker')
         summary=browser.eval("""(()=>{
-          const cards=[...document.querySelectorAll('#view .admin-kpi')];
+          const cards=[...document.querySelectorAll('#view .admin-ref-stat')];
           return {cards:cards.length,nav:[...document.querySelectorAll('.nav-item[data-page]')]
-            .map(x=>x.dataset.page),actualUI:!!document.querySelector('#view .admin-analytics'),
+            .map(x=>x.dataset.page),actualUI:!!document.querySelector('#view .admin-reference-charts'),
             noSettingsWidget:!document.querySelector('#zavi-ui-preferences-v2')};
         })()""")
         assert summary['cards']>=4 and summary['actualUI'] and summary['noSettingsWidget'],summary
@@ -164,9 +164,9 @@ with Session() as browser:
             return c?{opacity:c.opacity,background:c.backgroundColor,color:c.color,
               webkitTextFillColor:c.webkitTextFillColor,filter:c.filter,
               visibility:c.visibility}:null;};
-          return {kpi:info('.admin-kpi'),kpiStrong:info('.admin-kpi strong'),
-            hero:info('.admin-hero'),heroTitle:info('.admin-hero h1'),
-            chart:info('.admin-analytics-main')};
+          return {kpi:info('.admin-ref-stat'),kpiStrong:info('.admin-ref-stat strong'),
+            header:info('.admin-reference-heading'),heroTitle:info('.admin-reference-heading h1'),
+            chart:info('.admin-reference-chart-panel')};
         })()""")
         report['apps']['admin-'+mode+'-diagnostics']=colors
         image=OUT/('admin-dashboard-desktop-'+mode+'.png')
