@@ -38,6 +38,8 @@ jobs:
         run: python3 scripts/check-inline-javascript-syntax.py
       - name: Diagnose actual applied appearance and CSS
         run: python3 scripts/diagnose-theme-qa.py
+      - name: Verify offline Vazirmatn before visual screenshots
+        run: node scripts/test-local-vazirmatn.cjs
       - name: Render real app screens with Chrome
         run: python3 scripts/render-qa-screens.py
       - name: Capture actual browser route evidence for all 59 PDF mappings
