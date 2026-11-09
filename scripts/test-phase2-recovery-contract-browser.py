@@ -24,8 +24,7 @@ with Session() as browser:
     }))()""")
     assert initial=={'stored':True,'locked':True},initial
     mocked=browser.eval("""(()=>{
-      document.documentElement.lang='en';
-      document.documentElement.dir='ltr';
+      window.zaviPublicSetLang('en');
       document.dispatchEvent(new CustomEvent('zavi:language-change',
         {detail:{language:'en'}}));
       const original=window.fetch;
