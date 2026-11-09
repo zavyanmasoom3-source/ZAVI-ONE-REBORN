@@ -103,3 +103,33 @@ html[data-zavi-theme] #zaviSubscriptionHub :is(button,a,summary):focus-visible{
  html[data-zavi-theme] #zaviSubscriptionHub .zsh-grid{grid-template-columns:1fr!important}
  html[data-zavi-theme] #zaviSubscriptionHub .zsh-hero{padding:14px!important}
 }
+
+
+/* Renewal durations are requests, not entitlement or offline-grant controls. */
+html[data-zavi-theme] #zaviSubscriptionHub .zsh-renewal-requests{
+ display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+ gap:8px;margin-top:12px
+}
+html[data-zavi-theme] #zaviSubscriptionHub .zsh-duration-request{
+ min-width:0;min-height:74px;box-sizing:border-box;
+ display:flex;flex-direction:column;align-items:center;justify-content:center;
+ gap:2px;padding:9px 5px;line-height:1.45;border-radius:12px;
+ background:var(--zds-surface-alt);border:1px solid var(--zds-border);
+ color:var(--zds-text);text-align:center;text-decoration:none;
+}
+html[data-zavi-theme] #zaviSubscriptionHub .zsh-duration-request strong{
+ font-size:18px;color:var(--zds-link);font-weight:850
+}
+html[data-zavi-theme] #zaviSubscriptionHub .zsh-duration-request span{
+ font-size:11px;color:var(--zds-muted);font-weight:750
+}
+html[data-zavi-theme] #zaviSubscriptionHub .zsh-duration-request small{
+ font-size:10px;color:var(--zds-muted)
+}
+html[data-zavi-theme] #zaviSubscriptionHub .zsh-renewal-note{
+ margin:9px 0 0;color:var(--zds-muted);font-size:11px;line-height:1.7
+}
+@media(max-width:360px){
+ html[data-zavi-theme] #zaviSubscriptionHub .zsh-renewal-requests{gap:5px}
+ html[data-zavi-theme] #zaviSubscriptionHub .zsh-duration-request strong{font-size:16px}
+}
