@@ -187,3 +187,11 @@ html[data-zavi-theme] #appScreen .sidebar .nav > .nav-item:not([data-page]){
 html[data-zavi-theme] #view .admin-kpis > .admin-kpi:nth-child(n+5) {
  display:none!important;
 }
+
+/* Stronger than desktop RTL/LTR margin rules; keep ADMIN usable on phones. */
+@media(max-width:760px){
+ html[dir="rtl"][data-zavi-theme] #appScreen .workspace,
+ html[dir="ltr"][data-zavi-theme] #appScreen .workspace{
+  margin:0!important;width:100%!important;min-width:0!important;
+ }
+}
