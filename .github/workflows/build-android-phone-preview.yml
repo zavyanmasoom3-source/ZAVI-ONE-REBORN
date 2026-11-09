@@ -1,0 +1,262 @@
+name: ZAVI mobile-installable OFFLINE PREVIEW APK (not Release)
+on:
+  push:
+    branches: [dev]
+    paths:
+      - 'apps/one/**'
+      - 'apps/admin/**'
+      - 'packages/shared/**'
+      - 'android-build/**'
+      - 'scripts/check-public-source-security.py'
+      - '.github/workflows/build-android-phone-preview.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  isolated-test:
+    name: Installable offline preview (independent sandbox) — ${{ matrix.app }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        app: [one, admin]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify public-source safety and packaged resources
+        run: |
+          python3 scripts/check-public-source-security.py
+          python3 scripts/check-migration-integrity.py
+          python3 scripts/check-offline-shell-assets.py
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check app JavaScript syntax
+        run: |
+          set -euo pipefail
+          find apps packages/shared -name '*.js' -type f -print0 |
+            while IFS= read -r -d '' f; do node --check "$f"; done
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Configure Android SDK
+        shell: bash
+        run: |
+          set -euo pipefail
+          SDK_ROOT="${ANDROID_SDK_ROOT:-${ANDROID_HOME:-/usr/local/lib/android/sdk}}"
+          test -d "$SDK_ROOT"
+          echo "ANDROID_HOME=$SDK_ROOT" >> "$GITHUB_ENV"
+          echo "ANDROID_SDK_ROOT=$SDK_ROOT" >> "$GITHUB_ENV"
+          SDKMANAGER="$SDK_ROOT/cmdline-tools/latest/bin/sdkmanager"
+          if [[ ! -x "$SDKMANAGER" ]]; then
+            SDKMANAGER=$(find "$SDK_ROOT/cmdline-tools" -type f -name sdkmanager -print -quit 2>/dev/null || true)
+          fi
+          test -x "$SDKMANAGER"
+          yes | "$SDKMANAGER" --sdk_root="$SDK_ROOT" --licenses >/dev/null || true
+          "$SDKMANAGER" --sdk_root="$SDK_ROOT" "platforms;android-36" "build-tools;36.0.0"
+      - name: Download and verify Gradle 8.13 (mirror fallback)
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s gradle/wrapper/gradle-wrapper.jar
+          # Official Gradle 8.13 wrapper blob; no untrusted substitute is accepted.
+          test "$(git hash-object gradle/wrapper/gradle-wrapper.jar)" = "9bbc975c742b298b441bfb90dbc124400a3751b9"
+          zip="$RUNNER_TEMP/gradle-8.13-bin.zip"
+          expected="20f1b1176237254a6fc204d8434196fa11a4cfb387567519c61556e8710aed78"
+          downloaded=false
+          # Gradle's public distribution endpoints sometimes redirect to a GitHub
+          # release that returns HTTP 504. The alternate mirror is checksum-verified.
+          for url in \
+            "https://downloads.gradle.org/distributions/gradle-8.13-bin.zip" \
+            "https://repo.huaweicloud.com/gradle/gradle-8.13-bin.zip"; do
+            echo "Fetching Gradle 8.13 from: $url"
+            if curl --fail --location --silent --show-error \
+              --retry 2 --retry-all-errors --connect-timeout 20 --max-time 240 \
+              --output "$zip" "$url"; then
+              if printf '%s  %s\n' "$expected" "$zip" | sha256sum --check --status; then
+                downloaded=true
+                break
+              fi
+              echo "::warning::Gradle checksum mismatch; rejecting this download"
+            fi
+          done
+          test "$downloaded" = true
+          # CI-only local ZIP override: source file retains the official remote
+          # download URL and pinned distributionSha256Sum for non-CI builds.
+          sed -i "s#^distributionUrl=.*#distributionUrl=file://$zip#" gradle/wrapper/gradle-wrapper.properties
+          chmod +x ./gradlew
+          ./gradlew --version --no-daemon
+      - name: Create a one-run sandbox preview key (never used for Release)
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          test "$CI" = true
+          echo "::warning::OFFLINE PREVIEW ONLY — distinct installable sandbox with no live cloud, ephemeral identity. Never distribute as production."
+          target="$RUNNER_TEMP/zavi-${{ matrix.app }}-isolated-testonly.p12"
+          password=$(openssl rand -hex 32)
+          echo "::add-mask::$password"
+          keytool -genkeypair -noprompt -storetype PKCS12 -keystore "$target" \
+            -alias zavi-isolated-test-only -keyalg RSA -keysize 2048 \
+            -validity 2 -dname "CN=OFFLINE-PREVIEW-NOT-RELEASE, O=ZAVI QA" \
+            -storepass "$password" -keypass "$password" >/dev/null 2>&1
+          {
+            echo "ZAVI_ISOLATED_TEST_STORE_FILE=$target"
+            echo "ZAVI_ISOLATED_TEST_STORE_PASSWORD=$password"
+            echo "ZAVI_ISOLATED_TEST_KEY_ALIAS=zavi-isolated-test-only"
+            echo "ZAVI_ISOLATED_TEST_KEY_PASSWORD=$password"
+          } >> "$GITHUB_ENV"
+      - name: Stage app and shared assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf android-build/app/src/main/assets
+          mkdir -p android-build/app/src/main/assets
+          cp -a "apps/${{ matrix.app }}/." android-build/app/src/main/assets/
+          mkdir -p android-build/app/src/main/assets/packages/shared
+          cp -a packages/shared/. android-build/app/src/main/assets/packages/shared/ || true
+          for shared_file in database/supabase-config.js security/access-contract.js i18n/language-core.js; do
+            mkdir -p "android-build/app/src/main/assets/packages/shared/$(dirname "$shared_file")"
+            cp "packages/shared/$shared_file" "android-build/app/src/main/assets/packages/shared/$shared_file"
+          done
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('android-build/app/src/main/assets/index.html')
+          s=p.read_text(encoding='utf-8')
+          # The app source may already use the packaged path or the web-host path.
+          s=s.replace('../../packages/shared/','./packages/shared/')
+          s=s.replace('../packages/shared/','./packages/shared/')
+          p.write_text(s,encoding='utf-8')
+          # The installable preview is local-data-only: never connect to the
+          # production Supabase project, send customer data or request real auth.
+          preview=Path('android-build/app/src/main/assets')
+          (preview/'cloud-config.js').write_text("window.ZAVI_CLOUD_DEFAULTS={url:'',key:''};\n",encoding='utf-8')
+          (preview/'packages/shared/database/supabase-config.js').write_text(
+            "window.ZAVI_SHARED_SUPABASE=Object.freeze({projectId:'offline-preview',url:'',publishableKey:''});\n",encoding='utf-8')
+          admin=preview/'app.js'
+          if admin.exists():
+            original=admin.read_text(encoding='utf-8')
+            before="config={url:'https://wbbmwfnmurpphwxesssx.supabase.co',key:'sb_publishable_qv0LSRUyBASqLG_VS0TUcg_ioZWdlWX'};"
+            if before not in original:
+              raise SystemExit('Admin production config shape changed; refusing unsafe preview')
+            admin.write_text(original.replace(before,"config={url:'',key:''};"),encoding='utf-8')
+          for f in preview.rglob('*'):
+            if f.is_file() and f.suffix in ('.js','.html') and 'wbbmwfnmurpphwxesssx.supabase.co' in f.read_text(encoding='utf-8',errors='replace'):
+              raise SystemExit('LIVE-CLOUD-URL FOUND IN PREVIEW ASSET: '+str(f))
+          print('PASS: staged offline preview cannot use bundled production cloud credentials')
+          print('staged shared modules:', list((Path('android-build/app/src/main/assets/packages/shared')).rglob('*'))[:20])
+          PY
+          if [[ "${{ matrix.app }}" == "one" ]]; then
+            version="66.78-reborn.qa.$GITHUB_RUN_NUMBER-OFFLINE-PREVIEW"
+            package="com.zavione.one.offlinepreview"
+          else
+            version="1.4.69-reborn.qa.$GITHUB_RUN_NUMBER-OFFLINE-PREVIEW"
+            package="com.zavione.one.admin.offlinepreview"
+          fi
+          printf '{"commit":"%s","app":"%s","run":"%s","version":"%s","package":"%s","kind":"OFFLINE-PREVIEW-NOT-RELEASE","signing":"%s"}\n' \
+            "$GITHUB_SHA" "${{ matrix.app }}" "$GITHUB_RUN_NUMBER" "$version" "$package" "ephemeral-offline-preview" \
+            > android-build/app/src/main/assets/zavi-build-info.json
+          test -s android-build/app/src/main/assets/zavi-build-info.json
+          mkdir -p android-build/app/src/main/res/drawable-nodpi android-build/app/src/main/res/values android-build/app/src/main/res/xml
+          cp "apps/${{ matrix.app }}/icon-192.png" android-build/app/src/main/res/drawable-nodpi/zavi_launcher_image.png
+          printf '%s\n' '<resources><style name="ZaviTheme" parent="android:style/Theme.Material.Light.NoActionBar"><item name="android:windowLightStatusBar">false</item></style></resources>' > android-build/app/src/main/res/values/styles.xml
+          printf '%s\n' '<?xml version="1.0" encoding="utf-8"?><paths xmlns:android="http://schemas.android.com/apk/res/android"><cache-path name="camera" path="."/></paths>' > android-build/app/src/main/res/xml/zavi_camera_paths.xml
+      - name: Validate WebView source
+        run: |
+          python3 scripts/fix-webview-receipt.py
+          python3 scripts/validate-webview-html.py
+      - name: Clean and assemble distinct installable offline preview APK
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./gradlew :app:clean :app:assembleInstallablePreview \
+            -PzaviApp=${{ matrix.app }} -PzaviBuildNumber=${{ github.run_number }} \
+            -PzaviInstallablePreview=true --no-build-cache --stacktrace
+      - name: Verify non-testOnly preview package, APK signature and file hash
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo 'Isolated APK output paths:'
+          find android-build/app/build/outputs/apk -maxdepth 3 -type f -name '*.apk' -print
+          apk=$(find android-build/app/build/outputs/apk/installablePreview -maxdepth 1 -type f -name '*.apk' -print -quit)
+          if [[ -z "$apk" ]]; then echo "::error::Expected isolated APK not found"; exit 1; fi
+          apksigner="$ANDROID_SDK_ROOT/build-tools/36.0.0/apksigner"
+          aapt="$ANDROID_SDK_ROOT/build-tools/36.0.0/aapt"
+          # AGP emitted v2+v3 but no v1 despite the signingConfig flag.
+          # Re-sign with the *same isolated CI-only key* and force all three
+          # Android APK signature schemes; never relax any verifier.
+          resigned="$RUNNER_TEMP/zavi-offline-preview-v123.apk"
+          "$apksigner" sign --ks "$ZAVI_ISOLATED_TEST_STORE_FILE"             --ks-type PKCS12 --ks-key-alias "$ZAVI_ISOLATED_TEST_KEY_ALIAS"             --ks-pass env:ZAVI_ISOLATED_TEST_STORE_PASSWORD             --key-pass env:ZAVI_ISOLATED_TEST_KEY_PASSWORD             --v1-signing-enabled true --v2-signing-enabled true             --v3-signing-enabled true --v4-signing-enabled false             --out "$resigned" "$apk"
+          apk="$resigned"
+          if ! "$apksigner" verify --verbose --print-certs "$apk" > "$RUNNER_TEMP/isolated-apk-verify.txt" 2>&1; then
+            cat "$RUNNER_TEMP/isolated-apk-verify.txt"
+            echo "::error::APK cryptographic signature verification failed"; exit 1
+          fi
+          output=$(cat "$RUNNER_TEMP/isolated-apk-verify.txt")
+          printf '%s\n' "$output"
+          # API 26+ default check may skip obsolete v1 even if it is present.
+          # Verify v2/v3 against the actual minSdk, then test v1 against API 23.
+          for scheme in v2 v3; do
+            if ! grep -E "Verified using $scheme scheme.*: true" <<< "$output" >/dev/null; then
+              echo "::error::Missing verified signing scheme $scheme"; exit 1
+            fi
+          done
+          legacy=$("$apksigner" verify --min-sdk-version 23 --verbose --print-certs "$apk")
+          if ! grep -E 'Verified using v1 scheme.*: true' <<< "$legacy" >/dev/null; then
+            echo "::error::JAR v1 signature missing or invalid under Android 23 verification"; exit 1
+          fi
+          default_cert=$(grep -F 'Signer #1 certificate SHA-256 digest:' <<< "$output")
+          legacy_cert=$(grep -F 'Signer #1 certificate SHA-256 digest:' <<< "$legacy")
+          test -n "$default_cert" && test "$default_cert" = "$legacy_cert"
+          printf 'PASS: v1 (API 23), v2 + v3 (declared minSDK) and same certificate\n'
+          printf '%s\n' "$default_cert"
+          badging=$("$aapt" dump badging "$apk")
+          package=$(sed -n '1p' <<< "$badging")
+          echo "$package"
+          if [[ "${{ matrix.app }}" == one ]]; then
+            grep -F "name='com.zavione.one.offlinepreview'" <<< "$package"
+          else
+            grep -F "name='com.zavione.one.admin.offlinepreview'" <<< "$package"
+          fi
+          grep -F 'OFFLINE-PREVIEW-NOT-RELEASE' <<< "$package"
+          "$aapt" dump xmltree "$apk" AndroidManifest.xml | grep -E 'testOnly.*0x0
+          unzip -p "$apk" assets/zavi-build-info.json | grep -F '"kind":"OFFLINE-PREVIEW-NOT-RELEASE"'
+          test -s "$apk"
+          mkdir -p offline-preview-output
+          cp "$apk" "offline-preview-output/ZAVI_${{ matrix.app }}_OFFLINE-PREVIEW-NOT-RELEASE.apk"
+          (cd offline-preview-output && sha256sum *.apk > SHA256SUMS.txt)
+          cat offline-preview-output/SHA256SUMS.txt
+          echo "::warning::Only for disposable devices: tap APK to install on Android 8+; this is NOT a Release/upgrade and must not contain real financial data."
+      - uses: actions/upload-artifact@v4
+        with:
+          name: OFFLINE-PREVIEW-NOT-RELEASE-Android-${{ matrix.app }}
+          path: offline-preview-output/
+          retention-days: 4
+          if-no-files-found: error
+      - name: Destroy one-run preview signing material
+        if: always()
+        shell: bash
+        run: rm -f "$RUNNER_TEMP/zavi-${{ matrix.app }}-isolated-testonly.p12"
+ >/dev/null
+          # Explicitly refuse adb-only testOnly=true APK: phone users must install by tapping.
+          if "$aapt" dump xmltree "$apk" AndroidManifest.xml | grep -E 'testOnly.*0xffffffff' >/dev/null; then
+            echo "::error::Preview unexpectedly became testOnly=true"; exit 1
+          fi
+          unzip -p "$apk" assets/zavi-build-info.json | grep -F '"kind":"OFFLINE-PREVIEW-NOT-RELEASE"'
+          test -s "$apk"
+          mkdir -p offline-preview-output
+          cp "$apk" "offline-preview-output/ZAVI_${{ matrix.app }}_OFFLINE-PREVIEW-NOT-RELEASE.apk"
+          (cd offline-preview-output && sha256sum *.apk > SHA256SUMS.txt)
+          cat offline-preview-output/SHA256SUMS.txt
+          echo "::warning::Only for disposable devices: tap APK to install on Android 8+; this is NOT a Release/upgrade and must not contain real financial data."
+      - uses: actions/upload-artifact@v4
+        with:
+          name: OFFLINE-PREVIEW-NOT-RELEASE-Android-${{ matrix.app }}
+          path: offline-preview-output/
+          retention-days: 4
+          if-no-files-found: error
+      - name: Destroy one-run preview signing material
+        if: always()
+        shell: bash
+        run: rm -f "$RUNNER_TEMP/zavi-${{ matrix.app }}-isolated-testonly.p12"
