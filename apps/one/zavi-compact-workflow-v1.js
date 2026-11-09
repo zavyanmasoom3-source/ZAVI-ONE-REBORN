@@ -34,6 +34,12 @@
         pane.hidden=!active;
         const tab=bar.children[i];
         tab.setAttribute('aria-selected',String(active));
+        // Checked prior stages are visual state only, never proof of a sale.
+        if(kind==='order'){
+          tab.classList.toggle('zavi-flow-completed',i<index);
+          if(active)tab.setAttribute('aria-current','step');
+          else tab.removeAttribute('aria-current');
+        }
         tab.tabIndex=active?0:-1;
         if(active&&focus)tab.focus();
       });

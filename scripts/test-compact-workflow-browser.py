@@ -281,6 +281,29 @@ with Session() as browser:
         paymentHandlerSkipped:db.tx.length===before};
     })()""")
     assert all(saleReject.values()),saleReject
+    # The owner's sale stepper must mirror the live 3-stage form, preserve
+    # keyboard/ARIA state, and never post a transaction when switching tabs.
+    stepper=browser.eval("""(()=>{
+      const flow=document.querySelector('#dialogForm [data-zavi-flow="order"]');
+      const tabs=[...flow.querySelectorAll(':scope > .zavi-flow-tabs > .zavi-flow-tab')];
+      const start=db.tx.length;
+      tabs[1].click();
+      const products=flow.dataset.activeTab==='1'
+        &&tabs[0].classList.contains('zavi-flow-completed')
+        &&tabs[1].getAttribute('aria-current')==='step';
+      tabs[2].click();
+      const payment=flow.dataset.activeTab==='2'
+        &&tabs[0].classList.contains('zavi-flow-completed')
+        &&tabs[1].classList.contains('zavi-flow-completed')
+        &&tabs[2].getAttribute('aria-current')==='step';
+      tabs[0].click();
+      const back=flow.dataset.activeTab==='0'
+        &&tabs.every(el=>!el.classList.contains('zavi-flow-completed'))
+        &&tabs[0].getAttribute('aria-current')==='step';
+      return {products,payment,back,noPosting:db.tx.length===start};
+    })()""")
+    assert all(stepper.values()),stepper
+    print('PASS: sale 3-step progress and ARIA markers; tab changes never post')
     print('PASS: zero-price sale submission is blocked at its field; no accounting document posted')
     (out/'sale-form-no-transactions.png').write_bytes(browser.screenshot())
     print('PASS: three-tab sales form keeps actual item, customer, payment and submit controls')

@@ -125,6 +125,13 @@ html[data-zavi-theme] #overlay [data-zavi-flow="order"]>.zavi-flow-tabs>.zavi-fl
 html[data-zavi-theme] #overlay [data-zavi-flow="order"]>.zavi-flow-tabs>.zavi-flow-tab[aria-selected="true"]::before{
  background:#fff;color:#095bd1;border-color:#fff;
 }
+/* Reference sheet 12: prior completed wizard steps use green check marks.
+   No transaction state, server state or payment is ever inferred by CSS. */
+html[data-zavi-theme] #overlay [data-zavi-flow="order"]>.zavi-flow-tabs>.zavi-flow-tab.zavi-flow-completed::before{
+ content:'✓'!important;font-weight:900!important;
+ background:var(--zav-positive-bg)!important;color:var(--zav-positive)!important;
+ border:1px solid var(--zav-positive)!important;
+}
 html[data-zavi-theme] #mobileBottom{
  background:var(--zav-surface)!important;border:1px solid var(--zav-border)!important;
  border-bottom:0!important;border-radius:17px 17px 0 0!important;

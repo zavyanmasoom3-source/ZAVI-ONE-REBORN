@@ -3,7 +3,7 @@ Date: 2026-11-09 | Branch: dev | Status: **baseline mapping, not visual acceptan
 
 ## Evidence and limitations
 
-**New evidence on 2026-11-09:** the owner has now supplied **10 composite reference JPEG sheets** (ADMIN 01–06, ONE 07–10) and reports **2 more pending**. The reviewed screen-by-screen inventory and conflicting sidebar-layout alternatives are recorded in `docs/OWNER_NEW_10_OF_12_UI_REFERENCES_2026-11-09.md`. The original mapping below was compiled from the textual brief before the actual images arrived; route/source associations are useful, but are **not** pixel-by-pixel acceptance evidence. The older 5-PDF / 59-page matrix remains in `docs/PDF_59_PAGE_TRACEABILITY.md`. No user/customer data, security permissions or account records were changed by this mapping.
+**New evidence on 2026-11-09:** the owner supplied **all 12 composite reference JPEG sheets** (ADMIN 01–06, ONE 07–12) across two batches. All were inventoried and mapped to source/functional contracts. The reviewed screen-by-screen inventory and conflicting sidebar-layout alternatives are recorded in `docs/OWNER_NEW_10_OF_12_UI_REFERENCES_2026-11-09.md`. The original mapping below was compiled from the textual brief before the actual images arrived; route/source associations are useful, but are **not** pixel-by-pixel acceptance evidence. The older 5-PDF / 59-page matrix remains in `docs/PDF_59_PAGE_TRACEABILITY.md`. No user/customer data, security permissions or account records were changed by this mapping.
 
 **Implementation-state vocabulary:** `ROUTED` means a real source entry point exists; `PARTIAL` means a legacy module exists without full new-design+integration verification; `NEW_BACKEND` is not yet safely proved on a staging DB; `BLOCKED` means required evidence is absent. A reference CSS rule alone is never a completed screen.
 
@@ -57,7 +57,7 @@ The actual `apps/admin/index.html` data-page entries are `overview`, `customers`
 - Money must preserve ISO-4217 original amount, transaction exchange rate and AFN conversion separately; styling must never recompute transaction amounts.
 - **Font update on dev (2026-11-09):** both apps removed remote Google Fonts/preconnect tags and now load bundled `packages/shared/ui/fonts/Vazirmatn-Variable.ttf` with `OFL.txt`; the supported Pashto glyphs are validated in automatic tests. **Real-device Android and Windows font rendering/visual parity remain unverified**.
 - **Legacy styling still active:** `apps/one/index.html` contains a large inline `<style>` plus historical CSS includes; `apps/admin/index.html` references many versioned historical CSS files. They cannot be removed until visual/component parity, import-reference search, navigation, functional and offline checks pass.
-- **New owner references received but parity unverified:** 10 image sheets were inspected; 2 remain pending. Existing Chrome route screenshots and browser checks do **not** compare each screen pixel-for-pixel against the owner's new visual baselines. No file is categorized as safely deletable merely because it has an old name.
+- **All 12 reference sheets received; pixel parity remains unverified:** reference sheets 11–12 define ONE login, settings, subscription, device access and the three-stage sale. Existing Chrome route screenshots and browser checks do **not** compare each screen pixel-for-pixel against the owner's new visual baselines. No file is categorized as safely deletable merely because it has an old name.
 
 ## Ordered verification and removal procedure
 
@@ -69,3 +69,10 @@ The actual `apps/admin/index.html` data-page entries are `overview`, `customers`
 6. Run financial, auth, tenancy/RLS, real scanner, printer and device-transfer acceptance tests before signing Release.
 
 **Release gate remains CLOSED.** This document is the mapping deliverable, not an acceptance certificate.
+
+## Subsequent source-level progress (not pixel parity)
+
+- ONE's owner PIN gate has a reference-scoped light/dark/glass skin and localized appearance buttons. Browser QA verifies original PIN and recovery controls, 44px tap targets and all three appearance choices.
+- The real Settings appearance module now displays and persists glass across a fresh page load, without reverting it to dark; original three independent size controls remain connected.
+- Real sale/purchase wizard prior steps now expose green check marks plus `aria-current=step`; tab navigation is presentation-only, tested not to post ledger entries.
+- Release gate remains CLOSED until reference screenshot comparisons, hardware and server-side security/accounting tests, and genuinely signed Android/Windows builds pass.
