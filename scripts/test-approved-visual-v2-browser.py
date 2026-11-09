@@ -111,7 +111,17 @@ with Session() as browser:
                   'ONE appearance controls on Settings route')
     prefs=browser.eval("""[...document.querySelectorAll('#zavi-ui-preferences-v2 [data-zui-theme]')]
         .map(b=>b.dataset.zuiTheme)""")
-    assert prefs==['light','dark'],prefs
+    assert prefs==['light','dark','glass'],prefs
+    # Actual settings choice must drive the same global runtime theme and
+    # storage used by the owner PIN gate; never silently downgrade glass.
+    persisted=browser.eval("""(()=>{
+      document.querySelector('#zavi-ui-preferences-v2 [data-zui-theme="glass"]').click();
+      return {theme:document.documentElement.dataset.zaviTheme,
+        appearance:document.documentElement.dataset.zaviAppearance,
+        stored:localStorage.getItem('zavi_ui_appearance_v2'),
+        controller:window.ZaviThemeV29.get()};
+    })()""")
+    assert all(persisted[k]=='glass' for k in persisted),persisted
     browser.route('dashboard')
     assert not browser.eval("!!document.getElementById('zavi-ui-preferences-v2')")
     # The existing sale dialog is built by the real app, with temporary
