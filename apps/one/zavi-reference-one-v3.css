@@ -851,3 +851,53 @@ html[data-zavi-theme] #content details.z638-warehouse-scanner .zavi-barcode-acti
   padding:10px 12px!important;
  }
 }
+
+
+/* Single unobtrusive Afghan+Gregorian header date across all mobile routes.
+   Theme/language/lock remain available in Settings; no accounting state changes. */
+html[data-zavi-theme] .topbar #zaviDateBanner .zavi-date-compact{
+ display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+ font-size:10px;line-height:1.35;font-weight:600;color:var(--zav-muted);
+}
+@media(max-width:760px){
+ html[data-zavi-theme] body:not(.zavi-reference-dashboard-active) .topbar{
+  display:flex!important;align-items:center!important;justify-content:space-between!important;
+  flex-wrap:nowrap!important;gap:7px!important;
+  min-height:46px!important;height:46px!important;
+  padding:4px 10px!important;margin:0!important;
+  background:var(--zav-surface)!important;border-bottom:1px solid var(--zav-border)!important;
+  overflow:hidden!important;
+ }
+ html[data-zavi-theme] body:not(.zavi-reference-dashboard-active) .topbar > div:first-child{
+  flex:0 0 auto!important;min-width:0!important;
+ }
+ html[data-zavi-theme] body:not(.zavi-reference-dashboard-active) .topbar .mobile-brand{
+  display:flex!important;align-items:center!important;gap:6px!important;
+  white-space:nowrap!important;color:var(--zav-ink)!important;
+ }
+ html[data-zavi-theme] body:not(.zavi-reference-dashboard-active) .topbar .mobile-brand .brand-logo{
+  width:26px!important;height:26px!important;border-radius:8px!important;
+  flex:0 0 26px!important;
+ }
+ html[data-zavi-theme] body:not(.zavi-reference-dashboard-active) .topbar .mobile-brand > span{
+  font-size:12px!important;color:var(--zav-ink)!important;
+  font-weight:800!important;line-height:1.25!important;
+ }
+ html[data-zavi-theme] body:not(.zavi-reference-dashboard-active) .topbar .mobile-brand small{
+  display:none!important;
+ }
+ html[data-zavi-theme] body:not(.zavi-reference-dashboard-active) .topbar .topbar-actions,
+ html[data-zavi-theme] body:not(.zavi-reference-dashboard-active) .topbar #todayStamp{
+  display:none!important;
+ }
+ html[data-zavi-theme] body:not(.zavi-reference-dashboard-active) .topbar #zaviDateBanner{
+  display:flex!important;flex:0 1 245px!important;align-items:center!important;
+  min-width:0!important;max-width:245px!important;width:auto!important;
+  min-height:0!important;height:28px!important;padding:0!important;margin:0!important;
+  border:0!important;background:transparent!important;box-shadow:none!important;
+  overflow:hidden!important;
+ }
+ html[data-zavi-theme] body:not(.zavi-reference-dashboard-active) .topbar #zaviDateBanner .zavi-date-compact{
+  font-size:10px!important;color:var(--zav-muted)!important;
+ }
+}
