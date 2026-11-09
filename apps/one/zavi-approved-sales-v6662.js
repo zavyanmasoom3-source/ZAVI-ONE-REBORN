@@ -243,7 +243,11 @@
         const refreshDate=()=>{
           try{
             const value=form.elements.date.value;
-            dateNote.textContent=window.ZaviDesignSystemV1?.formatDualDate(value,{
+            // The native Afghanistan picker stores an actual Solar-Hijri
+            // input such as ۱۴۰۵/۰۸/۱۸. Convert through ZAVI's validated
+            // calendar function before rendering a dual Gregorian/Solar line.
+            const iso=typeof readDate==='function'?readDate(value):value;
+            dateNote.textContent=window.ZaviDesignSystemV1?.formatDualDate(iso,{
               language:lang()==='fa'?'fa-AF':lang()==='ps'?'ps-AF':'en',
               timezone:'Asia/Kabul'
             })||'';
@@ -439,7 +443,9 @@
     if(dual){
       try{
         const next=window.ZaviDesignSystemV1?.formatDualDate(
-          modal.querySelector('#dialogForm').elements.date.value,{
+          (typeof readDate==='function'?readDate(
+            modal.querySelector('#dialogForm').elements.date.value):
+            modal.querySelector('#dialogForm').elements.date.value),{
             language:lang()==='fa'?'fa-AF':lang()==='ps'?'ps-AF':'en',timezone:'Asia/Kabul'
           })||'';
         if(dual.textContent!==next)dual.textContent=next;
