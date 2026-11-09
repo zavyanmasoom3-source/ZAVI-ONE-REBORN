@@ -134,28 +134,92 @@ function adminDashboardCounts(){
  rows.forEach(r=>{const k=status(r)[0];counts[k]=(counts[k]||0)+1});
  return counts;
 }
+/* Owner's approved dashboard: all displayed values originate from actual loaded rows.
+   Charts are read-only and never fabricate subscriptions or device counts. */
 function renderOverview(){
- const c=adminDashboardCounts();
+ const counts=adminDashboardCounts();
+ const total=Math.max(1,counts.all);
+ const states=[
+  {name:'فعال',count:counts.active,color:'#00b69c'},
+  {name:'درحال انقضا',count:counts.warning,color:'#efac32'},
+  {name:'منقضی',count:counts.expired,color:'#ec667b'},
+  {name:'در انتظار',count:counts.pending,color:'#3686f6'},
+  {name:'معلق',count:counts.suspended,color:'#a58bff'}
+ ];
+ let gradStart=0;
+ const gradient=states.map(x=>{
+  const from=gradStart;gradStart+=x.count*100/total;
+  return x.color+' '+from.toFixed(2)+'% '+gradStart.toFixed(2)+'%';
+ }).join(',');
+ const afNumber=value=>faDigits(value);
+ const metric=(label,value,ico,kind)=>'<article class="admin-ref-stat '+kind+'">'+
+  '<span class="admin-ref-icon" aria-hidden="true">'+ico+'</span>'+
+  '<span class="admin-ref-stat-label">'+label+'</span>'+
+  '<strong>'+afNumber(value)+'</strong></article>';
+ // Use real local-date account creation timestamps for last 30 days.
+ // Missing timestamps simply do not contribute, never infer creation dates.
+ const today=Date.now(),days=30,dayMs=86400000;
+ const groups=Array.from({length:10},(_,i)=>({
+  start:today-(days-i*3)*dayMs,
+  end:today-(days-(i+1)*3)*dayMs,
+  value:0
+ }));
+ rows.forEach(r=>{
+  const t=Date.parse(r.started_at||r.created_at||'');
+  if(!Number.isFinite(t))return;
+  const slot=groups.find(g=>t>=g.start&&t<g.end);
+  if(slot)slot.value++;
+ });
+ const maximum=Math.max(1,...groups.map(g=>g.value));
+ const columns=groups.map((g,i)=>'<div class="admin-ref-chart-col">'+
+  '<span class="admin-ref-chart-number">'+afNumber(g.value)+'</span>'+
+  '<div class="admin-ref-chart-track"><i style="height:'+
+    (g.value?(Math.max(8,100*g.value/maximum)).toFixed(1):0)+'%"></i></div>'+
+  '<small>'+afNumber((i+1)*3)+'</small></div>').join('');
+ const activeRate=counts.all?Math.round(100*counts.active/counts.all):0;
+ const legend=states.map(x=>'<div class="admin-ref-legend-row"><b class="admin-ref-dot" style="background:'+x.color+
+  '"></b><span>'+x.name+'</span><strong>'+afNumber(x.count)+'</strong></div>').join('');
  const alerts=rows.filter(r=>['expired','warning','pending'].includes(status(r)[0]));
- const recent=rows.filter(r=>r.last_paid_at && Number.isFinite(new Date(r.last_paid_at).getTime())).sort((a,b)=>new Date(b.last_paid_at)-new Date(a.last_paid_at)).slice(0,5);
- const distro=[['فعال',c.active,'#1ad1a5'],['نزدیک ختم',c.warning,'#ffb454'],['منقضی',c.expired,'#ff6485'],['در انتظار',c.pending,'#568aff'],['معلق',c.suspended,'#9585ff']];
- const total=Math.max(1,rows.length);let upto=0;
- const grad=distro.map(([,,color],i)=>{const s=upto;upto+=distro[i][1]*100/total;return `${color} ${s.toFixed(2)}% ${upto.toFixed(2)}%`}).join(',');
- return `<section class="admin-hero"><div><div class="admin-hero-kicker">پنل اختصاصی مالک اصلی · Z1 ADMIN</div><h1>ZAVI ONE <em>ADMIN</em></h1><h2>مدیریت مرکزی فروشگاه‌ها</h2><p>فروشگاه‌ها، تمدید اشتراک، دستگاه‌ها و پشتیبانی در یک محیط امن</p><button type="button" class="button primary" data-nav="customers">مدیریت فروشگاه‌ها ←</button></div><div class="admin-hero-art"><img src="./z1-admin-official.jpg" alt="لوگوی رسمی Z1 ADMIN" width="160" height="160"><span>کنترل مرکزی</span></div></section>
- <div class="admin-kpis" aria-label="آمار واقعی حساب‌ها">
- ${[['فروشگاه‌ها',c.all,'▣','blue'],['اشتراک فعال',c.active,'✓','green'],['نزدیک انقضا',c.warning,'◷','orange'],['منقضی',c.expired,'!','red'],['در انتظار',c.pending,'◆','purple']].map(([title,num,ico,color])=>`<article class="admin-kpi ${color}"><span class="kpi-ico">${ico}</span><small>${title}</small><strong>${faDigits(num)}</strong><span class="kpi-foot">${mode==='demo'?'نمونه آزمایشی':'بر اساس آخرین دریافت از سرور'}</span></article>`).join('')}</div>
- <div class="admin-analytics">
-  <section class="panel admin-analytics-main"><div class="panel-heading"><h2>وضعیت اشتراک فروشگاه‌ها</h2><button type="button" class="button ghost" data-nav="customers">مشاهده همه</button></div>
-   <div class="admin-bars">${distro.map(([label,num,color])=>`<div class="admin-bar-row"><span>${label}</span><div class="admin-bar-track"><i style="width:${num?Math.max(3,100*num/total):0}%;background:${color}"></i></div><strong>${faDigits(num)}</strong></div>`).join('')}</div>
-   <p class="admin-muted">این نمودار توزیع اشتراک‌های دریافت‌شده را نشان می‌دهد؛ درآمد یا دستگاه‌های ناشناخته تخمین زده نشده‌اند.</p>
-  </section>
-  <section class="panel admin-distribution"><div class="panel-heading"><h2>توزیع فروشگاه‌ها</h2></div><div class="admin-donut-wrap"><div class="admin-donut" style="background:conic-gradient(${grad})"><div><b>${faDigits(rows.length)}</b><small>فروشگاه</small></div></div><div class="admin-legend">${distro.map(([label,num,color])=>`<div><span style="background:${color}"></span>${label}<b>${faDigits(num)}</b></div>`).join('')}</div></div></section>
- </div>
- <div class="admin-secondary">
-  <section class="panel"><div class="panel-heading"><h2>فروشگاه‌های نیازمند پیگیری</h2><button type="button" class="button ghost" data-nav="customers">فهرست کامل</button></div>${alerts.length?`<div class="admin-list">${alerts.slice(0,5).map(r=>`<div class="admin-item"><div><b>${escapeHTML(r.workspace_name)}</b><small>${escapeHTML(r.owner_email||'')}</small></div>${statLabel(r)}<button type="button" class="button ghost" data-renew="${escapeHTML(r.workspace_id)}">بررسی</button></div>`).join('')}</div>`:'<div class="empty">در فهرست فعلی موردی برای پیگیری وجود ندارد.</div>'}</section>
-  <section class="panel"><div class="panel-heading"><h2>آخرین تمدیدهای ثبت‌شده</h2><button type="button" class="button ghost" data-nav="payments">سوابق</button></div>${recent.length?`<div class="admin-list">${recent.map(r=>`<div class="admin-item"><div><b>${escapeHTML(r.workspace_name)}</b><small>${escapeHTML(shortDate(r.last_paid_at))}</small></div><strong>${r.last_amount!=null?escapeHTML(money(r.last_amount,r.last_currency||'AFN')):'—'}</strong></div>`).join('')}</div>`:'<div class="empty">پرداخت ثبت‌شده‌ای در اطلاعات دریافت‌شده نیست.</div>'}</section>
- </div>
- <section class="panel admin-quick"><div class="panel-heading"><h2>دسترسی سریع</h2></div><div class="admin-quick-grid">${[['customers','▣','فروشگاه‌ها'],['payments','♛','اشتراک‌ها'],['devices','▤','دستگاه‌ها'],['support','☏','پشتیبانی'],['finance','▥','گزارش مالی'],['security','♢','امنیت']].map(([key,icon,title])=>`<button type="button" data-nav="${key}"><span>${icon}</span>${title}</button>`).join('')}</div></section>`;
+ const latest=rows.filter(r=>r.last_paid_at&&Number.isFinite(new Date(r.last_paid_at).getTime()))
+  .sort((a,b)=>new Date(b.last_paid_at)-new Date(a.last_paid_at)).slice(0,5);
+ return '<div class="admin-reference-dashboard-v5" data-admin-reference-dashboard="2026-11">'+
+  '<header class="admin-reference-heading"><h1>داشبورد مدیریت</h1>'+
+  '<span class="admin-ref-heading-sub">نمای کلی مشتریان و اشتراک‌ها</span></header>'+
+  '<section class="admin-ref-stat-grid" aria-label="آمار واقعی">'+
+   metric('همه مشتریان',counts.all,'▤','blue')+
+   metric('در حال انقضا',counts.warning,'◷','orange')+
+   metric('مشتریان فعال',counts.active,'♧','green')+
+   metric('منقضی',counts.expired,'⊗','red')+'</section>'+
+  '<div class="admin-reference-charts">'+
+  '<section class="panel admin-reference-chart-panel"><div class="panel-heading"><h2>وضعیت اشتراک</h2></div>'+
+   '<div class="admin-ref-donut-layout"><div class="admin-ref-donut" role="img" aria-label="درصد اشتراک‌های فعال" '+
+   'style="background:conic-gradient('+gradient+')"><span class="admin-ref-donut-center">'+
+   '<b>'+afNumber(activeRate)+'٪</b><small>فعال</small></span></div>'+
+   '<div class="admin-ref-legend">'+legend+'</div></div></section>'+
+  '<section class="panel admin-reference-chart-panel"><div class="panel-heading"><h2>مشتریان جدید (۳۰ روز اخیر)</h2></div>'+
+   '<div class="admin-ref-chart-bars" role="img" aria-label="تعداد مشتریانی که تاریخ ایجاد معتبر دارند">'+columns+'</div>'+
+   '<p class="admin-ref-footnote">هر ستون نمایندهٔ ۳ روز است. تنها تاریخ‌های ثبت‌شده محاسبه می‌شوند.</p></section>'+
+  '</div>'+
+  '<div class="admin-secondary admin-ref-bottom">'+
+  '<section class="panel"><div class="panel-heading"><h2>مشتریان نیازمند پیگیری</h2>'+
+   '<button type="button" class="button ghost" data-nav="customers">مشاهده همه</button></div>'+
+   (alerts.length?'<div class="admin-list">'+alerts.slice(0,4).map(r=>'<div class="admin-item"><div><b>'+
+    escapeHTML(r.workspace_name)+'</b><small>'+escapeHTML(r.owner_email||'')+'</small></div>'+
+    statLabel(r)+'<button type="button" class="button ghost" data-renew="'+
+    escapeHTML(r.workspace_id)+'">بررسی</button></div>').join('')+'</div>':
+    '<div class="empty">مشتری نیازمند پیگیری نیست.</div>')+'</section>'+
+  '<section class="panel"><div class="panel-heading"><h2>آخرین تمدیدها</h2>'+
+   '<button type="button" class="button ghost" data-nav="payments">مشاهده سوابق</button></div>'+
+   (latest.length?'<div class="admin-list">'+latest.map(r=>'<div class="admin-item"><div><b>'+
+    escapeHTML(r.workspace_name)+'</b><small>'+escapeHTML(shortDate(r.last_paid_at))+
+    '</small></div><strong>'+escapeHTML(r.last_amount!=null?
+    money(r.last_amount,r.last_currency||'AFN'):'—')+'</strong></div>').join('')+'</div>':
+    '<div class="empty">هنوز تمدیدی ثبت نشده است.</div>')+'</section></div>'+
+  '<section class="admin-ref-actions" aria-label="دسترسی سریع">'+
+   [['customers','مشتریان','♙'],['payments','اشتراک‌ها','▣'],['devices','دستگاه‌ها','▤'],
+    ['support','ارتباط و پیام‌ها','☏']].map(([route,label,ico])=>
+    '<button type="button" data-nav="'+route+'"><span>'+ico+'</span>'+label+'</button>').join('')+
+  '</section></div>';
 }
 function renderDevices(){return heading('مدیریت دستگاه‌ها','تعویض دستگاه اصلی و سیاست مجوز آفلاین هر فروشگاه فقط با تأیید سرور')+
  `<div class="admin-kpis"><article class="admin-kpi blue"><small>فروشگاه‌های قابل انتخاب</small><strong>${faDigits(rows.length)}</strong><span>تعداد دستگاه‌ها فقط پس از دریافت مجاز از سرور مشخص می‌شود</span></article></div>`+
