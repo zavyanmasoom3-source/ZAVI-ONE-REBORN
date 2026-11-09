@@ -5,7 +5,7 @@
  */
 'use strict';
 const APK_ORIGIN='https://appassets.androidplatform.net';
-const CACHE_NAME='zavi-one-12refs-20261109-v3';
+const CACHE_NAME='zavi-one-ref-12-design-reset-v4-20261109';;
 const SHELL_PROTOCOL='zavi-shell-v2';
 const CACHE_PREFIX='zavi-one-';
 const CORE=[
@@ -125,16 +125,12 @@ const CORE=[
   "zavi-v63-team-operations.css",
   "zavi-v63-team-operations.js",
   "zavi-manual-waste-v41.css",
-  "zavi-layout-contrast-v40.css",
-  "zavi-premium-v37.css",
   "zavi-dashboard-actions-v37.js",
-  "zavi-signature-v35.css",
   "zavi-locale-signature-v35.js",
   "zavi-phonebook-v19.css",
   "zavi-phonebook-v19.js",
   "zavi-legacy-locale-v19.js",
   "zavi-locales-v19.js",
-  "zavi-dark-executive-v18.css",
   "zavi-auto-update-v18.js",
   "zavi-finance-stock-v18.js",
   "zavi-invoice-v18.css",
@@ -148,12 +144,6 @@ const CORE=[
   "zavi-mobile-chart-and-viewer-v58.css",
   "zavi-mobile-chart-and-viewer-v58.js",
   "zavi-i18n-v22.js",
-  "zavi-theme-v29.css",
-  "zavi-final-light-v30.css",
-  "zavi-light-production-v31.css",
-  "zavi-light-hotfix-v32.css",
-  "zavi-light-finish-v33.css",
-  "zavi-light-studio-v34.css",
   "zavi-localization-finish-v33.js",
   "zavi-residual-i18n-v32.js",
   "zavi-theme-v29.js",
@@ -163,7 +153,6 @@ const CORE=[
   "ps.json",
   "zavi-i18n-v22.css",
   "zavi-calendar-chart-v26.css",
-  "zavi-dark-executive-v23.css",
   "zavi-dual-calendar-v22.js",
   "annual-license.js",
   "device-activation.js",
@@ -180,7 +169,6 @@ const CORE=[
   "v45-business.js",
   "v47-business.js",
   "subscription-hub.css",
-  "neon-theme-v47.css",
   "neon-invoice-v47.css",
   "neon-hero.svg",
   "zavi-android-v5-fix.css",
@@ -189,7 +177,6 @@ const CORE=[
   "v25-business.html",
   "offline-check.html",
   "offline-check.js",
-  "zavi-release-polish-v19.css",
   "zavi-display-settings-v6545.js",
   "zavi-biometric-ui-v6546.js",
   "zavi-mobile-ux-safe-v6547.js",
@@ -197,7 +184,6 @@ const CORE=[
   "zavi-v6549-ergonomics.js",
   "zavi-reference-store-v6557.css",
   "zavi-final-settings-common-v1.css",
-  "zavi-cinematic-v2.css",
   "zavi-final-reference-store.css",
   "zavi-dashboard-polish-v6562.css",
   "zavi-mobile-cleanup-v6563.css",
@@ -217,7 +203,6 @@ const CORE=[
   "zavi-preferences-v2.js",
   "zavi-pdf-screen-map-v6740.js",
   "zavi-pdf-final-v6760.css",
-  "zavi-reborn-design-v1.css",
   "zavi-reference-store-v6557.js",
   "zavi-final-settings-store-v6559.js",
   "zavi-cinematic-v2.js",

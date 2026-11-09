@@ -13,6 +13,7 @@ on:
       - 'scripts/test-admin-settings-layout-browser.py'
       - 'scripts/test-approved-visual-v2-browser.py'
       - 'scripts/test-12-reference-design-browser.py'
+      - 'scripts/check-reference-runtime-css.py'
       - 'packages/shared/ui/**'
       - '.github/workflows/visual-qa.yml'
   workflow_dispatch:
@@ -23,6 +24,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Reject retired page-wide CSS and check reference-only entrypoints
+        run: python3 scripts/check-reference-runtime-css.py
       - name: Diagnose actual applied appearance and CSS
         run: python3 scripts/diagnose-theme-qa.py
       - name: Render real app screens with Chrome
