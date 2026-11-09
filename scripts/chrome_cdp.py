@@ -136,7 +136,7 @@ class Session:
     def eval(self,js):
         res=self.command('Runtime.evaluate',{'expression':js,'awaitPromise':True,'returnByValue':True})
         if res.get('exceptionDetails'):
-            raise RuntimeError('JS error: '+str(res['exceptionDetails'].get('text')))
+            raise RuntimeError('JS error: '+str(res['exceptionDetails'].get('exception',{}).get('description') or res['exceptionDetails'].get('text')))
         return res.get('result',{}).get('value')
     def until(self,condition,label,seconds=25):
         t=time.monotonic()
