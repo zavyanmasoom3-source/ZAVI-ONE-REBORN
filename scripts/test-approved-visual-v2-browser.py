@@ -7,6 +7,7 @@ successful tests cannot certify one-to-one reference fidelity.
 from chrome_cdp import Session, ROOT
 from pathlib import Path
 import json
+import time
 
 OUT=ROOT/'qa-approved-ui'
 OUT.mkdir(exist_ok=True)
@@ -40,6 +41,8 @@ def theme_proof(browser,app,mode):
 
 with Session() as browser:
     assert not browser.unlock_one()
+    # Actual launch animation must disappear before any screenshot becomes evidence.
+    time.sleep(3)
     browser.route('dashboard')
     for mode in ('light','dark'):
         result=theme_proof(browser,'one',mode)
@@ -55,6 +58,21 @@ with Session() as browser:
         assert not dash['preferences'],('preferences leaked onto dashboard',dash)
         assert dash['assistant'] in (None,'none'),('assistant covers dashboard',dash)
         assert set(['dashboard','sales','products','purchases']).issubset(dash['bottom']),dash
+        details=browser.eval("""(()=>{
+          const content=document.getElementById('content');
+          const el=[...content.querySelectorAll('h1,h2,h3')].find(e=>
+            e.textContent.includes('مدیریت تجارت') || e.textContent.includes('خوش آمدید'));
+          const p=el?.closest('.welcome,.zrf-home,.zui-dashboard-page,section');
+          const paint=e=>e?({className:e.className,
+            background:getComputedStyle(e).background,
+            color:getComputedStyle(e).color,
+            opacity:getComputedStyle(e).opacity,
+            rect:{width:e.getBoundingClientRect().width,
+             height:e.getBoundingClientRect().height}}):null;
+          return {heading:paint(el),parent:paint(p),main:paint(content),
+            firstChildren:[...content.children].slice(0,6).map(e=>e.className)};
+        })()""")
+        report['apps']['one-'+mode+'-diagnostics']=details
         image=OUT/('one-dashboard-'+mode+'.png')
         image.write_bytes(browser.screenshot())
         assert image.stat().st_size>14000,image
@@ -125,6 +143,16 @@ with Session() as browser:
             noSettingsWidget:!document.querySelector('#zavi-ui-preferences-v2')};
         })()""")
         assert summary['cards']>=4 and summary['actualUI'] and summary['noSettingsWidget'],summary
+        colors=browser.eval("""(()=>{
+          const info=selector=>{const e=document.querySelector(selector),c=e?getComputedStyle(e):null;
+            return c?{opacity:c.opacity,background:c.backgroundColor,color:c.color,
+              webkitTextFillColor:c.webkitTextFillColor,filter:c.filter,
+              visibility:c.visibility}:null;};
+          return {kpi:info('.admin-kpi'),kpiStrong:info('.admin-kpi strong'),
+            hero:info('.admin-hero'),heroTitle:info('.admin-hero h1'),
+            chart:info('.admin-analytics-main')};
+        })()""")
+        report['apps']['admin-'+mode+'-diagnostics']=colors
         image=OUT/('admin-dashboard-desktop-'+mode+'.png')
         image.write_bytes(browser.screenshot())
         assert image.stat().st_size>14000,image
