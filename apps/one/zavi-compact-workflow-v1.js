@@ -5,13 +5,13 @@
   const labels={
     fa:{accounts:'حساب‌ها',transactions:'تراکنش‌ها',more:'بیشتر',summary:'خلاصه',details:'جزئیات',output:'خروجی',warehouses:'گدام‌ها',movements:'حرکت موجودی',
       products:'محصولات',customer:'مشتری',payment:'پرداخت',specs:'مشخصات',
-      required:'این فیلد ضروری است.',positive:'قیمت هر واحد باید بیشتر از صفر باشد.',badNumber:'یک عدد معتبر وارد کنید.',badFormat:'فرمت این فیلد معتبر نیست.'},
+      required:'این فیلد ضروری است.',positive:'قیمت هر واحد باید بیشتر از صفر باشد.',badNumber:'یک عدد معتبر وارد کنید.',badFormat:'فرمت این فیلد معتبر نیست.',continue:'ادامه'},
     ps:{accounts:'حسابونه',transactions:'معاملې',more:'نور',summary:'لنډیز',details:'جزئیات',output:'وتنه',warehouses:'ګدامونه',movements:'د موجودۍ حرکت',
       products:'توکي',customer:'پېرودونکی',payment:'تادیه',specs:'معلومات',
-      required:'دا برخه اړینه ده.',positive:'د هر واحد بیه باید له صفر څخه لوړه وي.',badNumber:'سمه شمېره ولیکئ.',badFormat:'د دې برخې بڼه سمه نه ده.'},
+      required:'دا برخه اړینه ده.',positive:'د هر واحد بیه باید له صفر څخه لوړه وي.',badNumber:'سمه شمېره ولیکئ.',badFormat:'د دې برخې بڼه سمه نه ده.',continue:'بل ګام'},
     en:{accounts:'Accounts',transactions:'Transactions',more:'More',summary:'Summary',details:'Details',output:'Export',warehouses:'Warehouses',movements:'Stock movements',
       products:'Products',customer:'Customer',payment:'Payment',specs:'Details',
-      required:'This field is required.',positive:'Unit price must be greater than zero.',badNumber:'Enter a valid number.',badFormat:'Invalid field format.'}
+      required:'This field is required.',positive:'Unit price must be greater than zero.',badNumber:'Enter a valid number.',badFormat:'Invalid field format.',continue:'Continue'}
   };
   const lang=()=>{
     const l=(document.documentElement.lang||'fa').toLowerCase();
@@ -178,10 +178,29 @@
     if(extraPayment.childElementCount)payment.unshift(extraPayment);
     if(isPurchase)createTabs(body,'order', [general,products,payment],
       ['specs','products','payment']);
-    else createTabs(body,'order',[products,general,payment],
-      ['products','customer','payment']);
+    else createTabs(body,'order',[general,products,payment],
+      ['customer','products','payment']);
     if(heading && body.firstElementChild!==heading)body.prepend(heading);
     if(!body.querySelector('[data-zavi-flow="order"]'))return;
+    const flow=body.querySelector('[data-zavi-flow="order"]');
+    // Reference sale wizard: customer -> products -> payment.
+    // The actual inputs, validations, and original submit remain in place.
+    [...flow.querySelectorAll(':scope > .zavi-flow-panel')].slice(0,2).forEach((pane,index)=>{
+      const next=document.createElement('button');
+      next.type='button';next.className='zavi-reference-continue';
+      next.dataset.zaviReferenceNext=String(index+1);
+      next.textContent=tr('continue')+' ‹';
+      next.addEventListener('click',()=>{
+        const invalid=[...pane.querySelectorAll('input,select,textarea')]
+          .find(field=>!field.disabled && field.willValidate && !field.checkValidity());
+        if(invalid){
+          window.ZaviDesignSystemV1?.setFieldError(invalid,invalid.validationMessage||tr('required'));
+          invalid.focus({preventScroll:true});invalid.scrollIntoView({block:'nearest'});return;
+        }
+        flow.zaviActivate(index+1,true);
+      });
+      pane.append(next);
+    });
     form.dataset.zaviFlowDone='true';
     function fail(field,message){
       const panel=field.closest('.zavi-flow-panel');
@@ -224,6 +243,9 @@
   function refreshLabels(){
     document.querySelectorAll('[data-zavi-flow-label]').forEach(el=>{
       el.textContent=tr(el.dataset.zaviFlowLabel);
+    document.querySelectorAll('[data-zavi-reference-next]').forEach(b=>{
+      b.textContent=tr('continue')+' ‹';
+    });
     });
     const quick={
       fa:{sales:'ثبت فروش',purchases:'ثبت خرید',debtors:'حساب مشتریان',products:'گدام'},

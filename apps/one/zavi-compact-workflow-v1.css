@@ -97,3 +97,16 @@
   background:var(--zds-surface-alt,#f8fafc);border-radius:10px;min-width:0}
 .zavi-dash-cash-details strong{font-size:14px;overflow-wrap:anywhere}
 @media(max-width:600px){.zavi-dash-cash-details{grid-template-columns:1fr}}
+
+/* Owner's approved three-screen sale wizard. Continue action is view-only:
+   the actual finance submit remains in the sticky native modal footer. */
+#dialogForm .zavi-reference-continue{
+ margin:12px 0 3px;min-height:47px;width:100%;border:1px solid #106ce4;
+ border-radius:12px;background:linear-gradient(115deg,#2a90ff,#0b60db);
+ color:white;font:750 14px/1.6 inherit;cursor:pointer;
+ box-shadow:0 4px 12px rgba(12,100,215,.21);
+}
+#dialogForm .zavi-reference-continue:focus-visible{
+ outline:3px solid #5aabff;outline-offset:2px;
+}
+html[dir="ltr"] #dialogForm .zavi-reference-continue{direction:ltr}

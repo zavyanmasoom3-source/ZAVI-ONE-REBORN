@@ -257,14 +257,14 @@ with Session() as browser:
        const flow=f.querySelector('[data-zavi-flow="order"]');
        const panes=[...flow.querySelectorAll('[role="tabpanel"]')];
        return {keys:[...flow.querySelectorAll('[role="tab"]')].map(x=>x.dataset.zaviFlowLabel),
-          product:!!panes[0].querySelector('#orderItems'),
-          customer:!!panes[1].querySelector('[name="freeContactName"]'),
+          customer:!!panes[0].querySelector('[name="freeContactName"]'),
+          product:!!panes[1].querySelector('#orderItems'),
           payment:!!panes[2].querySelector('[name="paid"]') &&
              !!panes[2].querySelector('[name="accountId"]'),
           savePresent:!!f.querySelector('.modal-foot button[type=submit]'),
           rows:f.querySelectorAll('.order-line').length};
     })()""")
-    assert sale['keys']==['products','customer','payment'] and sale['rows']>=1,sale
+    assert sale['keys']==['customer','products','payment'] and sale['rows']>=1,sale
     assert all(sale[k] for k in ['product','customer','payment','savePresent']),sale
     saleReject=browser.eval("""(()=>{
       const form=document.getElementById('dialogForm');

@@ -126,7 +126,7 @@ with Session() as browser:
         submit:!!f.querySelector('button[type="submit"]')};
     })()""")
     assert form['barcode'] and form['camera'] and form['orderLines']==1 and form['submit'],form
-    assert form['tabs']==['products','customer','payment'],form
+    assert form['tabs']==['customer','products','payment'],form
     (OUT/'one-real-sale-form.png').write_bytes(browser.screenshot())
     report['one_sale_form']=form
     print('PASS ONE: approved light/dark dashboard, real sale form, no dashboard preferences or assistant overlay')
