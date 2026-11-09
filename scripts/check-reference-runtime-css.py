@@ -33,6 +33,6 @@ for app in ('one','admin'):
     else:must.update({'zavi-admin-settings-hub-v1.css','style.css'})
     assert must.issubset(hrefs),(app,'missing functional CSS',sorted(must-set(hrefs)))
     assert not any(('"'+name+'"') in sw or ("'"+name+"'") in sw for name in obsolete)
-    assert f"zavi-{app}-ref-12-design-reset-v{'v5' if app=='one' else 'v4'}-20261109" in sw
+    assert f"zavi-{app}-ref-12-design-reset-{'v5' if app=='one' else 'v4'}-20261109" in sw
     print(f'PASS {app}: {len(hrefs)} active CSS links, retired theme files removed from root')
 print('PASS: reference theme is the final active design in ONE and ADMIN')
