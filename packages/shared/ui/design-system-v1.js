@@ -329,6 +329,98 @@
     });
     return list;
   }
+  /* Real, accessible form/navigation primitives. Every interactive control
+   * demands a caller-owned callback; these never mutate accounts or create
+   * fake saved state. Callers provide authentic data and handlers.
+   */
+  function uiSelect({label,name,options,value='',required=false,onChange}={}){
+    if(!label||!name||!Array.isArray(options))throw new TypeError('Select label/name/options required');
+    if(onChange!==undefined&&typeof onChange!=='function')throw new TypeError('Select action must be callback');
+    const root=uiNode('div','zds-field');
+    root.dataset.zdsField='true';
+    const input=uiNode('select','zds-select');
+    input.name=String(name);
+    input.id='zds-'+String(name).replace(/[^a-zA-Z0-9_-]/g,'-');
+    input.required=!!required;
+    const title=uiNode('label','',label);
+    title.setAttribute('for',input.id);
+    for(const entry of options){
+      const item=(typeof entry==='string')?{value:entry,label:entry}:entry;
+      if(!item||typeof item.value!=='string'||typeof item.label!=='string')
+        throw new TypeError('Every select option needs string value and label');
+      const option=uiNode('option','',item.label);
+      option.value=item.value;input.append(option);
+    }
+    input.value=String(value);
+    if(typeof onChange==='function')input.addEventListener('change',()=>onChange(input.value));
+    root.append(title,input);
+    return {root,input,setError(message){return setFieldError(input,message)}};
+  }
+  function uiSwitch({label,checked=false,onChange,disabled=false}={}){
+    if(!label||typeof onChange!=='function')
+      throw new TypeError('Switch label and real onChange callback required');
+    const root=uiNode('label','zds-switch');
+    const input=uiNode('input');input.type='checkbox';
+    input.checked=!!checked;input.disabled=!!disabled;input.setAttribute('role','switch');
+    input.setAttribute('aria-checked',String(input.checked));
+    const content=uiNode('span','',label);
+    input.addEventListener('change',()=>{
+      input.setAttribute('aria-checked',String(input.checked));
+      onChange(input.checked);
+    });
+    root.append(input,content);
+    return {root,input};
+  }
+  function uiTabs({tabs,active=0,onChange}={}){
+    if(!Array.isArray(tabs)||!tabs.length||typeof onChange!=='function')
+      throw new TypeError('Tabs and real onChange callback required');
+    if(!Number.isInteger(active)||active<0||active>=tabs.length)
+      throw new RangeError('Active tab index out of range');
+    const entries=tabs.map((item,index)=>{
+      if(!item||typeof item.id!=='string'||!item.id||
+         typeof item.label!=='string'||!item.label)
+        throw new TypeError('Tab requires nonempty id/label');
+      return {id:item.id,label:item.label,index};
+    });
+    if(new Set(entries.map(e=>e.id)).size!==entries.length)
+      throw new TypeError('Duplicate tab id');
+    const root=uiNode('div','zds-tablist');
+    root.setAttribute('role','tablist');
+    const buttons=entries.map(entry=>{
+      const button=uiNode('button','',entry.label);
+      button.type='button';button.setAttribute('role','tab');
+      button.dataset.zdsTab=entry.id;
+      root.append(button);return button;
+    });
+    let selected=active;
+    function setActive(index,notify=true){
+      if(index<0||index>=buttons.length)throw new RangeError('Unknown tab index');
+      selected=index;
+      buttons.forEach((button,i)=>{
+        button.setAttribute('aria-selected',String(i===index));
+        button.tabIndex=i===index?0:-1;
+      });
+      if(notify)onChange(entries[index].id,index);
+      return entries[index].id;
+    }
+    buttons.forEach((button,index)=>{
+      button.addEventListener('click',()=>setActive(index));
+      button.addEventListener('keydown',event=>{
+        const direction=(document.documentElement?.dir||'rtl')==='rtl'?-1:1;
+        const delta=event.key==='ArrowRight'?direction:
+          event.key==='ArrowLeft'?-direction:0;
+        let next=selected;
+        if(delta)next=(selected+delta+buttons.length)%buttons.length;
+        else if(event.key==='Home')next=0;
+        else if(event.key==='End')next=buttons.length-1;
+        else return;
+        event.preventDefault();
+        setActive(next);buttons[next].focus();
+      });
+    });
+    setActive(active,false);
+    return {root,buttons,setActive};
+  }
   function uiConfirmDialog({title,message,onConfirm,cancelLabel='Cancel',confirmLabel='Confirm'}={}){
     if(!title||!message||typeof onConfirm!=='function')throw new TypeError('Real confirmation callback required');
     const panel=uiNode('dialog','zds-dialog');
@@ -343,6 +435,6 @@
     normalizeLanguage,direction,digits,formatDualDate,formatNumber,
     formatExchangeRate,normalizeAfghanPhone,whatsappDigits,setFieldError,
     refreshDualDateNodes,passwordVisibilityLabel,localizedLabel,
-    uiIcon,uiButton,uiField,uiStatus,uiEmpty,uiStepper,uiConfirmDialog
+    uiIcon,uiButton,uiField,uiSelect,uiSwitch,uiTabs,uiStatus,uiEmpty,uiStepper,uiConfirmDialog
   });
 });
