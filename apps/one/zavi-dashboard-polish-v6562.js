@@ -17,7 +17,7 @@ function ensure(){
  const content=document.getElementById("content");
  if(!content||!content.classList.contains("zrf-dashboard"))return;
  const home=content.querySelector(":scope > .zrf-home");
- if(!home)return;
+ if(!home||home.classList.contains('zavi-native-home'))return;
  const tr=copy[lang()];
  const native=content.querySelector(":scope > .welcome");
  let hero=home.querySelector(".z62-hero");

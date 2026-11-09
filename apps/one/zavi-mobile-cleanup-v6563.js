@@ -67,7 +67,7 @@ function addShortcuts(home){
  if(wrap)wrap.before(el);else if(features)features.after(el);else home.append(el);
 }
 function organizeHome(content){
- const home=$(':scope > .zrf-home',content);if(!home)return;
+ const home=$(':scope > .zrf-home',content);if(!home||home.classList.contains('zavi-native-home'))return;
  // Avoid recreating the view: move actual live statistic elements, preserving real business figures.
  moveNativeStats(content,home);
  addShortcuts(home);

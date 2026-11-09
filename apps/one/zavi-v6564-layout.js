@@ -81,7 +81,7 @@ function compactHelp(c){
  c.classList.remove('zrf-details-open');
 }
 function renderHome(c){
- const home=$(':scope > .zrf-home',c);if(!home)return;
+ const home=$(':scope > .zrf-home',c);if(!home||home.classList.contains('zavi-native-home'))return;
  moveQuick(c,home);moveCharts(c,home);mergeRate(c,home);compactHelp(c);
  const title=$('.z64-charts-heading',home);if(title)title.textContent=T[locale()].charts;
 }
