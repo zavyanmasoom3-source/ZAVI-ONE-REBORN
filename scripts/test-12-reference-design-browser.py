@@ -30,7 +30,7 @@ def check_styles(browser, app, theme):
     })()""" % (json.dumps(theme),app,app))
     assert result['theme']==theme,(app,result)
     assert result['tokenLoaded'] and result['appLoaded'] and result['navLoaded'],result
-    expected={'light':'#f5f7fb','dark':'#0a0e15'}[theme]
+    expected={'light':'#F4F7FC','dark':'#0A0F19','glass':'#0C1D35'}[theme]
     assert result['background']==expected,(app,theme,result)
     return result
 
@@ -38,7 +38,7 @@ with Session() as browser:
     browser.navigate('one')
     browser.unlock_one()
     time.sleep(3)  # Wait for real screen; do not screenshot the splash overlay.
-    for theme in ('light','dark'):
+    for theme in ('light','dark','glass'):
         mode=check_styles(browser,'one',theme)
         browser.route('dashboard')
         browser.until("!!document.querySelector('#mobileBottom .bottom-btn')",
@@ -186,7 +186,7 @@ with Session() as browser:
     browser.until("document.getElementById('zaviAdminSplash')?.classList.contains('is-hidden')",
                   'ADMIN splash hidden before reference screenshots',seconds=30)
     time.sleep(0.4)
-    for theme in ('light','dark'):
+    for theme in ('light','dark','glass'):
         mode=check_styles(browser,'admin',theme)
         nav=browser.eval("""(()=>{
           const root=document.querySelector('#appScreen .sidebar .nav');
