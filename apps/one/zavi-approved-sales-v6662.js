@@ -184,6 +184,23 @@
       const title=modal.querySelector('.modal-head h3');
       if(title)title.textContent=tr('newSale');
       const productPane=panels[0],customerPane=panels[1],paymentPane=panels[2];
+      // The owner's approved screenshots are a SINGLE vertically scrolling
+      // invoice, not three mutually hidden panels. Preserve every existing
+      // native form field and original accounting listener, but show the
+      // original groups in the photographic order: date/customer, items, pay.
+      flow.classList.add('zsal-vertical');
+      const tabBar=flow.querySelector(':scope > .zavi-flow-tabs');
+      if(tabBar)tabBar.hidden=true;
+      flow.insertBefore(customerPane,productPane);
+      for(const pane of [customerPane,productPane,paymentPane]){
+        pane.hidden=false;
+        pane.setAttribute('role','region');
+        pane.removeAttribute('aria-labelledby');
+      }
+      flow.zaviActivate=index=>{
+        const target=[...flow.querySelectorAll(':scope > .zavi-flow-panel')][index];
+        if(target)target.scrollIntoView({block:'nearest',behavior:'auto'});
+      };
       const heading=productPane.querySelector('.form-section-title');
       if(heading)heading.textContent=tr('items');
       const barcodeBox=productPane.querySelector('.zavi-barcode-box');
@@ -217,7 +234,38 @@
         name.dispatchEvent(new Event('change',{bubbles:true}));
       });
       lbl.append(picker);pickerWrap.append(lbl);
-      customerPane.prepend(pickerWrap);
+      const dateField=customerPane.querySelector('input[name="date"]')?.closest('.field');
+      if(dateField){
+        customerPane.prepend(dateField);
+        dateField.after(pickerWrap);
+        const dateNote=mk('small','zsal-dual-date');
+        dateField.append(dateNote);
+        const refreshDate=()=>{
+          try{
+            const value=form.elements.date.value;
+            dateNote.textContent=window.ZaviDesignSystemV1?.formatDualDate(value,{
+              language:lang()==='fa'?'fa-AF':lang()==='ps'?'ps-AF':'en',
+              timezone:'Asia/Kabul'
+            })||'';
+          }catch(_){dateNote.textContent='';}
+        };
+        form.elements.date.addEventListener('input',refreshDate);
+        form.elements.date.addEventListener('change',refreshDate);
+        refreshDate();
+      }else customerPane.prepend(pickerWrap);
+      // Scanner input and camera remain the original native controls. The
+      // old flex toolbar CSS otherwise stacks/overlaps them on mobile.
+      const actions=barcodeBox?.querySelector('.zavi-barcode-actions');
+      if(actions&&!actions.querySelector('.zsal-scan-field')){
+        const nativeScan=actions.querySelector('#zaviBarcodeScan');
+        const nativeCamera=actions.querySelector('[data-zavi-camera-open="zaviBarcodeScan"]');
+        if(nativeScan&&nativeCamera){
+          actions.classList.remove('zavi-barcode-actions');
+          actions.classList.add('zsal-scan-actions');
+          const scanField=mk('div','zsal-scan-field');
+          scanField.append(nativeScan,nativeCamera);actions.prepend(scanField);
+        }
+      }
       const payBox=mk('fieldset','zsal-payment');
       payBox.append(mk('legend','',tr('payment')));
       const group=mk('div','zsal-payment-options');
@@ -327,6 +375,13 @@
     for(const [i,k] of ['cash','bank','credit'].entries())
       set(modal.querySelectorAll('.zsal-payment-option span')[i],tr(k));
     set(modal.querySelector('.zsal-currency-note'),tr('currency')+': '+String(db.currency||'AFN'));
+    const dual=modal.querySelector('.zsal-dual-date');
+    if(dual){
+      try{dual.textContent=window.ZaviDesignSystemV1?.formatDualDate(
+        modal.querySelector('#dialogForm').elements.date.value,{
+          language:lang()==='fa'?'fa-AF':lang()==='ps'?'ps-AF':'en',timezone:'Asia/Kabul'
+        })||'';}catch(_){dual.textContent='';}
+    }
     const btn=modal.querySelector('.zsal-preview-button');
     if(btn)set(btn,btn.getAttribute('aria-expanded')==='true'?tr('close'):tr('preview'));
     for(const [i,row] of [...modal.querySelectorAll('.order-line')].entries()){
