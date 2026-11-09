@@ -1,9 +1,13 @@
 name: REBORN clean Android QA builds
 
-# Owner approval is required before ANY installable binary is built.
-# Visual/contract QA workflows remain automatic; release/preview is manual only.
+# Owner authorized new APKs in the current conversation.
+# Only changes to this workflow on dev trigger QA builds; production Release remains gated.
 on:
   workflow_dispatch:
+  push:
+    branches: [dev]
+    paths:
+      - '.github/workflows/build-reborn-qa.yml'
 
 permissions:
   contents: read
