@@ -720,3 +720,90 @@ body > button.z6524-launch{
  visibility:hidden!important;
  pointer-events:none!important;
 }
+
+
+/* Native purchase-reference route, preserving the live action row for transit module. */
+html[data-zavi-theme] #content .zavi-purchase-reference{
+ display:grid;gap:11px;min-width:0;width:100%;max-width:1080px;
+ margin:0 auto;color:var(--zav-ink)!important;background:transparent!important;
+}
+html[data-zavi-theme] #content .zavi-purchase-reference .page-head{
+ display:flex!important;align-items:center!important;justify-content:space-between!important;
+ gap:8px!important;flex-wrap:wrap!important;min-width:0!important;
+ margin:0!important;padding:2px 0!important;
+ border:0!important;background:transparent!important;box-shadow:none!important;
+}
+html[data-zavi-theme] #content .zavi-purchase-reference .page-head h2{
+ font-size:clamp(18px,4vw,24px)!important;margin:0!important;font-weight:850!important;
+ color:var(--zav-ink)!important;
+}
+html[data-zavi-theme] #content .zavi-purchase-reference .page-head .action-group{
+ display:flex!important;gap:6px!important;flex-wrap:wrap!important;
+ width:auto!important;max-width:100%!important;
+}
+html[data-zavi-theme] #content .zavi-purchase-reference .page-head .btn{
+ min-height:40px!important;border-radius:10px!important;padding:8px 10px!important;
+ font-size:11px!important;
+}
+html[data-zavi-theme] #content .zavi-purchase-totals{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;
+}
+html[data-zavi-theme] #content .zavi-purchase-totals>div{
+ display:grid;gap:3px;background:var(--zav-surface);color:var(--zav-ink);
+ border:1px solid var(--zav-border);border-radius:12px;padding:10px 12px;
+ min-width:0;min-height:65px;
+}
+html[data-zavi-theme] #content .zavi-purchase-totals small{
+ color:var(--zav-muted)!important;font-size:11px;
+}
+html[data-zavi-theme] #content .zavi-purchase-totals strong{
+ font-size:clamp(14px,3.4vw,19px);color:var(--zav-ink)!important;
+ overflow-wrap:anywhere;
+}
+html[data-zavi-theme] #content .zavi-purchase-list{
+ background:var(--zav-surface);border:1px solid var(--zav-border);
+ padding:11px;border-radius:13px;min-width:0;
+}
+html[data-zavi-theme] #content .zavi-purchase-list-title{
+ display:flex;justify-content:space-between;align-items:center;gap:10px;
+ margin:0 0 10px!important;padding:0!important;background:transparent!important;
+}
+html[data-zavi-theme] #content .zavi-purchase-list-title h3{
+ font-size:13px!important;margin:0!important;color:var(--zav-ink)!important;
+}
+html[data-zavi-theme] #content .zavi-purchase-list-title span{
+ font-size:11px;color:var(--zav-muted)!important;
+}
+html[data-zavi-theme] #content .zavi-purchase-search{
+ width:100%;min-height:42px!important;max-width:none;min-width:0;
+ border-radius:11px!important;border:1px solid var(--zav-border)!important;
+ background:var(--zav-soft)!important;box-shadow:none!important;margin:0 0 12px!important;
+}
+html[data-zavi-theme] #content .zavi-purchase-search input{
+ min-width:0!important;color:var(--zav-ink)!important;font-size:12px!important;
+}
+html[data-zavi-theme] #content .zavi-purchase-list .record-card{
+ margin-bottom:7px!important;min-height:60px!important;padding:10px!important;
+ border:1px solid var(--zav-border)!important;border-radius:10px!important;
+ background:var(--zav-surface)!important;box-shadow:none!important;
+}
+html[data-zavi-theme] #content .zavi-purchase-currencies{
+ border:1px solid var(--zav-border);border-radius:11px;background:var(--zav-surface);
+}
+html[data-zavi-theme] #content .zavi-purchase-currencies summary{
+ min-height:40px;cursor:pointer;font-size:12px;color:var(--zav-muted);
+ font-weight:750;padding:10px 12px;
+}
+html[data-zavi-theme] #content .zavi-purchase-currencies>div{
+ display:flex;gap:6px;flex-wrap:wrap;padding:10px 12px;
+ border-top:1px solid var(--zav-border);
+}
+html[data-zavi-theme] #content .zavi-purchase-currency-item{
+ font-size:11px;padding:5px 8px;border-radius:8px;
+ background:var(--zav-blue-soft);color:var(--zav-link);
+}
+html[data-zavi-theme] #content .zavi-purchase-reference .zv-transit{
+ margin-top:0!important;border-radius:12px!important;
+ background:var(--zav-surface)!important;
+ border:1px solid var(--zav-border)!important;box-shadow:none!important;
+}

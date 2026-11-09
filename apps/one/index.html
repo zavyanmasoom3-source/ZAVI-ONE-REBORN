@@ -2752,7 +2752,59 @@ function renderSalesReference(rows,selected,total){
   </section>
  </main>`;
 }
-function renderOrdersCore(type){const sale=type==='sale';const rows=orderByDate(db.tx.filter(t=>!t.voided&&(t.type===type||t.type===type+'_return'))).filter(t=>{let q=search.toLowerCase();return (t.code+' '+(t.customerName||contactName(t.contactId))+' '+(t.items||[]).map(x=>x.productName||productName(x.productId)).join(' ')).toLowerCase().includes(q)});const result=z647Limit(rows,sale?'sales':'purchases'),visible=result.rows;const selected=db.tx.filter(t=>!t.voided&&t.type===type);const total=selected.reduce((a,t)=>a+txTotal(t),0);if(sale)return renderSalesReference(rows,selected,total);const purchTotals={};if(!sale)for(const t of selected){const unit=t.originalCurrency||db.currency;purchTotals[unit]=money((purchTotals[unit]||0)+(t.originalAmount??txTotal(t)))}const purchaseCurrencyView=sale?'':`<div class="card" style="padding:14px 18px;margin-bottom:18px"><b>خرید ثبت‌شده بر اساس واحد پول فاکتور</b><div class="action-group" style="margin-top:10px">${Object.entries(purchTotals).map(([k,n])=>`<span class="pill blue">${escapeHtml(k==='CNY'?'RMB':k)}: ${fmt(n)}</span>`).join('')||'<span class="muted">هنوز خریدی ثبت نشده است.</span>'}</div></div>`;return `<div class="zui-phase1 zui-order-page" data-module="${sale?'sales':'purchases'}">${header(sale?'مدیریت فروش':'مدیریت خرید',sale?'فاکتورهای فروش، مشتریان و قرض':'خرید داخلی و خارجی، ارز و مصارف خرید',`${button(type,sale?'فروش جدید':'خرید جدید')} ${sale?'':button('local_purchase','خرید داخلی','purchase','subtle')} ${sale?'':button('foreign_purchase','خرید خارجی','purchase','subtle')} ${button(sale?'sale_return':'purchase_return',sale?'برگشت فروش':'برگشت خرید','return','subtle')}`)}<div class="stat-grid" style="grid-template-columns:repeat(2,minmax(0,1fr))">${stat(sale?'کل فاکتورهای فروش':'کل فاکتورهای خرید',total,'قبل از برگشت‌ها',sale?'sale':'purchase','blue')}${stat('تعداد فاکتور',selected.length,'ثبت‌شده', 'expense','green').replace(currency(selected.length),fmtQty(selected.length))}</div>${purchaseCurrencyView}<section class="card"><div class="table-bar"><div class="searchbox">${icon('search')}<input id="searchInput" placeholder="جستجوی فاکتور، محصول یا طرف حساب" value="${escapeHtml(search)}"></div><span class="pill blue">${rows.length} رکورد</span></div>${recordsTable(visible)}${z647Paging().controls(result,sale?'sales':'purchases')}</section></div>`}
+function renderOrdersCore(type){const sale=type==='sale';const rows=orderByDate(db.tx.filter(t=>!t.voided&&(t.type===type||t.type===type+'_return'))).filter(t=>{let q=search.toLowerCase();return (t.code+' '+(t.customerName||contactName(t.contactId))+' '+(t.items||[]).map(x=>x.productName||productName(x.productId)).join(' ')).toLowerCase().includes(q)});const result=z647Limit(rows,sale?'sales':'purchases'),visible=result.rows;const selected=db.tx.filter(t=>!t.voided&&t.type===type);const total=selected.reduce((a,t)=>a+txTotal(t),0);if(sale)return renderSalesReference(rows,selected,total);return renderPurchaseReference(rows,selected,total);}
+function renderPurchaseReference(rows,selected,total){
+ const l=(document.documentElement.lang||'fa-AF').toLowerCase(),lang=l.startsWith('en')?'en':l.startsWith('ps')?'ps':'fa';
+ const T={
+  fa:{title:'خرید و تأمین',new:'خرید جدید',local:'خرید داخلی',
+    foreign:'خرید خارجی',ret:'برگشت خرید',all:'فهرست خریدها',
+    count:'تعداد خرید',sum:'جمع خریدها',search:'جستجوی فاکتور یا تأمین‌کننده...',
+    more:'جمع خرید به ارز فاکتور',empty:'هنوز خریدی ثبت نشده است'},
+  ps:{title:'پېرود او تدارکات',new:'نوی پېرود',local:'کورنی پېرود',
+    foreign:'بهرنی پېرود',ret:'پېرود بېرته',all:'د پېرود لیست',
+    count:'د پېرود شمېر',sum:'ټول پېرود',search:'فاکتور یا عرضه کوونکی ولټوئ...',
+    more:'د اسعارو له مخې پېرود',empty:'تر اوسه پېرود نشته'},
+  en:{title:'Purchases & supply',new:'New purchase',local:'Local purchase',
+    foreign:'Foreign purchase',ret:'Purchase return',all:'Purchases',
+    count:'Purchase count',sum:'Purchase total',search:'Search invoice or supplier...',
+    more:'Total by invoice currency',empty:'No purchases recorded'}
+ }[lang];
+ const controls=button('purchase',T.new)+' '+button('local_purchase',T.local,'purchase','subtle')+
+  ' '+button('foreign_purchase',T.foreign,'purchase','subtle')+
+  ' '+button('purchase_return',T.ret,'return','subtle');
+ const result=z647Limit(rows,'purchases');
+ const values={};
+ for(const tx of selected){
+  const unit=tx.originalCurrency||db.currency;
+  values[unit]=money((values[unit]||0)+(tx.originalAmount??txTotal(tx)));
+ }
+ const currencies=Object.entries(values).map(([unit,n])=>
+   `<span class="zavi-purchase-currency-item">${escapeHtml(unit==='CNY'?'RMB':unit)}: ${fmt(n)}</span>`).join(' ');
+ return `<main class="zui-phase1 zui-order-page zavi-purchase-reference"
+    data-module="purchases">
+   ${header(T.title,'',controls)}
+   <section class="zavi-purchase-totals">
+     <div><small>${T.sum}</small><strong>${currency(total)}</strong></div>
+     <div><small>${T.count}</small><strong>${fmtQty(selected.length)}</strong></div>
+   </section>
+   <section class="zavi-purchase-list">
+    <header class="zavi-purchase-list-title"><h3>${T.all}</h3>
+      <span>${fmtQty(rows.length)}</span></header>
+    <div class="zavi-purchase-search searchbox">
+      ${icon('search')}
+      <input id="searchInput" type="search" autocomplete="off"
+        aria-label="${T.search}" placeholder="${T.search}"
+        value="${escapeHtml(search)}">
+    </div>
+    ${recordsTable(result.rows)}
+    ${z647Paging().controls(result,'purchases')}
+   </section>
+   <details class="zavi-purchase-currencies">
+     <summary>${T.more}</summary>
+     <div>${currencies||T.empty}</div>
+   </details>
+ </main>`;
+}
 function zaviOrderStageLabel(isSale){
  const language=(document.documentElement.lang||'fa').toLowerCase();
  if(language.startsWith('en'))return isSale?'SALES':'PURCHASES';
