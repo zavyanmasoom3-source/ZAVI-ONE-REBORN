@@ -807,3 +807,47 @@ html[data-zavi-theme] #content .zavi-purchase-reference .zv-transit{
  background:var(--zav-surface)!important;
  border:1px solid var(--zav-border)!important;box-shadow:none!important;
 }
+
+
+/* Approved Products/Stock reference: barcode lives in one small expandable
+   native details control; input, camera and search handlers remain mounted. */
+html[data-zavi-theme] #content details.z638-warehouse-scanner{
+ box-sizing:border-box!important;
+ margin:7px 0 11px!important;padding:0!important;
+ min-height:0!important;max-height:none!important;overflow:visible!important;
+ background:var(--zav-surface)!important;
+ border:1px solid var(--zav-border)!important;border-radius:12px!important;
+ box-shadow:none!important;
+}
+html[data-zavi-theme] #content details.z638-warehouse-scanner > summary.zavi-barcode-summary{
+ display:flex!important;align-items:center!important;justify-content:space-between!important;
+ gap:10px!important;list-style:none!important;cursor:pointer;
+ padding:11px 13px!important;margin:0!important;
+ color:var(--zav-ink)!important;font-size:12px!important;
+ line-height:1.55!important;font-weight:800!important;
+}
+html[data-zavi-theme] #content details.z638-warehouse-scanner > summary::-webkit-details-marker{
+ display:none!important;
+}
+html[data-zavi-theme] #content details.z638-warehouse-scanner > summary.zavi-barcode-summary small{
+ flex:1!important;text-align:start!important;
+ font-weight:500!important;color:var(--zav-muted)!important;font-size:10px!important;
+}
+html[data-zavi-theme] #content details.z638-warehouse-scanner[open] > summary{
+ border-bottom:1px solid var(--zav-border)!important;
+}
+html[data-zavi-theme] #content details.z638-warehouse-scanner .zavi-barcode-expanded{
+ padding:11px 13px!important;
+}
+html[data-zavi-theme] #content details.z638-warehouse-scanner .zavi-barcode-help{
+ margin:0 0 10px!important;color:var(--zav-muted)!important;
+ font-size:11px!important;line-height:1.6!important;
+}
+html[data-zavi-theme] #content details.z638-warehouse-scanner .zavi-barcode-actions{
+ display:flex!important;align-items:stretch!important;gap:8px!important;
+}
+@media(max-width:760px){
+ html[data-zavi-theme] #content details.z638-warehouse-scanner > summary.zavi-barcode-summary{
+  padding:10px 12px!important;
+ }
+}
