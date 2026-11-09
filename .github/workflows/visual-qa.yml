@@ -14,6 +14,7 @@ on:
       - 'scripts/test-approved-visual-v2-browser.py'
       - 'scripts/test-12-reference-design-browser.py'
       - 'scripts/check-reference-runtime-css.py'
+      - 'scripts/test-reference-auxiliary-pages.py'
       - 'scripts/audit-retired-ui-assets.py'
       - 'packages/shared/ui/**'
       - '.github/workflows/visual-qa.yml'
@@ -25,6 +26,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Verify auxiliary invoice, shop, install and offline pages use valid reference CSS
+        run: python3 scripts/test-reference-auxiliary-pages.py
       - name: Audit legacy assets for indirect runtime dependencies
         run: python3 scripts/audit-retired-ui-assets.py
       - name: Reject retired page-wide CSS and check reference-only entrypoints
