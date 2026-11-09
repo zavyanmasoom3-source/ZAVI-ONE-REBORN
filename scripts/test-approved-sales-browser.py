@@ -125,6 +125,14 @@ with Session() as b:
     assert layout['firstGroupContainsDate'] and layout['secondGroupContainsBarcode'] and layout['thirdGroupContainsPaid'],layout
     assert layout['overlappingScanAndCamera']==0 and layout['cameraX']>=0 and layout['cameraRight']<=layout['screenWidth'],layout
     assert layout['dualDate'] and '|' in layout['dualDate'],layout
+    # The existing global dual-date widget supplies the visible line.
+    # Ensure the enhancement's fallback line cannot duplicate it.
+    duplication=b.eval("""(()=>{
+      const note=document.querySelector('.zsal-dual-date');
+      return {exists:!!note,hidden:!!note&&getComputedStyle(note).display==='none'};
+    })()""")
+    assert duplication['exists'] and duplication['hidden'],duplication
+    print('PASS: single visible dual-date line; sales-only fallback does not duplicate shared date widget')
     approved_layout=b.eval(r"""(()=>{
       const dialog=document.querySelector('#overlay .zsal-approved-modal');
       const body=dialog.querySelector('.modal-body');
