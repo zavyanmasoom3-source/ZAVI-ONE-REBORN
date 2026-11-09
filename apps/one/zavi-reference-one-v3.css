@@ -319,3 +319,9 @@ html[data-zavi-theme] #content.zrf-dashboard .zrf-search-wrap{
 html[data-zavi-theme] #content.zrf-dashboard .z63-quick-panel {
  display:none!important;
 }
+
+/* No legacy assistant overlay may obstruct the approved dashboard or bottom menu.
+   Other routes and the existing settings integration remain untouched. */
+html[data-zavi-theme] body.zavi-reference-dashboard-active :is(
+ #z637AiButton,.z637-ai-button,#z605-launch
+){display:none!important;pointer-events:none!important}

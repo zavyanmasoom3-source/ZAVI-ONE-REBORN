@@ -66,6 +66,15 @@ with Session() as browser:
             oldQuickExists:!!oldQuick,oldQuickDisplay:oldQuick?getComputedStyle(oldQuick).display:null,fixed};
         })()""")
         assert native['oldQuickDisplay'] in (None,'none'),native
+        assistant=browser.eval("""(()=>{
+          const btn=document.getElementById('z637AiButton');
+          const bot=document.getElementById('z605-launch');
+          const value=el=>!el||getComputedStyle(el).display==='none'||el.hidden;
+          return {dashboard:document.body.classList.contains('zavi-reference-dashboard-active'),
+             aiHidden:value(btn),voiceHidden:value(bot)};
+        })()""")
+        assert all(assistant.values()),assistant
+        report['apps'][f'one-{theme}-assistant-visibility']=assistant
         report['apps'][f'one-{theme}-layout-diagnostic']=native
         bottom=browser.eval("""(()=>{
           const nav=document.getElementById('mobileBottom');

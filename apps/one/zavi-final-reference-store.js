@@ -81,6 +81,7 @@ function originalSearch(query,results){
 function updateHome(){
  const content=document.querySelector('#content');if(!content)return;
  const dash=!!content.querySelector('.welcome');
+ document.body.classList.toggle('zavi-reference-dashboard-active',dash);
  if(!dash){content.classList.remove('zrf-dashboard');return}
  if(content.querySelector(':scope > .zrf-home'))return;
  const t=I[language()];
