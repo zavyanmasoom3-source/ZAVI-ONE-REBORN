@@ -24,15 +24,16 @@ with Session() as browser:
     assert nav['ids']==['dashboard','sales','products','purchases','more'],nav
     print('PASS: exact five mobile destinations:',nav['ids'])
     quick=browser.eval("""(()=>{
-      const root=document.querySelector('.zavi-dash-fast-actions');
+      const root=document.querySelector('#content.zrf-dashboard>.zavi-native-home .zrf-quick-actions');
       if(!root)return {present:false};
-      const actual=[...root.querySelectorAll('[data-zavi-fast-action]')]
-        .map(el=>el.dataset.zaviFastAction);
-      const expected=['sales','purchases','debtors','products'].filter(id=>zaviModuleEnabled(id));
+      const buttons=[...root.querySelectorAll('.zrf-quick-action[data-zrf-go]')];
+      const actual=buttons.map(el=>el.dataset.zrfGo);
+      const expected=['sales','purchases','contacts','products'];
+      const permissions=buttons.every(el=>el.disabled===!zaviModuleEnabled(el.dataset.zrfGo));
       const date=document.querySelector('.zui-dashboard-page .zv-today')?.textContent||'';
-      return {present:true,actual,expected,dualDate:date.includes('|')};
+      return {present:true,actual,expected,permissions,dualDate:date.includes('|')};
     })()""")
-    assert quick['present'] and quick['actual']==quick['expected'] and quick['dualDate'],quick
+    assert quick['present'] and quick['actual']==quick['expected'] and quick['permissions'] and quick['dualDate'],quick
     print('PASS: permission-filtered dashboard actions link to live routes; compact dual date rendered')
     # The sample rate exists only in memory inside this disposable test browser.
     # It is never committed to the app, cloud or a customer's workspace.
