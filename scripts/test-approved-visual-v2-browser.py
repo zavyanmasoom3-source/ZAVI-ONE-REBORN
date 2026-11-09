@@ -153,12 +153,17 @@ with Session() as browser:
         browser.until("document.body.classList.contains('zavi-approved-dashboard')",
                       'ADMIN approved route marker')
         summary=browser.eval("""(()=>{
+          const wrapper=document.querySelector('#view .admin-reference-dashboard-v5');
+          const wrapperCSS=wrapper?getComputedStyle(wrapper):null;
           const cards=[...document.querySelectorAll('#view .admin-ref-stat')];
-          return {cards:cards.length,nav:[...document.querySelectorAll('.nav-item[data-page]')]
+          return {cards:cards.length,
+            wrapperOpacity:wrapperCSS?.opacity,wrapperAnimation:wrapperCSS?.animationName,
+            nav:[...document.querySelectorAll('.nav-item[data-page]')]
             .map(x=>x.dataset.page),actualUI:!!document.querySelector('#view .admin-reference-charts'),
             noSettingsWidget:!document.querySelector('#zavi-ui-preferences-v2')};
         })()""")
         assert summary['cards']>=4 and summary['actualUI'] and summary['noSettingsWidget'],summary
+        assert summary['wrapperOpacity']=='1' and summary['wrapperAnimation']=='none',summary
         colors=browser.eval("""(()=>{
           const info=selector=>{const e=document.querySelector(selector),c=e?getComputedStyle(e):null;
             return c?{opacity:c.opacity,background:c.backgroundColor,color:c.color,

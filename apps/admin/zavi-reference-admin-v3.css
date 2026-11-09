@@ -342,3 +342,18 @@ html[data-zavi-theme] #view .admin-ref-actions button:focus-visible{
  html[data-zavi-theme] #view .admin-ref-donut{width:110px}
  html[data-zavi-theme] #view .admin-ref-donut-center{width:81px}
 }
+
+/* Critical screenshot parity: obsolete page-entry fade makes the NEW dashboard
+   nearly invisible during native transitions. Do not animate opacity on accounting. */
+html[data-zavi-theme] #view > .admin-reference-dashboard-v5,
+html[data-zavi-theme] #view .admin-reference-dashboard-v5 {
+ opacity:1!important;filter:none!important;visibility:visible!important;
+ animation:none!important;transform:none!important;
+ transition:none!important;
+}
+html[data-zavi-theme] #view .admin-reference-dashboard-v5 > *,
+html[data-zavi-theme] #view .admin-ref-stat,
+html[data-zavi-theme] #view .admin-reference-chart-panel {
+ opacity:1!important;filter:none!important;visibility:visible!important;
+ animation:none!important;transform:none!important;
+}
