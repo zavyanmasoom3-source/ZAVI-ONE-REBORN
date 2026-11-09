@@ -15,7 +15,7 @@ html[data-zavi-theme="light"] {
 html[data-zavi-theme="dark"] {
  --zav-bg:#0a0e15;--zav-surface:#171b22;--zav-soft:#222833;
  --zav-input:#1d232e;--zav-ink:#f4f7fb;--zav-muted:#b8c4d3;
- --zav-border:#323c4a;--zav-blue:#1776f4;--zav-blue-2:#3a95ff;
+ --zav-border:#323c4a;--zav-blue:#0e68e8;--zav-blue-2:#3a95ff;
  --zav-link:#a0cfff;--zav-blue-soft:#142d51;
  --zav-positive:#6ae4a6;--zav-positive-bg:#14392a;
  --zav-negative:#ff959e;--zav-negative-bg:#432329;
