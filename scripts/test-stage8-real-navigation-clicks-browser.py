@@ -31,6 +31,17 @@ with Session() as browser:
                   if(!tab)throw Error('Missing bottom navigation button');
                   tab.click();
                 })()"""%json.dumps(target))
+                if target=='more':
+                    browser.until("""(()=>{
+                       const side=document.getElementById('side');
+                       return !!side?.classList.contains('mobile-drawer') &&
+                              !!document.getElementById('drawerShade') &&
+                              side.getAttribute('role')==='dialog';
+                    })()""",'More opens the actual navigation drawer',12)
+                    browser.eval("closeDrawer()")
+                    RESULTS.append({'app':'one','theme':mode,'locale':locale,
+                                    'route':'more','drawer':True})
+                    continue
                 browser.until("""(()=>{
                   const content=document.getElementById('content');
                   return page===%s && !!content && content.innerText.trim().length>15 &&
@@ -62,7 +73,7 @@ with Session() as browser:
                 assert value['rootTheme']==mode and value['lang']==locale,value
                 assert value['dir']==direction and value['navExists'],value
                 RESULTS.append({'app':'one','theme':mode,'locale':locale,'route':target})
-    print('PASS: ONE 45 real bottom-nav clicks, no dashboard fallback, 3 themes x 3 languages')
+    print('PASS: ONE 45 real bottom-nav clicks including the functional More drawer, no dashboard fallback')
 
     # Switch to the actual ADMIN page. Navigation is tested through DOM click
     # handlers, not by calling render() directly or bypassing the login page.
