@@ -1,0 +1,77 @@
+name: Stage 8 ADMIN actual owner authentication and UI acceptance
+on:
+  push:
+    branches: [dev]
+    paths:
+      - '.github/workflows/stage8-admin-end-to-end.yml'
+      - 'apps/admin/app.js'
+      - 'apps/admin/account-control.js'
+      - 'scripts/test-stage8-admin-owner-browser.py'
+      - 'scripts/test-stage8-admin-owner-session-postgres.sql'
+      - 'scripts/test-stage8-admin-source.cjs'
+      - 'supabase/migrations/20261110_stage8_admin_owner_live_session.sql'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  owner-access:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: stage8-throwaway-qa
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Prevent JS source parsing regressions and old email owner overrides
+        run: |
+          node --check apps/admin/app.js
+          node --check apps/admin/account-control.js
+          node scripts/test-stage8-admin-source.cjs
+          node scripts/test-stage5-admin-no-hard-delete-paths.cjs
+      - name: Verify real PostgreSQL 17 owner/nonowner/revoked-session role checks
+        env:
+          PGPASSWORD: stage8-throwaway-qa
+        run: |
+          psql -h 127.0.0.1 -U postgres -d postgres -v ON_ERROR_STOP=1 \
+            -f scripts/test-stage8-admin-owner-session-postgres.sql
+      - name: Run actual ADMIN login/restart/revocation against isolated fake HTTP
+        run: python3 scripts/test-stage8-admin-owner-browser.py
+      - name: Preserve Stage 5 ADMIN customer recovery and owner actions
+        run: |
+          node scripts/test-stage5-admin-client-guard.cjs
+          node scripts/test-stage5-admin-bulk-preview.cjs
+          python3 scripts/test-admin-settings-layout-browser.py
+  ui-and-compatibility:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify independent ONE and ADMIN appearance, language and navigation
+        run: |
+          node scripts/test-shared-design-system.cjs
+          python3 scripts/test-navigation-browser.py
+          python3 scripts/test-compact-workflow-browser.py
+          python3 scripts/test-shared-design-browser.py
+          python3 scripts/test-12-reference-design-browser.py
+      - name: Protect financial and offline recovery during admin integration
+        run: |
+          python3 scripts/test-accounting-edge-cases-browser.py
+          python3 scripts/test-backup-import-browser.py
+          python3 scripts/test-stage6-financial-theme-browser.py
