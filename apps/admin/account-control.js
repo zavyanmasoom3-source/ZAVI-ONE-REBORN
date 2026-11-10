@@ -58,6 +58,73 @@ const css=`
 }
 
 
+/* Three real appearance modes for the owner account/recovery surface.
+   The old stylesheet forced dark colors even while the owner selected Light. */
+html[data-zavi-theme="light"] #z24Root{
+ background:#f4f7fc!important;color:#173750!important
+}
+html[data-zavi-theme="light"] #z24Root .v24-box,
+html[data-zavi-theme="light"] #z24Root .v24-stat{
+ background:#fff!important;border:1px solid #d2dfeb!important;
+ color:#173750!important
+}
+html[data-zavi-theme="light"] #z24Root .v24-table th{
+ background:#e8f0f8!important;color:#264b67!important
+}
+html[data-zavi-theme="light"] #z24Root .v24-table td{
+ background:#fff!important;color:#173750!important;
+ border-color:#dce6ef!important
+}
+html[data-zavi-theme="light"] #z24Root .v24-table small,
+html[data-zavi-theme="light"] #z24Root .v24-muted{
+ color:#476077!important
+}
+html[data-zavi-theme="light"] #z24Root .v24-input{
+ background:#fff!important;color:#173750!important;
+ border:1px solid #8baabf!important
+}
+html[data-zavi-theme="light"] #z24Root .v24-alert{
+ background:#fff6df!important;color:#68490b!important;
+ border-color:#d0ae65!important
+}
+html[data-zavi-theme="light"] #z24Root .v24-btn.subtle{
+ background:#e8f2fb!important;color:#204864!important;
+ border:1px solid #aac5d8!important
+}
+html[data-zavi-theme="light"] #z24Root .v24-btn.danger{
+ background:#fff0f2!important;color:#a3223c!important;
+ border:1px solid #d7a1ae!important
+}
+html[data-zavi-theme="glass"] #z24Root{
+ background:radial-gradient(ellipse at 60% -15%,#164b88 0%,#0c274c 48%,#071529 100%)!important;
+ color:#ebf7ff!important
+}
+html[data-zavi-theme="glass"] #z24Root .v24-box,
+html[data-zavi-theme="glass"] #z24Root .v24-stat{
+ background:rgba(34,84,137,.42)!important;
+ -webkit-backdrop-filter:blur(18px) saturate(145%);
+ backdrop-filter:blur(18px) saturate(145%);
+ border:1px solid rgba(163,207,246,.34)!important;
+ color:#f0f8ff!important;
+ box-shadow:0 15px 36px rgba(2,12,33,.2)!important
+}
+html[data-zavi-theme="glass"] #z24Root .v24-table td{
+ background:rgba(10,39,79,.6)!important;
+ color:#f2f9ff!important;border-color:#547aa6!important
+}
+html[data-zavi-theme="glass"] #z24Root .v24-table th{
+ background:rgba(30,83,139,.72)!important;color:#f0faff!important
+}
+html[data-zavi-theme="glass"] #z24Root .v24-input{
+ background:rgba(8,38,76,.78)!important;color:#f0faff!important;
+ border:1px solid #779dc8!important
+}
+html[data-zavi-theme="glass"] #z24Root .v24-table small,
+html[data-zavi-theme="glass"] #z24Root .v24-muted{color:#d3e6f6!important}
+html[data-zavi-theme="glass"] #z24Root .v24-btn.subtle{
+ background:rgba(45,96,155,.72)!important;color:#f0faff!important;
+ border:1px solid #759bc8!important
+}
 `;
 function init(){
  if(!document.getElementById('z24Styles')){const s=document.createElement('style');s.id='z24Styles';s.textContent=css;document.head.appendChild(s)}
