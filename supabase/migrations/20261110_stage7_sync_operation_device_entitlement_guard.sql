@@ -89,7 +89,7 @@ BEGIN
  ) VALUES (
   p_workspace_id,p_operation_id,p_device_id,p_operation_type,p_entity_type,
   p_entity_id,p_payload,coalesce(p_created_at,now()),now()
- ) ON CONFLICT (workspace_id,operation_id) DO NOTHING
+ ) ON CONFLICT DO NOTHING
  RETURNING received_at INTO v_received;
 
  IF v_received IS NOT NULL THEN
