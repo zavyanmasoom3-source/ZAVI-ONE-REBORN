@@ -11,6 +11,7 @@ on:
       - 'scripts/test-stage8-admin-source.cjs'
       - 'scripts/test-stage8-real-navigation-clicks-browser.py'
       - 'scripts/test-stage8-admin-account-appearance-browser.py'
+      - 'scripts/test-owner-apk-style-browser.py'
       - 'apps/admin/sw.js'
       - 'apps/admin/index.html'
       - 'supabase/migrations/20261110_stage8_admin_owner_live_session.sql'
@@ -73,7 +74,7 @@ jobs:
           python3 scripts/test-navigation-browser.py
           python3 scripts/test-compact-workflow-browser.py
           python3 scripts/test-shared-design-browser.py
-          python3 scripts/test-12-reference-design-browser.py
+          python3 scripts/test-owner-apk-style-browser.py
           python3 scripts/test-stage8-real-navigation-clicks-browser.py
           python3 scripts/test-stage8-admin-account-appearance-browser.py
       - name: Protect financial and offline recovery during admin integration
