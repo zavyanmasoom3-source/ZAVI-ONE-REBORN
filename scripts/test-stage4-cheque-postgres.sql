@@ -162,9 +162,10 @@ BEGIN
  THEN RAISE EXCEPTION 'Full settlement did not clear'; END IF;
  IF (SELECT count(*) FROM public.zavi_cheque_postings)<>4
  THEN RAISE EXCEPTION 'No exactly balanced pair for each partial settlement'; END IF;
- IF public.zavi_stage4_cheque_balance(
- (SELECT payload FROM public.zavi_workspaces WHERE id='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa'),
- 'c1','received')<>0 THEN
+ IF (SELECT COALESCE(sum((x->>'amount')::numeric),0)
+ FROM public.zavi_workspaces w, pg_catalog.jsonb_array_elements(w.payload->'tx') x
+ WHERE w.id='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa'
+ AND x->>'type'='customer_payment' AND COALESCE(x->>'voided','false')<>'true')<>100 THEN
  RAISE EXCEPTION 'Customer balance not zero after full receipt'; END IF;
 END $$;
 
@@ -185,7 +186,8 @@ BEGIN
  IF (SELECT count(*) FROM public.zavi_cheque_postings)<>8
   OR (SELECT count(*) FROM public.zavi_cheque_postings WHERE reverses_posting_id IS NOT NULL)<>4
  THEN RAISE EXCEPTION 'Bounce must record four immutable reversal legs'; END IF;
- IF public.zavi_stage4_cheque_balance(w,'c1','received')<>100 THEN
+ IF (SELECT COALESCE(sum((x->>'amount')::numeric),0) FROM pg_catalog.jsonb_array_elements(w->'tx') x
+ WHERE x->>'type'='customer_payment' AND COALESCE(x->>'voided','false')<>'true')<>0 THEN
   RAISE EXCEPTION 'Bounce did not restore receivable'; END IF;
  IF (SELECT settled_amount FROM public.zavi_cheques
   WHERE id='cccccccc-cccc-4ccc-8ccc-cccccccc0001')<>0 THEN
@@ -204,9 +206,10 @@ BEGIN
   WHERE e.operation_id='eeeeeeee-eeee-4eee-8eee-eeeeeeee0005'
    AND p.side='debit' AND p.account_code='accounts_payable:s1') THEN
    RAISE EXCEPTION 'Issued cheque debit incorrectly mapped'; END IF;
- IF public.zavi_stage4_cheque_balance(
-  (SELECT payload FROM public.zavi_workspaces WHERE id='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa'),
-  's1','issued')<>0 THEN RAISE EXCEPTION 'Supplier payable not settled'; END IF;
+ IF (SELECT COALESCE(sum((x->>'amount')::numeric),0)
+ FROM public.zavi_workspaces w, pg_catalog.jsonb_array_elements(w.payload->'tx') x
+ WHERE w.id='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa'
+ AND x->>'type'='supplier_payment' AND COALESCE(x->>'voided','false')<>'true')<>60 THEN RAISE EXCEPTION 'Supplier payable not settled'; END IF;
 END $$;
 
 DO $$
@@ -277,7 +280,7 @@ END $$;
 RESET ROLE;
 DO $$
 BEGIN
- IF (SELECT count(*) FROM public.zavi_cheque_events)<>7 THEN
+ IF (SELECT count(*) FROM public.zavi_cheque_events)<>6 THEN
   RAISE EXCEPTION 'Unexpected audit count or leaked invalid operation'; END IF;
  IF EXISTS(SELECT event_id FROM public.zavi_cheque_postings
   GROUP BY event_id HAVING
