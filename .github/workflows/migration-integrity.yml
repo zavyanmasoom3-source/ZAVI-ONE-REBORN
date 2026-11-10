@@ -55,6 +55,8 @@ jobs:
         run: python3 scripts/test-cloud-sync-browser.py
       - name: Three-device cloud CAS, dropped ACK, delete/edit and clock-skew regression
         run: python3 scripts/test-cloud-three-device-browser.py
+      - name: Stage 7 recover stale reset only after verified owner consent, preserve pending invoices
+        run: node scripts/test-stage7-reset-pending-integrity.cjs
       - name: Verify service-worker installed asset cache in real browser
         run: python3 scripts/test-offline-shell-browser.py
       - name: Validate shared design tokens, Afghan dual dates and phone/digit helpers
