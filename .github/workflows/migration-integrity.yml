@@ -63,6 +63,8 @@ jobs:
         run: node scripts/test-local-vazirmatn.cjs
       - name: Verify route navigation and settings design
         run: python3 scripts/verify-ui-navigation.py
+      - name: Exercise real cheque Money route and safe server ACK in isolated browser
+        run: python3 scripts/test-stage4-cheque-browser.py
       - name: Check JavaScript syntax
         shell: bash
         run: |
