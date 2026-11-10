@@ -34,7 +34,10 @@ function init(){
   button.setAttribute('aria-label',label);
   button.title=label;
  }
- button.addEventListener('click',()=>{
+ button.addEventListener('click',event=>{
+  // Historic V66.62 has a document-wide click delegate; don't let it
+  // interpret this eye toggle as a second form/security action.
+  event.preventDefault();event.stopPropagation();
   field.type=field.type==='password'?'text':'password';
   update();
  });
