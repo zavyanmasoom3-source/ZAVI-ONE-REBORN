@@ -14,9 +14,9 @@ import sys
 ROOT=Path(__file__).resolve().parents[1]
 VARIANTS={
  'one':('66.78-reborn.qa.', 'com.zavione.one',
-        'zavi-pdf-final-v6760.css'),
+        'zavi-theme-unified-v6538.css'),
  'admin':('1.4.69-reborn.qa.','com.zavione.one.admin',
-          'zavi-admin-pdf-final-v1467.css')
+          'zavi-admin-showcase-v1459.css')
 }
 SHARED=('database/supabase-config.js','security/access-contract.js',
         'i18n/language-core.js','ui/design-system-v1.js',
@@ -42,6 +42,9 @@ def stage(app,run,commit,assets,res):
     s=s.replace('../../packages/shared/','./packages/shared/')
     s=s.replace('../packages/shared/','./packages/shared/')
     index.write_text(s,encoding='utf-8')
+    if app=='one' and (ROOT/'apps/one/v6662-original-design-lock.json').is_file():
+        import runpy
+        runpy.run_path(str(ROOT/'scripts/prepare-v6662-native-webview.py'))['fix'](index)
     if not (assets/skin).is_file():raise ValueError('Missing approved app style: '+skin)
     for name in SHARED:
         if not (assets/'packages/shared'/name).is_file():
