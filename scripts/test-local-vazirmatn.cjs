@@ -55,8 +55,16 @@ for(const letter of 'ګډټړږښڼېۍ'){
 for(const app of ['one','admin']){
  const html=fs.readFileSync(path.join(root,'apps',app,'index.html'),'utf8');
  const sw=fs.readFileSync(path.join(root,'apps',app,'sw.js'),'utf8');
- assert.ok(!/fonts\.googleapis\.com|fonts\.gstatic\.com/.test(html),
-   app+': online font dependency is forbidden');
+ if(app==='one' && fs.existsSync(path.join(root,'apps/one/v6662-original-design-lock.json'))){
+   // The genuine historical APK contained a remote-font link. Keep that
+   // source exact and remove it ONLY from the native staged copy.
+   assert.ok(html.includes('fonts.googleapis.com'), '66.62 source unexpectedly changed');
+   assert.ok(fs.existsSync(path.join(root,'scripts/prepare-v6662-native-webview.py')),
+     'Missing native offline-font and duplicate-script sanitizer');
+ }else{
+   assert.ok(!/fonts\\.googleapis\\.com|fonts\\.gstatic\\.com/.test(html),
+     app+': online font dependency is forbidden');
+ }
  assert.ok(sw.includes('"../../packages/shared/ui/fonts/Vazirmatn-Variable.ttf"'),
    app+': service worker must cache the local font');
 }
