@@ -22,6 +22,20 @@ ALTER TABLE public.zavi_cheques
     AND (status <> 'cleared' OR cleared_at IS NOT NULL)
     AND (status = 'cleared' OR cleared_at IS NULL));
 
+-- Removing the old pending-only CHECK must not accidentally permit a client
+-- to insert a forged 'cleared' cheque without a real balanced settlement.
+-- Keep owner SELECT policy intact and strengthen the known live INSERT policy.
+ALTER TABLE public.zavi_cheques ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS zavi_cheques_owner_insert ON public.zavi_cheques;
+CREATE POLICY zavi_cheques_owner_insert ON public.zavi_cheques
+ FOR INSERT TO authenticated
+ WITH CHECK (
+   EXISTS (SELECT 1 FROM public.zavi_workspaces w
+     WHERE w.id=workspace_id AND w.owner_uid=(SELECT auth.uid()))
+   AND status='pending' AND settled_amount=0
+   AND cleared_at IS NULL AND linked_transaction_id IS NULL
+ );
+
 ALTER TABLE public.zavi_cheque_events
   ADD COLUMN IF NOT EXISTS operation_id uuid,
   ADD COLUMN IF NOT EXISTS actor_uid uuid,
