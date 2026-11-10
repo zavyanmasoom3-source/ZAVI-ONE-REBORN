@@ -15,9 +15,18 @@ async function boundedRead(promise,label,limit=15000){
  try{return await Promise.race([promise,new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error((label||'درخواست')+': مدت انتظار طولانی شد؛ اینترنت را بررسی کنید و دوباره بزنید.')),limit)})])}
  finally{clearTimeout(timer)}
 }
-const MAIN_OWNER_EMAIL='zavyanmasoom6@gmail.com';
 let ownerVerified=false;
-async function verifyOwner(){try{const x=await boundedRead(api().request('/auth/v1/user',{method:'GET'}),'تأیید مالک',10000);ownerVerified=String(x?.email||'').toLowerCase()===MAIN_OWNER_EMAIL;}catch{ownerVerified=false;}return ownerVerified}
+async function verifyOwner(){
+ ownerVerified=false;
+ try{
+  const allowed=await boundedRead(
+   rpc('zavi_stage8_admin_owner_session'),
+   'تأیید نقش مالک و نشست سرور',10000
+  );
+  ownerVerified=allowed===true;
+ }catch{ownerVerified=false}
+ return ownerVerified;
+}
 let opened=false,tab='accounts',accounts=[],requests=[],events=[],showArchived=false,history=false,term='',busy=false;
 const css=`
 #z24Open{position:fixed;bottom:85px;left:18px;z-index:1600;padding:13px 18px;border:0;border-radius:16px;background:linear-gradient(125deg,#0d325a,#0a8fad);color:white;box-shadow:0 10px 32px #082b5680;font:bold 13px Tahoma;cursor:pointer}
@@ -63,10 +72,14 @@ function init(){
  }
 }
 function root(){return $('z24Root')}
-async function open(){if(api()?.getMode?.()!=='live')return alert('اول با حساب مدیریت وارد شوید.');document.body.classList.remove('mobile-drawer');opened=true;if(!root()){const r=document.createElement('div');r.id='z24Root';document.body.appendChild(r);r.addEventListener('click',click);r.addEventListener('input',e=>{if(e.target.id==='z24Search'){term=e.target.value;const at=e.target.selectionStart;paint();const box=$('z24Search');if(box){box.focus();try{box.setSelectionRange(at,at)}catch{}}}})}if(root())root().innerHTML='<div class="v24-shell v24-box" role="status">🔐 در حال بررسی اجازه مدیر... <button type="button" class="v24-btn subtle" data-v24="close">✕ بستن</button></div>';await verifyOwner();await refresh()}
+async function open(){if(api()?.getMode?.()!=='live')return alert('اول با حساب مدیریت وارد شوید.');document.body.classList.remove('mobile-drawer');opened=true;if(!root()){const r=document.createElement('div');r.id='z24Root';document.body.appendChild(r);r.addEventListener('click',click);r.addEventListener('input',e=>{if(e.target.id==='z24Search'){term=e.target.value;const at=e.target.selectionStart;paint();const box=$('z24Search');if(box){box.focus();try{box.setSelectionRange(at,at)}catch{}}}})}if(root())root().innerHTML='<div class="v24-shell v24-box" role="status">🔐 در حال بررسی اجازه مدیر... <button type="button" class="v24-btn subtle" data-v24="close">✕ بستن</button></div>';await refresh()}
 function close(){opened=false;root()?.remove();$('refreshBtn')?.click()}
 function shell(content){root().innerHTML=`<div class="v24-shell"><header class="v24-hero"><div><h1>🔐 کنترول حساب‌های مشتریان</h1><p>مدیریت امن حساب‌ها، بایگانی و درخواست‌های بازیابی</p></div><div class="v24-actions"><button class="v24-btn subtle" data-v24="refresh">↻ تازه‌سازی</button><button class="v24-btn" data-v24="close">← برگشت به پنل</button></div></header><nav class="v24-tabs"><button class="v24-btn ${tab==='accounts'?'current':'subtle'}" data-v24="accounts">👥 حساب‌های مشتریان</button><button class="v24-btn ${tab==='requests'?'current':'subtle'}" data-v24="requests">🔑 درخواست‌های بازیابی ${requests.filter(r=>r.request_status==='pending').length?'('+dig(requests.filter(r=>r.request_status==='pending').length)+')':''}</button><button class="v24-btn ${tab==='events'?'current':'subtle'}" data-v24="events">📋 سابقه تصمیم‌ها</button></nav>${content}</div>`}
 async function refresh(){if(!opened)return;
+ if(!(await verifyOwner())){
+  if(opened&&root())shell('<section class="v24-box v24-err" role="alert">دسترسی فقط برای مالک اصلی با نشست معتبر سرور مجاز است. <button type="button" class="v24-btn subtle" data-v24="close">بستن</button></section>');
+  return;
+ }
  root().innerHTML='<div class="v24-shell v24-box" role="status">⏳ در حال دریافت معلومات از دیتابیس مرکزی… <button class="v24-btn subtle" data-v24="close">✕ بستن</button></div>';
  try{
   if(tab==='accounts')accounts=await boundedRead(rpc('zavi_admin_v24_accounts'),'دریافت حساب‌ها');
@@ -85,7 +98,7 @@ function drawAccounts(){const filtered=accounts.filter(a=>(showArchived||!a.arch
 function drawRequests(){return `<section class="v24-box"><div class="v24-cardrow"><h2>درخواست‌های فراموشی رمز شخصی</h2><label><input type="checkbox" id="z24History" ${history?'checked':''}> نمایش تمام سابقه</label></div><p class="v24-muted">رمز مشتری نزد ما ثبت یا نمایش داده نمی‌شود. مشتری با حساب آنلاین خودش درخواست می‌فرستد؛ شما ابتدا هویت او را تأیید کنید. پس از تأیید شما، مشتری فقط تا <b>۳۰ دقیقه</b> فرصت دارد روی همان دستگاه رمز تازه بسازد.</p><div class="v24-alert">⚠️ قبل از تأیید، با مالک واقعی دوکان از طریق شماره تماس یا روش مستقل ارتباط بگیرید. داشتن ایمیل و رمز حساب، به‌تنهایی برای تأیید هویت کافی نیست.</div><div class="v24-list"><table class="v24-table"><thead><tr><th>مشتری</th><th>وضعیت</th><th>ثبت درخواست</th><th>مهلت تأیید</th><th>عملیات</th></tr></thead><tbody>${requests.map(r=>`<tr><td><b>${esc(r.workspace_name)}</b><small dir="ltr">${esc(r.owner_email)}</small></td><td>${esc(({pending:'منتظر تأیید',approved:'تأیید شد',denied:'رد شد',used:'استفاده شد',expired:'مهلت ختم شد'})[r.request_status]||r.request_status)}</td><td>${dateBoth(r.requested_at)}</td><td>${dateBoth(r.expires_at)}</td><td><div class="v24-actions">${r.request_status==='pending'?`<button class="v24-btn" data-v24="approve" data-id="${r.request_id}">✓ تأیید بازیابی</button><button class="v24-btn danger" data-v24="deny" data-id="${r.request_id}">رد درخواست</button>`:'—'}</div></td></tr>`).join('')}</tbody></table>${!requests.length?'<div class="v24-empty">درخواست تازه‌ای وجود ندارد.</div>':''}</div></section>`}
 function drawEvents(){return `<section class="v24-box"><h2>سابقه مدیریت حساب‌ها</h2><p class="v24-muted">تصمیم‌های بایگانی، بازگردانی و تأیید/رد بازیابی در دیتابیس ثبت شده‌اند.</p><div class="v24-list"><table class="v24-table" style="min-width:650px"><thead><tr><th>دوکان</th><th>عملیات</th><th>یادداشت</th><th>زمان</th></tr></thead><tbody>${events.map(e=>`<tr><td>${esc(e.workspace_name)}</td><td>${esc(({archive:'بایگانی',restore:'بازگردانی',pin_approved:'تأیید بازیابی',pin_denied:'رد بازیابی'})[e.action]||e.action)}</td><td>${esc(e.details)}</td><td>${dateBoth(e.occurred_at)}</td></tr>`).join('')}</tbody></table></div></section>`}
 function paint(){if(!opened||!root())return;shell(tab==='accounts'?drawAccounts():tab==='requests'?drawRequests():drawEvents())}
-async function action(fn,p,msg){if(busy)return;busy=true;try{await rpc(fn,p);api()?.notify?.(msg);await refresh()}catch(e){alert('عملیات انجام نشد: '+e.message)}finally{busy=false}}
+async function action(fn,p,msg){if(busy)return;if(!(await verifyOwner()))return alert('نشست مالک معتبر نیست.');busy=true;try{await rpc(fn,p);api()?.notify?.(msg);await refresh()}catch(e){alert('عملیات انجام نشد: '+e.message)}finally{busy=false}}
 async function click(e){const input=e.target;if(input.id==='z24ShowArchived'){showArchived=input.checked;paint();return}if(input.id==='z24History'){history=input.checked;await refresh();return}const b=e.target.closest('button[data-v24]');if(!b)return;const op=b.dataset.v24;
  if(op==='close'){close();return}
  if(busy)return;if(op==='refresh'){await refresh();return}if(['accounts','requests','events'].includes(op)){tab=op;await refresh();return}
