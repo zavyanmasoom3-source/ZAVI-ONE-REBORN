@@ -531,8 +531,7 @@ async function push(){if(!pending||!workspace||role!=='owner'||pushing||conflict
  // V65.11: compare the WHOLE saved payload after a request: equal timestamps do not prove equal ledgers.
  // Only a deliberate store-name edit may change the cloud/ADMIN workspace title.
  const renameName=snapshot.zaviRenameRequested===true&&typeof snapshot.storeName==='string'&&snapshot.storeName.trim().length>=2&&snapshot.storeName.trim().length<=65?snapshot.storeName.trim():null;
- const updateBody={payload:snapshot,revision:oldRev+1,updated_at:new Date().toISOString()};
- if(renameName&&renameName!==workspace.name)updateBody.name=renameName;const uploadWorkspace=workspace.id,uploadOwner=session?.user?.id,uploadTenantKey=window.zaviTenantKey?.();
+ const uploadWorkspace=workspace.id,uploadOwner=session?.user?.id,uploadTenantKey=window.zaviTenantKey?.();
  try{
  // Stage 7: a replaced/revoked device cannot send a new CAS snapshot merely
  // because its old owner's JWT still exists. Ask the canonical server guard
@@ -548,7 +547,14 @@ async function push(){if(!pending||!workspace||role!=='owner'||pushing||conflict
  if(allowed?.workspace_id!==uploadWorkspace||allowed?.device_id!==deviceId||
     allowed?.device_allowed!==true||allowed?.sync_allowed!==true)
   throw Error('DEVICE_OR_SUBSCRIPTION_NOT_AUTHORIZED_FOR_SYNC');
- const rows=await request('/rest/v1/zavi_workspaces?select=id,name,revision,updated_at&id=eq.'+workspace.id+'&revision=eq.'+oldRev,{method:'PATCH',body:updateBody,prefer:'return=representation'});
+ // The server owns the financial CAS, enforcing device/tenant/subscription
+ // again at the *actual write*, not only during client preflight. A stale
+ // revision returns [] and must never overwrite newer cloud transactions.
+ const rows=await request('/rest/v1/rpc/zavi_stage7_workspace_cas',{
+  method:'POST',
+  body:{p_workspace_id:uploadWorkspace,p_device_id:deviceId,
+        p_expected_revision:oldRev,p_payload:snapshot,p_new_name:renameName}
+ });
  if(!workspace||workspace.id!==uploadWorkspace||session?.user?.id!==uploadOwner||window.zaviTenantKey?.()!==uploadTenantKey)return;
  if(!rows?.length){
   // Network may have died after the server accepted this exact optimistic update.
