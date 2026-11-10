@@ -5,7 +5,7 @@
  */
 'use strict';
 const APK_ORIGIN='https://appassets.androidplatform.net';
-const CACHE_NAME='zavi-admin-design-tokens-unified-20261109-font1-skin1';;;
+const CACHE_NAME='zavi-admin-stage8-owner-session-20261110-v1';;;
 const CORE=[
   "../../packages/shared/ui/zavi-reference-v3.css",
   "../../packages/shared/ui/zavi-reference-navigation-v3.js",
