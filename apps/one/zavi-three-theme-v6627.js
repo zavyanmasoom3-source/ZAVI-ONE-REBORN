@@ -9,7 +9,14 @@
    window.localStorage.setItem(KEY,mode);
    if(window.localStorage.getItem(KEY)!==mode)console.warn('ZAVI theme storage mismatch',mode);
   }catch(e){console.warn('ZAVI theme persistence unavailable',e)}
-  document.documentElement.setAttribute('data-zavi-theme',mode);
+  // The original 66.62 theme and the later shared picker must not disagree.
+  // This invokes *only* the original theme API; visual CSS is unchanged.
+  if(window.ZaviThemeV29 && typeof window.ZaviThemeV29.set==='function'){
+   window.ZaviThemeV29.set(mode);
+  }else{
+   document.documentElement.setAttribute('data-zavi-theme',mode);
+   document.documentElement.setAttribute('data-zavi-appearance',mode);
+  }
   document.querySelectorAll('[data-zavi-theme-choice]').forEach(function(btn){
    var active=btn.getAttribute('data-zavi-theme-choice')===mode;
    btn.setAttribute('aria-pressed',String(active));
@@ -48,7 +55,9 @@
  }
  function init(){
   var saved='';try{saved=localStorage.getItem(KEY)||''}catch(_){}
-  setTheme(modes.indexOf(saved)>=0?saved:'light');
+  var inherited='';try{inherited=localStorage.getItem('zavi_ui_appearance_v2')||localStorage.getItem('zavi_theme_preference_v29')||''}catch(_){}
+  var starting=modes.indexOf(saved)>=0?saved:(modes.indexOf(inherited)>=0?inherited:'light');
+  setTheme(starting);
   var panel=document.getElementById('zavi-theme-controls');
   if(!panel){
    panel=document.createElement('section');panel.id='zavi-theme-controls';
@@ -86,7 +95,7 @@
   relocate();
   // Restore the persisted preference without trusting an unrelated DOM attribute.
   var initial='';try{initial=window.localStorage.getItem(KEY)||''}catch(_){}
-  setTheme(modes.indexOf(initial)>=0?initial:'light');
+  setTheme(modes.indexOf(initial)>=0?initial:starting);
   // Navigation can be SPA-based; never overlay bottom navigation.
   var queued=false;
   new MutationObserver(function(){
