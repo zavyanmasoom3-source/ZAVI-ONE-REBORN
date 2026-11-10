@@ -110,7 +110,7 @@ async function trashAll(){
    const phrase=prompt(t().bulkCheck);
    if(phrase!=='TRASH ALL CUSTOMER ACCOUNTS')return;
    const count=await rpc('zavi_admin_trash_all_customer_accounts',{p_confirmation:phrase});
-   if(!Number.isSafeInteger(Number(count))||Number(count)<0)throw Error('Unexpected bulk result');
+   if(typeof count!=='number'||!Number.isSafeInteger(count)||count<0)throw Error('Unexpected bulk result');
    alert(String(count)+t().bulkDone);refreshAccountControl();
   }catch(e){alert(t().error+e.message)}
   finally{busy=false}
