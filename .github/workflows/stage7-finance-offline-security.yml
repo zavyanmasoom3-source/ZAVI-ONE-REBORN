@@ -12,6 +12,8 @@ on:
       - 'scripts/test-cloud-three-device-browser.py'
       - 'supabase/migrations/20261110_stage7_server_cas_device_guard.sql'
       - 'scripts/test-stage7-workspace-cas-postgres.sql'
+      - 'supabase/migrations/20261110_stage7_progressive_legacy_write_cutover.sql'
+      - 'scripts/test-stage7-progressive-cutover-postgres.sql'
       - 'scripts/test-stage7-no-raw-workspace-write.cjs'
   workflow_dispatch:
 permissions:
@@ -59,6 +61,13 @@ jobs:
           createdb -h 127.0.0.1 -U postgres stage7_cas_test
           psql -h 127.0.0.1 -U postgres -d stage7_cas_test \
             -v ON_ERROR_STOP=1 -f scripts/test-stage7-workspace-cas-postgres.sql
+      - name: Check opt-in RLS cutover is safe for old apps and blocks raw post-upgrade financial PATCH
+        env:
+          PGPASSWORD: stage7-disposable-fixture
+        run: |
+          createdb -h 127.0.0.1 -U postgres stage7_cutover_test
+          psql -h 127.0.0.1 -U postgres -d stage7_cutover_test \
+            -v ON_ERROR_STOP=1 -f scripts/test-stage7-progressive-cutover-postgres.sql
       - name: Read-only accounting and multi-device browser regression
         run: |
           python3 scripts/test-accounting-edge-cases-browser.py
