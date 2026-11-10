@@ -1,0 +1,323 @@
+name: ZAVI connected sandbox Android APKs — NOT RELEASE
+on:
+  workflow_dispatch:
+  push:
+    branches: [dev]
+    paths:
+      - '.github/workflows/build-android-connected-qa.yml'
+
+permissions:
+  contents: write
+  actions: read
+jobs:
+  isolated-test:
+    name: Installable connected test (independent sandbox) — ${{ matrix.app }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        app: [one, admin]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify public-source safety and packaged resources
+        run: |
+          python3 scripts/check-public-source-security.py
+          python3 scripts/check-migration-integrity.py
+          python3 scripts/check-offline-shell-assets.py
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Enforce exact owner APK design and verify public Supabase connection
+        run: |
+          python3 scripts/check-reference-runtime-css.py
+          node scripts/test-live-supabase-connection.cjs
+          node scripts/test-stage8-admin-source.cjs
+      - name: Check app JavaScript syntax
+        run: |
+          set -euo pipefail
+          find apps packages/shared -name '*.js' -type f -print0 |
+            while IFS= read -r -d '' f; do node --check "$f"; done
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Configure Android SDK
+        shell: bash
+        run: |
+          set -euo pipefail
+          SDK_ROOT="${ANDROID_SDK_ROOT:-${ANDROID_HOME:-/usr/local/lib/android/sdk}}"
+          test -d "$SDK_ROOT"
+          echo "ANDROID_HOME=$SDK_ROOT" >> "$GITHUB_ENV"
+          echo "ANDROID_SDK_ROOT=$SDK_ROOT" >> "$GITHUB_ENV"
+          SDKMANAGER="$SDK_ROOT/cmdline-tools/latest/bin/sdkmanager"
+          if [[ ! -x "$SDKMANAGER" ]]; then
+            SDKMANAGER=$(find "$SDK_ROOT/cmdline-tools" -type f -name sdkmanager -print -quit 2>/dev/null || true)
+          fi
+          test -x "$SDKMANAGER"
+          yes | "$SDKMANAGER" --sdk_root="$SDK_ROOT" --licenses >/dev/null || true
+          "$SDKMANAGER" --sdk_root="$SDK_ROOT" "platforms;android-36" "build-tools;36.0.0"
+      - name: Download and verify Gradle 8.13 (mirror fallback)
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s gradle/wrapper/gradle-wrapper.jar
+          # Official Gradle 8.13 wrapper blob; no untrusted substitute is accepted.
+          test "$(git hash-object gradle/wrapper/gradle-wrapper.jar)" = "9bbc975c742b298b441bfb90dbc124400a3751b9"
+          zip="$RUNNER_TEMP/gradle-8.13-bin.zip"
+          expected="20f1b1176237254a6fc204d8434196fa11a4cfb387567519c61556e8710aed78"
+          downloaded=false
+          # Gradle's public distribution endpoints sometimes redirect to a GitHub
+          # release that returns HTTP 504. The alternate mirror is checksum-verified.
+          for url in \
+            "https://downloads.gradle.org/distributions/gradle-8.13-bin.zip" \
+            "https://repo.huaweicloud.com/gradle/gradle-8.13-bin.zip"; do
+            echo "Fetching Gradle 8.13 from: $url"
+            if curl --fail --location --silent --show-error \
+              --retry 2 --retry-all-errors --connect-timeout 20 --max-time 240 \
+              --output "$zip" "$url"; then
+              if printf '%s  %s\n' "$expected" "$zip" | sha256sum --check --status; then
+                downloaded=true
+                break
+              fi
+              echo "::warning::Gradle checksum mismatch; rejecting this download"
+            fi
+          done
+          test "$downloaded" = true
+          # CI-only local ZIP override: source file retains the official remote
+          # download URL and pinned distributionSha256Sum for non-CI builds.
+          sed -i "s#^distributionUrl=.*#distributionUrl=file://$zip#" gradle/wrapper/gradle-wrapper.properties
+          chmod +x ./gradlew
+          ./gradlew --version --no-daemon
+      - name: Create a one-run sandbox preview key (never used for Release)
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          test "$CI" = true
+          echo "::warning::CONNECTED TEST — distinct installable sandbox with LIVE public-key cloud. Never use a live business account. NEVER RELEASE."
+          target="$RUNNER_TEMP/zavi-${{ matrix.app }}-isolated-testonly.p12"
+          password=$(openssl rand -hex 32)
+          echo "::add-mask::$password"
+          keytool -genkeypair -noprompt -storetype PKCS12 -keystore "$target" \
+            -alias zavi-isolated-test-only -keyalg RSA -keysize 2048 \
+            -validity 2 -dname "CN=CONNECTED-TEST-NOT-RELEASE, O=ZAVI QA" \
+            -storepass "$password" -keypass "$password" >/dev/null 2>&1
+          {
+            echo "ZAVI_ISOLATED_TEST_STORE_FILE=$target"
+            echo "ZAVI_ISOLATED_TEST_STORE_PASSWORD=$password"
+            echo "ZAVI_ISOLATED_TEST_KEY_ALIAS=zavi-isolated-test-only"
+            echo "ZAVI_ISOLATED_TEST_KEY_PASSWORD=$password"
+          } >> "$GITHUB_ENV"
+      - name: Stage app and shared assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf android-build/app/src/main/assets
+          mkdir -p android-build/app/src/main/assets
+          cp -a "apps/${{ matrix.app }}/." android-build/app/src/main/assets/
+          mkdir -p android-build/app/src/main/assets/packages/shared
+          cp -a packages/shared/. android-build/app/src/main/assets/packages/shared/ || true
+          for shared_file in database/supabase-config.js security/access-contract.js i18n/language-core.js; do
+            mkdir -p "android-build/app/src/main/assets/packages/shared/$(dirname "$shared_file")"
+            cp "packages/shared/$shared_file" "android-build/app/src/main/assets/packages/shared/$shared_file"
+          done
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          root=Path('android-build/app/src/main/assets')
+          html=root/'index.html'
+          content=html.read_text(encoding='utf-8')
+          content=content.replace('../../packages/shared/','./packages/shared/')
+          content=content.replace('../packages/shared/','./packages/shared/')
+          html.write_text(content,encoding='utf-8')
+          # Keep EXACT owner-approved CSS plus real cloud source. No demo replacement.
+          project='wbbmwfnmurpphwxesssx'
+          shared=(root/'packages/shared/database/supabase-config.js').read_text(encoding='utf-8')
+          assert project in shared, 'Shared Supabase project mismatch'
+          if '${{ matrix.app }}'=='one':
+              client=(root/'cloud-config.js').read_text(encoding='utf-8')
+          else:
+              client=(root/'app.js').read_text(encoding='utf-8')
+          assert 'https://'+project+'.supabase.co' in client, 'App cloud project mismatch'
+          assert re.search(r'sb_publishable_[A-Za-z0-9_-]{20,}',client), 'Missing public cloud client key'
+          assert 'sb_secret_' not in client, 'No private Supabase key permitted'
+          # Only the disposable installable preview identity is changed in CI.
+          # Original Gradle config, app source and production signatures are untouched.
+          gradle=Path('android-build/app/build.gradle')
+          gradle_text=gradle.read_text(encoding='utf-8')
+          substitutions={
+            "applicationIdSuffix '.connectedpreview'":"applicationIdSuffix '.connectedpreview'",
+            "versionNameSuffix '-CONNECTED-TEST-NOT-RELEASE'":"versionNameSuffix '-CONNECTED-TEST-NOT-RELEASE'",
+            "ZAVI ADMIN CONNECTED TEST":"ZAVI ADMIN CONNECTED TEST",
+            "ZAVI ONE CONNECTED TEST":"ZAVI ONE CONNECTED TEST",
+          }
+          for original,new in substitutions.items():
+              assert gradle_text.count(original)==1, 'Unexpected preview Gradle structure: '+original
+              gradle_text=gradle_text.replace(original,new)
+          gradle.write_text(gradle_text,encoding='utf-8')
+          print('PASS: original CSS preserved; connected staging uses only the public Supabase key')
+          print('NOTICE: this separately installed QA APK can contact the real server. Use TEST accounts only.')
+          PY
+          if [[ "${{ matrix.app }}" == "one" ]]; then
+            version="66.78-reborn.qa.$GITHUB_RUN_NUMBER-CONNECTED-TEST-NOT-RELEASE"
+            package="com.zavione.one.connectedpreview"
+          else
+            version="1.4.69-reborn.qa.$GITHUB_RUN_NUMBER-CONNECTED-TEST-NOT-RELEASE"
+            package="com.zavione.one.admin.connectedpreview"
+          fi
+          printf '{"commit":"%s","app":"%s","run":"%s","version":"%s","package":"%s","kind":"CONNECTED-TEST-NOT-RELEASE","server":"live-public-key","signing":"%s"}\n' \
+            "$GITHUB_SHA" "${{ matrix.app }}" "$GITHUB_RUN_NUMBER" "$version" "$package" "ephemeral-connected-test" \
+            > android-build/app/src/main/assets/zavi-build-info.json
+          test -s android-build/app/src/main/assets/zavi-build-info.json
+          mkdir -p android-build/app/src/main/res/drawable-nodpi android-build/app/src/main/res/values android-build/app/src/main/res/xml
+          cp "apps/${{ matrix.app }}/icon-192.png" android-build/app/src/main/res/drawable-nodpi/zavi_launcher_image.png
+          printf '%s\n' '<resources><style name="ZaviTheme" parent="android:style/Theme.Material.Light.NoActionBar"><item name="android:windowLightStatusBar">false</item></style></resources>' > android-build/app/src/main/res/values/styles.xml
+          printf '%s\n' '<?xml version="1.0" encoding="utf-8"?><paths xmlns:android="http://schemas.android.com/apk/res/android"><cache-path name="camera" path="."/></paths>' > android-build/app/src/main/res/xml/zavi_camera_paths.xml
+      - name: Validate WebView source
+        run: |
+          python3 scripts/fix-webview-receipt.py
+          python3 scripts/validate-webview-html.py
+      - name: Clean and assemble distinct connected sandbox test APK
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./gradlew :app:clean :app:assembleInstallablePreview \
+            -PzaviApp=${{ matrix.app }} -PzaviBuildNumber=${{ github.run_number }} \
+            -PzaviInstallablePreview=true --no-build-cache --stacktrace
+      - name: Verify non-testOnly preview package, APK signature and file hash
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo 'Isolated APK output paths:'
+          find android-build/app/build/outputs/apk -maxdepth 3 -type f -name '*.apk' -print
+          apk=$(find android-build/app/build/outputs/apk/installablePreview -maxdepth 1 -type f -name '*.apk' -print -quit)
+          if [[ -z "$apk" ]]; then echo "::error::Expected isolated APK not found"; exit 1; fi
+          apksigner="$ANDROID_SDK_ROOT/build-tools/36.0.0/apksigner"
+          aapt="$ANDROID_SDK_ROOT/build-tools/36.0.0/aapt"
+          # AGP emitted v2+v3 but no v1 despite the signingConfig flag.
+          # Re-sign with the *same isolated CI-only key* and force all three
+          # Android APK signature schemes; never relax any verifier.
+          resigned="$RUNNER_TEMP/zavi-connected-test-v123.apk"
+          "$apksigner" sign --ks "$ZAVI_ISOLATED_TEST_STORE_FILE"             --ks-type PKCS12 --ks-key-alias "$ZAVI_ISOLATED_TEST_KEY_ALIAS"             --ks-pass env:ZAVI_ISOLATED_TEST_STORE_PASSWORD             --key-pass env:ZAVI_ISOLATED_TEST_KEY_PASSWORD             --v1-signing-enabled true --v2-signing-enabled true             --v3-signing-enabled true --v4-signing-enabled false             --out "$resigned" "$apk"
+          apk="$resigned"
+          if ! "$apksigner" verify --verbose --print-certs "$apk" > "$RUNNER_TEMP/isolated-apk-verify.txt" 2>&1; then
+            cat "$RUNNER_TEMP/isolated-apk-verify.txt"
+            echo "::error::APK cryptographic signature verification failed"; exit 1
+          fi
+          output=$(cat "$RUNNER_TEMP/isolated-apk-verify.txt")
+          printf '%s\n' "$output"
+          # API 26+ default check may skip obsolete v1 even if it is present.
+          # Verify v2/v3 against the actual minSdk, then test v1 against API 23.
+          for scheme in v2 v3; do
+            if ! grep -E "Verified using $scheme scheme.*: true" <<< "$output" >/dev/null; then
+              echo "::error::Missing verified signing scheme $scheme"; exit 1
+            fi
+          done
+          legacy=$("$apksigner" verify --min-sdk-version 23 --verbose --print-certs "$apk")
+          if ! grep -E 'Verified using v1 scheme.*: true' <<< "$legacy" >/dev/null; then
+            echo "::error::JAR v1 signature missing or invalid under Android 23 verification"; exit 1
+          fi
+          default_cert=$(grep -F 'Signer #1 certificate SHA-256 digest:' <<< "$output")
+          legacy_cert=$(grep -F 'Signer #1 certificate SHA-256 digest:' <<< "$legacy")
+          test -n "$default_cert" && test "$default_cert" = "$legacy_cert"
+          printf 'PASS: v1 (API 23), v2 + v3 (declared minSDK) and same certificate\n'
+          printf '%s\n' "$default_cert"
+          badging=$("$aapt" dump badging "$apk")
+          package=$(sed -n '1p' <<< "$badging")
+          echo "$package"
+          if [[ "${{ matrix.app }}" == one ]]; then
+            grep -F "name='com.zavione.one.connectedpreview'" <<< "$package"
+          else
+            grep -F "name='com.zavione.one.admin.connectedpreview'" <<< "$package"
+          fi
+          grep -F 'CONNECTED-TEST-NOT-RELEASE' <<< "$package"
+          "$aapt" dump xmltree "$apk" AndroidManifest.xml | grep -E 'testOnly.*0x0$' >/dev/null
+          if "$aapt" dump xmltree "$apk" AndroidManifest.xml | grep -E 'testOnly.*0xffffffff' >/dev/null; then
+            echo "::error::Preview unexpectedly became testOnly=true"; exit 1
+          fi
+          unzip -p "$apk" assets/zavi-build-info.json | grep -F '"kind":"CONNECTED-TEST-NOT-RELEASE"'
+          test -s "$apk"
+          mkdir -p connected-test-output
+          cp "$apk" "connected-test-output/ZAVI_${{ matrix.app }}_CONNECTED-TEST-NOT-RELEASE.apk"
+          (cd connected-test-output && sha256sum *.apk > SHA256SUMS.txt)
+          cat connected-test-output/SHA256SUMS.txt
+          echo "::warning::CONNECTED SANDBOX TEST only; use throwaway account, never actual accounting data; original APK remains untouched."
+      - uses: actions/upload-artifact@v4
+        with:
+          name: CONNECTED-TEST-NOT-RELEASE-Android-${{ matrix.app }}
+          path: connected-test-output/
+          retention-days: 4
+          if-no-files-found: error
+      - name: Destroy one-run preview signing material
+        if: always()
+        shell: bash
+        run: rm -f "$RUNNER_TEMP/zavi-${{ matrix.app }}-isolated-testonly.p12"
+
+  publish-connected-test:
+    name: Publish two VERIFIED test-only APKs as direct GitHub assets
+    needs: isolated-test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: CONNECTED-TEST-NOT-RELEASE-Android-one
+          path: input/one
+      - uses: actions/download-artifact@v4
+        with:
+          name: CONNECTED-TEST-NOT-RELEASE-Android-admin
+          path: input/admin
+      - name: Verify exact build commit, independent package and artifact checksum
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p direct-apks
+          for app in one admin; do
+            (cd "input/$app" && sha256sum -c SHA256SUMS.txt)
+          done
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,os,zipfile
+          sha=os.environ['GITHUB_SHA']
+          run=os.environ['GITHUB_RUN_NUMBER']
+          for app in ('one','admin'):
+              p=Path(f'input/{app}/ZAVI_{app}_CONNECTED-TEST-NOT-RELEASE.apk')
+              assert p.is_file() and p.stat().st_size>1_000_000,p
+              with zipfile.ZipFile(p) as z:
+                  info=json.loads(z.read('assets/zavi-build-info.json'))
+              assert info['commit']==sha,(app,'wrong commit')
+              assert info['run']==run,(app,'wrong run')
+              assert info['kind']=='CONNECTED-TEST-NOT-RELEASE',(app,'wrong build kind')
+              assert info['package']==f'com.zavione.one{".admin" if app=="admin" else ""}.connectedpreview',info
+              assert info['server']=='live-public-key',(app,'not connected')
+              assert info['signing']=='ephemeral-connected-test',(app,'unexpected signing')
+              target=Path('direct-apks')/('ZAVI_ONE_ADMIN_CONNECTED_TEST.apk' if app=='admin' else 'ZAVI_ONE_CONNECTED_TEST.apk')
+              target.write_bytes(p.read_bytes())
+              print('PASS: verified connected test APK',app,'bytes:',p.stat().st_size)
+          PY
+      - name: Publish TEST (not stable, never upgrade production)
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          tag="zavi-owner-design-connected-test-20261110-run${GITHUB_RUN_NUMBER}"
+          cat > release-notes.txt <<'NOTES'
+          THESE ARE NOT PRODUCTION APKs.
+          Owner-uploaded ZAVI ONE & ADMIN original CSS is kept exactly.
+          Exact GitHub dev SHA is embedded in both APKs, built with a separate ephemeral test key.
+          Connected to the existing live Supabase project using PUBLIC publishable key only.
+          CAUTION: Do not log in using an active business account. Test ONLY using a disposable account.
+          Real finance syncing, server-side RLS and printing on physical Android are NOT certified.
+          These packages CANNOT upgrade existing installed production apps.
+          No original APK, financial data, or cloud records were changed by this build.
+          NOTES
+          gh release create "$tag" direct-apks/*.apk \
+            --prerelease --target "$GITHUB_SHA" \
+            --title "ZAVI ONE original look — CONNECTED TEST ONLY — run ${GITHUB_RUN_NUMBER}" \
+            --notes-file release-notes.txt -R "$GITHUB_REPOSITORY"
+          gh release view "$tag" --json url,assets \
+            --jq '{release: .url, assets: [.assets[] | {name:.name,url:.url}]}'
