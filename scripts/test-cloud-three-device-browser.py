@@ -17,7 +17,7 @@ BASE='https://zavi-disposable-qa.supabase.co'
 KEY='qa-publishable-key-this-is-not-a-real-credential'
 TOKEN='qa-access-token-this-is-not-a-real-credential'
 lock=Lock()
-server_state={'workspace':None,'patches':[],'drop_for':None,'entitlement_checks':0,'device_auth_checks':0,'blocked_devices':set()}
+server_state={'workspace':None,'patches':[],'drop_for':None,'entitlement_checks':0,'device_auth_checks':0,'blocked_devices':set(),'legacy_patch_calls':0}
 
 def json_reply(handler,code,body):
     raw=json.dumps(body,separators=(',',':')).encode()
@@ -72,10 +72,46 @@ class MockSupabase(BaseHTTPRequestHandler):
                 granted=device_id not in server_state['blocked_devices']
             return json_reply(self,200,[{'workspace_id':WID,'device_id':device_id,
                 'device_allowed':granted,'sync_allowed':granted}])
+        if parsed.path=='/rest/v1/rpc/zavi_stage7_workspace_cas':
+            if self.headers.get('Authorization')!='Bearer '+TOKEN:
+                return json_reply(self,401,{'message':'QA CAS unauthorized'})
+            length=int(self.headers.get('Content-Length','0'))
+            try:body=json.loads(self.rfile.read(length))
+            except ValueError:return json_reply(self,400,{'message':'QA CAS invalid JSON'})
+            if body.get('p_workspace_id')!=WID:
+                return json_reply(self,403,{'message':'QA CAS wrong owner tenant'})
+            device_id=body.get('p_device_id')
+            old=body.get('p_expected_revision')
+            payload=body.get('p_payload')
+            if not isinstance(device_id,str) or not device_id or not isinstance(old,int) or not isinstance(payload,dict) or not isinstance(payload.get('tx'),list):
+                return json_reply(self,400,{'message':'QA CAS invalid payload'})
+            device=self.headers.get('X-QA-Device','?')
+            with lock:
+                allowed=device_id not in server_state['blocked_devices']
+                current=server_state['workspace']
+                if not allowed:
+                    return json_reply(self,403,{'message':'QA CAS primary revoked'})
+                if old!=current['revision']:
+                    reply=[]
+                else:
+                    current['revision']+=1
+                    current['payload']=payload
+                    current['updated_at']='2026-11-08T12:00:00Z'
+                    if body.get('p_new_name'):
+                        current['name']=body['p_new_name']
+                    server_state['patches'].append({'device':device,'revision':old+1})
+                    reply=[{k:current[k] for k in ('id','name','revision','updated_at')}]
+                dropping=bool(reply) and server_state['drop_for']==device
+                if dropping:server_state['drop_for']=None
+            if dropping:
+                return json_reply(self,503,{'message':'QA network dropped after CAS commit'})
+            return json_reply(self,200,reply)
         # This browser fixture deliberately does not issue offline leases.
         return json_reply(self,403,{'message':'QA server: unrelated RPC denied'})
     def do_PATCH(self):
         parsed=urlparse(self.path)
+        with lock:server_state['legacy_patch_calls']+=1
+        return json_reply(self,403,{'message':'Direct PATCH is retired: use server-authorized CAS'})
         if parsed.path!='/rest/v1/zavi_workspaces':
             return json_reply(self,403,{'message':'Only workspace CAS is allowed'})
         queries=parse_qs(parsed.query)
@@ -298,6 +334,8 @@ with ExitStack() as stack:
     with lock:
         assert [t['id'] for t in server_state['workspace']['payload']['tx']].count('qa-revoked-unsent')==1
     print('PASS: restored device permission uploads the preserved sale once')
+    assert server_state['legacy_patch_calls']==0, 'Direct workspace PATCH bypassed RPC gate'
+    print('PASS: no direct REST PATCH; actual client sends every financial CAS through server RPC')
     print(json.dumps({'profiles':3,'cases':5,'last_revision':server_state['workspace']['revision'],
 
        'server_patches':server_state['patches']},ensure_ascii=False))
