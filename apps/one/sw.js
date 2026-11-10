@@ -9,6 +9,7 @@ const CACHE_NAME='zavi-one-exact-original-v6662-restored-20261110-v1';;;
 const SHELL_PROTOCOL='zavi-shell-v2';
 const CACHE_PREFIX='zavi-one-';
 const CORE=[
+
   "neon-theme-v47.css",
   "zavi-actual-login-star-v6612.css",
   "zavi-assistant-visibility-v6619.js",

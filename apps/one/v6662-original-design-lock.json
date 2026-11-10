@@ -145,5 +145,10 @@
   "current_cloud_and_accounting_js_preserved": true,
   "original_voice_model_must_be_pinned_in_final_apk": true,
   "server_project_id": "wbbmwfnmurpphwxesssx",
+  "safe_shared_sources": [
+    "database/supabase-config.js",
+    "security/access-contract.js",
+    "i18n/language-core.js"
+  ],
   "release_certified": false
 }
