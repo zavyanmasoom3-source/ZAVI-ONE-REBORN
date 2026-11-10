@@ -38,6 +38,8 @@ jobs:
           node-version: '22'
       - name: Pure cheque accounting invariants
         run: node scripts/test-cheque-settlement.cjs
+      - name: Validate cheque client inputs, scoped durable queue and offline safety
+        run: node scripts/test-stage4-cheque-client.cjs
       - name: Prove atomic cheque staging RPC on disposable PostgreSQL 17
         env:
           PGPASSWORD: synthetic-test-only
