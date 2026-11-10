@@ -212,7 +212,12 @@
     return post(id,job);
   }
   function mount(){
-    const content=root.document?.querySelector('.zui-order-page[data-module="purchases"]');
+    // Keep the verified original V66.62 purchase layout untouched.
+    // New PDF page wrappers no longer exist in that appearance; mount the
+    // functional panel into the already-active original purchase route.
+    const originalPurchases=!!root.document?.querySelector('[data-go="purchases"][aria-current="page"]');
+    const content=root.document?.querySelector('.zui-order-page[data-module="purchases"]')||
+      (originalPurchases?root.document?.getElementById('content'):null);
     if(!content||content.querySelector('[data-zv-transit]'))return;
     content.insertAdjacentHTML('beforeend',markup());
     const heading=content.querySelector('.page-head .action-group')||content.querySelector('.zui-section-heading')||content.querySelector('.page-head');
