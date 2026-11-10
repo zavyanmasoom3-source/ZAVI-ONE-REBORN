@@ -18,6 +18,10 @@ html[data-zavi-theme] #zawiPrivateGate .zavi-gate-appearance [data-zavi-theme-ch
   min-height: 44px !important;
   box-sizing: border-box;
 }
+/* Keep the three real settings theme choices usable on mobile. */
+html[data-zavi-theme] #content .zavi-theme-settings [data-zavi-theme-choice] {
+ min-height:44px!important;box-sizing:border-box;
+}
 html[data-zavi-theme] [hidden] { display: none !important; }
 html[data-zavi-theme] :is(input, textarea, select) { max-width: 100%; min-width: 0; }
 html[data-zavi-theme] :is(button, input, textarea, select, a):focus-visible {
