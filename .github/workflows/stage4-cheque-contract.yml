@@ -10,6 +10,8 @@ on:
       - 'supabase/rollback/20261110_stage4_cheque_preuse_only.sql'
       - 'supabase/migrations/20261110_stage4_cheque_atomic_server.sql'
       - 'scripts/test-stage4-production-migration.sh'
+      - 'supabase/migrations/20261110_stage4_cheque_subscription_guard.sql'
+      - 'scripts/test-stage4-cheque-subscription.sql'
       - 'packages/shared/accounting/cheque-settlement-contract.js'
       - 'scripts/test-cheque-settlement.cjs'
       - '.github/workflows/stage4-cheque-contract.yml'
@@ -49,6 +51,11 @@ jobs:
         run: |
           psql -h 127.0.0.1 -U postgres -d postgres \
             -v ON_ERROR_STOP=1 -f scripts/test-stage4-cheque-postgres.sql
+      - name: Reject cheque registration after subscription expiry
+        env:
+          PGPASSWORD: synthetic-test-only
+        run: |
+          psql -h 127.0.0.1 -U postgres -d postgres             -v ON_ERROR_STOP=1 -f scripts/test-stage4-cheque-subscription.sql
       - name: Verify concurrent PostgreSQL connections and dropped ACK
         env:
           PGPASSWORD: synthetic-test-only
