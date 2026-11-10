@@ -62,6 +62,12 @@ assert.equal(safeRevision({id:ws,owner_uid:me,user_uid:me,revision:0},ws,me,16),
 assert.equal(safeRevision({id:ws,owner_uid:me,user_uid:me,revision:-1},ws,me,16),-1);
 assert.match(source,/zaviCloudSamePayload\(current\.payload,snapshot\)/,
   'All-field acknowledgement must be used by the network retry code');
-assert.match(source,/validWaiting&&pendingRevision>=0&&serverRevision>pendingRevision/,
-  'No resetting unknown-base offline ledger');
+assert.match(source,/serverRevision>pendingRevision&&Number\.isFinite\(resetTime\)/,
+  'A newer cloud revision alone must not reset a pending offline ledger');
+assert.match(source,/resetTime>localTime/,
+  'Stale maintenance markers must never supersede newer local sales');
+assert.match(source,/if\(verifiedReset\)/,
+  'A verified reset must still require explicit owner acknowledgement');
+assert.match(source,/QUARANTINE_NOT_VERIFIED/,
+  'Quarantined financial data must be verified before switching workspaces');
 console.log('PASS: full cloud payload matching, JSONB reordered fields, protected crash recovery, unknown-revision conflict');
