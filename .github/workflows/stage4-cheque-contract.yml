@@ -5,6 +5,7 @@ on:
     paths:
       - 'supabase/staging/20261110_stage4_cheque_atomic_settlement.sql'
       - 'scripts/test-stage4-cheque-postgres.sql'
+      - 'scripts/test-stage4-cheque-concurrency.sh'
       - 'packages/shared/accounting/cheque-settlement-contract.js'
       - 'scripts/test-cheque-settlement.cjs'
       - '.github/workflows/stage4-cheque-contract.yml'
@@ -42,3 +43,11 @@ jobs:
         run: |
           psql -h 127.0.0.1 -U postgres -d postgres \
             -v ON_ERROR_STOP=1 -f scripts/test-stage4-cheque-postgres.sql
+      - name: Verify concurrent PostgreSQL connections and dropped ACK
+        env:
+          PGPASSWORD: synthetic-test-only
+          PGHOST: 127.0.0.1
+          PGPORT: '5432'
+          PGUSER: postgres
+          PGDATABASE: postgres
+        run: bash scripts/test-stage4-cheque-concurrency.sh
