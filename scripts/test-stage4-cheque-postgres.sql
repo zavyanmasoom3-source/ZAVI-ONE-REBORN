@@ -37,6 +37,25 @@ GRANT SELECT ON public.zavi_workspaces TO authenticated;
 GRANT SELECT,INSERT ON public.zavi_cheques TO authenticated;
 GRANT SELECT ON public.zavi_cheque_events TO authenticated;
 
+-- Reproduce live owner-only SELECT grants and RLS before the staging change.
+ALTER TABLE public.zavi_workspaces ENABLE ROW LEVEL SECURITY;
+CREATE POLICY zavi_ws_select ON public.zavi_workspaces
+ FOR SELECT TO authenticated USING (owner_uid=(SELECT auth.uid()));
+ALTER TABLE public.zavi_cheques ENABLE ROW LEVEL SECURITY;
+CREATE POLICY zavi_cheques_owner_read ON public.zavi_cheques
+ FOR SELECT TO authenticated USING (
+  EXISTS(SELECT 1 FROM public.zavi_workspaces w
+   WHERE w.id=workspace_id AND w.owner_uid=(SELECT auth.uid())));
+CREATE POLICY zavi_cheques_owner_insert ON public.zavi_cheques
+ FOR INSERT TO authenticated WITH CHECK(
+  EXISTS(SELECT 1 FROM public.zavi_workspaces w
+   WHERE w.id=workspace_id AND w.owner_uid=(SELECT auth.uid())));
+ALTER TABLE public.zavi_cheque_events ENABLE ROW LEVEL SECURITY;
+CREATE POLICY zavi_cheque_events_owner_read ON public.zavi_cheque_events
+ FOR SELECT TO authenticated USING (
+  EXISTS(SELECT 1 FROM public.zavi_workspaces w
+   WHERE w.id=workspace_id AND w.owner_uid=(SELECT auth.uid())));
+
 -- The staging migration explicitly removes the pending-only constraint,
 -- deploys a strict RPC, and makes a private-by-default immutable posting table.
 \ir ../supabase/staging/20261110_stage4_cheque_atomic_settlement.sql
@@ -86,6 +105,33 @@ BEGIN
  EXCEPTION WHEN insufficient_privilege THEN NULL;
  END;
 END $$;
+
+-- Only the atomic server RPC may create non-pending or pre-settled cheques.
+DO $
+BEGIN
+ BEGIN
+  INSERT INTO public.zavi_cheques
+   (id,workspace_id,direction,cheque_number,bank_name,counterparty_id,currency,
+    amount,issue_date,due_date,status,settled_amount,cleared_at)
+  VALUES ('cccccccc-cccc-4ccc-8ccc-cccccccc0099',
+   'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
+   'received','FORGED-CLEARED','Bank','c1','AFN',10,
+   '2026-11-10','2026-11-11','cleared',10,now());
+  RAISE EXCEPTION 'Forged cleared cheque INSERT unexpectedly accepted';
+ EXCEPTION WHEN insufficient_privilege THEN NULL;
+ END;
+ BEGIN
+  INSERT INTO public.zavi_cheques
+   (id,workspace_id,direction,cheque_number,bank_name,counterparty_id,currency,
+    amount,issue_date,due_date,status,settled_amount)
+  VALUES ('cccccccc-cccc-4ccc-8ccc-cccccccc0098',
+   'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
+   'received','FORGED-PARTIAL','Bank','c1','AFN',10,
+   '2026-11-10','2026-11-11','partially_cleared',5);
+  RAISE EXCEPTION 'Forged partly-cleared cheque INSERT unexpectedly accepted';
+ EXCEPTION WHEN insufficient_privilege THEN NULL;
+ END;
+END $;
 
 SELECT public.zavi_stage4_cheque_apply(
  'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
