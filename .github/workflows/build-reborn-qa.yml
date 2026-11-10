@@ -61,6 +61,12 @@ jobs:
           python3 scripts/test-stage6-financial-theme-browser.py
       # Early persistent signing check: missing owner credentials must fail
       # before downloading the Android SDK and Gradle distribution.
+      - name: Stage 7 lossless offline backup and server-only CAS checks
+        run: |
+          node scripts/test-stage7-no-raw-workspace-write.cjs
+          node scripts/test-stage7-reset-pending-integrity.cjs
+          python3 scripts/test-backup-integrity-browser.py
+          python3 scripts/test-backup-import-browser.py
       - name: Require persistent per-app QA certificate (no debug fallback)
         shell: bash
         env:
