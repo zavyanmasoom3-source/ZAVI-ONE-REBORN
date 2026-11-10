@@ -15,7 +15,7 @@ assert.equal(ok.amount,100.50);
 for(const modified of [
  {amount:'0'}, {amount:'100.999'}, {amount:'-0.1'}, {amount:'1e6'},
  {currency:'AF'}, {workspace:'unbound'}, {bank_name:''}, {cheque_number:' '},
- {issue_date:'invalid'},{due_date:'2026-11-09'}, {direction:'hacked'}
+ {issue_date:'invalid'},{issue_date:'2026-02-30'}, {due_date:'2026-11-09'}, {direction:'hacked'}
 ])assert.throws(()=>client.validateRegistration({...reg,...modified}),/INVALID_CHEQUE_REGISTRATION/);
 const intent={uid,workspace:ws,cheque,id:op,kind:'settle',
  amount:'30.00',account:'a_cash',rate:null,created_at:new Date().toISOString()};
