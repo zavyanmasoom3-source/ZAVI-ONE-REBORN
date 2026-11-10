@@ -139,6 +139,16 @@ for (const item of requiredComponents) {
 }
 for (const app of ['one','admin']) {
  const html=fs.readFileSync(path.join(__dirname,'../apps',app,'index.html'),'utf8');
+ if (app==='one' && fs.existsSync(path.join(__dirname,'../apps/one/v6662-original-design-lock.json'))) {
+  // The genuine original 66.62 APK must not be overwritten by the
+  // 12-PDF experimental design system. Shared nonvisual utilities are still
+  // exercised above, and the original HTML has its own immutable SHA lock.
+  assert.ok(html.includes('zavi-theme-unified-v6538.css'),'Missing exact historical look');
+  assert.ok(!html.includes('zavi-reference-one-v3.css'),'Rejected newer design reactivated');
+  for (const source of ['database/supabase-config.js','security/access-contract.js','i18n/language-core.js'])
+   assert.ok(html.includes('../../packages/shared/'+source),'Missing shared functional import: '+source);
+  continue;
+ }
  const tokens='../../packages/shared/ui/design-system-v1.css';
  const finalSkin='./zavi-reference-'+app+'-v3.css';
  assert.ok(html.includes(tokens),'Missing shared token import: '+app);
