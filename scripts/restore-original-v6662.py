@@ -50,7 +50,7 @@ def restore(apk,root):
         original=z.read('assets/index.html')
         assert hashlib.sha256(original).hexdigest()==ORIGINAL_HTML_SHA,'Old interface integrity mismatch'
         original_html=original.decode('utf-8')
-        assert original_html.count('</body>')==1
+        assert original_html.rfind('</body>') > len(original_html) - 100, 'Missing actual final document body'
         old_refs=[basename(m.group(1)) for m in FILE_PATTERN.finditer(original_html)]
         old_css=[x for x in old_refs if x.endswith('.css')]
         assert len(old_css)>=100,(len(old_css),'not the complete original interface')
@@ -94,7 +94,8 @@ def restore(apk,root):
         # allowed to load over the original 66.62 appearance.
         marker='<!-- ZAVI V66.62 ORIGINAL LOOK: original APK index is byte-identical after removing this feature-only block. -->'
         injected='\n'+marker+'\n'+'\n'.join(tags)+'\n'
-        assembled=original_html.replace('</body>',injected+'</body>')
+        last_close=original_html.rfind('</body>')
+        assembled=original_html[:last_close]+injected+original_html[last_close:]
         assert assembled.replace(injected,'')==original_html
         (app/'index.html').write_text(assembled,encoding='utf-8')
         # Keep more recent cloud config and server-side OWNER checks in code.
