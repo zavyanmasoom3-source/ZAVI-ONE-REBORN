@@ -197,3 +197,33 @@ isolated QA and real customer financial certification.
 
 The module must not be called a stable Release, and Stage 4 must not be marked
 100% certified until those acceptance gates are evidenced.
+
+
+## Stage 4 active-subscription owner INSERT policy — 2026-11-10
+
+A further review found that, although the new owner-only RLS prevented forged
+cleared cheques, a lapsed owner could still register a new *pending* cheque.
+This is inconsistent with the existing server entitlement requirement for
+financial writes.
+
+- Added \`supabase/migrations/20261110_stage4_cheque_subscription_guard.sql\`,
+  requiring **workspace ownership AND a currently active subscription**
+  as well as pending status, zero settled amount and no clearing fields.
+- Added \`scripts/test-stage4-cheque-subscription.sql\`; the test uses an
+  authenticated synthetic owner in PostgreSQL 17 to prove an expired owner
+  receives an RLS refusal while the same owner with an active subscription
+  can register a pending cheque.
+- GitHub Actions [42773121763](https://github.com/zavyanmasoom3-source/ZAVI-ONE-REBORN/actions/runs/42773121763):
+  **SUCCESS**, including the new policy regression.
+- Applied the separate named migration
+  \`stage4_cheque_owner_active_subscription_policy\` to the primary Supabase.
+  Direct post-deploy \`pg_policies\` read-back confirmed the policy contains
+  the subscription check, pending-only restriction and zero settled amount.
+- This migration changes only an INSERT policy, never any customer or
+  financial row or subscription state. The live owner-only settlement RPC
+  continues independently enforcing subscription and tenant authorization.
+
+**Important:** No successful cheque posting from a *real* owner session
+and no installed Android-device replay has been demonstrated in this
+conversation. Release QA, installed APK availability, Android offline
+rehydration, and real balance reconciliation remain unverified.
