@@ -358,22 +358,54 @@ async function choose(id,created=false){
  }
  const validWaiting=nextRole==='owner'&&waiting?.workspace_id===id&&waiting.owner_uid===identity&&hasCache;
  const pendingRevision=Number(waiting?.revision||0);
- // The owner's explicit maintenance reset supersedes obsolete pending snapshots.
- // Quarantine previous local records before clearing the per-tenant pending flag.
- const resetIsNewer=!!item.payload.zaviMaintenanceResetAt&&validWaiting&&pendingRevision>=0&&serverRevision>pendingRevision;
- if(resetIsNewer){
-  const key='zavi_v34_tenant_'+identity+'_'+id;
-  try{
-   const old=localStorage.getItem(key);
-   if(old)localStorage.setItem('zavi_v35_reset_quarantine_'+identity+'_'+id+'_'+Date.now(),old);
-  }catch(e){throw Error('پشتیبان محلی حساب پیش از بازنشانی ذخیره نشد؛ فضای حافظه را بررسی کنید.');}
-  writeStorage(localStorage,tenantPendingKey(identity,id),null);
-  waiting=null;
+ // Stage 7: old maintenance-reset markers must never silently discard newer
+ // offline sales. Require a valid server reset time AFTER the local snapshot.
+ const localKey='zavi_v34_tenant_'+identity+'_'+id;
+ const localSnapshot=validWaiting?readStorage(localStorage,localKey):null;
+ const resetValue=item.payload.zaviMaintenanceResetAt;
+ const resetTime=typeof resetValue==='string'&&
+  /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z$/.test(resetValue)?
+  Date.parse(resetValue):NaN;
+ const localTime=Number(localSnapshot?.updatedAt);
+ const markerTime=Number(waiting?.local_updated_at);
+ const verifiedReset=validWaiting&&
+  localSnapshot&&Array.isArray(localSnapshot.tx)&&
+  Array.isArray(localSnapshot.products)&&Array.isArray(localSnapshot.contacts)&&
+  Number.isSafeInteger(pendingRevision)&&pendingRevision>=0&&
+  serverRevision>pendingRevision&&Number.isFinite(resetTime)&&
+  resetTime>0&&resetTime<=Date.now()+5*60*1000&&
+  Number.isSafeInteger(localTime)&&localTime>0&&resetTime>localTime&&
+  (!Number.isSafeInteger(markerTime)||markerTime<=0||resetTime>markerTime);
+ let resetIsNewer=false;
+ // Even a verified later reset requires the owner's two explicit confirmations.
+ // Preserve queue and ledger on refusal; never claim successful synchronization.
+ if(verifiedReset){
+  const agreed=confirm('سرور بعد از آخرین تغییر محلی بازنشانی شده است. معاملات ارسال‌نشده موجود است. برای انتقال نسخه قبلی به پشتیبان قرنطینه و بازکردن نسخه تازه تأیید می‌کنید؟');
+  const typed=agreed?prompt('تأیید دوم: نام فروشگاه را دقیقاً وارد کنید:\n'+item.name):null;
+  if(agreed&&String(typed||'').trim()===String(item.name||'').trim()&&item.name){
+   try{
+    const previous=localStorage.getItem(localKey);
+    const decoded=previous?JSON.parse(previous):null;
+    if(!decoded||!Array.isArray(decoded.tx)||!Array.isArray(decoded.products)||
+       !Array.isArray(decoded.contacts))throw Error('INVALID_PENDING_LEDGER');
+    const quarantine='zavi_v35_reset_quarantine_'+identity+'_'+id+'_'+Date.now();
+    localStorage.setItem(quarantine,previous);
+    if(localStorage.getItem(quarantine)!==previous)throw Error('QUARANTINE_NOT_VERIFIED');
+    resetIsNewer=true;
+   }catch(_){throw Error('پشتیبان آفلاین تأیید نشد؛ معاملات ارسال‌نشده محفوظ ماندند.')}
+  }
  }
  const preserve=!!validWaiting&&!resetIsNewer;
  const hasConflict=preserve&&pendingRevision!==serverRevision;
  // Cloud is authoritative for normal logins; local pending data only from SAME tenant.
  window.zaviTenantActivate(identity,id,item.payload,preserve);
+ // Clear durable pending marker ONLY after quarantine has been read back and
+ // fresh snapshot activation has succeeded. A storage error must fail closed.
+ if(resetIsNewer){
+  localStorage.removeItem(tenantPendingKey(identity,id));
+  if(localStorage.getItem(tenantPendingKey(identity,id))!==null)
+   throw Error('پشتیبان قبلی محفوظ است، اما پاک‌سازی صف آفلاین تأیید نشد.');
+ }
  workspace=item;revision=preserve?pendingRevision:serverRevision;
  role=nextRole;priorRole=role;resetMemberState();saveOfflineWorkspace(item);
  writeStorage(localStorage,ROLECACHEKEY,role);pending=preserve;conflict=hasConflict;
@@ -383,7 +415,7 @@ async function choose(id,created=false){
  closeModal();page='dashboard';render();
  window.dispatchEvent(new CustomEvent('zavi-cloud-workspace-selected',{detail:{workspace:id,role:nextRole}}));
  if(nextRole==='owner'&&!preserve&&!hasConflict){lastSync=new Date().toLocaleTimeString();window.dispatchEvent(new CustomEvent('zavi-cloud-sync-confirmed',{detail:{workspace:id,source:'initial-cloud-pull'}}));}
- changeInfo(resetIsNewer?'حساب آزمایشی از ابر پاک‌سازی و تازه‌سازی شد؛ سوابق قدیمی جداگانه محفوظ‌اند.':hasConflict?'نسخه سرور تغییر کرده و معلومات محلی ارسال‌نشده موجود است. همگام‌سازی متوقف شد؛ قبل از جایگزینی پشتیبان بگیرید.':preserve?'تغییرات ارسال‌نشده همین فروشگاه محفوظ است.':'معلومات مخصوص همین فروشگاه از ابر دریافت شد.',hasConflict);
+ changeInfo(resetIsNewer?'بازنشانی پس از دو تأیید مالک انجام شد؛ اسناد قدیمی در پشتیبان محلی محفوظ‌اند.':hasConflict?'نسخه سرور تغییر کرده و معلومات محلی ارسال‌نشده موجود است. همگام‌سازی متوقف شد؛ قبل از جایگزینی پشتیبان بگیرید.':preserve?'تغییرات ارسال‌نشده همین فروشگاه محفوظ است.':'معلومات مخصوص همین فروشگاه از ابر دریافت شد.',hasConflict);
  if(role==='owner'&&!preserve)await loadMembers();
  if(preserve&&!hasConflict&&navigator.onLine){clearTimeout(syncTimer);syncTimer=setTimeout(push,1500)}
 }
