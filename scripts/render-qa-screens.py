@@ -12,11 +12,12 @@ with Session() as browser:
     for theme in ('light','dark'):
         # Use actual Settings preference in a disposable local test profile.
         browser.navigate('one')
-        # Both keys are part of the v2 appearance contract. The previous test
-        # only changed the legacy key, so a persisted v2 key could override it.
-        browser.eval("localStorage.setItem('zavi_theme_preference_v29',"+repr(theme)+");localStorage.setItem('zavi_ui_appearance_v2',"+repr(theme)+")")
         error=browser.unlock_one()
         if error:raise SystemExit('PIN setup failed: '+error)
+        # Real legacy UI: select the requested theme after unlocking using
+        # the app API. Pre-unlock storage writes are not real user selection
+        # and are overwritten when the original V66.62 screen initializes.
+        browser.eval("window.ZaviThemeV29.set("+json.dumps(theme)+")")
         time.sleep(2.5)  # all modes must finish the real launch splash
         for route in ROUTES:
             state=browser.route(route)
