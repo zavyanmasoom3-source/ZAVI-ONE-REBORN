@@ -122,6 +122,10 @@ def restore(apk,root):
         old_sw=re.sub(r"const CACHE_NAME='[^']+'",
                       "const CACHE_NAME='zavi-one-exact-original-v6662-restored-20261110-v1'",
                       old_sw,count=1)
+        # Never precache deleted new-design assets: they otherwise make the
+        # offline install fail even when the visible page is correct.
+        for retired in RETIRED_VISUAL_ONLY:
+            old_sw=re.sub(r'(?m)^\\s*["\\x27]'+re.escape(retired)+r'["\\x27],?\\s*\\n','',old_sw)
         sw.write_text(old_sw,encoding='utf-8')
         proof={
           'original_apk_sha256':APK_SHA,'original_html_sha256':ORIGINAL_HTML_SHA,
