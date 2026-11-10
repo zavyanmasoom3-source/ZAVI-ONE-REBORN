@@ -26,7 +26,7 @@ def local_font_css(href):
         "@font-face{font-family:'Vazirmatn';"
         "src:url('"+href+"') format('truetype');"
         "font-style:normal;font-weight:100 900;font-display:swap}"
-        '</style>\\n'
+        '</style>\n'
     )
 
 def fix(staged: Path) -> dict:
@@ -38,7 +38,7 @@ def fix(staged: Path) -> dict:
     html = staged.read_text(encoding='utf8')
     if 'zavi-compact-workflow-v1.js' not in html:
         raise ValueError('Not a restored original 66.62 feature build')
-    if FONT_FACE in html:
+    if 'data-zavi-native-font-only="v6662"' in html:
         raise ValueError('Already sanitized: refusing duplicate modification')
     if html.count(ORIGINAL_LOAD) != 1 or html.count(SECOND_LOAD) != 1:
         raise ValueError('Unexpected store recovery script layout; stop safely')
