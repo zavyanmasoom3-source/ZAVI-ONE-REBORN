@@ -147,10 +147,10 @@ jobs:
           gradle=Path('android-build/app/build.gradle')
           gradle_text=gradle.read_text(encoding='utf-8')
           substitutions={
-            "applicationIdSuffix '.connectedpreview'":"applicationIdSuffix '.connectedpreview'",
-            "versionNameSuffix '-CONNECTED-TEST-NOT-RELEASE'":"versionNameSuffix '-CONNECTED-TEST-NOT-RELEASE'",
-            "ZAVI ADMIN CONNECTED TEST":"ZAVI ADMIN CONNECTED TEST",
-            "ZAVI ONE CONNECTED TEST":"ZAVI ONE CONNECTED TEST",
+            "applicationIdSuffix '.offlinepreview'":"applicationIdSuffix '.connectedpreview'",
+            "versionNameSuffix '-OFFLINE-PREVIEW-NOT-RELEASE'":"versionNameSuffix '-CONNECTED-TEST-NOT-RELEASE'",
+            "ZAVI ADMIN OFFLINE PREVIEW":"ZAVI ADMIN CONNECTED TEST",
+            "ZAVI ONE OFFLINE PREVIEW":"ZAVI ONE CONNECTED TEST",
           }
           for original,new in substitutions.items():
               assert gradle_text.count(original)==1, 'Unexpected preview Gradle structure: '+original
