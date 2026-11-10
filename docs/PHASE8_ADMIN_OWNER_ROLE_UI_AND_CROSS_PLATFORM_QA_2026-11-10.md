@@ -84,6 +84,11 @@ role grants and data counts:
   page reload. No real credentials or production changes.
 - `scripts/test-stage8-admin-source.cjs` forbids hardcoded ADMIN
   owner email and requires the owner RPC before customer reads.
+- The final Stage 8 suite also runs source-level barcode label encoding,
+  WhatsApp message templates, staged international order/receipt handling,
+  and primary-device activation, plus an actual purchases-in-transit browser
+  test. These are **synthetic regressions only**, not camera, print, file
+  sharing or live financial acceptance on real hardware.
 - `.github/workflows/stage8-admin-end-to-end.yml` provides two
   mandatory jobs for real browser owner+role verification and
   real DOM navigation, themes, offline accounting and backups.
@@ -99,6 +104,9 @@ role grants and data counts:
 GitHub evidence:
 - [Stage 8 owner/auth/UI acceptance — run 42790495759](https://github.com/zavyanmasoom3-source/ZAVI-ONE-REBORN/actions/runs/42790495759)
   **2/2 jobs SUCCESS**.
+- [Stage 8 expanded regression — run 42790947976](https://github.com/zavyanmasoom3-source/ZAVI-ONE-REBORN/actions/runs/42790947976)
+  **2/2 jobs SUCCESS**, including barcode, WhatsApp, in-transit orders,
+  device activation and account/session rejection tests.
 - [Full migration integrity — run 42790495584](https://github.com/zavyanmasoom3-source/ZAVI-ONE-REBORN/actions/runs/42790495584)
   **SUCCESS**.
 - [Stage 6 complete native/finance build — run 42789826704](https://github.com/zavyanmasoom3-source/ZAVI-ONE-REBORN/actions/runs/42789826704)
