@@ -74,7 +74,15 @@ def restore(apk,root):
             if src.startswith('http'):continue
             if not (app/src).exists() and not src.endswith(('.woff2','.ttf')):
                 raise RuntimeError('Missing old interface dependency: '+src)
+        # Functional shared libraries only. They introduce no page-wide CSS
+        # and keep the 66.62 appearance untouched while authorizing RPCs.
+        shared_js=('database/supabase-config.js','security/access-contract.js',
+                   'i18n/language-core.js')
         tags=[]
+        for shared in shared_js:
+            assert (root/'packages/shared'/shared).is_file()
+            tags.append('<script defer src="../../packages/shared/'+shared+
+                        '" data-zavi-safe-original-shared="true"></script>')
         feature_list=[]
         for css in FEATURE_CSS:
             p=app/css
@@ -137,6 +145,7 @@ def restore(apk,root):
           'current_cloud_and_accounting_js_preserved':True,
           'original_voice_model_must_be_pinned_in_final_apk':True,
           'server_project_id':PROJECT,
+          'safe_shared_sources':list(shared_js),
           'release_certified':False
         }
         (app/'v6662-original-design-lock.json').write_text(
