@@ -8,6 +8,8 @@ on:
       - 'scripts/test-stage4-cheque-concurrency.sh'
       - 'scripts/test-stage4-cheque-transaction-rollback.sql'
       - 'supabase/rollback/20261110_stage4_cheque_preuse_only.sql'
+      - 'supabase/migrations/20261110_stage4_cheque_atomic_server.sql'
+      - 'scripts/test-stage4-production-migration.sh'
       - 'packages/shared/accounting/cheque-settlement-contract.js'
       - 'scripts/test-cheque-settlement.cjs'
       - '.github/workflows/stage4-cheque-contract.yml'
@@ -61,6 +63,10 @@ jobs:
         run: |
           psql -h 127.0.0.1 -U postgres -d postgres \
             -v ON_ERROR_STOP=1 -f scripts/test-stage4-cheque-transaction-rollback.sql
+      - name: Validate production guarded DDL on disposable PostgreSQL
+        env:
+          PGPASSWORD: synthetic-test-only
+        run: bash scripts/test-stage4-production-migration.sh
       - name: Prove pre-use rollback and refusal after financial posting
         env:
           PGPASSWORD: synthetic-test-only
