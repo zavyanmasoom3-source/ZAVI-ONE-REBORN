@@ -1,4 +1,4 @@
-name: REBORN PDF visual QA screenshots
+name: Owner original APK style visual QA
 on:
   push:
     branches: [dev]
@@ -15,8 +15,7 @@ on:
       - 'scripts/test-unified-reference-browser.py'
       - 'scripts/test-compact-workflow-browser.py'
       - 'scripts/test-admin-settings-layout-browser.py'
-      - 'scripts/test-approved-visual-v2-browser.py'
-      - 'scripts/test-12-reference-design-browser.py'
+      - 'scripts/test-owner-apk-style-browser.py'
       - 'scripts/check-reference-runtime-css.py'
       - 'scripts/check-inline-javascript-syntax.py'
       - 'scripts/test-reference-auxiliary-pages.py'
@@ -63,13 +62,11 @@ jobs:
         run: python3 scripts/test-compact-workflow-browser.py
       - name: Verify ADMIN settings controls survive compact grouping in disposable browser
         run: python3 scripts/test-admin-settings-layout-browser.py
-      - name: Verify approved Light/Dark actual UI, sale dialog and ADMIN navigation
-        run: python3 scripts/test-approved-visual-v2-browser.py
-      - name: Validate twelve-reference final theme and actual app navigation
-        run: python3 scripts/test-12-reference-design-browser.py
+      - name: Verify exact owner-uploaded original ONE and ADMIN styles in actual browser
+        run: python3 scripts/test-owner-apk-style-browser.py
       - uses: actions/upload-artifact@v4
         with:
-          name: REBORN-PDF-VISUAL-QA
+          name: ZAVI-ORIGINAL-OWNER-APK-VISUAL-QA
           path: |
             qa-screens/
             qa-pdf-routes/
@@ -79,7 +76,6 @@ jobs:
             qa-unified-reference/
             qa-compact-workflow/
             qa-admin-compact/
-            qa-approved-ui/
-            qa-12-references/
+            qa-owner-apk-style/
           retention-days: 7
           if-no-files-found: error
