@@ -1,0 +1,280 @@
+/* ZAVI ONE / ZAVI ONE ADMIN — Signature V35 design system.
+   PRESENTATION ONLY. Retains existing accounting / auth / subscription logic.
+   Written as a late cascade layer above V34; both full apps share this file.
+   Do not remove [hidden] or modify interactive element display properties. */
+:root {
+  --zs-radius:18px;--zs-radius-sm:12px;
+  --zs-ease:cubic-bezier(.2,.8,.2,1);
+}
+html {text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased}
+html:lang(fa-AF),html:lang(ps-AF),html:lang(fa),html:lang(ps){
+  font-family:"Vazirmatn","Noto Sans Arabic","Noto Naskh Arabic",Tahoma,"Segoe UI",sans-serif;
+}
+html:lang(en){font-family:Inter,"Segoe UI",Arial,system-ui,sans-serif}
+html :is(button,input,select,textarea){font-family:inherit}
+html :is(h1,h2,h3,h4,h5,h6){font-weight:800;line-height:1.48;letter-spacing:normal}
+html :is(button,a,input,select,textarea):focus-visible{outline:3px solid #39bffc!important;outline-offset:3px!important}
+html :is(button,.btn,.button,.nav-btn,.nav-item,.icon-btn,.zavi-theme-choice){transition:background-color .16s var(--zs-ease),border-color .16s var(--zs-ease),box-shadow .16s var(--zs-ease),color .16s var(--zs-ease),transform .16s var(--zs-ease)}
+@media(prefers-reduced-motion:reduce){html :is(button,.btn,.button,.nav-btn,.nav-item,.icon-btn,.zavi-theme-choice){transition:none!important}}
+
+/* ------------------------------------------------------------------
+   LIGHT. Distinct strong, filled interface; never white text on paper.
+   The blue hero and selected menu items are intentionally rich blue.
+   ------------------------------------------------------------------ */
+html[data-zavi-theme="light"] {
+ color-scheme:light;
+ --zs-page:#edf3fa;--zs-paper:#ffffff;--zs-soft:#f2f7fd;
+ --zs-blue:#065fc5;--zs-cyan:#0087b8;--zs-navy:#10263f;
+ --zs-text:#172b43;--zs-muted:#475b73;--zs-stroke:#cbdbea;
+ --zs-shadow:0 11px 29px rgba(18,53,89,.09),0 2px 6px rgba(18,53,89,.035);
+ --bg:var(--zs-page);--ink:var(--zs-text);--muted:var(--zs-muted);--line:var(--zs-stroke);
+ --navy:#fff;--navy2:#f5f9ff;--soft:#f2f7ff;
+ --zavi-pane:#fff;--zavi-text:var(--zs-text);--zavi-soft:var(--zs-muted);
+ background:var(--zs-page)!important;
+}
+html[data-zavi-theme="light"] body{
+ background:radial-gradient(ellipse at 87% 0%,#e2f0ff 0%,transparent 45%),
+            linear-gradient(175deg,#f8fbff 0%,#f1f6fc 46%,#eaf3fa 100%) fixed!important;
+ color:var(--zs-text)!important;
+}
+html[data-zavi-theme="light"] :is(.app,.app-shell,.main,.workspace,.content,#view,main){color:var(--zs-text)!important}
+
+/* Main chrome, side navigation and active state — retains side and direction from core */
+html[data-zavi-theme="light"] :is(.sidebar,.app-sidebar,.side-nav){
+ background:linear-gradient(174deg,#fff 0%,#f5faff 59%,#eaf3ff 100%)!important;
+ color:#173553!important;border-color:#c9dbea!important;
+ box-shadow:10px 0 36px rgba(15,61,105,.10),inset -1px 0 #e7f0f8!important;
+}
+html[data-zavi-theme="light"] .sidebar :is(.brand,.brand-name,.brand strong){color:#0b2a4b!important}
+html[data-zavi-theme="light"] .sidebar :is(.brand-sub,.sidebar-caption,.section-nav,.brand small,.sidebar-footer,.sidebar-bottom){color:#425e79!important;opacity:1!important}
+html[data-zavi-theme="light"] .sidebar :is(.nav-btn,.nav-item):not(.active):not(.selected):not([aria-current="page"]){
+ background:linear-gradient(105deg,#eef6ff 0%,#e2eefc 100%)!important;
+ border:1px solid #c6dbef!important;color:#143b61!important;
+ border-radius:12px!important;box-shadow:0 2px 4px #102b4908,inset 0 1px #ffffffcc!important;
+ font-weight:750!important;min-height:42px!important;opacity:1!important;
+}
+html[data-zavi-theme="light"] .sidebar :is(.nav-btn,.nav-item):not(.active):not(.selected):hover{
+ background:#d8eaff!important;border-color:#8bbce6!important;color:#064b96!important;
+ box-shadow:0 5px 13px #0867b01a!important;transform:translateY(-1px);
+}
+html[data-zavi-theme="light"] .sidebar :is(.nav-btn.active,.nav-item.active,.nav-item.selected,[aria-current="page"]){
+ background:linear-gradient(111deg,#006cdf,#0695cc)!important;border:1px solid #137add!important;
+ color:#fff!important;box-shadow:0 7px 19px #036fc044,inset 0 1px #a3edff66!important;
+ border-radius:12px!important;font-weight:850!important;opacity:1!important;
+}
+html[data-zavi-theme="light"] .sidebar :is(.nav-btn.active,.nav-item.active,.nav-item.selected,[aria-current="page"]) :is(svg,i,span,small,strong){color:#fff!important;stroke:currentColor!important;opacity:1!important}
+html[data-zavi-theme="light"] .sidebar :is(.nav-btn,.nav-item):not(.active):not(.selected) :is(svg,i,span,small,strong){color:#194a74!important;stroke:currentColor!important;opacity:1!important}
+html[data-zavi-theme="light"] .sidebar :is(.nav-btn,.nav-item) svg{stroke-width:2.3}
+html[data-zavi-theme="light"] :is(.topbar,.header,.page-top,.page-topbar,.zavi-topbar){
+ background:#fffffff5!important;color:#14324d!important;
+ border-color:#d4e3ef!important;box-shadow:0 4px 18px rgba(21,62,104,.07)!important;
+ backdrop-filter:blur(18px);
+}
+html[data-zavi-theme="light"] :is(.topbar,.header) :is(.topbar-title,.breadcrumbs,.topbar-sub,.page-title){color:#14324d!important;opacity:1!important}
+html[data-zavi-theme="light"] :is(.topbar,.header) :is(.topbar-sub,.muted,.small-muted){color:#445d75!important;opacity:1!important}
+html[data-zavi-theme="light"] .zavi-language-picker{background:#fff!important;color:#17334b!important;border:1px solid #bfd2e5!important}
+
+/* Unified paper, cards, dynamic panels and content shells */
+html[data-zavi-theme="light"] :is(.card,.panel,.settings-card,.stat,.metric,.stat-card,.metric-card,.kpi-card,
+ .report-card,.report-panel,.report-stat,.summary-card,.summary-box,.detail-box,.account-box,
+ .stock-item,.fin-metric,.zv18-insight,.zv18-kpi,.zv18-stock-row,.fin-form,.finance-summary,
+ .receipt-preview,.order-line,.empty,.empty-state,.zavi-phone-card,.zavi-phonebook,
+ .zavi-receipt-block,.zv-journal-item,.z1-repair-entry,.backup-reminder,.cash-account,
+ .bank-account,.transfer-account,.hawala-record,.zavi-feature-card,.zv-feature-card,
+ .zsh-card,.z46-offline-card,.z20-card,.z20-box,.z20-panel,.z23-card,.v24-card,.v24-box,
+ .v24-panel,.v24-stat,.z53-reset-card,.z53-reset-center,.zsvc-extra-card,.zsvc-card,
+ .zsvc-shortcut,.zsvc-follow,.zsvc-help){
+ background:linear-gradient(148deg,#fff 0%,#fbfdff 100%)!important;
+ color:var(--zs-text)!important;border:1px solid var(--zs-stroke)!important;
+ box-shadow:var(--zs-shadow)!important;
+}
+html[data-zavi-theme="light"] :is(.card,.panel,.settings-card,.stat,.metric,.report-card,.zavi-phone-card,.zv18-kpi,.zsvc-extra-card,.zsh-card){border-radius:var(--zs-radius)!important}
+html[data-zavi-theme="light"] :is(.card,.stat,.metric,.report-card,.zavi-phone-card,.zv18-kpi,.zsvc-extra-card):hover{border-color:#acc9e4!important}
+html[data-zavi-theme="light"] :is(.stat-grid,.metric-grid,.report-grid,.fin-grid,.zv18-grid,.z20-grid,.zavi-phone-grid,.zavi-module-grid){background:transparent!important;box-shadow:none!important}
+html[data-zavi-theme="light"] :is(.stat,.metric,.fin-metric,.zv18-kpi,.report-stat) :is(.value,.stat-value,.amount,strong){color:#102841!important;font-weight:850!important;opacity:1!important}
+html[data-zavi-theme="light"] :is(.stat,.metric,.fin-metric,.zv18-kpi,.report-stat) :is(.label,.stat-label,small,.muted){color:#405a75!important;opacity:1!important}
+html[data-zavi-theme="light"] :is(.card,.panel,.settings-card,.summary-card,.detail-box,.account-box,.zavi-phone-card,
+ .zv-journal-item,.zv18-insight,.zv18-stock-row,.zsvc-card,.v24-card,.zsh-card)
+ :is(h1,h2,h3,h4,h5,h6,p,label,small,.label,.title,.value,span,b,strong){
+ color:#172f4a!important;opacity:1!important;text-shadow:none!important;
+}
+html[data-zavi-theme="light"] :is(.muted,.subtle,.small-muted,.help-text,.hint,.form-helper,.tiny-note,.caption,.footnote,.empty p,.empty small,.empty-state p,.empty-state small){
+ color:#465d76!important;opacity:1!important;text-shadow:none!important;
+}
+/* Treat tiny legacy dark pills as BLUE LABELS — not blank black bars */
+html[data-zavi-theme="light"] :is(.top-label,.z20-profile,.stat-period,.stat-chip,.stat-badge,.stat-foot,
+ .panel-badge,.metric-caption,.summary-hint,.stock-hint){
+ background:linear-gradient(105deg,#d9edff,#edf6ff)!important;color:#104976!important;
+ border:1px solid #b5d2eb!important;-webkit-text-fill-color:#104976!important;
+ font-size:12px!important;font-weight:800!important;line-height:1.65!important;
+ opacity:1!important;min-height:0!important;height:auto!important;min-width:0!important;
+ max-width:100%!important;white-space:normal!important;
+ text-shadow:none!important;box-shadow:none!important;padding:4px 10px!important;border-radius:9px!important;
+}
+html[data-zavi-theme="light"] :is(.top-label,.z20-profile,.stat-period,.stat-chip,.stat-badge,.stat-foot) :is(span,small,b,strong){color:#104976!important;-webkit-text-fill-color:#104976!important;opacity:1!important}
+
+/* Header strips and dense report grids. All DARK leftover blocks are now light in light mode. */
+html[data-zavi-theme="light"] :is(.panel-head,.panel-heading,.table-bar,.table-head,.table-header,.report-head,
+ .report-toolbar,.report-filter,.filter-strip,.summary-strip,.smart-strip,.finance-head,
+ .inventory-dashboard,.smart-inventory,.inventory-card,.smart-inventory-panel,
+ .zv18-stock-list,.zv18-stock-grid,.report-summary,.report-kpis,.finance-grid,.fin-chart-rail,
+ .chart-container,.chart-card,.statement-preview,.zv-journal-list,.invoice-archive-row,
+ .manual-invoice-row,.zavi-phone-grid,.zavi-phone-main,.zavi-phone-actions,
+ .record-card,.debt-card,.debt-list,.stock-list,.list-container,.records-list,
+ .financial-card,.zsvc-timeline,.zsvc-forecast,.zsvc-results-head,.z23-scroll,
+ .z23-body,.z20-member,.z20-team,.z20-workspace,.z20-row,.z20-actions,.zavi-custom-card){
+ background:linear-gradient(150deg,#f2f8ff,#eaf3ff)!important;color:#193a57!important;
+ border-color:#cfdfef!important;box-shadow:none!important;
+}
+html[data-zavi-theme="light"] :is(.zv18-stock-list,.zv18-stock-grid,.report-summary,.report-kpis,.finance-grid,.fin-chart-rail,
+ .chart-container,.chart-card,.zv-journal-list,.zavi-phone-grid,.z20-team,.z20-workspace)
+ :is(label,p,span,small,b,strong,h2,h3,h4){color:#203e5c!important;opacity:1!important}
+html[data-zavi-theme="light"] :is(.zavi-phone-card,.zv-journal-item,.invoice-archive-row,.manual-invoice-row,.record-card,.zv18-stock-row){
+ background:#fff!important;color:#18324c!important;border:1px solid #cbddeb!important;
+ box-shadow:0 5px 16px #133d6620!important;
+}
+html[data-zavi-theme="light"] :is(.zavi-phone-card,.zv-journal-item,.invoice-archive-row,.manual-invoice-row,.record-card,.zv18-stock-row)
+ :is(span,small,strong,b,h3,h4,p,label){color:#213d59!important;opacity:1!important}
+html[data-zavi-theme="light"] :is(.zavi-phone-number,.account-number){color:#065aa6!important;font-weight:800!important}
+
+/* Tables: pale background stripe with dark readable copy */
+html[data-zavi-theme="light"] :is(.table-scroll,.table-wrap,.data-table,.transaction-table,.ledger-table,.z23-table,.zsvc-table){background:#fff!important;color:#152c46!important}
+html[data-zavi-theme="light"] :is(.data-table,.transaction-table,.ledger-table,.z23-table,.zsvc-table,table) thead th{
+ background:#ddecfc!important;color:#143a5e!important;font-weight:850!important;border-color:#c4d8e9!important;
+}
+html[data-zavi-theme="light"] :is(.data-table,.transaction-table,.ledger-table,.z23-table,.zsvc-table,table) tbody tr{
+ background:#fff!important;color:#1b324b!important;border-color:#d6e3ed!important;
+}
+html[data-zavi-theme="light"] :is(.data-table,.transaction-table,.ledger-table,.z23-table,.zsvc-table,table) tbody tr:nth-child(even){background:#edf5ff!important}
+html[data-zavi-theme="light"] :is(.data-table,.transaction-table,.ledger-table,.z23-table,.zsvc-table,table) tbody tr:hover{background:#deefff!important}
+html[data-zavi-theme="light"] :is(.data-table,.transaction-table,.ledger-table,.z23-table,.zsvc-table,table) td{color:#1a334c!important;border-color:#d5e3ee!important;opacity:1!important}
+html[data-zavi-theme="light"] :is(.data-table,.transaction-table,.ledger-table,.z23-table,.zsvc-table,table) td small{color:#465d75!important;opacity:1!important}
+
+/* Form fields / native browser controls and focus */
+html[data-zavi-theme="light"] :is(input:not([type="checkbox"]):not([type="radio"]),select,textarea,.input,.field){
+ background:#fff!important;color:#152c45!important;-webkit-text-fill-color:#152c45!important;
+ border-color:#bfcfdf!important;box-shadow:inset 0 1px 3px #102d4d0b!important;
+}
+html[data-zavi-theme="light"] :is(input,textarea)::placeholder{color:#5c7186!important;opacity:1!important;-webkit-text-fill-color:#5c7186!important}
+html[data-zavi-theme="light"] :is(input:not([type="checkbox"]):not([type="radio"]),select,textarea):focus{
+ border-color:#238de2!important;box-shadow:0 0 0 3px #1784d629!important;
+}
+html[data-zavi-theme="light"] :is(input[type="checkbox"],input[type="radio"]){accent-color:#096acb}
+html[data-zavi-theme="light"] :is(label,.form-group label,.field label){color:#28435f!important;opacity:1!important;font-weight:700}
+
+/* True brand controls: visible, filled, not grey on grey */
+html[data-zavi-theme="light"] :is(.btn,.button,.icon-btn,.icon-button,.mobile-menu,.zsh-btn-light):not(.primary):not(.danger):not(.active):not(.selected){
+ background:linear-gradient(115deg,#e3f1ff,#d7eafa)!important;
+ color:#104a80!important;border:1px solid #aacbe6!important;font-weight:800!important;
+ box-shadow:0 3px 8px #10569413!important;opacity:1!important;
+}
+html[data-zavi-theme="light"] :is(.btn.primary,.btn-primary,.button.primary,button.primary,.zavi-theme-choice.is-selected,.zavi-theme-choice[aria-pressed="true"]){
+ background:linear-gradient(108deg,#045dd6,#069bca)!important;color:#fff!important;
+ border:1px solid #0873ce!important;box-shadow:0 7px 16px #006cb838!important;
+ -webkit-text-fill-color:#fff!important;font-weight:850!important;
+}
+html[data-zavi-theme="light"] :is(.btn.primary,.btn-primary,.button.primary,button.primary,.zavi-theme-choice.is-selected,.zavi-theme-choice[aria-pressed="true"]) :is(span,small,b,strong,svg,i){color:#fff!important;stroke:currentColor!important;-webkit-text-fill-color:#fff!important}
+html[data-zavi-theme="light"] :is(.btn.danger,.button.danger,.danger,.status.expired){
+ background:#ffebf0!important;color:#a1193d!important;border-color:#edafc0!important;
+}
+html[data-zavi-theme="light"] :is(.status,.badge,.tag,.pill,.zsvc-chip){background:#e2efff!important;color:#114a78!important;border:1px solid #b7d3ee!important;opacity:1!important}
+html[data-zavi-theme="light"] :is(.status.active,.pill.green,.badge.green){background:#d4f8e8!important;color:#106846!important;border-color:#9be2bf!important}
+html[data-zavi-theme="light"] :is(.status.warning,.pill.amber){background:#fff3c7!important;color:#87550e!important;border-color:#eacb82!important}
+html[data-zavi-theme="light"] :is(.status.suspended,.status.expired,.pill.red){background:#ffe5eb!important;color:#a62246!important;border-color:#efa9bb!important}
+
+/* Brand art remains rich blue with WHITE contrast. Do not wash out charts. */
+html[data-zavi-theme="light"] :is(.welcome,.dashboard-hero,.hero-banner,.zavi-hero,.zsh-hero,.z23-top-banner,.zsvc-banner){
+ background:linear-gradient(118deg,#076bd6 0%,#074fae 60%,#073574 100%)!important;
+ color:#fff!important;border:1px solid #1986e2!important;
+ box-shadow:0 16px 35px #0a5da437,inset 0 1px #ffffff50!important;
+}
+html[data-zavi-theme="light"] :is(.welcome,.dashboard-hero,.hero-banner,.zavi-hero,.zsh-hero,.z23-top-banner,.zsvc-banner)
+ :is(h1,h2,h3,h4,h5,p,small,span,b,strong,.eyebrow){color:#fff!important;opacity:1!important;text-shadow:none!important}
+html[data-zavi-theme="light"] .welcome .btn:not(.primary){background:#fff!important;color:#0b497e!important;border-color:#fff!important}
+
+/* More specific modal, login, ADMIN standalone portals */
+html[data-zavi-theme="light"] :is(.modal-card,.modal-content,.modal-body,.modal-head,.modal-foot,.popup,.dialog,.v24-modal,.v24-dialog,.popover,.drawer,.zavi-modal){
+ background:#fff!important;color:#18324a!important;border-color:#d1e0ee!important;
+ box-shadow:0 25px 65px #0c294d38!important;
+}
+html[data-zavi-theme="light"] :is(.modal-card,.modal-content,.modal-body,.modal-head,.modal-foot,.popup,.dialog,.v24-modal,.v24-dialog)
+ :is(h1,h2,h3,h4,p,small,span,label,b,strong){color:#193551!important;opacity:1!important}
+html[data-zavi-theme="light"] .modal-bg{background:#081e39b8!important}
+html[data-zavi-theme="light"] :is(#z23AdminPortal,#zaviServiceCenter,#z24Root,#z53Root) :is(.z23-card,.zsvc-extra-card,.zsvc-shortcut,.zsvc-follow,.v24-box,.v24-stat,.v24-panel,.z53-reset-card){
+ background:#fff!important;color:#15314d!important;border-color:#d3e3f0!important;box-shadow:var(--zs-shadow)!important;
+}
+html[data-zavi-theme="light"] :is(.auth-card,.zawi-auth-card){background:linear-gradient(150deg,#fff,#f5faff)!important;color:#152e49!important;border:1px solid #c2d7e8!important;box-shadow:0 22px 65px #18375330!important}
+html[data-zavi-theme="light"] :is(.auth-card,.zawi-auth-card) :is(h1,h2,p,label,small,.hint,.zawi-lock-description){color:#1b3550!important;opacity:1!important}
+html[data-zavi-theme="light"] :is(.zawi-pin-btn,.auth-card button[type="submit"]){background:linear-gradient(112deg,#0762d6,#02a3c7)!important;color:#fff!important;font-weight:800!important}
+html[data-zavi-theme="light"] .auth-promo{background:linear-gradient(121deg,#0759aa,#062959)!important;color:#fff!important}
+html[data-zavi-theme="light"] .auth-promo :is(h1,h2,p,span,b,strong,small){color:#fff!important}
+html[data-zavi-theme="light"] .empty,html[data-zavi-theme="light"] .empty-state{background:#f1f7ff!important;border:1px dashed #b9d2eb!important;color:#35546f!important}
+
+/* ------------------------------------------------------------------
+   DARK. KEEP original palette/layout; polish edges, hierarchy and chrome.
+   Minimal overrides intentionally avoid changing vivid original component fills.
+   ------------------------------------------------------------------ */
+html[data-zavi-theme="dark"] {color-scheme:dark;--zs-shadow-dark:0 10px 30px #00102955, inset 0 1px #cbeaff0c}
+html[data-zavi-theme="dark"] :is(.sidebar,.app-sidebar,.side-nav){box-shadow:9px 0 25px #000c2155,inset -1px 0 #7dcfff14!important}
+html[data-zavi-theme="dark"] .sidebar :is(.nav-btn,.nav-item):not(.active):not(.selected){border-radius:12px!important}
+html[data-zavi-theme="dark"] .sidebar :is(.nav-btn.active,.nav-item.active,.nav-item.selected){border-radius:12px!important;box-shadow:0 8px 20px #00a1f138!important}
+html[data-zavi-theme="dark"] :is(.card,.panel,.settings-card,.stat,.metric,.report-card,.report-panel,.zavi-phone-card,.zv18-kpi,.zsvc-extra-card){box-shadow:var(--zs-shadow-dark)!important}
+html[data-zavi-theme="dark"] :is(.topbar,.header){backdrop-filter:blur(18px)}
+
+/* RTL / LTR natural alignment, but never flip numerical amounts or IDs */
+html[dir="ltr"] :is(.nav-item,.nav-btn,.breadcrumbs,.sidebar-caption,.page-head,.form-group label){text-align:left}
+html[dir="rtl"] :is(.nav-item,.nav-btn,.breadcrumbs,.sidebar-caption,.page-head,.form-group label){text-align:right}
+html :is([dir="ltr"],.money,.currency-value,.zavi-v10-date small){unicode-bidi:isolate}
+@media(max-width:700px){
+ :root{--zs-radius:14px}
+ html[data-zavi-theme="light"] :is(.card,.panel,.settings-card,.stat,.metric,.zavi-phone-card){box-shadow:0 5px 17px #173b6019!important}
+ html[data-zavi-theme="light"] :is(.top-label,.stat-chip,.stat-badge){font-size:11px!important;padding:4px 7px!important}
+ html[data-zavi-theme="light"] :is(.btn,.button,.nav-btn,.nav-item){min-height:42px}
+}
+@media print{
+ html[data-zavi-theme="light"] :is(.paper,.invoice-paper,.invoice-page){background:#fff!important;color:#0f172a!important;box-shadow:none!important}
+ html[data-zavi-theme="light"] :is(.paper,.invoice-paper,.invoice-page) :is(td,th,p,label,span,b,strong){color:#172b45!important}
+}
+
+/* V35 visual QA fixes: credentials gate in LIGHT mode must not inherit dark
+   neon headings / controls from legacy high-specificity auth selectors. */
+html[data-zavi-theme="light"] #zawiPrivateGate{
+  background:radial-gradient(circle at 76% 12%,#d8eeff 0%,transparent 39%),
+             linear-gradient(140deg,#f8fbff,#e8f3ff)!important;
+}
+html[data-zavi-theme="light"] #zawiPrivateGate .zawi-auth-card{
+  background:linear-gradient(160deg,#fff,#f8fbff)!important;
+  border:1px solid #b8d3e9!important;box-shadow:0 26px 65px #18395831!important;
+}
+html[data-zavi-theme="light"] #zawiPrivateGate :is(.zawi-brand-latin,.zawi-brand-latin span,.zavi-gate-eyebrow){
+  color:#16436c!important;-webkit-text-fill-color:#16436c!important;opacity:1!important;
+}
+html[data-zavi-theme="light"] #zawiPrivateGate :is(h2,p,.zawi-lock-description,.zawi-pin-field label){
+  color:#1c3956!important;-webkit-text-fill-color:#1c3956!important;opacity:1!important;
+}
+html[data-zavi-theme="light"] #zawiPrivateGate .zawi-pin-btn{
+  color:#fff!important;-webkit-text-fill-color:#fff!important;
+  background:linear-gradient(112deg,#075fd0,#00a8c5)!important;
+  border:1px solid #117ed0!important;box-shadow:0 8px 19px #0968bc40!important;
+  font-weight:900!important;
+}
+html[data-zavi-theme="light"] #zawiPrivateGate .zawi-pin-btn :is(span,small,b,strong){color:#fff!important;-webkit-text-fill-color:#fff!important}
+html[data-zavi-theme="light"] #zawiPrivateGate .zawi-personal-action{
+  background:#e9f5ff!important;border:1px solid #bbd9ec!important;
+  color:#075c9d!important;-webkit-text-fill-color:#075c9d!important;
+}
+/* ADMIN login: readable body heading and uniformly dark/blue promotional stats. */
+html[data-zavi-theme="light"] #authScreen .auth-card :is(h1,h2,.eyebrow){
+  color:#123755!important;-webkit-text-fill-color:#123755!important;opacity:1!important;
+}
+html[data-zavi-theme="light"] #authScreen .auth-card :is(.hint,label,.form-helper,.security-note){
+  color:#355672!important;-webkit-text-fill-color:#355672!important;opacity:1!important;
+}
+html[data-zavi-theme="light"] #authScreen .auth-promo .promo-stat{
+  background:linear-gradient(118deg,#0b4389,#092c62)!important;
+  border:1px solid #2776bd!important;box-shadow:0 8px 20px #001f563d!important;
+  color:#fff!important;
+}
+html[data-zavi-theme="light"] #authScreen .auth-promo .promo-stat :is(b,strong,span,small,p){
+  color:#eff9ff!important;-webkit-text-fill-color:#eff9ff!important;opacity:1!important;
+}

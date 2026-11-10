@@ -1,0 +1,137 @@
+/* ZAVI ONE / ADMIN Premium Design 66.04 — high-fidelity GPU-only motion.
+   Does not modify business logic, scrolling, permissions, invoices or tenant data.
+   No expensive infinite backdrop filters, giant shadows or per-item animations. */
+:root{--z704-electric:#4385ff;--z704-ice:#48dbff;--z704-ink:#0a1a31;--z704-surface:#102943;--z704-edge:rgba(109,194,248,.22);--z704-radius:18px}
+html.zavi-design-84:not([data-zavi-theme="light"]){--z84-bg:#061324;--z84-card:#0b223b;--z84-card-deep:#0e2844;--z84-soft:#153451;--z84-line:#315477;--z84-text:#f2f8ff;--z84-muted:#b8d4ef}
+html.zavi-design-84[data-zavi-theme="light"]{--z84-bg:#edf5fd;--z84-card:#fff;--z84-card-deep:#f6fbff;--z84-soft:#edf5fe;--z84-line:#c7dbed;--z84-text:#102c46;--z84-muted:#496982}
+html.zavi-design-84 :is(#content,#appScreen #view,#appScreen .workspace) :is(.card,.panel,.settings-card,.admin-kpi,.z76-settings-group){
+  border-radius:clamp(14px,1.8vw,22px)!important;
+  border:1px solid var(--z84-line)!important;
+  box-shadow:0 8px 26px rgba(4,25,59,.11),inset 0 1px 0 rgba(255,255,255,.045)!important;
+  transition:transform .23s cubic-bezier(.2,.8,.2,1),box-shadow .23s ease,border-color .23s ease!important;
+}
+@media(hover:hover) and (pointer:fine){
+ html.zavi-design-84 :is(#content,#appScreen #view) :is(.card,.panel,.admin-kpi):hover{
+   transform:translate3d(0,-3px,0)!important;border-color:rgba(65,164,247,.65)!important;
+   box-shadow:0 14px 32px rgba(3,27,65,.16)!important;
+ }
+}
+html.zavi-design-84 :is(#content,#appScreen #view) :is(button,.btn,.button){
+ transition:transform .16s ease,opacity .16s ease,background-color .16s ease,border-color .16s ease!important;
+}
+html.zavi-design-84 :is(#content,#appScreen #view) :is(button,.btn,.button):active{
+ transform:scale(.985)!important;
+}
+html.zavi-design-84 :is(#content,#appScreen #view) :is(button,select,input,textarea):focus-visible{
+ outline:2px solid #21bff4!important;outline-offset:2px!important
+}
+html.zavi-design-84 :is(#content,#appScreen #view) :is(.welcome,.admin-hero){
+ background:radial-gradient(circle at 85% 18%,rgba(80,215,255,.2),transparent 38%),linear-gradient(120deg,#09285e,#1456ce 54%,#097fc5)!important;
+ border:1px solid rgba(103,206,255,.43)!important;
+ box-shadow:0 18px 42px rgba(3,41,107,.17)!important;
+}
+html.zavi-design-84 :is(#content,#appScreen #view) :is(.grid,.form-grid,.admin-kpis,.admin-quick-grid){
+ gap:clamp(10px,1.35vw,17px)!important;
+}
+html.zavi-design-84 #content :is(.table-wrap,.table-responsive,.table-scroll),
+html.zavi-design-84 #appScreen :is(.table-wrap,.table-responsive){
+ overflow-x:auto!important;overscroll-behavior-x:contain!important;-webkit-overflow-scrolling:touch!important;
+}
+/* The first-use account gate is the user's first visual surface; real auth is
+   delegated to the existing cloud.js server handler underneath. */
+#z704-welcome[hidden],#z704-welcome [hidden]{display:none!important}
+#z704-welcome{position:fixed!important;inset:0!important;z-index:2147483000!important;
+ display:flex!important;justify-content:center!important;align-items:center!important;
+ background:#061527!important;color:#f5faff!important;direction:inherit!important;
+ overflow-y:auto!important;overflow-x:hidden!important;
+ overscroll-behavior:contain!important;padding:clamp(12px,3vw,35px)!important;
+ font:500 14px/1.7 Tahoma,"Segoe UI",system-ui,sans-serif!important;
+}
+#z704-welcome *,#z704-welcome *:before,#z704-welcome *:after{box-sizing:border-box!important}
+#z704-welcome .z704-aura{position:absolute;inset:0;overflow:hidden;pointer-events:none;background:radial-gradient(circle at 50% 80%,#0e367b 0%,#061527 55%)}
+#z704-welcome .z704-aura i{position:absolute;width:35vw;min-width:230px;aspect-ratio:1;
+ border-radius:50%;background:radial-gradient(circle,rgba(0,188,247,.26),transparent 68%);will-change:transform;
+ animation:z704-float 18s ease-in-out infinite alternate}
+#z704-welcome .z704-aura i:nth-child(1){top:-25%;left:-13%}
+#z704-welcome .z704-aura i:nth-child(2){bottom:-25%;right:-13%;animation-delay:-8s}
+#z704-welcome .z704-aura i:nth-child(3){top:50%;left:43%;animation-delay:-13s;width:270px;opacity:.5}
+@keyframes z704-float{from{transform:translate3d(-15px,-16px,0)}to{transform:translate3d(22px,28px,0)}}
+#z704-welcome .z704-shell{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,.94fr) minmax(0,1.06fr);
+ width:min(100%,1050px)!important;min-height:min(650px,88dvh);max-width:100%;border-radius:26px;overflow:hidden;
+ border:1px solid rgba(138,202,255,.25);background:#10243b;box-shadow:0 34px 90px rgba(1,9,25,.45)}
+#z704-welcome .z704-hero{display:flex;flex-direction:column;justify-content:space-between;gap:12px;
+ min-width:0;padding:clamp(23px,4vw,48px);
+ background:radial-gradient(circle at 35% 43%,rgba(22,159,250,.25),transparent 48%),linear-gradient(135deg,#0c4cbd,#07295e 80%);
+ border-inline-end:1px solid rgba(154,221,255,.2);position:relative;overflow:hidden}
+#z704-welcome .z704-brand{display:flex;align-items:center;gap:10px;white-space:nowrap}
+#z704-welcome .z704-brand b{font-size:18px;font-weight:950;letter-spacing:.08em}
+#z704-welcome .z704-brand small{font-size:9px;letter-spacing:.13em;opacity:.85}
+#z704-welcome .z704-logo{width:42px;height:42px;flex:0 0 42px;border-radius:13px;display:grid;place-items:center;
+ background:linear-gradient(135deg,#ffffff,#c5ecff);color:#063273!important;font-size:20px;font-weight:1000;box-shadow:0 6px 18px #00194544;letter-spacing:-.1em}
+#z704-welcome .z704-logo span{color:#14a4da}
+#z704-welcome .z704-logo.small{width:34px;height:34px;flex-basis:34px;font-size:16px;border-radius:10px}
+#z704-welcome .z704-visual{width:min(100%,300px);height:240px;align-self:center;position:relative;display:grid;place-items:center;perspective:600px}
+#z704-welcome .z704-crystal{width:132px;height:132px;display:grid;place-items:center;border-radius:32px;transform:rotate(-13deg);
+ font-size:57px;font-weight:1000;letter-spacing:-.06em;background:linear-gradient(145deg,rgba(255,255,255,.9),#75bdf9 65%,#1473bc);
+ color:#093372!important;border:2px solid rgba(255,255,255,.8);box-shadow:0 19px 50px rgba(0,6,38,.45);
+ animation:z704-crystal 7s ease-in-out infinite alternate}
+#z704-welcome .z704-orbit{position:absolute;width:210px;height:210px;border:1px solid rgba(190,236,255,.35);border-radius:50%;transform:rotateX(65deg)}
+#z704-welcome .z704-orbit.b{transform:rotateY(67deg);width:260px;height:260px;opacity:.58}
+@keyframes z704-crystal{from{transform:translate3d(0,-8px,0) rotate(-13deg)}to{transform:translate3d(0,8px,0) rotate(8deg)}}
+#z704-welcome .z704-tagline{font-size:10px;font-weight:800;letter-spacing:.22em;color:#92efff}
+#z704-welcome #z704-headline{font-size:clamp(26px,3vw,40px)!important;line-height:1.35!important;max-width:370px;margin:0!important;color:#fff!important;-webkit-text-fill-color:#fff!important}
+#z704-welcome #z704-intro{font-size:14px!important;max-width:380px;line-height:1.9!important;opacity:.86;margin:0!important;color:#e6f4ff!important}
+#z704-welcome #z704-privacy{font-size:11px;opacity:.78;line-height:1.6}
+#z704-welcome .z704-access{min-width:0;background:#fff;color:#102c47;padding:clamp(20px,3.6vw,43px);overflow-y:auto;max-height:min(720px,94dvh)}
+#z704-welcome .z704-form-brand{display:flex;gap:10px;align-items:center;color:#112c44;font-size:15px;font-weight:850}
+#z704-welcome #z704-sub{font-size:13px;color:#557389!important;margin:16px 0 18px}
+#z704-welcome .z704-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:18px}
+#z704-welcome .z704-choices button{min-height:45px;font:800 14px Tahoma,system-ui,sans-serif;color:#0b497a!important;
+ background:#eaf5fe;border:1px solid #c7e3fc;border-radius:12px;cursor:pointer}
+#z704-welcome .z704-choices button:first-child{background:linear-gradient(115deg,#0c58cc,#05a4da);color:#fff!important;border:0}
+#z704-welcome .z704-choices button:active{transform:scale(.98)}
+#z704-welcome #z704-cloud{color:#15334b}
+#z704-welcome #z704-cloud :is(#z20CloudPanel,.z20-panel){background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important;color:#173852!important}
+#z704-welcome #z704-cloud :is(.z20-team,.z20-alert,.z20-sub,.z20-status,#z20Workspaces,.z20-advanced){display:none!important}
+#z704-welcome #z704-cloud .z20-row{display:flex;flex-direction:column;gap:12px!important}
+#z704-welcome #z704-cloud .z20-label{display:flex;flex-direction:column;gap:5px!important;font-size:12px!important;color:#335572!important;font-weight:800!important}
+#z704-welcome #z704-cloud .z20-input{width:100%!important;min-width:0!important;min-height:48px!important;padding:9px 13px!important;
+ background:#f0f6fc!important;color:#142e48!important;-webkit-text-fill-color:#142e48!important;border:1px solid #bfd5e6!important;
+ border-radius:12px!important;direction:ltr!important;font-size:15px!important}
+#z704-welcome #z704-cloud .z20-actions{display:none!important}
+#z704-welcome #z704-info{font-size:12px!important;color:#486784!important;line-height:1.65;min-height:25px;margin:10px 0}
+#z704-welcome .z704-footer{border-top:1px solid #e1edf8;padding-top:14px;display:flex;justify-content:space-between;align-items:center;gap:9px}
+#z704-welcome .z704-footer label{display:flex;align-items:center;gap:8px;font-size:12px;color:#41617b}
+#z704-welcome .z704-footer input{accent-color:#0668c3}
+#z704-welcome #z704-lang{min-height:38px!important;max-width:122px;border-radius:10px;background:#f3f8fd;border:1px solid #cde1f1;color:#15344c;padding:5px;font-size:12px}
+#z704-welcome :is(button,input,select):focus-visible{outline:2px solid #03b7dd!important;outline-offset:3px!important}
+#z704-welcome .z704-form-brand b{color:#102c47!important}
+.z704-account{min-height:38px;border-radius:11px!important;padding:7px 13px!important;font:800 12px Tahoma,system-ui,sans-serif!important;
+ background:linear-gradient(120deg,#135ac6,#0b9ec6)!important;color:#fff!important;border:0!important;margin-inline:7px}
+.z704-account-pop{position:absolute;top:calc(100% + 7px);inset-inline-end:12px;z-index:20000;
+ border:1px solid var(--z84-line,#d5e1ef);background:var(--z84-card,#fff);color:var(--z84-text,#1c3550);padding:15px;border-radius:16px;
+ min-width:min(90vw,250px);max-width:90vw;box-shadow:0 17px 35px rgba(0,20,58,.2)}
+.z704-account-pop p{font-size:12px;overflow-wrap:anywhere}.z704-out{padding:9px 15px;border-radius:10px;background:#cf3653!important;color:#fff!important;border:0!important}
+#authScreen.z704-admin-login{background:radial-gradient(circle at 20% 20%,rgba(17,125,230,.25),transparent 40%),linear-gradient(125deg,#06152b,#0a3674)!important;min-height:100dvh!important}
+#authScreen.z704-admin-login .auth-card{border-radius:24px!important;border:1px solid rgba(113,190,240,.35)!important;
+ box-shadow:0 19px 55px rgba(0,13,40,.24)!important;max-width:100%!important}
+#authScreen.z704-admin-login .auth-promo{background:linear-gradient(145deg,#092857,#0a51ab 65%,#06a3c2)!important}
+#authScreen.z704-admin-login .z704-owner-note{background:linear-gradient(110deg,rgba(7,103,219,.1),rgba(7,175,204,.05));
+ border:1px solid rgba(17,133,219,.27);padding:10px 12px;border-radius:12px;margin-bottom:12px;color:inherit!important}
+#authScreen.z704-admin-login .z704-owner-note b{font-size:12px;display:block}
+#authScreen.z704-admin-login .z704-owner-note p{font-size:11px;line-height:1.55;margin:3px 0 0}
+#authScreen.z704-admin-login :is(#authEmail,#authPassword,#cfgUrl,#cfgKey){border-radius:11px!important;min-height:45px!important}
+@media(max-width:720px){
+ #z704-welcome{padding:0!important;align-items:flex-start!important}
+ #z704-welcome .z704-shell{display:flex!important;flex-direction:column!important;width:100%!important;min-height:100dvh;border-radius:0!important}
+ #z704-welcome .z704-hero{padding:20px 21px 17px!important;gap:7px!important;min-height:0}
+ #z704-welcome .z704-brand small,#z704-welcome .z704-visual,#z704-welcome #z704-privacy{display:none!important}
+ #z704-welcome #z704-headline{font-size:24px!important}
+ #z704-welcome #z704-intro{font-size:12px!important}
+ #z704-welcome .z704-access{flex:1;max-height:none!important;padding:21px!important;overflow:visible!important}
+}
+@media(max-width:365px){#z704-welcome .z704-brand b{font-size:15px}#z704-welcome .z704-choices button{font-size:12px!important}}
+html[data-z704-motion="reduced"] *,html[data-z704-motion="reduced"] *::before,html[data-z704-motion="reduced"] *::after{
+ animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+@media(prefers-reduced-motion:reduce){#z704-welcome *,#z704-welcome *::before,#z704-welcome *::after{animation:none!important;transition:none!important}
+ html.zavi-design-84 :is(#content,#appScreen #view) :is(.card,.admin-kpi):hover{transform:none!important}}

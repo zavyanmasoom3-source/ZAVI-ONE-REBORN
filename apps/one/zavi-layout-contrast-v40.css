@@ -1,0 +1,80 @@
+/* ZAVI ONE V40 — mobile LTR/RTL parity and Light hero accessibility.
+ * Scoped and loaded after V37. Existing transactions, dark palette and i18n dictionaries unchanged.
+ */
+html,body{max-width:100%;overflow-x:clip}
+.app,.main,.workspace,.content,#content,.stat-grid,.layout-2{min-width:0}
+/* Prior v18 stylesheet kept margin-left:255px !important for English widths 861..1050px
+   although the sidebar is hidden at <=1050px. That stranded a blank column. */
+@media(max-width:1050px){
+ html[dir="ltr"] .app>.main,html[dir="rtl"] .app>.main,
+ html[dir="ltr"] .main,html[dir="rtl"] .main{
+   margin-left:0!important;margin-right:0!important;width:100%!important;max-width:100%!important;
+ }
+ .app>.sidebar:not(.mobile-drawer){display:none!important}
+ .content{margin-inline:auto;max-width:100%;min-width:0}
+}
+@media(max-width:760px){
+ html[dir="ltr"] .topbar,html[dir="rtl"] .topbar{width:100%;min-width:0;gap:8px}
+ .topbar-actions{min-width:0;max-width:100%;gap:5px;flex-shrink:1}
+ .topbar .mobile-brand{min-width:0}
+ .topbar-actions :is(button,select){flex-shrink:0}
+ #content>.welcome{width:100%;max-width:100%;min-width:0}
+ .welcome>div:first-child{min-width:0;max-width:100%}
+ .welcome h2{max-width:100%;overflow-wrap:break-word;line-height:1.45}
+ .zavi-v37-actions{width:100%;max-width:100%;min-width:0;box-sizing:border-box}
+ .zavi-v37-action{min-width:0;overflow:hidden}
+ .zavi-v37-action>span:last-child{display:block;min-width:0;overflow-wrap:anywhere}
+ .stat-grid,.stat{max-width:100%;min-width:0}
+}
+@media(max-width:420px){
+ .welcome{align-items:flex-start;gap:9px}
+ .welcome .btn{max-width:100%;white-space:normal}
+ .zavi-v37-actions{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .zavi-v37-action{min-height:72px}
+}
+/* Preserve Light's intentionally branded blue hero but do not inherit navy text from
+   the generic card/theme rules. This is the exact region shown in the screenshots. */
+html[data-zavi-theme="light"] .welcome{
+ background:linear-gradient(113deg,#086fd5 0%,#0b51af 57%,#072e6d 100%)!important;
+ border:1px solid #258de5!important;color:#fff!important;
+}
+html[data-zavi-theme="light"] .welcome :is(.eyebrow,h1,h2,h3,p,.zv-today),
+html[data-zavi-theme="light"] .welcome>div:first-child :is(span,small,strong,b){
+ color:#fff!important;-webkit-text-fill-color:#fff!important;opacity:1!important;text-shadow:none!important;
+}
+html[data-zavi-theme="light"] .welcome .zv-today{
+ display:inline-flex!important;max-width:100%;flex-wrap:wrap;overflow-wrap:anywhere;
+ background:rgba(4,27,69,.52)!important;border-color:rgba(255,255,255,.36)!important;
+ color:#fff!important;-webkit-text-fill-color:#fff!important;
+}
+html[data-zavi-theme="light"] .welcome .btn{
+ background:#fff!important;border:1px solid #bcdaf7!important;color:#084a90!important;
+ -webkit-text-fill-color:#084a90!important;box-shadow:0 3px 12px #04234e25!important;
+}
+html[data-zavi-theme="light"] .welcome .btn :is(span,svg){color:#084a90!important;-webkit-text-fill-color:#084a90!important}
+/* Quick sale action is a blue-filled tile; its title, caption and icon MUST stay white.
+   Contrast of the other three tiles stays dark on pale backgrounds. */
+html[data-zavi-theme="light"] .zavi-v37-sale,
+html[data-zavi-theme="light"] .zavi-v37-sale :is(strong,small,span,svg){
+ color:#fff!important;-webkit-text-fill-color:#fff!important;opacity:1!important;
+}
+html[data-zavi-theme="light"] .zavi-v37-sale{
+ background:linear-gradient(116deg,#0966d5,#0863cb)!important;
+ border-color:#187fe2!important;
+ box-shadow:0 5px 13px rgba(8,81,162,.18)!important;
+}
+html[data-zavi-theme="light"] .zavi-v37-sale .zavi-v37-icon{background:#ffffff2e!important;color:#fff!important}
+html[data-zavi-theme="light"] .zavi-v37-action:not(.zavi-v37-sale) :is(strong,small,span,svg){
+ color:inherit!important;-webkit-text-fill-color:currentColor!important;opacity:1!important;
+}
+html[data-zavi-theme="light"] #topSaleBtn,
+html[data-zavi-theme="light"] #topSaleBtn :is(span,svg){color:#fff!important;-webkit-text-fill-color:#fff!important}
+/* Light calendar chip near the top must not become low-contrast/blue-on-blue. */
+html[data-zavi-theme="light"] .topbar .top-label{
+ color:#16486b!important;-webkit-text-fill-color:#16486b!important;
+ background:#ecf6ff!important;border:1px solid #c7dced!important;
+}
+/* Preserve selected menu item contrast in both writing directions. */
+html[data-zavi-theme="light"] :is(.mobile-bottom .bottom-btn.active,.sidebar .nav-btn.active) :is(span,svg,b,small){
+ color:#fff!important;-webkit-text-fill-color:#fff!important;
+}

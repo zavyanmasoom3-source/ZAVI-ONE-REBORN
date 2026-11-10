@@ -1,0 +1,79 @@
+/* ZAVI ONE v29: isolated, accessible light theme. The original dark rules are untouched.
+   Everything is scoped to html[data-zavi-theme="light"] and does not affect printed documents. */
+.zavi-theme-settings{margin-bottom:16px!important;padding:18px 20px!important}
+.zavi-theme-settings h2,.zavi-theme-settings h3{margin:0 0 12px!important;font-size:16px!important;font-weight:800!important}
+.zavi-theme-picker{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.zavi-theme-choice{min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:9px 16px;border-radius:12px;border:1px solid #4a76aa;background:#112e60;color:#ebf7ff;font-size:14px;font-weight:700;cursor:pointer;transition:background .2s,border-color .2s,box-shadow .2s}
+.zavi-theme-choice.is-selected,.zavi-theme-choice[aria-pressed="true"]{border-color:#32d9ea;background:linear-gradient(105deg,#064faa,#06b3d1);color:white;box-shadow:0 0 0 2px #20bdd72c}
+.zavi-theme-choice:focus-visible{outline:3px solid #18b1d5;outline-offset:3px}
+html[data-zavi-theme="light"]{color-scheme:light!important;--bg:#f4f8ff;--white:#fff;--ink:#17324d;--muted:#496884;--line:#c9daea;--navy:#f3f8ff;--navy2:#e6f1fd;--soft:#ecf5ff;--shadow:0 10px 24px #173b6518;--zavi-pane:linear-gradient(150deg,#fff,#f2f8ff);--zavi-outline:#cadeee;--zavi-text:#17324d;--zavi-soft:#4a6780;--z23-surface:#fff;--z23-surface2:#f0f7ff;--z23-foreground:#17324d;--z23-muted:#466781;--z23-outline:#c5d8ec;background:#f3f8ff!important;scrollbar-color:#aecbe8 #eff7ff}
+html[data-zavi-theme="light"] body{background:linear-gradient(145deg,#f5faff 0%,#edf5ff 60%,#f7fbff 100%) fixed!important;color:#17324d!important}
+html[data-zavi-theme="light"] :is(.main,.workspace,.content,#view,.zsvc-page,.z23-wrap){color:#17324d!important}
+/* common account cards, panel surfaces and dashboards */
+html[data-zavi-theme="light"] :is(.card,.panel,.stat,.settings-card,.debt-card,.report-stat,.hawala-record,.record-card,.account-box,.detail-box,.zavi-custom-card,.z20-profile,.modal,.modal-card,.modal-bg .card,.backup-reminder,.summary-card,.metric,.detail-card,.empty,.timeline-item,.fin-grid,.fin-metric,.fin-form,.mini-box,.report-card,.form-card,.auth-card,.data-table,.table-card,.receipt-preview,.zsvc-page,.zsvc-extra-card,.zsvc-tools,.zsvc-timeline,.zsvc-follow,.zsvc-forecast,.zsvc-shortcut,.zsvc-help,.zsvc-line,.zsvc-results-head,.zsvc-servicegrid,.zsvc-shortcuts,.zsvc-table-scroll,.zsh-card,.z46-offline-card,.zsh-note,.z23-card){background:linear-gradient(148deg,#fff,#f1f7ff)!important;color:#17324d!important;border-color:#c8dbed!important;box-shadow:0 7px 20px #183c6012!important}
+html[data-zavi-theme="light"] :is(.stat-grid,.report-grid)>.stat{background:linear-gradient(148deg,#fff,#edf5ff)!important;color:#17324d!important;border-color:#c8dbed!important}
+html[data-zavi-theme="light"] :is(.card,.panel,.stat,.settings-card,.zsh-card,.z23-card,.zsvc-extra-card) :is(h1,h2,h3,h4,strong,b){color:#142f48!important}
+html[data-zavi-theme="light"] :is(.stat-label,.stat-foot,.muted,.tiny-note,.small-info,.stock-sub,.rec-detail,.dc-contact,.form-helper,.hint,.empty p,.zsh-caption,.zsh-hint,.zsh-progress-note,.zsh-note,.z23-muted,.zsvc-muted,.zsvc-help p,.zsvc-line p){color:#486987!important}
+html[data-zavi-theme="light"] :is(.stat-value,.dc-amount,.amount,.zsh-row strong){color:#17324d!important;text-shadow:none!important}
+html[data-zavi-theme="light"] :is(.page-head h2,.page-head p,.panel-head h3,.settings-card h3,.zavi-custom-head h3,.card h3){color:#16314d!important}
+html[data-zavi-theme="light"] :is(.topbar,.header,.toolbar,.page-top,.zavi-topbar){background:linear-gradient(110deg,#fff,#edf5ff)!important;color:#163651!important;border-bottom:1px solid #c2d7ed!important;box-shadow:0 4px 16px #244c7015!important}
+html[data-zavi-theme="light"] :is(.topbar-title,.topbar-sub,.brand-sub,.top-label,.z20-profile){color:#244c6c!important}
+/* white sidebar, preserve bright active navigation contrast */
+html[data-zavi-theme="light"] .sidebar{background:linear-gradient(180deg,#fff,#e9f3fe 85%)!important;border-color:#c3d9ee!important;color:#28516e!important;box-shadow:6px 0 25px #214a6715!important}
+html[data-zavi-theme="light"] .sidebar :is(.brand-name,.brand strong,.brand span,.section-nav,.sidebar-footer,.sidebar-caption){color:#234962!important}
+html[data-zavi-theme="light"] :is(.nav-btn,.nav-item,.bottom-btn){color:#244d6e!important;background:transparent!important}
+html[data-zavi-theme="light"] :is(.nav-btn.active,.nav-item.selected,.nav-item.active,.bottom-btn.active){background:linear-gradient(115deg,#086ec6,#04b1d0)!important;color:#fff!important;border-color:#118bdf!important}
+html[data-zavi-theme="light"] :is(.nav-btn.active,.nav-item.selected,.nav-item.active,.bottom-btn.active) *{color:#fff!important}
+html[data-zavi-theme="light"] .sidebar-footer strong{color:#17324d!important}
+/* input/selection and text — existing selectors in the dark theme use !important */
+html[data-zavi-theme="light"] :is(input,select,textarea,.searchbox,.filterbar select,.filterbar input,.field input,.field select,.field textarea,.zavi-language-picker){background:#fff!important;color:#1a3853!important;border-color:#bfd4ea!important;box-shadow:none!important}
+html[data-zavi-theme="light"] :is(input,textarea)::placeholder{color:#65809a!important;opacity:1}
+html[data-zavi-theme="light"] :is(label,.field label,.modal label,.modal .field label){color:#294e6c!important}
+html[data-zavi-theme="light"] :is(.table-wrap,.table-scroll,.zsvc-table-scroll){background:#fff!important;color:#193951!important}
+html[data-zavi-theme="light"] :is(.transaction-table,.ledger-table,.data-table,.zsvc-table,.z23-table,.table-card){background:#fff!important;color:#193951!important}
+html[data-zavi-theme="light"] :is(.transaction-table,.ledger-table,.data-table,.zsvc-table,.z23-table) th{background:#e3f0fc!important;color:#244861!important;border-color:#b9cfe5!important}
+html[data-zavi-theme="light"] :is(.transaction-table,.ledger-table,.data-table,.zsvc-table,.z23-table) td{background:transparent!important;color:#22435d!important;border-color:#dae7f3!important}
+html[data-zavi-theme="light"] :is(.transaction-table,.ledger-table,.data-table,.zsvc-table,.z23-table) tbody tr:nth-child(even){background:#eef6ff!important}
+html[data-zavi-theme="light"] :is(.record-card,.stock-item,.zsh-row,.split-line,.panel-head){border-color:#d4e2ef!important}
+html[data-zavi-theme="light"] :is(.btn,.icon-button,.button,.zsh-btn,.zsh-btn-light,.zavi-install-small){background:#ecf5ff!important;color:#164e79!important;border-color:#bfd7ec!important;box-shadow:none!important}
+html[data-zavi-theme="light"] :is(.btn.primary,.btn-primary,.button.primary,.zavi-theme-choice.is-selected,.zavi-theme-choice[aria-pressed="true"]){background:linear-gradient(115deg,#176bed,#03aeca)!important;color:#fff!important;border-color:#188cda!important}
+html[data-zavi-theme="light"] :is(.btn.danger,.button.danger){background:#fff0f2!important;color:#a32140!important;border-color:#eb9bb0!important}
+html[data-zavi-theme="light"] :is(.pill,.badge,.tag,.status,.zsvc-chip){background:#e7f3fd!important;color:#234e71!important;border-color:#bbd5e8!important}
+html[data-zavi-theme="light"] .pill.green{background:#e1faed!important;color:#08764d!important;border-color:#9edbc1!important}
+html[data-zavi-theme="light"] .pill.amber{background:#fff2d7!important;color:#895716!important;border-color:#f2d096!important}
+html[data-zavi-theme="light"] .pill.red{background:#fff0f3!important;color:#9f304c!important;border-color:#edb2bf!important}
+html[data-zavi-theme="light"] :is(.zsh-progress,.progress){background:#d8e7f5!important}
+html[data-zavi-theme="light"] :is(.zsh-days,.bar-col .label,.bar-col .tip){color:#214c70!important}
+html[data-zavi-theme="light"] :is(.bar-col .track,.bar-chart .track){background:#e3effe!important;border-color:#bcd1ec!important}
+html[data-zavi-theme="light"] :is(.modal,.modal-card,.modal-head,.modal-foot,.modal-body){background:#fff!important;color:#193c58!important;border-color:#c2d8ed!important}
+html[data-zavi-theme="light"] .mobile-bottom{background:#fff!important;color:#204761!important;border-color:#bbd3e8!important}
+html[data-zavi-theme="light"] .toast{background:#e9f5ff!important;color:#1b4260!important;border-color:#8ac6ef!important}
+/* Keep bright branded hero, but make foreground legible against it. */
+html[data-zavi-theme="light"] :is(.welcome,.zsh-hero,.zavi-hero){background:linear-gradient(115deg,#0d519d,#1689de 65%,#0d92a8)!important;color:#fff!important;border-color:#409eda!important}
+html[data-zavi-theme="light"] :is(.welcome,.zsh-hero,.zavi-hero) :is(h1,h2,h3,p,.eyebrow,.zv-today,span){color:#fff!important}
+html[data-zavi-theme="light"] .debt-hero{background:linear-gradient(115deg,#e7f3ff,#d8ebff)!important;color:#173957!important;border:1px solid #b7d6ef!important}
+html[data-zavi-theme="light"] .debt-hero :is(strong,b,span,small){color:#17415e!important}
+html[data-zavi-theme="light"] .zavi-theme-settings{background:linear-gradient(145deg,#fff,#ecf7ff)!important}
+html[data-zavi-theme="light"] .zavi-theme-choice{background:#fff!important;color:#19496b!important;border:1px solid #b7d3eb!important}
+html[data-zavi-theme="light"] .zavi-theme-choice.is-selected,html[data-zavi-theme="light"] .zavi-theme-choice[aria-pressed="true"]{background:linear-gradient(115deg,#176bed,#03aeca)!important;color:#fff!important;border-color:#058dc9!important}
+/* The admin portals are full-screen dynamic overlays, so their dark selectors need explicit overrides. */
+html[data-zavi-theme="light"] :is(#z23AdminPortal,#zaviServiceCenter){background:linear-gradient(140deg,#f8fcff,#e9f3ff)!important;color:#1c3c59!important}
+html[data-zavi-theme="light"] :is(#z23AdminPortal .z23-card,#zaviServiceCenter .zsvc-kpis article,#zaviServiceCenter .zsvc-shortcuts,#zaviServiceCenter .zsvc-follow,#zaviServiceCenter .zsvc-help,#zaviServiceCenter .zsvc-shortcut,#zaviServiceCenter .zsvc-internet,#zaviServiceCenter .zsvc-timeline,#zaviServiceCenter .zsvc-forecast,#zaviServiceCenter .zsvc-extra-card,#zaviServiceCenter .zsvc-servicegrid,#zaviServiceCenter .zsvc-table-scroll){background:#fff!important;color:#183b57!important;border-color:#c7dded!important;box-shadow:0 5px 16px #25486614!important}
+html[data-zavi-theme="light"] :is(#z23AdminPortal,#zaviServiceCenter) :is(h1,h2,h3,b,strong){color:#1a3853!important}
+html[data-zavi-theme="light"] :is(#z23AdminPortal,#zaviServiceCenter) :is(p,small,.z23-muted,.zsvc-muted,.zsvc-help,.zsvc-line p){color:#40617d!important}
+html[data-zavi-theme="light"] :is(#z23AdminPortal,#zaviServiceCenter) :is(input,select,textarea){background:#fff!important;color:#214760!important;border-color:#b8d5e9!important}
+html[data-zavi-theme="light"] :is(#z23AdminPortal .z23-table,#zaviServiceCenter .zsvc-table) th{background:#e8f4ff!important;color:#284c68!important}
+html[data-zavi-theme="light"] :is(#z23AdminPortal .z23-table,#zaviServiceCenter .zsvc-table) td{background:transparent!important;color:#21445e!important}
+html[data-zavi-theme="light"] :is(#z23AdminPortal .z23-chip,#z23AdminPortal .z23-status){background:#e5f5fe!important;color:#22577a!important}
+html[data-zavi-theme="light"] :is(#z23AdminPortal .z23-btn.light,#zaviServiceCenter .zsvc-tools button,#zaviServiceCenter .zsvc-filters button){background:#e7f3fd!important;color:#204e72!important;border-color:#a7cfea!important}
+/* Private lock/login pages follow the choice but remain clear for PIN entry. */
+html[data-zavi-theme="light"] :is(.zawi-lock-screen,.auth-screen){background:linear-gradient(125deg,#eaf4ff,#f8fbff)!important;color:#183750!important}
+html[data-zavi-theme="light"] :is(.zawi-auth-card,.auth-card){background:#fff!important;color:#173c5b!important;border-color:#c6dbe9!important}
+html[data-zavi-theme="light"] :is(.zawi-auth-card h2,.zawi-lock-info,.zawi-lock-description,.zawi-pin-field label){color:#214b6c!important}
+html[data-zavi-theme="light"] .zawi-pin-field input{background:#fff!important;color:#173750!important}
+@media(max-width:700px){.zavi-theme-settings{padding:15px!important}.zavi-theme-picker{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.zavi-theme-choice{white-space:normal;padding:10px 7px;font-size:13px}}
+@media print{html[data-zavi-theme="light"] body{background:#fff!important;color:#111!important} .zavi-theme-settings{display:none!important}}
+
+/* Form controls in long-lived legacy panels use selectors with high specificity. */
+html[data-zavi-theme="light"] body :is(.card,.panel,.settings-card,.zsvc-page,.z23-card,.modal,.auth-card,.content,#view) :is(input:not([type="checkbox"]):not([type="radio"]),select,textarea){background:#fff!important;color:#183951!important;border:1px solid #bad1e5!important;box-shadow:none!important}
+html[data-zavi-theme="light"] body :is(input:not([type="checkbox"]):not([type="radio"]),select,textarea):focus{outline-color:#1194d1!important}

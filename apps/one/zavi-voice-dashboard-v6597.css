@@ -1,0 +1,58 @@
+/* ZAVI ONE 65.97 / ADMIN 1.4.43 compact mic: isolated, no changes to accounting layout. */
+/* Retire the earlier oversized top-bar launcher to avoid competing controls. */
+#z196-launch{display:none!important}
+#z197-dashboard-mic[hidden]{display:none!important}
+#z197-dashboard-mic{
+ all:unset!important;box-sizing:border-box!important;display:inline-flex!important;
+ width:44px!important;height:44px!important;min-width:44px!important;min-height:44px!important;
+ max-width:44px!important;max-height:44px!important;flex:0 0 44px!important;
+ align-items:center!important;justify-content:center!important;
+ border-radius:999px!important;border:1px solid #bfdbed!important;
+ background:#fff!important;color:#0877be!important;-webkit-text-fill-color:#0877be!important;
+ box-shadow:0 3px 12px rgba(16,64,94,.15)!important;
+ cursor:pointer!important;vertical-align:middle!important;
+ position:relative!important;z-index:5!important;margin:0 5px!important;
+ line-height:1!important;transition:box-shadow .2s ease,transform .2s ease!important;
+ touch-action:manipulation!important;
+}
+#z197-dashboard-mic svg{display:block!important;width:20px!important;height:20px!important;flex:none!important;pointer-events:none!important}
+#z197-dashboard-mic:focus-visible{outline:3px solid #27b9ec!important;outline-offset:3px!important}
+#z197-dashboard-mic:active{transform:scale(.94)!important}
+html[data-zavi-theme="dark"] #z197-dashboard-mic,html[data-theme="dark"] #z197-dashboard-mic,
+body[data-theme="dark"] #z197-dashboard-mic,body.dark #z197-dashboard-mic,
+html.dark #z197-dashboard-mic{
+ background:#143151!important;color:#b9eeff!important;-webkit-text-fill-color:#b9eeff!important;
+ border-color:#416a8c!important;box-shadow:0 3px 12px rgba(0,0,0,.2)!important;
+}
+/* Desktop/large tablet: small icon adjacent to existing dashboard action, not a new large card. */
+#content.zrf-dashboard .z62-hero-tools #z197-dashboard-mic{margin-inline-start:9px!important}
+/* Phones: compact floating circle, above the existing bottom navigation & safe area. */
+@media(max-width:740px){
+ #z197-dashboard-mic{
+  position:fixed!important;right:clamp(10px,3vw,16px)!important;
+  left:auto!important;bottom:calc(82px + env(safe-area-inset-bottom,0px))!important;
+  margin:0!important;z-index:2147482000!important;
+  width:44px!important;height:44px!important;min-width:44px!important;min-height:44px!important;
+  box-shadow:0 5px 18px rgba(4,42,77,.22)!important;
+ }
+ /* Panel slides up as a compact bottom sheet when the icon is tapped. */
+ #z196-voice:not([hidden]){
+  display:flex!important;align-items:flex-end!important;justify-content:center!important;
+  padding:0!important;background:rgba(0,12,32,.62)!important;
+ }
+ #z196-voice .z196-modal{
+  box-sizing:border-box!important;width:min(100%,480px)!important;max-width:480px!important;
+  height:auto!important;max-height:min(76dvh,670px)!important;
+  margin:0 auto!important;padding:16px 15px calc(15px + env(safe-area-inset-bottom,0px))!important;
+  border-radius:21px 21px 0 0!important;gap:9px!important;
+  overflow-y:auto!important;-webkit-overflow-scrolling:touch!important;
+ }
+ #z196-voice .z196-mic{min-height:53px!important}
+ #z196-voice h2{font-size:19px!important}
+ #z196-voice textarea{min-height:65px!important;max-height:120px!important}
+}
+@media(max-width:340px){
+ #z197-dashboard-mic{right:9px!important;bottom:calc(78px + env(safe-area-inset-bottom,0px))!important}
+ #z196-voice .z196-modal{max-height:82dvh!important;padding-inline:11px!important}
+}
+@media(prefers-reduced-motion:reduce){#z197-dashboard-mic{transition:none!important}}

@@ -1,0 +1,183 @@
+/* ZAVI 65.87 / ZAVI ADMIN 1.4.33: distinct TEXT / SYSTEM / DAILY-MANAGEMENT scale.
+   50..115 are preferences, NOT browser zoom. All viewport breakpoints remain accurate. */
+html.zavi-design-84{
+ --z87-text-ratio:1;
+ --z87-system-ratio:1;
+ --z87-daily-ratio:1;
+ --z87-space:clamp(6px,calc(13px * var(--z87-system-ratio)),16px);
+ --z87-control:clamp(35px,calc(44px * var(--z87-system-ratio)),51px);
+ --z87-gap:clamp(6px,calc(11px * var(--z87-system-ratio)),14px);
+ --z87-copy:clamp(10px,calc(14px * var(--z87-text-ratio)),17px);
+ --z87-label:clamp(10px,calc(13px * var(--z87-text-ratio)),16px);
+ --z87-heading:clamp(14px,calc(22px * var(--z87-text-ratio)),26px);
+ --z87-caption:clamp(9px,calc(12px * var(--z87-text-ratio)),15px);
+ --z86-ui-scale:var(--z87-system-ratio)!important;
+}
+html.zavi-design-84,html.zavi-design-84 body{zoom:1!important;transform:none}
+html.zavi-design-84 body :is(#content,#appScreen #view) {
+  font-size:var(--z87-copy)!important;
+  min-width:0!important;
+  max-width:100%!important;
+}
+html.zavi-design-84 body :is(#content,#appScreen #view,#zrf-all,#za67-menu)
+ :is(h1,h2,h3,h4):not(.z87-title){
+ font-size:var(--z87-heading)!important;
+ line-height:1.55!important;
+ overflow-wrap:anywhere;
+}
+html.zavi-design-84 body :is(#content,#appScreen #view,#zrf-all,#za67-menu)
+ :is(p,label,summary,dt,dd,td,th):not(.z87-three-scales *) {
+ font-size:var(--z87-copy)!important;
+ line-height:1.6!important;
+ overflow-wrap:anywhere;
+}
+html.zavi-design-84 body :is(#content,#appScreen #view,#zrf-all,#za67-menu)
+ :is(button,.button,.btn,select,input,textarea):not(.z87-three-scales *) {
+ font-size:var(--z87-label)!important;
+ line-height:1.5!important;
+}
+html.zavi-design-84 body :is(#content,#appScreen #view,#zrf-all,#za67-menu)
+ :is(small,.hint,.muted,.tiny-note,figcaption):not(.z87-three-scales *) {
+ font-size:var(--z87-caption)!important;
+ line-height:1.55!important;
+}
+html.zavi-design-84 body :is(#content,#appScreen #view,#zrf-all,#za67-menu)
+ :is(.card,.panel,.settings-card,.admin-kpi,.z76-settings-group) {
+ padding:var(--z87-space)!important;
+ min-width:0!important;max-width:100%!important;
+}
+html.zavi-design-84 body #content :is(.z74-link-grid,.quick-actions,.quick-grid,.dashboard-grid,.dashboard-shortcuts),
+html.zavi-design-84 body #appScreen #view :is(.admin-quick-grid,.admin-grid-actions){
+ gap:var(--z87-gap)!important;
+}
+html.zavi-design-84 body :is(#content,#appScreen #view) :is(button,.btn,.button){
+ min-height:var(--z87-control);
+ overflow-wrap:anywhere;
+}
+html.zavi-design-84 #zrf-all .zrf-all-item,
+html.zavi-design-84 #za67-menu .za67-item {
+ padding:var(--z87-space)!important;
+ gap:var(--z87-gap)!important;
+ min-height:var(--z87-control)!important;
+ font-size:var(--z87-copy)!important;
+}
+html.zavi-design-84 body #appScreen .sidebar .nav-item {
+ min-height:var(--z87-control)!important;
+ padding-block:clamp(6px,calc(10px * var(--z87-system-ratio)),13px)!important;
+}
+html.zavi-design-84 body #content :is(input:not([type=checkbox]):not([type=radio]),select,textarea),
+html.zavi-design-84 body #appScreen #view :is(input:not([type=checkbox]):not([type=radio]),select,textarea){
+ max-width:100%!important;min-width:0!important;
+}
+/* DAILY scope is activated only when the current view is daily management.
+   It alters internal density; never applies transform or root zoom. */
+html.zavi-design-84.z87-daily-active{
+ --z87-daily-padding:clamp(6px,calc(12px * var(--z87-daily-ratio)),16px);
+ --z87-daily-control:clamp(35px,calc(45px * var(--z87-daily-ratio)),52px);
+ --z87-daily-gap:clamp(6px,calc(11px * var(--z87-daily-ratio)),14px);
+}
+html.zavi-design-84.z87-daily-active body :is(#content,#appScreen #view)
+ :is(.card,.panel,.settings-card,.daily-card,.daily-operation,.admin-kpi){
+ padding:var(--z87-daily-padding)!important;
+}
+html.zavi-design-84.z87-daily-active body :is(#content,#appScreen #view)
+ :is(.grid,.form-grid,.daily-grid,.daily-operations,.quick-actions){
+ gap:var(--z87-daily-gap)!important;
+}
+html.zavi-design-84.z87-daily-active body :is(#content,#appScreen #view)
+ :is(button,.btn,.button,input:not([type=checkbox]):not([type=radio]),select){
+ min-height:var(--z87-daily-control)!important;
+}
+/* Retire the previous ONE size slider from the public Settings UI.
+   Its persisted preference is migrated to the "System size" control. */
+html.zavi-design-84 #zavi-display-settings-v6545{display:none!important}
+/* New single compact settings card, with three independently labelled ranges. */
+html.zavi-design-84 #z87-three-scales{
+ box-sizing:border-box!important;display:block!important;
+ width:100%!important;max-width:100%!important;min-width:0!important;
+ grid-column:1/-1!important;order:0;
+ margin:11px 0 17px!important;padding:clamp(11px,2vw,17px)!important;
+ border:1px solid var(--z84-line,#7aa5cb)!important;
+ border-radius:15px!important;
+ color:var(--z84-text,#e9f5ff)!important;
+ background:var(--z84-card,#182e4b)!important;
+ box-shadow:var(--z84-shadow,0 4px 16px #001a351e)!important;
+ text-align:start!important;direction:inherit!important;
+ zoom:1!important;transform:none!important;
+}
+html.zavi-design-84 #z87-three-scales *{box-sizing:border-box!important}
+html.zavi-design-84 #z87-three-scales .z87-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+html.zavi-design-84 #z87-three-scales .z87-title{
+ font-size:clamp(15px,3vw,18px)!important;font-weight:800!important;
+ color:var(--z84-text,#edf6ff)!important;line-height:1.55!important;
+}
+html.zavi-design-84 #z87-three-scales button{
+ border:1px solid var(--z84-line,#6b90b6)!important;
+ color:var(--z84-text,#edf6ff)!important;
+ background:var(--z84-soft,#234764)!important;
+ font-size:12px!important;min-height:34px!important;
+ padding:7px 11px!important;border-radius:9px!important;
+ cursor:pointer!important;white-space:normal!important;
+ -webkit-text-fill-color:currentColor!important;
+}
+html.zavi-design-84 #z87-three-scales button:focus-visible,
+html.zavi-design-84 #z87-three-scales input:focus-visible{outline:2px solid #12c9ec!important;outline-offset:2px!important}
+html.zavi-design-84 #z87-three-scales .z87-body[hidden]{display:none!important}
+html.zavi-design-84 #z87-three-scales .z87-help{
+ font-size:12px!important;color:var(--z84-text,#edf6ff)!important;
+ opacity:.86;margin:10px 0 13px;line-height:1.7!important;
+}
+html.zavi-design-84 #z87-three-scales .z87-rows{
+ display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+ gap:10px;min-width:0;max-width:100%;
+}
+html.zavi-design-84 #z87-three-scales .z87-row{
+ min-width:0!important;max-width:100%!important;
+ background:var(--z84-soft,rgba(83,144,195,.12))!important;
+ border:1px solid var(--z84-line,#6b90b6)!important;
+ border-radius:11px!important;padding:12px!important;
+}
+html.zavi-design-84 #z87-three-scales .z87-row-head{
+ display:flex;align-items:center;justify-content:space-between;gap:7px;flex-wrap:wrap;
+}
+html.zavi-design-84 #z87-three-scales .z87-row label{
+ font-size:13px!important;font-weight:750!important;color:var(--z84-text,#edf6ff)!important;
+}
+html.zavi-design-84 #z87-three-scales .z87-number{
+ font-size:14px!important;font-weight:850!important;direction:ltr;unicode-bidi:isolate;
+ color:var(--z84-text,#edf6ff)!important;
+}
+html.zavi-design-84 #z87-three-scales input[type=range]{
+ display:block!important;width:100%!important;min-width:0!important;height:32px!important;
+ margin:8px 0 0!important;padding:0!important;
+ accent-color:#129bef!important;cursor:pointer!important;
+ background:transparent!important;border:0!important;
+}
+html.zavi-design-84 #z87-three-scales .z87-foot{
+ display:flex;align-items:center;justify-content:space-between;gap:7px;
+ direction:ltr;font-size:11px!important;color:var(--z84-text,#edf6ff)!important;
+}
+html.zavi-design-84 #z87-three-scales .z87-foot span{font-size:11px!important;opacity:.8}
+html.zavi-design-84 #z87-three-scales .z87-foot button{direction:inherit;font-size:11px!important;padding:4px 8px!important;min-height:29px!important}
+html.zavi-design-84 #z87-three-scales .z87-hint{
+ display:block;margin-top:12px;font-size:11px!important;
+ opacity:.75;color:var(--z84-text,#edf6ff)!important;
+}
+@media(max-width:750px){
+ html.zavi-design-84 #z87-three-scales .z87-rows{
+  grid-template-columns:minmax(0,1fr);
+ }
+}
+@media(min-width:751px) and (max-width:970px){
+ html.zavi-design-84 #z87-three-scales .z87-rows{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+ }
+}
+@media(orientation:landscape) and (max-height:520px){
+ html.zavi-design-84 #z87-three-scales{padding:10px!important}
+ html.zavi-design-84 #z87-three-scales .z87-row{padding:8px!important}
+}
+@media print {
+ html.zavi-design-84,html.zavi-design-84 body{zoom:1!important}
+ html.zavi-design-84 #z87-three-scales{display:none!important}
+}

@@ -1,0 +1,30 @@
+/* ZAVI dual-date UI (display-only).*/
+.zavi-date-chip{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-inline:12px;color:#d9f7ff;min-width:0;font-size:11px}
+.zavi-date-part{display:inline-flex;gap:5px;align-items:center;padding:5px 9px;border-radius:10px;border:1px solid #23648b;background:#071b36}
+.zavi-date-part b{font-size:10px;color:#54deee}.zavi-date-part span{white-space:nowrap}
+.zavi-date-settings{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:18px}.zavi-date-settings h3{margin:0 0 3px}.zavi-date-settings p{margin:0;max-width:500px;color:#b0c8e6}
+.zavi-date-settings label{display:flex;flex-direction:column;gap:5px;min-width:180px}.zavi-date-settings select{min-height:40px}
+@media(max-width:950px){.zavi-date-chip{font-size:10px;margin-inline:0}.zavi-date-part{padding:4px 5px}}
+@media(max-width:660px){.zavi-date-chip{display:none}.zavi-date-settings label{width:100%}}
+@media print{.zavi-date-settings,.zavi-date-chip{display:none!important}}
+/* ZAVI ONE Dark Executive refinement / cleaner information hierarchy */
+:root{--zavi-surface:#0b2243;--zavi-outline:#2d5b83;--zavi-focus:#54e2e3}
+body{font-synthesis:none;-webkit-font-smoothing:antialiased}
+:is(.card,.panel,.stat,.settings-card,.report-stat,.summary-card,.repair-stat,.repair-summary,.metric-card,.kpi-card){background-color:#102b50;color:#ecf8ff;border-color:#2a5c85}
+:is(.card,.panel,.stat,.settings-card,.report-stat,.repair-stat,.summary-card) :is(h1,h2,h3,h4,strong){color:#f5fbff}
+:is(input,textarea,select){color-scheme:dark;background:#0a1c35!important;color:#f1fbff!important;border:1px solid #4477a1!important;min-height:36px}
+:is(input,textarea,select):focus-visible{border-color:var(--zavi-focus)!important;outline:2px solid #15a9e2!important;outline-offset:1px}
+:is(input,textarea)::placeholder{color:#aabfda;opacity:.9}
+:is(.btn,button,a){-webkit-tap-highlight-color:transparent}
+:is(.card,.panel,.stat,.settings-card){backdrop-filter:blur(4px)}
+:is(.btn,.nav-btn,.bottom-btn){min-height:38px}
+#content{max-width:1550px;margin-inline:auto}
+.table-wrap{overflow:auto;max-width:100%}
+.zavi-phonebook :is(input,button){min-height:43px}
+[dir="ltr"] #content,[dir="ltr"] .sidebar,[dir="ltr"] .topbar{text-align:left}
+[dir="rtl"] #content,[dir="rtl"] .sidebar,[dir="rtl"] .topbar{text-align:right}
+@media(max-width:750px){.card,.panel,.settings-card{border-radius:15px!important;padding:14px}.content{min-width:0}h1,h2{overflow-wrap:anywhere}}
+@media print{body,div,section{color-scheme:light!important} input,textarea,select{background:white!important;color:black!important}}
+
+.z1-repair-stat,.z1-repair-entry,.z1-repair-list,.z1-repair-meta{background:#102c52!important;color:#edf8ff!important;border:1px solid #325b7f!important}
+.z1-repair-stat b,.z1-repair-stat span,.z1-repair-entry b,.z1-repair-entry span{color:#e9f6ff!important}

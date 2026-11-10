@@ -84,10 +84,3 @@
  #z605-panel #z605-mic.active{box-shadow:0 0 0 4px #058bd426!important}
 }
 @media(prefers-reduced-motion:reduce){#z605-panel *,#z605-launch{animation:none!important;transition:none!important}}
-
-
-#z605-panel .z605-badge{display:none!important}
-#z605-launch{position:fixed!important;z-index:2147483620!important;bottom:calc(84px + env(safe-area-inset-bottom,0px))!important;right:18px!important;left:auto!important;border-radius:50%!important;width:52px!important;height:52px!important;padding:0!important;display:grid!important;place-items:center!important;background:#146bcb!important;color:white!important;font-size:25px!important;border:1px solid rgba(255,255,255,.55)!important;box-shadow:0 7px 20px rgba(0,35,81,.3)!important}
-#z605-launch[hidden]{display:none!important}
-#z605-panel #z605-mic:disabled{opacity:.48!important;cursor:not-allowed!important}
-@media(prefers-reduced-motion:reduce){#z605-panel *{animation:none!important;transition:none!important}}

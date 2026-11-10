@@ -1,0 +1,14 @@
+/* Separate command mic from the original AI assistant icon.
+   Both voice and typed commands remain inside the command dialog. */
+#z605-launch{
+  inset-inline-end:16px!important;
+  bottom:calc(151px + env(safe-area-inset-bottom,0px))!important;
+  font-size:24px!important;
+  z-index:2147482990!important;
+  display:grid!important;
+  place-items:center!important;
+}
+#z605-launch::before,#z605-launch::after{content:none!important}
+#z605-launch:focus-visible{outline:3px solid #fff!important;outline-offset:3px!important}
+@media(max-width:390px){#z605-launch{bottom:calc(146px + env(safe-area-inset-bottom,0px))!important}}
+\n#z605-launch{display:none!important}\n

@@ -1,0 +1,228 @@
+/* ZAVI Design System 2026 / V65.84 - shared visual layer.
+ * Visual only. Never changes financial, licence, tenant, or owner-only permissions.
+ * One graphic identity on Android phones/tablets/Windows, both orientations. */
+html.zavi-design-84 {
+  --z84-blue:#136afe;--z84-cyan:#03c4f1;--z84-accent:linear-gradient(115deg,#1359f1,#0a8dec 64%,#02c5e6);
+  --z84-radius:16px;--z84-small-radius:11px;
+  --z84-ring:0 0 0 3px rgba(0,184,238,.22);
+  font-family:Tahoma,"Segoe UI",system-ui,sans-serif;
+  font-synthesis:none;
+}
+html.zavi-design-84:not([data-zavi-theme="light"]){
+  --z84-bg:#06162c;--z84-card:#0b2545;--z84-card-deep:#0c2140;--z84-soft:#12345d;
+  --z84-line:#224875;--z84-text:#f4faff;--z84-muted:#b9d0e8;
+  --z84-shadow:0 8px 22px rgba(1,9,27,.20);
+}
+html.zavi-design-84[data-zavi-theme="light"]{
+  --z84-bg:#eef5ff;--z84-card:#ffffff;--z84-card-deep:#f7fbff;--z84-soft:#e8f2ff;
+  --z84-line:#cadbee;--z84-text:#162d49;--z84-muted:#456483;
+  --z84-shadow:0 6px 20px rgba(16,49,99,.07);
+}
+html.zavi-design-84,html.zavi-design-84 body {
+  min-width:0;max-width:100%;
+  overflow-x:clip!important;
+  font-family:Tahoma,"Segoe UI",system-ui,sans-serif!important;
+  -webkit-text-size-adjust:100%;
+}
+html.zavi-design-84 body{background:var(--z84-bg)!important;color:var(--z84-text)!important}
+html.zavi-design-84 :is(#content,#appScreen #view,#appScreen .workspace){
+  box-sizing:border-box!important;min-width:0!important;
+  max-width:100%!important;overflow-x:clip!important;
+  color:var(--z84-text)!important;
+}
+html.zavi-design-84 #content{padding-inline:clamp(9px,2vw,22px);padding-bottom:calc(75px + env(safe-area-inset-bottom,0px));}
+html.zavi-design-84 #appScreen #view{
+  background:var(--z84-bg)!important;
+  padding:clamp(10px,1.9vw,23px)!important;
+  padding-bottom:calc(74px + env(safe-area-inset-bottom,0px))!important;
+}
+html.zavi-design-84 :is(#content,#appScreen #view) :is(.card,.settings-card,.panel,.admin-kpi,.admin-analytics-main,.admin-distribution,.z76-profile-card,.z76-settings-group,.z74-workspace,.z638-warehouse-scanner){
+  box-sizing:border-box!important;
+  min-width:0!important;max-width:100%!important;
+  border-radius:var(--z84-radius)!important;
+  border:1px solid var(--z84-line)!important;
+  background:var(--z84-card)!important;color:var(--z84-text)!important;
+  box-shadow:var(--z84-shadow)!important;
+}
+html.zavi-design-84 #content :is(.welcome,.z6524-launch),
+html.zavi-design-84 #appScreen #view .admin-hero {
+  background:radial-gradient(circle at 94% 10%,rgba(80,225,255,.15),transparent 38%),linear-gradient(120deg,#113dba 0%,#145bf1 65%,#03aade 100%)!important;
+  color:#fff!important;
+  border:1px solid rgba(95,214,251,.44)!important;
+  border-radius:var(--z84-radius)!important;
+  padding:clamp(12px,2vw,23px)!important;
+  box-shadow:0 9px 22px rgba(8,71,197,.17)!important;
+}
+html.zavi-design-84 #content .welcome :is(h1,h2,h3,p,span,small,strong),
+html.zavi-design-84 #appScreen #view .admin-hero :is(h1,h2,h3,p,span,small,strong,.admin-hero-kicker){
+  color:#fff!important;-webkit-text-fill-color:#fff!important;opacity:1!important;text-shadow:none!important;
+}
+html.zavi-design-84 #appScreen #view .admin-kpis{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(min(100%,175px),1fr))!important;gap:10px!important}
+html.zavi-design-84 #appScreen #view .admin-kpi{min-height:99px!important;padding:14px!important}
+html.zavi-design-84 #content :is(.grid,.form-grid,.z74-link-grid,.z649-dashboard-extras,.z638-summary-grid),
+html.zavi-design-84 #appScreen #view :is(.admin-quick-grid,.admin-grid-actions){
+  min-width:0!important;max-width:100%!important;gap:clamp(7px,1.1vw,13px)!important;
+}
+html.zavi-design-84 :is(#content,#appScreen #view) :is(.card,.panel,.settings-card,.admin-kpi,.z76-settings-group) :is(h1,h2,h3,h4,strong,label){
+  color:var(--z84-text)!important;
+  overflow-wrap:break-word!important;line-height:1.5!important;
+}
+html.zavi-design-84 :is(#content,#appScreen #view) :is(.card,.panel,.settings-card,.admin-kpi,.z76-settings-group) :is(p,small,.muted,.hint){
+  color:var(--z84-muted)!important;line-height:1.7!important;
+  overflow-wrap:break-word!important;
+}
+html.zavi-design-84 :is(#content,#appScreen #view) :is(input:not([type=checkbox]):not([type=radio]),select,textarea){
+  box-sizing:border-box!important;max-width:100%!important;min-width:0!important;
+  background:var(--z84-soft)!important;
+  border:1px solid var(--z84-line)!important;
+  color:var(--z84-text)!important;-webkit-text-fill-color:var(--z84-text)!important;
+  border-radius:var(--z84-small-radius)!important;
+  min-height:40px;line-height:1.55;
+}
+html.zavi-design-84 :is(#content,#appScreen #view) :is(input,textarea)::placeholder{
+  color:var(--z84-muted)!important;-webkit-text-fill-color:var(--z84-muted)!important;opacity:1!important;
+}
+html.zavi-design-84 :is(#content,#appScreen #view,#overlay) :is(button,.button,.btn){
+  box-sizing:border-box;max-width:100%;min-width:0;
+  border-radius:var(--z84-small-radius);
+  overflow-wrap:break-word;
+  font-family:inherit;line-height:1.45;
+}
+html.zavi-design-84 :is(#content,#appScreen #view,#overlay) :is(button.primary,.button.primary,.btn-primary,.z76-button-primary,.z74-change),
+html.zavi-design-84 #appScreen .sidebar .nav-item.selected{
+  background:var(--z84-accent)!important;
+  color:white!important;-webkit-text-fill-color:white!important;
+  border-color:#2a8df7!important;
+}
+html.zavi-design-84 :is(#content,#appScreen #view) :is(button,a,input,select,textarea):focus-visible{
+  outline:2px solid var(--z84-cyan)!important;outline-offset:2px!important;box-shadow:var(--z84-ring)!important;
+}
+html.zavi-design-84 :is(#content,#appScreen #view) :is(.table-wrap,.table-responsive,.scroll-table,.table-scroll){
+  max-width:100%!important;min-width:0!important;overflow-x:auto!important;
+  overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;
+  border-radius:var(--z84-small-radius);
+}
+html.zavi-design-84 :is(#content,#appScreen #view) table{
+  border-collapse:separate;border-spacing:0;
+  font-variant-numeric:tabular-nums;
+}
+html.zavi-design-84 :is(#content,#appScreen #view) table :is(th,td){
+  line-height:1.6!important;vertical-align:middle!important;
+  border-color:var(--z84-line)!important;
+}
+html.zavi-design-84 :is(#content,#appScreen #view) table th{
+  color:var(--z84-text)!important;background:var(--z84-soft)!important;
+  font-weight:800!important;
+}
+html.zavi-design-84 :is(#content,#appScreen #view) table td{color:var(--z84-text)!important}
+html.zavi-design-84 #content .z76-settings-groups{
+  display:flex!important;flex-direction:column!important;gap:9px!important;
+  min-width:0!important;width:100%!important;
+}
+html.zavi-design-84 #content .z76-settings-group{
+  width:100%!important;max-width:100%!important;
+  flex:0 0 auto!important;overflow:hidden!important;
+}
+html.zavi-design-84 #content .z76-settings-group>summary{
+  min-height:48px!important;padding:10px 14px!important;
+  font-weight:850!important;font-size:13px!important;
+  background:var(--z84-card-deep)!important;color:var(--z84-text)!important;
+  white-space:normal!important;
+}
+html.zavi-design-84 #content .z76-group-body{
+  width:100%!important;min-width:0!important;overflow:visible!important;
+  display:grid!important;grid-template-columns:minmax(0,1fr)!important;padding:10px!important;gap:9px!important;
+}
+html.zavi-design-84 #content .z76-group-body>*{min-width:0!important;max-width:100%!important}
+html.zavi-design-84 #content .z78-device-compact{
+  min-height:0!important;max-height:none!important;padding:11px!important;
+}
+html.zavi-design-84 #content .z78-device-compact .z652-status{max-height:96px!important;overflow-y:auto!important}
+html.zavi-design-84 #content .z78-device-compact .z652-devices{max-height:225px!important;overflow-y:auto!important}
+html.zavi-design-84 #content :is(.zavi-barcode-box,.z638-warehouse-scanner){
+  border:1px solid rgba(17,162,240,.52)!important;
+  background:linear-gradient(135deg,rgba(13,122,236,.15),rgba(1,210,226,.055))!important;
+  border-radius:15px!important;
+  padding:12px!important;
+}
+html.zavi-design-84 #content .zavi-barcode-actions{min-width:0!important;gap:8px!important}
+html.zavi-design-84 #content .zavi-barcode-actions button{min-height:40px!important}
+html.zavi-design-84 .topbar,html.zavi-design-84 #appScreen .topbar{
+  background:var(--z84-card-deep)!important;color:var(--z84-text)!important;
+  border-color:var(--z84-line)!important;
+  box-shadow:0 1px 8px rgba(0,25,68,.08)!important;
+}
+html.zavi-design-84 #appScreen .sidebar{
+  background:var(--z84-card-deep)!important;color:var(--z84-text)!important;
+  border-color:var(--z84-line)!important;
+  max-width:min(88vw,340px);
+}
+html.zavi-design-84 #appScreen .sidebar .nav-item{
+  color:var(--z84-text)!important;border-radius:11px!important;
+  min-height:42px!important;
+}
+html.zavi-design-84 #appScreen .sidebar .nav-item.selected :is(span,b,small){color:#fff!important}
+html.zavi-design-84 .z78-full-menu{
+  --surface:var(--z84-bg);
+  overscroll-behavior:contain!important;
+  scrollbar-gutter:stable;
+}
+html.zavi-design-84 #appScreen :is(.nav-overlay,.sidebar-backdrop) {overscroll-behavior:contain}
+html.zavi-design-84 :is(#content,#appScreen #view) :is(.date-pill,.zv-today,.date-tag){
+  border-radius:9px!important;
+}
+html.zavi-design-84 #content #z78-user{flex-shrink:1!important;min-width:0!important}
+html.zavi-design-84 #content #z78-user .z78-user-name{max-width:135px!important;text-overflow:ellipsis!important}
+html.zavi-design-84 :is(#content,#appScreen #view) :is(.badge,.chip,.status){border-radius:999px!important}
+@media(min-width:1000px){
+ html.zavi-design-84 #content{
+   padding-inline:clamp(18px,2.2vw,34px)!important;
+   padding-bottom:35px!important;
+ }
+ html.zavi-design-84 #appScreen #view{padding-bottom:35px!important}
+ html.zavi-design-84 :is(#content,#appScreen #view) :is(.card,.panel){margin-bottom:12px}
+ html.zavi-design-84 #appScreen .sidebar{max-width:320px!important}
+ html.zavi-design-84 #appScreen #view .admin-kpis{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+}
+@media(max-width:720px){
+ html.zavi-design-84 #content{padding-inline:9px!important}
+ html.zavi-design-84 #appScreen #view{padding:10px 10px calc(74px + env(safe-area-inset-bottom,0px))!important}
+ html.zavi-design-84 :is(#content,#appScreen #view) :is(.card,.settings-card,.panel,.admin-kpi){border-radius:13px!important}
+ html.zavi-design-84 #appScreen #view .admin-kpis{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ html.zavi-design-84 #appScreen #view .admin-kpi{padding:11px!important;min-height:85px!important}
+ html.zavi-design-84 #appScreen .topbar{min-height:52px!important;height:auto!important;padding:7px 8px!important}
+ html.zavi-design-84 #content .welcome{padding:12px!important}
+ html.zavi-design-84 #content .welcome h2{font-size:clamp(16px,4.7vw,21px)!important}
+ html.zavi-design-84 #content .welcome p{font-size:11px!important}
+ html.zavi-design-84 #content .z76-profile-editor{min-width:0;flex-wrap:wrap}
+ html.zavi-design-84 #content :is(.zavi-barcode-box,.z638-warehouse-scanner){padding:10px!important}
+ html.zavi-design-84 #overlay .modal{width:min(100%,650px)!important;max-height:90dvh!important}
+ html.zavi-design-84 #overlay .modal-body{min-height:0!important;overflow-y:auto!important;-webkit-overflow-scrolling:touch}
+}
+@media(max-width:420px){
+ html.zavi-design-84 #content .z74-link-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ html.zavi-design-84 #content .z78-device-compact .z652-actions{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ html.zavi-design-84 #appScreen #view .admin-quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ html.zavi-design-84 #content .z76-profile-actions{gap:6px!important}
+}
+@media(orientation:landscape) and (max-height:530px){
+ html.zavi-design-84 #content{padding-bottom:calc(54px + env(safe-area-inset-bottom,0px))!important}
+ html.zavi-design-84 #appScreen #view{padding-bottom:calc(54px + env(safe-area-inset-bottom,0px))!important}
+ html.zavi-design-84 #content .welcome,
+ html.zavi-design-84 #appScreen #view .admin-hero{padding:10px 14px!important;min-height:0!important}
+ html.zavi-design-84 #content .welcome h2{font-size:17px!important}
+ html.zavi-design-84 #appScreen #view .admin-hero h1{font-size:19px!important}
+ html.zavi-design-84 #overlay .modal{max-height:88dvh!important}
+ html.zavi-design-84 .z78-full-menu{padding-bottom:calc(60px + env(safe-area-inset-bottom,0px))!important}
+}
+@media(prefers-reduced-motion:reduce){
+ html.zavi-design-84 :is(#content,#appScreen) *,
+ html.zavi-design-84 :is(#content,#appScreen) *:before,
+ html.zavi-design-84 :is(#content,#appScreen) *:after{
+   animation-duration:.01ms!important;transition-duration:.01ms!important;
+ }
+}
+@media print{
+ html.zavi-design-84 body{background:#fff!important;color:#111!important}
+ html.zavi-design-84 :is(#content,#appScreen #view) :is(.card,.panel,.admin-kpi){box-shadow:none!important}
+}

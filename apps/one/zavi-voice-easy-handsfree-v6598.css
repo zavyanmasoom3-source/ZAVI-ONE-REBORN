@@ -1,0 +1,66 @@
+/* ZAVI VOICE EASY V65.98 — screenshot-informed high contrast, very small touch workflow */
+#z198-easy[hidden],#z198-easy [hidden]{display:none!important}
+#z198-easy{--v-bg:#fff;--v-fg:#102c45;--v-muted:#233f56;--v-border:#a2b9cb;--v-soft:#e9f3fb;--v-main:#0067c5;
+ position:fixed!important;inset:0!important;z-index:2147483600!important;display:flex!important;align-items:flex-end!important;justify-content:center!important;
+ background:rgba(2,18,37,.67)!important;padding:0!important;backdrop-filter:blur(7px);direction:inherit!important
+}
+#z198-easy *{box-sizing:border-box!important;min-width:0!important}
+#z198-easy .z198-dialog{width:min(100%,520px)!important;height:auto!important;max-height:90dvh!important;display:flex!important;flex-direction:column!important;gap:10px!important;
+ padding:20px 17px calc(19px + env(safe-area-inset-bottom,0px))!important;margin:0 auto!important;
+ border-radius:23px 23px 0 0!important;border:2px solid var(--v-border)!important;background:var(--v-bg)!important;
+ color:var(--v-fg)!important;-webkit-text-fill-color:var(--v-fg)!important;overflow-y:auto!important;overscroll-behavior:contain!important;
+ box-shadow:0 -20px 70px #001b3950!important
+}
+#z198-easy :is(h2,p,span,summary,label){color:var(--v-fg)!important;-webkit-text-fill-color:var(--v-fg)!important;opacity:1!important;text-shadow:none!important}
+#z198-easy .z198-head{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:10px!important}
+#z198-easy h2{margin:0!important;font-size:clamp(19px,4.7vw,23px)!important;font-weight:900!important;line-height:1.4!important;text-align:start!important}
+#z198-easy :is(button,select,textarea){font:inherit!important;font-size:clamp(14px,3.7vw,16px)!important;
+ border:2px solid var(--v-border)!important;border-radius:13px!important;background:var(--v-bg)!important;
+ color:var(--v-fg)!important;-webkit-text-fill-color:var(--v-fg)!important;opacity:1!important;
+ min-height:46px!important;padding:10px 12px!important;line-height:1.6!important;cursor:pointer!important;box-shadow:none!important
+}
+#z198-easy button{font-weight:800!important}
+#z198-easy button:focus-visible,#z198-easy select:focus-visible{outline:3px solid #0f9be0!important;outline-offset:2px!important}
+#z198-easy .z198-close{min-width:46px!important;width:46px!important;height:46px!important;padding:0!important;
+ font-size:26px!important;line-height:1!important}
+#z198-easy .z198-power{width:100%!important;background:linear-gradient(115deg,#0755be,#078fbe)!important;
+ color:#fff!important;-webkit-text-fill-color:#fff!important;border:2px solid #136bbd!important;
+ font-weight:900!important;text-align:center!important;padding:12px!important;min-height:54px!important}
+#z198-easy .z198-power.z198-powered{background:var(--v-soft)!important;color:var(--v-fg)!important;
+ -webkit-text-fill-color:var(--v-fg)!important;border-color:var(--v-border)!important}
+#z198-easy .z198-label{display:grid!important;gap:5px!important;font-weight:800!important;font-size:14px!important}
+#z198-easy select{width:100%!important;appearance:auto!important;background:var(--v-bg)!important;
+ color:var(--v-fg)!important;-webkit-text-fill-color:var(--v-fg)!important}
+#z198-easy select option{background:#fff!important;color:#12273a!important;-webkit-text-fill-color:#12273a!important}
+#z198-easy .z198-ring{display:grid!important;place-items:center!important;align-self:center!important;
+ width:54px!important;height:54px!important;border-radius:100%!important;background:var(--v-soft)!important;
+ font-size:28px!important;border:2px solid var(--v-border)!important;box-shadow:none!important}
+#z198-easy.z198-live .z198-ring{border-color:#087fbb!important;box-shadow:0 0 0 5px rgba(5,165,210,.13)!important}
+#z198-easy .z198-status{font-weight:900!important;font-size:clamp(15px,4vw,17px)!important;text-align:center!important;
+ margin:0!important;line-height:1.8!important}
+#z198-easy .z198-heard{margin:0!important;padding:10px!important;border-radius:12px!important;
+ background:var(--v-soft)!important;border:1px solid var(--v-border)!important;
+ font-size:15px!important;font-weight:800!important;line-height:1.8!important;white-space:pre-line!important;
+ overflow-wrap:anywhere!important}
+#z198-easy :is(.z198-help,.z198-privacy,.z198-safe){font-size:13px!important;font-weight:700!important;
+ line-height:1.7!important;margin:0!important;overflow-wrap:anywhere!important}
+#z198-easy .z198-help{color:var(--v-muted)!important;-webkit-text-fill-color:var(--v-muted)!important;text-align:center!important}
+#z198-easy .z198-privacy{color:var(--v-muted)!important;-webkit-text-fill-color:var(--v-muted)!important}
+#z198-easy .z198-safe{padding:9px!important;border:1px solid var(--v-border)!important;
+ background:var(--v-soft)!important;border-radius:10px!important;color:var(--v-fg)!important}
+#z198-easy .z198-details{border-top:1px solid var(--v-border)!important;padding-top:5px!important}
+#z198-easy .z198-summary{padding:3px!important;font-size:16px!important;cursor:pointer!important}
+#z198-easy .z198-details:not([open]) :is(.z198-manual,.z198-run){display:none!important}
+#z198-easy .z198-manual{display:block!important;resize:vertical!important;width:100%!important;min-height:80px!important}
+#z198-easy textarea::placeholder{color:var(--v-muted)!important;-webkit-text-fill-color:var(--v-muted)!important;opacity:1!important}
+html[data-zavi-theme=dark] #z198-easy,html[data-theme=dark] #z198-easy,
+body[data-theme=dark] #z198-easy,html.dark #z198-easy,body.dark #z198-easy{
+ --v-bg:#101f34;--v-fg:#f3f8ff;--v-muted:#d0e2f3;--v-border:#617f9e;--v-soft:#213953;--v-main:#42c5ee
+}
+html[data-zavi-theme=dark] #z198-easy select option,html[data-theme=dark] #z198-easy select option,body.dark #z198-easy select option{
+ background:#101f34!important;color:#f3f8ff!important;-webkit-text-fill-color:#f3f8ff!important
+}
+#z197-dashboard-mic.z198-listening{border-color:#07aee3!important;box-shadow:0 0 0 4px rgba(0,170,210,.20),0 5px 16px #00496c55!important}
+@media(min-width:741px){#z198-easy{align-items:center!important;padding:16px!important}#z198-easy .z198-dialog{border-radius:22px!important}}
+@media(max-height:640px){#z198-easy .z198-dialog{max-height:96dvh!important;gap:7px!important;padding-top:10px!important}#z198-easy .z198-ring{width:38px!important;height:38px!important;font-size:19px!important}}
+@media(prefers-reduced-motion:reduce){#z198-easy *,#z197-dashboard-mic{animation:none!important;transition:none!important}}
