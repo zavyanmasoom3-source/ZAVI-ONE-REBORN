@@ -2,6 +2,7 @@ name: ZAVI mobile-installable OFFLINE PREVIEW APK (not Release)
 # Owner has requested a new installable APK in the current conversation.
 # This branch-scoped one-shot preview remains OFFLINE-PREVIEW-NOT-RELEASE.
 # 2026-11-09 owner-requested fresh source build after verified native sales list, compact stock scanner, one-line dual date and removal of floating overlays.
+# 2026-11-10 stage-8 acceptance test preview: rebuild exact dev source for phone-side visual testing; no live cloud or original release signing.
 on:
   workflow_dispatch:
   push:
