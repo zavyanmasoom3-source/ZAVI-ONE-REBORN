@@ -32,15 +32,26 @@ with Session() as browser:
                   tab.click();
                 })()"""%json.dumps(target))
                 if target=='more':
+                    # The final approved reference UI intercepts the native
+                    # More button in capture phase and opens the authentic
+                    # All sections overlay (zrf-all), not the old sidebar.
                     browser.until("""(()=>{
-                       const side=document.getElementById('side');
-                       return !!side?.classList.contains('mobile-drawer') &&
-                              !!document.getElementById('drawerShade') &&
-                              side.getAttribute('role')==='dialog';
-                    })()""",'More opens the actual navigation drawer',12)
-                    browser.eval("closeDrawer()")
+                       const panel=document.getElementById('zrf-all');
+                       const css=panel?getComputedStyle(panel):null;
+                       return !!panel && panel.getAttribute('role')==='dialog' &&
+                        panel.getAttribute('aria-modal')==='true' &&
+                        css?.display!=='none' &&
+                        panel.querySelectorAll('.zrf-all-item,[role=status]').length>0;
+                    })()""",'More opens approved All sections modal',12)
+                    browser.eval("""(()=>{
+                       const close=document.querySelector('#zrf-all [data-zrf-close]');
+                       if(!close)throw Error('More menu cannot be dismissed');
+                       close.click();
+                    })()""")
+                    browser.until("!document.getElementById('zrf-all')",
+                                  'More menu closes without deleting other pages',10)
                     RESULTS.append({'app':'one','theme':mode,'locale':locale,
-                                    'route':'more','drawer':True})
+                                    'route':'more','allSectionsModal':True})
                     continue
                 browser.until("""(()=>{
                   const content=document.getElementById('content');
@@ -73,7 +84,7 @@ with Session() as browser:
                 assert value['rootTheme']==mode and value['lang']==locale,value
                 assert value['dir']==direction and value['navExists'],value
                 RESULTS.append({'app':'one','theme':mode,'locale':locale,'route':target})
-    print('PASS: ONE 45 real bottom-nav clicks including the functional More drawer, no dashboard fallback')
+    print('PASS: ONE 45 real bottom-nav clicks including the real All sections More overlay, no dashboard fallback')
 
     # Switch to the actual ADMIN page. Navigation is tested through DOM click
     # handlers, not by calling render() directly or bypassing the login page.
