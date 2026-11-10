@@ -1,4 +1,5 @@
 name: ZAVI mobile-installable OFFLINE PREVIEW APK (not Release)
+# 2026-11-10 classic6662 print-stylesheet-fix clean phone QA rebuild
 # classic66.62-restored-20261110: owner-requested original look with stage 8 modules and rotated offline cache.
 # Owner has requested a new installable APK in the current conversation.
 # This branch-scoped one-shot preview remains OFFLINE-PREVIEW-NOT-RELEASE.
