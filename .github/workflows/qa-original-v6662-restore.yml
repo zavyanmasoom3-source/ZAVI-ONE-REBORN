@@ -1,0 +1,53 @@
+name: Prove original V66.62 UI with modern finance (isolated local QA)
+on:
+  push:
+    branches: [dev]
+    paths: [".github/workflows/qa-original-v6662-restore.yml"]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  restored-ui:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: restore/v6662-original-ui
+          fetch-depth: 0
+      - name: Original 66.62 source and all offline resource contracts
+        run: |
+          set -euo pipefail
+          python3 scripts/check-v6662-original-restore.py
+          python3 scripts/check-offline-shell-assets.py
+          python3 scripts/check-migration-integrity.py
+          python3 scripts/verify-ui-navigation.py
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Full source syntax and read-only server connectivity
+        shell: bash
+        run: |
+          set -euo pipefail
+          find apps packages/shared -name '*.js' -type f -print0 |
+            while IFS= read -r -d '' f; do node --check "$f"; done
+          node scripts/test-live-supabase-connection.cjs
+          node scripts/test-stage8-admin-source.cjs
+          node scripts/test-stage7-no-raw-workspace-write.cjs
+      - name: Actual restored ONE route click navigation (local browser only)
+        run: python3 scripts/test-stage8-real-navigation-clicks-browser.py
+      - name: Real synthetic accounting cases (local browser only)
+        run: python3 scripts/test-accounting-edge-cases-browser.py
+      - name: Financial three-mode and localization smoke
+        run: python3 scripts/test-stage6-financial-theme-browser.py
+      - name: Export browser QA reports if tests pass or fail
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: V6662-RESTORED-REAL-BROWSER-QA
+          path: |
+            qa-stage8/
+            qa-accounting/
+            qa-stage6/
+          if-no-files-found: ignore
+          retention-days: 7
