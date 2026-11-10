@@ -49,4 +49,22 @@ Android QA workflow: `.github/workflows/build-reborn-qa.yml`. It creates **debug
 - Both installable persistent-signed QA APK jobs were attempted in [run 42778428487](https://github.com/zavyanmasoom3-source/ZAVI-ONE-REBORN/actions/runs/42778428487) but stopped at the **missing owner signing Secrets preflight**. Neither produced a new signed APK; temporary/debug keystores were never substituted.
 - [Complete Stage 6 report](docs/PHASE6_SOURCE_BUILD_AND_RELEASE_ACCEPTANCE_2026-11-10.md) includes the exact missing secret names, the release safety contract, and still-required real Android/Windows installation and owner-authenticated financial acceptance tests.
 
+## Stage 8 — central ADMIN ownership and full source QA (2026-11-10)
+
+- The ADMIN login, saved-session resume, customer recovery, and owner-only
+  actions now verify **the real UID, central owner role and live Supabase
+  Auth session** through server RPC rather than a hardcoded email address.
+- Stage 8 acceptance [42790947976](https://github.com/zavyanmasoom3-source/ZAVI-ONE-REBORN/actions/runs/42790947976)
+  **PASSED 2/2 jobs** (actual login/revoked session, 78 real route clicks,
+  Light/Dark/Glass, Dari/Pashto/English, barcode labels, WhatsApp,
+  in-transit purchases, device activation, offline and finance regressions).
+- Android ONE/ADMIN optimized **unsigned** R8 compilation and Windows
+  ONE/ADMIN native x64 compilation, plus financial and visual gates,
+  **PASSED 6/6 jobs** in [run 42790495713](https://github.com/zavyanmasoom3-source/ZAVI-ONE-REBORN/actions/runs/42790495713).
+- [Stage 8 engineering report](docs/PHASE8_ADMIN_OWNER_ROLE_UI_AND_CROSS_PLATFORM_QA_2026-11-10.md)
+  records exact server deployment and explicit non-certification of
+  original-signed APKs, real-device printing/camera, real tenant tests
+  and pixel-perfect PDF fidelity. The owner deferred signing and final
+  hardware installation to Stage 9.
+
 **Release gate: CLOSED — no APK or Installer is approved for public distribution.**
