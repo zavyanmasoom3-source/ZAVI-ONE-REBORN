@@ -5,7 +5,13 @@ from tempfile import TemporaryDirectory
 import hashlib
 import json
 import sys
-from stage6_stage_android_compile import stage,ROOT,VARIANTS,SHARED
+import importlib.util
+module=Path(__file__).with_name('stage6-stage-android-compile.py')
+spec=importlib.util.spec_from_file_location('stage6_staging',module)
+staging=importlib.util.module_from_spec(spec)
+spec.loader.exec_module(staging)
+stage,ROOT,VARIANTS,SHARED=(staging.stage,staging.ROOT,
+                              staging.VARIANTS,staging.SHARED)
 
 def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
