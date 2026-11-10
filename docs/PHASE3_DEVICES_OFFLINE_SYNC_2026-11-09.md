@@ -119,3 +119,37 @@ notices for public SECURITY DEFINER RPCs and some RLS tables with no
 direct policies. These are not all proven vulnerabilities (owner-gated
 RPCs and denied tables may be intentional), but Stage 3 does not claim
 to certify every unrelated function and table.
+
+## Stage 3 follow-up — 2026-11-10: legacy device-replacement bypass closed
+
+A read-only production audit found that the current `zavi_v6580_owner_one_tap_transfer`
+had the appropriate last-sync/pending checks, but delegated to the older public
+`zavi_v41_owner_replace_device` RPC. That older RPC could also be called directly
+by an authenticated owner and replaced the active device **without** its own
+sync check. The separately billing-admin-gated `zavi_admin_replace_device`
+had the same missing safety condition, including through the ADMIN UI.
+
+- Replaced both existing RPC function definitions to enforce zero pending,
+  a recent heartbeat and confirmed last sync (plus existing owner or billing
+  admin checks). Existing signatures and success responses are retained.
+- The migration is committed as
+  `supabase/migrations/20261110_phase3_legacy_device_transfer_guard.sql`
+  and its disposable PostgreSQL 17 test as
+  `scripts/test-phase3-legacy-device-transfer.sql`.
+- On commit `3455418d4bc063a70b0770739a7a3a4df215276c`,
+  GitHub Actions `42766575548` (Stage 3 PostgreSQL policies) and
+  `42766575484` (Migration integrity gate) completed **successfully**.
+- Applied named migration `phase3_legacy_owner_admin_device_sync_guard`
+  to the primary Supabase project. Read-back of the two deployed
+  `pg_get_functiondef` definitions independently confirms both checks.
+  Migration history now contains version `20261110061002`.
+- No user/customer/financial/device rows were modified by this migration:
+  it consists of two `CREATE OR REPLACE FUNCTION` statements and comments.
+  Tests use synthetic data and roll back their transactions.
+
+**Remaining release gate:** direct Android hardware testing with two distinct
+authenticated owner devices, genuine live-signed ES256 lease, offline
+sale/purchase, reconnect synchronization, and no duplicate financial postings.
+A disconnected older device can retain a prior unexpired offline lease until
+expiration/reconnection. Do not mark Stage 3 100% certified or ship stable
+APKs until those on-device checks are evidenced.
