@@ -51,7 +51,8 @@ def restore(apk,root):
         assert hashlib.sha256(original).hexdigest()==ORIGINAL_HTML_SHA,'Old interface integrity mismatch'
         original_html=original.decode('utf-8')
         assert original_html.rfind('</body>') > len(original_html) - 100, 'Missing actual final document body'
-        old_refs=[basename(m.group(1)) for m in FILE_PATTERN.finditer(original_html)]
+        old_refs=[basename(m.group(1)) for m in FILE_PATTERN.finditer(original_html)
+                  if not re.match(r'^(?:https?://|data:|blob:)',m.group(1),re.I)]
         old_css=[x for x in old_refs if x.endswith('.css')]
         assert len(old_css)>=100,(len(old_css),'not the complete original interface')
         copied=[]
