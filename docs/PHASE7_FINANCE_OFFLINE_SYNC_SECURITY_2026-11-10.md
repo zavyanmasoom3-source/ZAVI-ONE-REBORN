@@ -134,3 +134,65 @@ then retire raw UPDATE only after a tested signed upgrade.
 
 **No final APK, Windows Installer or unconditional Stage 7 = 100%
 certification is claimed at this point.**
+
+
+## Stage 7 — safe per-workspace legacy cutover gate (final additional work, 2026-11-10)
+
+The old UPDATE grant is still required for earlier installed APKs. Rather than
+revoking it globally and risking loss of unsent invoices, we installed a
+**restrictive RLS cutover policy** that can block direct writes **only after
+a particular shop has completed a signed, data-preserving upgrade**.
+
+- Migration: `supabase/migrations/20261110_stage7_progressive_legacy_write_cutover.sql`.
+- Existing `public.zavi_workspaces` UPDATE owner/subscription policies remain
+  untouched. A new restrictive UPDATE policy, `zavi_stage7_upgraded_server_only`,
+  adds an independently protected server-side check.
+- Private `zavi_stage7_rpc_only_workspaces` enrollment ledger is denied to
+  normal authenticated customers and exposed anonymous clients. The
+  migration **does not insert any enrollment rows**.
+- Once a separate, approved deployment records a verified original-signed
+  app version and tested local backup for a specific workspace, raw owner
+  REST PATCH is blocked for that workspace. The checked `zavi_stage7_workspace_cas`
+  SECURITY DEFINER RPC continues to work after cutover.
+- Enrollment is deliberately **not automatic**: no installed shop will stop
+  syncing just because this migration was applied.
+
+**Live primary Supabase deployment**:
+`stage7_progressive_legacy_write_cutover_no_enrollment` — applied
+successfully. Re-read production counts: **6 workspaces, 60 devices, 0 cutover
+enrollments, 0 legacy operation rows**, one restrictive policy installed,
+normal customers cannot self-enroll, and current owner clients retain their
+legacy UPDATE grant until verified upgrade. No customer financial data or
+workspace row was modified during deployment.
+
+**Independent automated proof** (disposable PostgreSQL 17 and actual browser
+source):
+
+- [Stage 7 run 42785659785](https://github.com/zavyanmasoom3-source/ZAVI-ONE-REBORN/actions/runs/42785659785) — **SUCCESS**. Three independent PostgreSQL database fixtures plus the real
+  client/source and 3-browser CAS acceptance; before opt-in the synthetic
+  old app can write, after opt-in raw UPDATE returns zero rows, while the
+  server-authorized CAS still succeeds. Cross-tenant writes, revoked device
+  and concurrent stale financial edits remain denied.
+- [Migration integrity 42785659695](https://github.com/zavyanmasoom3-source/ZAVI-ONE-REBORN/actions/runs/42785659695) — **SUCCESS**.
+- The same Stage 7 CI now enforces real backup integrity and backup-import
+  browser tests, plus strict persistent-signing preflight. No untrusted
+  generated debug signer is accepted.
+
+**Outstanding owner/device-dependent acceptance**:
+Original private keystore material for both ONE and ADMIN is not available
+through the GitHub tool. The last signed Android QA attempt
+[42778428487](https://github.com/zavyanmasoom3-source/ZAVI-ONE-REBORN/actions/runs/42778428487)
+failed on missing owner secrets for **both** apps. The signing-key values must
+be entered by the owner into GitHub Actions Secrets, matching the pinned
+fingerprints in `signing/certificates.json`. A computer/phone with the old
+installation and recoverable offline sales is also required for a true
+in-place upgrade, reboot, and restore/no-data-loss acceptance. In addition,
+client-generated device IDs cannot be represented as hardware-bound
+cryptographic proof. The actual cutover to block legacy PATCH must remain
+deferred until device credential hardening and signed physical upgrade tests.
+
+**Verdict**: all tested Stage 7 **source and server changes** are in place,
+and no customer workspaces were force migrated. This does not establish a
+100% certified public Release or authorise unconditional Stage 8 progression
+under the user's strict sequential rule. A final signed-device acceptance
+is still required.
