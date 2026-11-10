@@ -125,6 +125,11 @@ html[data-zavi-theme="glass"] #z24Root .v24-btn.subtle{
  background:rgba(45,96,155,.72)!important;color:#f0faff!important;
  border:1px solid #759bc8!important
 }
+/* Respect global Dari/Pashto RTL and English LTR layout settings. */
+html[dir="ltr"] #z24Root{direction:ltr!important;text-align:left!important}
+html[dir="ltr"] #z24Root .v24-table{text-align:left!important}
+html[dir="rtl"] #z24Root{direction:rtl!important;text-align:right!important}
+html[dir="rtl"] #z24Root .v24-table{text-align:right!important}
 `;
 function init(){
  if(!document.getElementById('z24Styles')){const s=document.createElement('style');s.id='z24Styles';s.textContent=css;document.head.appendChild(s)}
