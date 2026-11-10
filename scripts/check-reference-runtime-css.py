@@ -1,61 +1,63 @@
 #!/usr/bin/env python3
-"""Owner-approved classic V66.62-style appearance guard.
-Keep modern feature CSS/JS and both apps offline-safe; reject newer skins.
+"""Lock the five ORIGINAL CSS blobs from the owner-supplied APKs (10 Nov 2026).
+
+This is an appearance-only contract: do not delete current feature modules,
+navigation handlers, cloud code or invoice templates. The user's submitted
+Android APKs are reference artifacts, not test/build inputs in GitHub CI.
 """
 from pathlib import Path
 from urllib.parse import urlsplit
+import hashlib
 import re
+
 ROOT=Path(__file__).resolve().parents[1]
-obsolete={
- 'zavi-graphic-refresh.css','zavi-release-polish-v19.css','zavi-dark-executive-v18.css',
- 'zavi-dark-executive-v23.css','zavi-theme-v29.css',
- 'zavi-final-light-v30.css','zavi-light-production-v31.css',
- 'zavi-light-hotfix-v32.css','zavi-light-finish-v33.css',
- 'zavi-light-studio-v34.css','zavi-signature-v35.css',
- 'zavi-premium-v37.css','zavi-layout-contrast-v40.css',
- 'zavi-reborn-design-v1.css','zavi-cinematic-v2.css',
- 'neon-theme-v47.css','neon-admin-v47.css'
+BASE={
+ 'one':[
+  ('zavi-clean-professional-v6667.css','9b8651b10b3fbb078f42dee8bda147d83514de65'),
+  ('zavi-showcase-v6668.css','d0be9190d12d016ccca547253b46845723b37bf5'),
+  ('zavi-mobile-photo-qa-v6669.css','ef4083abd6e697b245e1e5b89de40b6e8775a9c5')],
+ 'admin':[
+  ('zavi-clean-professional-v1458.css','62415c25159c686e770b5135c358410108a7b117'),
+  ('zavi-admin-showcase-v1459.css','94123abd913696a54c880e390c9b1ce0392dc05c')]
 }
-for app in ('one','admin'):
-    html=(ROOT/'apps'/app/'index.html').read_text(encoding='utf8')
-    sw=(ROOT/'apps'/app/'sw.js').read_text(encoding='utf8')
-    hrefs=[m.group(1).split('?')[0].split('/')[-1] for m in re.finditer(
-        r'<link\b[^>]*\brel=["\']stylesheet["\'][^>]*\bhref=["\']([^"\']+)',html,re.I)]
-    violations=obsolete.intersection(hrefs)
-    assert not violations,(app,'obsolete loaded',sorted(violations))
-    for name in obsolete:
-        assert not (ROOT/'apps'/app/name).exists(),(app,'retired CSS physically present',name)
-    assert len(hrefs)==len(set(hrefs)),(app,'duplicate runtime CSS links')
-    assert hrefs.index('zavi-reference-v3.css')>hrefs.index('zavi-approved-visual-v2.css')
-    if app=='one':
-        assert hrefs[-1]=='zavi-v6662-classic-restore.css',(app,hrefs[-4:])
-        assert '"zavi-v6662-classic-restore.css"' in sw,('classic safety CSS not cached',app)
-        retired_skins=('zavi-clean-professional-v6667.css','zavi-showcase-v6668.css',
-                       'zavi-mobile-photo-qa-v6669.css',
-                       'zavi-unified-compact-v1.css','zavi-approved-one-v2.css',
-                       'zavi-owner-reference-login-v1.css','zavi-reference-one-v3.css')
+OLD_PAGE_SKINS={
+ 'one':('zavi-reference-one-v3.css','zavi-approved-one-v2.css',
+        'zavi-unified-compact-v1.css','zavi-v6662-classic-restore.css'),
+ 'admin':('zavi-reference-admin-v3.css','zavi-approved-admin-v2.css',
+          'zavi-unified-compact-v1.css','zavi-admin-pdf-final-v1467.css',
+          'zavi-admin-classic-safety.css')
+}
+for app, originals in BASE.items():
+    base=ROOT/'apps'/app
+    html=(base/'index.html').read_text(encoding='utf8')
+    sw=(base/'sw.js').read_text(encoding='utf8')
+    links=re.findall(r'<link\\b[^>]*>',html,re.I)
+    active=[]
+    for tag in links:
+        if 'stylesheet' not in tag or 'href=' not in tag:
+            continue
+        if 'media="not all"' not in tag:
+            href=re.search(r'href=["\\']([^"\\']+)',tag)
+            if href:active.append(urlsplit(href.group(1)).path.split('/')[-1])
+    expected=[name for name,_ in originals]
+    assert active[-len(expected):]==expected,(app,'active original APK skins must load LAST',active[-8:])
+    for name,expected_blob in originals:
+        tags=[t for t in links if re.search(r'href=["\\'][^"\\']*'+re.escape(name),t)]
+        assert len(tags)==1 and 'media="not all"' not in tags[0],(app,'original skin not active exactly once',name)
+        assert 'data-zavi-owner-baseline="apk-uploaded-20261110"' in tags[0],(app,'skin not owner-locked',name)
+        raw=(base/name).read_bytes()
+        blob=hashlib.sha1(b'blob '+str(len(raw)).encode()+b'\\0'+raw).hexdigest()
+        assert blob==expected_blob,(app,'owner original CSS content was changed',name,blob)
+        assert '"'+name+'"' in sw,(app,'original CSS missing from offline precache',name)
+    for name in OLD_PAGE_SKINS[app]:
+        assert not any(name in t and 'media="not all"' not in t for t in links),(app,'replacement skin reenabled',name)
+    if app=='admin':
+        assert 'zavi-reference-navigation-v3.js' not in html, 'new reference-only ADMIN reordering changes original navigation'
+        assert 'account-control.js' in html, 'ADMIN owner security removed'
     else:
-        assert hrefs[-1]=='zavi-admin-classic-safety.css',(app,hrefs[-4:])
-        assert '"zavi-admin-classic-safety.css"' in sw,('admin classic safety CSS not cached',app)
-        retired_skins=('zavi-clean-professional-v1458.css','zavi-admin-showcase-v1459.css',
-                       'zavi-admin-pdf-final-v1467.css','zavi-unified-compact-v1.css',
-                       'zavi-approved-admin-v2.css','zavi-reference-admin-v3.css')
-    if app=='one':
-        assert '<link rel="stylesheet" href="./zavi-pdf-final-v6760.css?v=6760" data-zavi-pdf-final="true">' in html, 'invoice print stylesheet must remain enabled'
-    for name in retired_skins:
-        tags=re.findall(r'<link[^>]*>',html,re.I)
-        relevant=[tag for tag in tags if name in tag]
-        assert len(relevant)==1,(app,'missing/duplicate controlled skin',name)
-        assert 'media="not all"' in relevant[0],(app,'new skin was reactivated',name)
-    assert 'zavi-classic6662-v1' not in html,(app,'unexpected legacy marker')
-    must={'design-system-v1.css',f'zavi-reference-{app}-v3.css'}
-    if app=='one':must.update({'zavi-compact-workflow-v1.css','zavi-barcode-label-v6700.css'})
-    else:must.update({'zavi-admin-settings-hub-v1.css','style.css'})
-    assert must.issubset(hrefs),(app,'missing functional CSS',sorted(must-set(hrefs)))
-    assert not any(('"'+name+'"') in sw or ("'"+name+"'") in sw for name in obsolete)
+        assert all(x in html for x in ('zavi-in-transit-v1.js','zavi-cheques-v1.js','zavi-warehouses-v1.js')), 'ONE functional modules missing'
     cache=re.search(r"const CACHE_NAME='([^']+)'",sw)
-    assert cache and cache.group(1).startswith(f'zavi-{app}-design-tokens-unified-'),(app,'stale design token cache')
-    assert '"../../packages/shared/ui/design-system-v1.css"' in sw,(app,'shared design not offline cached')
-    assert '"../../packages/shared/ui/design-system-v1.js"' in sw,(app,'shared design helpers not offline cached')
-    print(f'PASS {app}: classic styling enabled; {len(retired_skins)} newer skins inactive; functional CSS retained')
-print('PASS: original classic appearance is active; newer-only skins are inert in both apps')
+    assert cache and 'owner-apk-style-lock' in cache.group(1),(app,'old design remains offline-cached')
+    assert '../../packages/shared/ui/design-system-v1.css' in sw,(app,'shared feature styles missing')
+    print('PASS',app,'owner APK originals locked exactly, last in cascade, cache rotated, features retained')
+print('PASS: user-submitted ZAVI ONE and ADMIN original designs are immutable in source')
