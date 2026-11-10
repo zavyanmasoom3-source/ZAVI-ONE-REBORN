@@ -1,7 +1,14 @@
 \set ON_ERROR_STOP on
 -- Synthetic PostgreSQL 17 only. No live tokens, customers or monetary data.
-CREATE ROLE anon NOLOGIN;
-CREATE ROLE authenticated NOLOGIN;
+DO $roles$
+BEGIN
+ IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname='anon') THEN
+   CREATE ROLE anon NOLOGIN;
+ END IF;
+ IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname='authenticated') THEN
+   CREATE ROLE authenticated NOLOGIN;
+ END IF;
+END $roles$;
 CREATE SCHEMA auth;
 CREATE SCHEMA private;
 CREATE OR REPLACE FUNCTION auth.uid() RETURNS uuid LANGUAGE sql STABLE
