@@ -9,6 +9,7 @@ on:
       - 'scripts/test-stage7-sync-operation-postgres.sql'
       - 'scripts/test-stage7-reset-pending-integrity.cjs'
       - 'scripts/test-cloud-sync-safety.cjs'
+      - 'scripts/test-cloud-three-device-browser.py'
   workflow_dispatch:
 permissions:
   contents: read
