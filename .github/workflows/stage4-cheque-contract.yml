@@ -7,6 +7,7 @@ on:
       - 'scripts/test-stage4-cheque-postgres.sql'
       - 'scripts/test-stage4-cheque-concurrency.sh'
       - 'scripts/test-stage4-cheque-transaction-rollback.sql'
+      - 'supabase/rollback/20261110_stage4_cheque_preuse_only.sql'
       - 'packages/shared/accounting/cheque-settlement-contract.js'
       - 'scripts/test-cheque-settlement.cjs'
       - '.github/workflows/stage4-cheque-contract.yml'
@@ -60,3 +61,31 @@ jobs:
         run: |
           psql -h 127.0.0.1 -U postgres -d postgres \
             -v ON_ERROR_STOP=1 -f scripts/test-stage4-cheque-transaction-rollback.sql
+      - name: Prove pre-use rollback and refusal after financial posting
+        env:
+          PGPASSWORD: synthetic-test-only
+        run: |
+          set -euo pipefail
+          export PGHOST=127.0.0.1 PGPORT=5432 PGUSER=postgres
+          # Already-used Stage 4 journal must make rollback refuse without data loss.
+          if psql -d postgres -v ON_ERROR_STOP=1 \
+            -f supabase/rollback/20261110_stage4_cheque_preuse_only.sql >/tmp/stage4-refusal.log 2>&1; then
+            echo "FAIL: rollback unexpectedly allowed after settlements"
+            exit 1
+          fi
+          psql -d postgres -At -c \
+            "SELECT to_regprocedure('public.zavi_stage4_cheque_apply(uuid,uuid,uuid,text,numeric,text,numeric)') IS NOT NULL" | grep -qx t
+          # New disposable database with the pre-migration fixture, no customer data.
+          psql -d postgres -v ON_ERROR_STOP=1 -c 'CREATE DATABASE zavi_stage4_rollback_qa'
+          awk 'index($0,"\\ir ")==1{exit} !/^CREATE ROLE /{print}' \
+            scripts/test-stage4-cheque-postgres.sql |
+            psql -d zavi_stage4_rollback_qa -v ON_ERROR_STOP=1
+          psql -d zavi_stage4_rollback_qa -v ON_ERROR_STOP=1 \
+            -f supabase/staging/20261110_stage4_cheque_atomic_settlement.sql
+          psql -d zavi_stage4_rollback_qa -v ON_ERROR_STOP=1 \
+            -f supabase/rollback/20261110_stage4_cheque_preuse_only.sql
+          psql -d zavi_stage4_rollback_qa -At -c \
+            "SELECT to_regprocedure('public.zavi_stage4_cheque_apply(uuid,uuid,uuid,text,numeric,text,numeric)') IS NULL" | grep -qx t
+          psql -d zavi_stage4_rollback_qa -At -c \
+            "SELECT EXISTS(SELECT 1 FROM pg_constraint WHERE conname='zavi_cheque_initial_pending')" | grep -qx t
+          echo 'PASS: rollback allowed only before settlement; original constraints restored'
