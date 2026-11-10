@@ -1,0 +1,44 @@
+name: Stage 4 cheque settlement - synthetic PostgreSQL only
+on:
+  push:
+    branches: [dev]
+    paths:
+      - 'supabase/staging/20261110_stage4_cheque_atomic_settlement.sql'
+      - 'scripts/test-stage4-cheque-postgres.sql'
+      - 'packages/shared/accounting/cheque-settlement-contract.js'
+      - 'scripts/test-cheque-settlement.cjs'
+      - '.github/workflows/stage4-cheque-contract.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  cheque-staging:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: synthetic-test-only
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Pure cheque accounting invariants
+        run: node scripts/test-cheque-settlement.cjs
+      - name: Prove atomic cheque staging RPC on disposable PostgreSQL 17
+        env:
+          PGPASSWORD: synthetic-test-only
+        run: |
+          psql -h 127.0.0.1 -U postgres -d postgres \
+            -v ON_ERROR_STOP=1 -f scripts/test-stage4-cheque-postgres.sql
