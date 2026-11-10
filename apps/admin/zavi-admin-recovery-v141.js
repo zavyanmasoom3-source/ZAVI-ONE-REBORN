@@ -95,10 +95,26 @@ async function trashOne(button){if(busy)return;const id=button.dataset.id;if(!/^
  if(typed===null||String(typed).trim()!==phrase){alert('تأیید دوم مطابقت نداشت؛ هیچ تغییری انجام نشد.');return;}
  busy=true;try{const ok=await rpc('zavi_admin_trash_customer',{p_workspace_id:id,p_reason:'حذف قابل بازیابی با دو تأیید مدیر'});if(ok!==true)throw Error('Server did not confirm moving the account');alert(t().trashDone);refreshAccountControl();}
  catch(e){alert(t().error+e.message)}finally{busy=false}}
-async function trashAll(){if(busy)return;if(!confirm(t().bulkAsk))return;const phrase=prompt(t().bulkCheck);
- if(phrase!=='TRASH ALL CUSTOMER ACCOUNTS')return;
- busy=true;try{const count=await rpc('zavi_admin_trash_all_customer_accounts',{p_confirmation:phrase});if(!Number.isInteger(Number(count)))throw Error('Unexpected bulk result');alert(String(count)+t().bulkDone);refreshAccountControl();}
- catch(e){alert(t().error+e.message)}finally{busy=false}}
+async function trashAll(){
+  if(busy)return;
+  if(api()?.getMode?.()!=='live'||navigator.onLine===false)
+   return alert('برای انتقال گروهی باید با حساب مالک اصلی و انترنت وارد شوید.');
+  busy=true;
+  try{
+   const preview=await rpc('zavi_owner_reset_customer_accounts',{p_preview:true,p_confirmation:null});
+   const before=Number(preview?.customer_count);
+   if(!Number.isSafeInteger(before)||before<0||preview?.completed!==false)
+    throw Error('پیش‌نمایش تعداد حساب‌ها از سرور معتبر نیست.');
+   if(before===0){alert(t().empty);return;}
+   if(!confirm(t().bulkAsk+'\n'+before+' حساب برای بررسی شناسایی شد.'))return;
+   const phrase=prompt(t().bulkCheck);
+   if(phrase!=='TRASH ALL CUSTOMER ACCOUNTS')return;
+   const count=await rpc('zavi_admin_trash_all_customer_accounts',{p_confirmation:phrase});
+   if(!Number.isSafeInteger(Number(count))||Number(count)<0)throw Error('Unexpected bulk result');
+   alert(String(count)+t().bulkDone);refreshAccountControl();
+  }catch(e){alert(t().error+e.message)}
+  finally{busy=false}
+ }
 function intercept(event){const el=event.target.closest?.(SELECTOR);if(!el)return;
  // Capture before original legacy click listener: never call the real hard-delete RPC.
  event.preventDefault();event.stopImmediatePropagation();event.stopPropagation();
