@@ -7,6 +7,8 @@ on:
       - 'scripts/test-phase3-offline-policy.sql'
       - 'supabase/migrations/20261109_phase3_device_revoke_sync_guard.sql'
       - 'scripts/test-phase3-revoke-device.sql'
+      - 'supabase/migrations/20261110_phase3_legacy_device_transfer_guard.sql'
+      - 'scripts/test-phase3-legacy-device-transfer.sql'
       - 'scripts/test-phase3-device-freshness.cjs'
       - 'apps/one/zavi-devices-v652.js'
       - '.github/workflows/phase3-offline-policy.yml'
@@ -45,3 +47,8 @@ jobs:
           PGPASSWORD: synthetic-policy-only
         run: |
           psql -h 127.0.0.1 -U postgres -d postgres -v ON_ERROR_STOP=1 -f scripts/test-phase3-revoke-device.sql
+      - name: Verify legacy owner and ADMIN device transfers cannot bypass safe sync
+        env:
+          PGPASSWORD: synthetic-policy-only
+        run: |
+          psql -h 127.0.0.1 -U postgres -d postgres -v ON_ERROR_STOP=1 -f scripts/test-phase3-legacy-device-transfer.sql
