@@ -32,6 +32,8 @@ assert (app/'device-activation.js').is_file() and (app/'pin-recovery.js').is_fil
 assert 'wbbmwfnmurpphwxesssx' in (app/'cloud-config.js').read_text(encoding='utf-8')
 assert 'sb_publishable_' in (app/'cloud-config.js').read_text(encoding='utf-8')
 assert (root/'packages/shared/database/supabase-config.js').is_file()
+for shared in ('database/supabase-config.js','security/access-contract.js','i18n/language-core.js'):
+    assert '../../packages/shared/'+shared in s,('Shared security/i18n script not mounted',shared)
 assert (root/'apps/admin/index.html').is_file()
 sw=(app/'sw.js').read_text(encoding='utf-8')
 assert 'zavi-one-exact-original-v6662-restored-' in sw,'PWA may use old cached new-design assets'
