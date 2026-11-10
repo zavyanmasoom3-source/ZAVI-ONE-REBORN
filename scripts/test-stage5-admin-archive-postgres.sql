@@ -36,9 +36,6 @@ BEGIN
    'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',true,'forged owner archive');
   RAISE EXCEPTION 'SELF_ARCHIVE_ALLOWED';
  EXCEPTION WHEN insufficient_privilege THEN NULL; END;
- IF EXISTS(SELECT 1 FROM private.zavi_customer_archives) THEN
-  RAISE EXCEPTION 'SELF_ARCHIVE_CREATED_RECORD';
- END IF;
  -- Actual client operations remain recoverable and produce one event each.
  IF public.zavi_admin_v24_archive(
    'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',true,'owner confirmed') IS DISTINCT FROM true
@@ -46,19 +43,12 @@ BEGIN
  IF public.zavi_admin_v24_archive(
    'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',true,'retry') IS DISTINCT FROM true
  THEN RAISE EXCEPTION 'REPLAY_REJECTED'; END IF;
- IF (SELECT count(*) FROM private.zavi_customer_admin_events)<>1 THEN
-  RAISE EXCEPTION 'IDEMPOTENT_TRASH_AUDIT_DUPLICATED';
- END IF;
  IF public.zavi_admin_v24_archive(
    'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',false,'restore confirmed') IS DISTINCT FROM true
  THEN RAISE EXCEPTION 'RESTORE_REJECTED'; END IF;
  IF public.zavi_admin_v24_archive(
    'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',false,'retry') IS DISTINCT FROM true
  THEN RAISE EXCEPTION 'RESTORE_REPLAY_REJECTED'; END IF;
- IF (SELECT count(*) FROM private.zavi_customer_admin_events)<>2
- OR (SELECT archived FROM private.zavi_customer_archives WHERE workspace_id=
-   'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb') IS DISTINCT FROM false THEN
-  RAISE EXCEPTION 'TRASH_RESTORE_AUDIT_INCORRECT'; END IF;
 END $test$;
 RESET ROLE;
 
@@ -105,6 +95,13 @@ RESET ROLE;
 
 DO $test$
 BEGIN
+ IF (SELECT count(*) FROM private.zavi_customer_admin_events)<>2
+ OR (SELECT archived FROM private.zavi_customer_archives WHERE workspace_id=
+   'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb') IS DISTINCT FROM false
+ THEN RAISE EXCEPTION 'ARCHIVE_RESTORE_AUDIT_NOT_IDEMPOTENT'; END IF;
+ IF (SELECT count(*) FROM private.zavi_customer_archives WHERE workspace_id=
+   'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa')<>0
+ THEN RAISE EXCEPTION 'OWNER_WORKSPACE_ARCHIVED'; END IF;
  IF (SELECT count(*) FROM public.zavi_workspaces)<>2
  OR (SELECT count(*) FROM public.zavi_fake_invoices)<>1
  OR (SELECT amount FROM public.zavi_fake_invoices WHERE id='INV-TEST-1')<>250
