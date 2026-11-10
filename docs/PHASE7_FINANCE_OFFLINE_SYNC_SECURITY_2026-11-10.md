@@ -196,3 +196,45 @@ and no customer workspaces were force migrated. This does not establish a
 100% certified public Release or authorise unconditional Stage 8 progression
 under the user's strict sequential rule. A final signed-device acceptance
 is still required.
+
+
+## Final verification after safe cutover gate (2026-11-10)
+
+- **Primary database:** migration
+  `stage7_progressive_legacy_write_cutover_no_enrollment` applied; read-back
+  confirmed 6 workspaces, 60 device rows, **0 forced cutovers**, 0 existing
+  legacy operations, 1 restrictive RLS policy. A signed-in customer has no
+  permission to INSERT into the private cutover registry.
+- **Isolated server test:** `scripts/test-stage7-progressive-cutover-postgres.sql`
+  asserts that a mock pre-upgrade owner still has the original UPDATE ability,
+  an enrolled owner's direct REST-style update is blocked, authorised new CAS
+  remains functional, revoked-device writes fail and existing invoices survive.
+- **Recovery tests:** actual browser backup integrity/import tests and safe
+  keystore-preflight regression are now part of the Stage 7 CI.
+- [Stage 7 regression 42785659785](https://github.com/zavyanmasoom3-source/ZAVI-ONE-REBORN/actions/runs/42785659785) **SUCCESS**;
+  [migration integrity 42786064235](https://github.com/zavyanmasoom3-source/ZAVI-ONE-REBORN/actions/runs/42786064235)
+  **SUCCESS** on the latest source.
+- **Fresh Android QA signing check 42786064363**:
+  [See actual run](https://github.com/zavyanmasoom3-source/ZAVI-ONE-REBORN/actions/runs/42786064363).
+  ZAVI ONE and ZAVI ONE ADMIN both passed the added Stage 7 source+backup
+  checks, then each **FAILED** on
+  `Require persistent per-app QA certificate (no debug fallback)`.
+  Both jobs reported all four effective signing fields unset. No signed APK
+  was generated, and no replacement/debug certificate was used.
+
+The signing material is private and intentionally not stored in GitHub source
+or accessible through a public connector. The repository owner must put the
+correct original certificate keystores and passwords into GitHub Actions
+Secrets. A new random signing key would *not* provide an in-place update.
+
+The newly installed opt-in RLS gate does not automatically stop a spoofed
+owner JWT with a copied active device ID before a shop is enrolled. Achieving
+that stronger claim requires tested cryptographic per-device possession,
+authenticated session revocation checks, and a secure signed-upgrade rollout
+before cutting off the old UPDATE path. A browser simulation or isolated
+PostgreSQL test alone is not a genuine on-device acceptance.
+
+**Result: Stage 7's additional production-safe source/database measures are
+implemented and automated tests pass, but 100% hardware+original-signing
+certification remains BLOCKED; do not mark the phase as fully accepted or
+publish an APK without this acceptance.**
