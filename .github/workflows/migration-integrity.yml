@@ -45,6 +45,8 @@ jobs:
         run: node scripts/test-phase3-device-activation.cjs
       - name: Verify signed lease owner, device and expiry rejection in real app verifier
         run: node scripts/test-phase3-signed-lease.cjs
+      - name: Prevent auto offline lease cross-account races
+        run: node scripts/test-phase3-auto-lease-scope.cjs
       - name: Verify crash-safe cloud synchronization and full workspace acknowledgements
         run: node scripts/test-cloud-sync-safety.cjs
       - name: Check complete offline bundles for both apps
