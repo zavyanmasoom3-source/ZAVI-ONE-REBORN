@@ -1,0 +1,54 @@
+name: Stage 5 ADMIN authorization and recoverable deletion
+on:
+  push:
+    branches: [dev]
+    paths:
+      - '.github/workflows/stage5-admin-security.yml'
+      - 'apps/admin/app.js'
+      - 'apps/admin/account-control.js'
+      - 'apps/admin/zavi-admin-recovery-v141.js'
+      - 'supabase/migrations/20261110_stage5_retire_permanent_customer_deletion.sql'
+      - 'scripts/test-stage5-admin-hard-delete-postgres.sql'
+      - 'scripts/test-stage5-admin-client-guard.cjs'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  admin-security:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: stage5-disposable-only
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate JavaScript syntax for both ADMIN entrypoints
+        run: |
+          node --check apps/admin/app.js
+          node --check apps/admin/account-control.js
+          node --check apps/admin/zavi-admin-recovery-v141.js
+      - name: Run real ADMIN UI handler two-confirmation and recovery regression
+        run: |
+          node scripts/test-stage5-admin-client-guard.cjs
+          node scripts/test-admin-trash.cjs
+          node scripts/test-admin-customer-trash.cjs
+      - name: Prove old destructive server functions fail even via nested SECURITY DEFINER
+        env:
+          PGPASSWORD: stage5-disposable-only
+        run: |
+          psql -h 127.0.0.1 -U postgres -d postgres \
+            -v ON_ERROR_STOP=1 -f scripts/test-stage5-admin-hard-delete-postgres.sql
