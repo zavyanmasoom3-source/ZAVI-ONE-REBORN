@@ -3729,5 +3729,10 @@ document.addEventListener('change',e=>{if(e.target.dataset.moduleId){zaviSaveMod
 <script defer src="./zavi-message-center-v6720.js?v=reborn1"></script>
 <script defer src="./zavi-safe-transfer-v1.js?v=1"></script>
 <script defer src="./zavi-in-transit-v1.js?v=1"></script>
+<!-- Functional RTL/LTR correction for three languages; legacy cards and colors unchanged. -->
+<style data-zavi-original-locale-direction="true">
+html[dir="ltr"] body{direction:ltr!important}
+html[dir="rtl"] body{direction:rtl!important}
+</style>
 </body>
 </html>
