@@ -1,9 +1,9 @@
 # ZAVI ONE / ZAVI ONE ADMIN — Stage 4, cheques and financial settlement
 Date: 2026-11-10
 Branch: dev
-Status: **STAGING SQL AND AUTOMATED CONTRACT QA PASSED; LIVE FEATURE NOT ENABLED**
+Status: **LIVE SERVER RPC DEPLOYED; REAL MONEY-PAGE CLIENT CONNECTED IN DEV; PHYSICAL RELEASE CERTIFICATION PENDING**
 
-## Authoritative production schema blockers, read-only confirmation
+## Original production schema blockers — historical pre-deployment audit
 
 - \`public.zavi_cheques\` exists, owner SELECT/INSERT only. Constraint
   \`zavi_cheque_initial_pending\` **requires pending** and prevents any clearing.
@@ -13,9 +13,9 @@ Status: **STAGING SQL AND AUTOMATED CONTRACT QA PASSED; LIVE FEATURE NOT ENABLED
   \`zavi_workspaces.payload.tx\`, not an independent journal as the visible
   accounting ledger. A shadow-only cheque journal would not update cashbox,
   supplier payable or customer receivable.
-- The production database was **NOT** modified in this stage. No live cheque,
-  financial or customer rows were queried or written. No permissions on live
-  production roles were changed.
+- At this initial audit checkpoint, production had not yet been modified. This
+  statement is historical; see **Live server deployment** below for the new
+  actual schema and permission changes. No financial row writes were performed.
 
 ## Stage 4 concrete code committed on dev
 
@@ -65,7 +65,7 @@ Status: **STAGING SQL AND AUTOMATED CONTRACT QA PASSED; LIVE FEATURE NOT ENABLED
 - Existing migration-integrity CI continued passing on intermediate commits.
   These are **isolated staging results**, not live customer validation.
 
-## Safety and remaining acceptance gates
+## Original release acceptance gates (current verification follows below)
 
 1. Review rollback and reproducible schema-level backup in a dedicated
    **staging Supabase project**, including compatibility with installed
@@ -91,9 +91,8 @@ Status: **STAGING SQL AND AUTOMATED CONTRACT QA PASSED; LIVE FEATURE NOT ENABLED
 6. Perform supported release signing, Android/Windows install/upgrade and
    balance reconciliation on real test hardware before marking Stage 4 complete.
 
-**Production posture:** no cheque migration deployed, no accounting
-records touched, no claimed stable APK. Do not remove the existing
-\`zavi_cheque_initial_pending\` constraint until the above gates are passed.
+**Historical checkpoint (before deployment):** no migration had yet been applied.
+This is superseded by the deployment verification below. No stable APK is claimed.
 
 
 ## Stage 4 security follow-up — RLS registration guard
@@ -113,9 +112,88 @@ cleared client INSERT operations.
 PostgreSQL 17 settlement, original RLS + hardened insertion, two-session
 concurrency and lost ACK, and complete caller-transaction rollback.
 
-Independent **read-only** production check confirmed that
-\`zavi_cheque_initial_pending\` remains present, there is **no**
-\`public.zavi_stage4_cheque_apply\` in the live project, and the
-\`settled_amount\` column has **not** been added to the live cheque table.
-This proves no Stage 4 DDL was deployed through this work; it does not
-certify production readiness.
+A previous **read-only** production check confirmed the old pending-only
+constraint. This was accurate *before* the live installation described below.
+
+
+## Live server deployment and browser-backed accounting client — 2026-11-10
+
+**Actual primary Supabase project**: selected from the original published
+\`apps/one/cloud-config.js\`. The migration was applied using the Supabase
+migration service as \`stage4_atomic_cheque_settlement_preuse\`
+(version \`20261110070048\`), from the exactly committed reviewed source:
+\`supabase/migrations/20261110_stage4_cheque_atomic_server.sql\`.
+
+The migration refuses to run if any cheque/event exists, if the unexpected
+original pending-only constraint is missing, or if Stage 4 RPC is already
+installed. It locks the cheque registry while checking the preconditions.
+Direct production preflight (PostgreSQL 17.11) found **zero existing cheque
+rows**, **zero audit event rows**, the expected old CHECK, and no prior RPC.
+The migration returned \`success:true\`.
+
+**Independent post-deployment read-back from live pg_catalog**:
+- Public \`zavi_stage4_cheque_apply\` exists, is SECURITY DEFINER with pinned
+  empty search_path and checks the owner, workspace and active subscription.
+- \`zavi_stage4_cheque_balance\` exists; private helper execution is blocked
+  for ordinary authenticated/anonymous clients.
+- Original pending-only CHECK is replaced by amount/status invariants and
+  a stricter owner-only INSERT RLS policy requiring *pending*, zero settled,
+  no clearing timestamp and no linked transaction.
+- \`anon\` cannot EXECUTE the RPC; authenticated can call it, but the
+  function itself enforces workspace ownership and active subscription.
+- Clients lack direct UPDATE of \`zavi_cheques\` and INSERT to event and
+  posting tables. Immutable postings are readable only under owner RLS.
+- Immediately after migration: **0 cheques, 0 events, 0 postings, 6 existing
+  workspaces**. No workspace payload, sales transaction or user ledger
+  was touched by migration SQL.
+- The guarded **pre-use-only** rollback is at
+  \`supabase/rollback/20261110_stage4_cheque_preuse_only.sql\`; CI proves
+  it refuses after posted activity and restores original constraints before
+  activity. Never run this rollback after real settlements.
+
+**Actual client integration**:
+- \`apps/one/zavi-cheques-v1.js\` and \`zavi-cheques-v1.css\` render in the
+  existing Money route, with owner-scoped lists, 3 locales, real registration
+  \`POST /rest/v1/zavi_cheques\`, real settlement
+  \`POST /rest/v1/rpc/zavi_stage4_cheque_apply\`, and responsive theme-safe UI.
+- Supports deposit, partial/full settle, bounce, cancel. Real ISO currencies
+  from the existing currency catalog and manual FX rate for cross-currency
+  settlements. Registration can create **pending** only and has no cash effect.
+- Offline operations are *intents*, not payments. Per owner+workspace durable
+  localStorage queue holds a stable random operation UUID. On reconnect,
+  server confirmation with matching operation UUID is required before removal.
+  Timeout, ambiguous acknowledgment or 403/404 leaves the request pending;
+  no optimistic cash/receivable mutation occurs.
+- \`cloud.js\` now reconciles the server's new workspace revision while
+  refusing to overwrite any local pending/conflicting invoices.
+- The real module is part of the service worker's offline app assets.
+  This is source-level integration on \`dev\`, **not** proof installed
+  devices have received the updated package.
+
+**Reproducible evidence**:
+- [Stage 4 PostgreSQL 17 and pre-use rollback gate](https://github.com/zavyanmasoom3-source/ZAVI-ONE-REBORN/actions/runs/42772166626) — **SUCCESS**.
+  Includes real PostgreSQL locks with independent connections, same-key
+  replay, dropped ACK, balanced postings and rollback, fortified production
+  migration guard.
+- [Stage 4 real Money-page and whole-app integrity browser gate](https://github.com/zavyanmasoom3-source/ZAVI-ONE-REBORN/actions/runs/42772166713) — **SUCCESS**.
+  Tests actual rendered UI and intercepted synthetic HTTP, queue retention,
+  matching vs invalid server acknowledgments, cash unchanged without server
+  approval, existing accounting integrity, 3-device mock and offline bundles.
+- Additional ISO calendar validation and full currency catalog changes
+  committed on dev; check the latest CI run for the final source SHA before
+  describing it as green.
+
+### What remains unverified before Stage 4 can be called 100% release-ready
+
+A live authenticated owner on a dedicated test workspace must exercise real
+Supabase JWT authorization, create a pending cheque, settle in partial and full
+payments and verify actual cash, customer and supplier balances. Also test the
+same operation from two separate authenticated Android devices, offline queue
+restart, lost network ACK, backed-up restore, and installed APK/WebView
+persistence. No owner test credentials or physical two-device test setup is
+available in this conversation. There is also no live successful financial
+posting in production (deliberately), so do **not** confuse deployed source,
+isolated QA and real customer financial certification.
+
+The module must not be called a stable Release, and Stage 4 must not be marked
+100% certified until those acceptance gates are evidenced.
