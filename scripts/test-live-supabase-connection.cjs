@@ -27,7 +27,7 @@ for(const [app,code] of [['one',one],['admin',admin]]){
  const controller=new AbortController();
  const timer=setTimeout(()=>controller.abort(),15000);
  try{
-  const r=await fetch(url+'/auth/v1/health',{method:'GET',headers:{'accept':'application/json'},signal:controller.signal,redirect:'error'});
+  const r=await fetch(url+'/auth/v1/health',{method:'GET',headers:{'accept':'application/json','apikey':select(one)},signal:controller.signal,redirect:'error'});
   assert(r.ok,'Supabase Auth health HTTP '+r.status);
   const ct=r.headers.get('content-type')||'';
   assert(ct.includes('json'),'Expected JSON health response');
