@@ -9,6 +9,8 @@ from pathlib import Path
 from urllib.parse import urlsplit
 import hashlib
 import re
+import subprocess
+import sys
 
 ROOT=Path(__file__).resolve().parents[1]
 BASE={
@@ -28,6 +30,10 @@ OLD_PAGE_SKINS={
           'zavi-admin-classic-safety.css')
 }
 for app, originals in BASE.items():
+    if app=='one' and (ROOT/'apps/one/v6662-original-design-lock.json').is_file():
+        subprocess.run([sys.executable,str(ROOT/'scripts/check-v6662-original-restore.py')],check=True)
+        print('PASS one: exact OLD 66.62 look, rejected newer skins removed')
+        continue
     base=ROOT/'apps'/app
     html=(base/'index.html').read_text(encoding='utf8')
     sw=(base/'sw.js').read_text(encoding='utf8')
