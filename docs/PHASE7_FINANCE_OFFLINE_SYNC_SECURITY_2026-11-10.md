@@ -1,0 +1,51 @@
+# ZAVI ONE — Stage 7: financial integrity, offline sync and device authorization
+
+Date: 2026-11-10; canonical source: `zavyanmasoom3-source/ZAVI-ONE-REBORN`, branch `dev`.
+
+**Status: actual client and server hardening committed, legacy RPC deployed, automated PostgreSQL 17, accounting/browser and source integrity tests PASSED. Genuine owner/nonowner JWT, Android hardware and production Release acceptance are NOT certified.**
+
+## Issues detected in real source and database
+
+1. **Offline accounting loss during maintenance reset:** `apps/one/cloud.js` assumed that any truthy historical `zaviMaintenanceResetAt` plus an advanced cloud revision authorized discarding a newer local pending sales/purchases snapshot. It silently cleared the owner-specific pending marker and selected the cloud snapshot without explicit confirmation. An old reset marker could therefore make fresh offline documents disappear from the active view.
+2. **Legacy sync endpoint bypass:** live `public.zavi_v28_receive_sync_operation(...)` accepted new sync metadata from a workspace owner based on a legacy term-licence table without verifying the current registered primary device or the canonical subscription state (including archival). Duplicate operation IDs were already compared for idempotent ACK, which must stay intact.
+3. **Direct cloud snapshot upload lacked a device preflight:** `cloud.js` uploaded to `zavi_workspaces` REST PATCH after client-side owner session and CAS checks, without first consulting the existing server-backed `zavi_v28_device_sync_authorization` RPC. A previously replaced device with an owner JWT could attempt an online upload.
+
+## Fixes implemented in actual application
+
+- `apps/one/cloud.js`: maintenance marker must be a strictly formatted, valid UTC timestamp newer than both the pending local snapshot and any durable pending marker. Unknown revision, malformed clock, prior/obsolete reset or invalid local data result in **preserve local pending + conflict**.
+- Even with a genuinely later reset, the owner must independently confirm **twice**, including typing the exact workspace name. The **complete original local snapshot** is written into a tenant-specific quarantine key and its bytes read back before replacement. Only after successful activation of the new snapshot is the durable pending queue cleared. Refusal and quota/activation errors never claim synchronization success. Old account caches are not deleted.
+- `apps/one/cloud.js`: the existing `afterSave` pending marker now preserves `local_updated_at`, `recorded_at` and source metadata so future ordering checks have durable evidence.
+- `apps/one/cloud.js`: before every cloud CAS upload, look up the current locally scoped device identifier and request `zavi_v28_device_sync_authorization` using the current authenticated owner session and workspace. Require matching workspace/device identity, `device_allowed===true` **and** `sync_allowed===true`. Denial or network failure retains the local records and pending marker; it does not issue a PATCH.
+- `supabase/migrations/20261110_stage7_sync_operation_device_entitlement_guard.sql`: preserve the existing legacy RPC signature and idempotent return contract; require real `auth.uid()` workspace ownership, canonical subscription validity via `private.zavi_subscription_is_active`, and registered `active`/unrevoked device for **new operations**. Bound operation payload sizes and deny malformed/future-dated payloads. Identical already-received operations can still receive a harmless `already_received` reply after revocation/expiry; attempts to reuse an operation ID with different financial content fail. No rows are deleted or modified.
+
+## Verified real server migration (schema/function only)
+
+Applied named migration `stage7_sync_operation_device_entitlement_guard` to primary Supabase and re-read its installed source and grants. The legacy RPC is now restricted to authenticated callers, and both active-device and canonical-subscription guards are installed.
+
+Read-only before/after production catalog checkpoints remain:
+- **6** workspaces;
+- **60** device registration rows;
+- **0** stored legacy sync operations;
+- **1** recoverable customer archive record;
+- **2** ADMIN audit events.
+
+No customer subscription, device authorization, invoice, warehouse, payment, or original accounting row was mutated in production. The test-only PostgreSQL 17 data exists only on a disposable CI database.
+
+## Automated evidence on the actual source
+
+- [Stage 7 security regression, run 42781065240](https://github.com/zavyanmasoom3-source/ZAVI-ONE-REBORN/actions/runs/42781065240): **SUCCESS**. The gate directly tests the shipping `choose()` and pending marker semantics, the real `cloud.js` cloud retry logic, separate PostgreSQL 17 security fixture with owner/unrelated/no-token, revoked device, expired/archived subscription, idempotency and amount mismatch, plus three actual disposable browser profiles and ledger arithmetic.
+- [Full migration integrity gate, run 42781064860](https://github.com/zavyanmasoom3-source/ZAVI-ONE-REBORN/actions/runs/42781064860): **SUCCESS**, 40 successful steps. Includes standard authentication, signature, customer-safety, pending-cloud, cashier and financial invariants.
+- `scripts/test-stage7-reset-pending-integrity.cjs`: executes **the actual `choose()` function** with synthetic sales/purchases and verifies stale marker, denied consent, mismatched typed name, quota failure, activation failure, owner switch, quarantine recovery, and exact success order.
+- `scripts/test-stage7-sync-operation-postgres.sql`: executes the real migration in disposable PG17 and confirms denied new records from revoked or unrelated devices, invalid/future values, expired/archived accounts, same-ID altered-money conflicts, and idempotent ACK after revocation.
+- `scripts/test-cloud-three-device-browser.py`: added **Case 5**, authentic request to a disposable mock canonical device authorization endpoint. A revoked device cannot PATCH; the unsent sale and queue survive. After re-authorization, the same sale uploads **once**. Prior four collision, dropped ACK, delete/edit and clock skew cases remain.
+- CI workflows `.github/workflows/stage7-finance-offline-security.yml` and `.github/workflows/migration-integrity.yml` enforce these tests automatically.
+
+## Remaining security and release boundaries (do not misrepresent)
+
+1. **Direct REST PATCH remains a privileged owner+subscription RLS path:** the primary workspace UPDATE policy enforces owner and active subscription, but does not itself enforce device-specific proof. The new client authorization preflight and hardened *legacy operation RPC* protect normal shipping clients and that separate RPC, respectively; they are **not equivalent to enforcing active-device authorization inside every direct PostgreSQL workspace UPDATE**. A malicious client with a still-valid owner token could bypass a client-side check. True server-side device-bound CAS with tamper-resistant proof, retiring raw client UPDATE, and compatibility checks for all existing accounting writers remains a release-level security task. Do not claim that device revocation cryptographically invalidates all existing owner JWTs or leases.
+2. An entirely disconnected revoked device can continue to use an already-issued unexpired offline ES256 lease until its expiry. Instant remote revocation without communication is impossible.
+3. A real owner and a separate non-owner disposable tenant must test authenticated HTTP RLS, refused foreign updates, device replacement, offline signed licence, live cheque settlement, and loss/retry. These tests have not been run against real user sessions; no customer finances were touched.
+4. Source/browser and PostgreSQL tests do not substitute for Android 8–16 physical install, offline restart/storage, camera/thermal/WhatsApp, biometric and data-preserving upgrade.
+5. The persistent owner signing Secrets from Stage 6 are still missing in GitHub Actions. No new signed APK or Windows installer was delivered or declared Release-ready here.
+
+**Disposition:** Stage 7's concrete offline-loss and historical sync-bypass vulnerabilities were fixed and validated in source, isolated server tests and live function read-back. The broader system is **not 100% release-certified** until direct workspace update paths, genuine signed-in test sessions and on-device installation are independently verified.
