@@ -141,7 +141,7 @@ jobs:
               client=(root/'app.js').read_text(encoding='utf-8')
           assert 'https://'+project+'.supabase.co' in client, 'App cloud project mismatch'
           assert re.search(r'sb_publishable_[A-Za-z0-9_-]{20,}',client), 'Missing public cloud client key'
-          assert not re.search(r'''(?m)\\bkey\\s*:\\s*['\"]sb_secret_''',client), 'No private Supabase key permitted'
+          assert not re.search(r'''(?m)\bkey\s*:\s*['"]sb_secret_''', 'No private Supabase key permitted'
           # Only the disposable installable preview identity is changed in CI.
           # Original Gradle config, app source and production signatures are untouched.
           gradle=Path('android-build/app/build.gradle')
