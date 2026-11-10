@@ -12,7 +12,7 @@ const chooseSource=source.slice(start,stop);
 const owner='11111111-1111-4111-8111-111111111111';
 const ws='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
 const store='Synthetic no-money QA store';
-const localAt=Date.parse('2026-11-10T09:00:00.000Z');
+const localAt=Date.now()-120000;
 const iso=ms=>new Date(ms).toISOString();
 const local={updatedAt:localAt,tx:[
  {id:'LOCAL-SALE-UNSENT',type:'sale',paid:35.99},
