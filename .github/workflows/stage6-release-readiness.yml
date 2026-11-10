@@ -16,6 +16,7 @@ on:
       - 'apps/admin/**'
       - 'packages/shared/**'
       - 'scripts/test-stage8*.py'
+      - 'scripts/test-owner-apk-style-browser.py'
       - 'supabase/migrations/20261110_stage8_admin_owner_live_session.sql'
   workflow_dispatch:
 permissions:
@@ -70,7 +71,7 @@ jobs:
           python3 scripts/test-unified-reference-browser.py
           python3 scripts/test-phase2-display-sizes-browser.py
           python3 scripts/test-admin-settings-layout-browser.py
-          python3 scripts/test-12-reference-design-browser.py
+          python3 scripts/test-owner-apk-style-browser.py
 
   android-r8-unsigned:
     name: R8 unsigned Android ${{ matrix.app }}
