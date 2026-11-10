@@ -133,7 +133,7 @@ DECLARE
   v_p_1 uuid; v_p_2 uuid; v_from text; v_to text;
 BEGIN
  IF v_actor IS NULL OR p_workspace IS NULL OR p_cheque IS NULL OR p_operation IS NULL
-   OR p_kind NOT IN ('deposit','settle','bounce','cancel') THEN
+   OR p_kind IS NULL OR p_kind NOT IN ('deposit','settle','bounce','cancel') THEN
   RAISE EXCEPTION 'INVALID_OR_UNAUTHENTICATED_REQUEST' USING ERRCODE='42501';
  END IF;
  -- Lock order workspace -> cheque -> operations is consistent for racing callers.
