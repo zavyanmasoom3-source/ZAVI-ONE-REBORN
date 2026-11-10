@@ -22,6 +22,11 @@ html[data-zavi-theme] #zawiPrivateGate .zavi-gate-appearance [data-zavi-theme-ch
 html[data-zavi-theme] #content .zavi-theme-settings [data-zavi-theme-choice] {
  min-height:44px!important;box-sizing:border-box;
 }
+/* The historical multilingual PIN gate must show only the selected language. */
+#zawiPrivateGate .zavi-gate-lang {display:none}
+html:not([lang^="ps"]):not([lang^="en"]) #zawiPrivateGate .zavi-gate-fa {display:inline}
+html[lang^="ps"] #zawiPrivateGate .zavi-gate-ps {display:inline}
+html[lang^="en"] #zawiPrivateGate .zavi-gate-en {display:inline}
 html[data-zavi-theme] [hidden] { display: none !important; }
 html[data-zavi-theme] :is(input, textarea, select) { max-width: 100%; min-width: 0; }
 html[data-zavi-theme] :is(button, input, textarea, select, a):focus-visible {
