@@ -8,6 +8,7 @@ UPDATE private.zavi_subscription_test_state SET active=true,archived=false
 UPDATE public.zavi_v26_devices SET status='active',revoked_at=NULL
  WHERE device_id='QA-PRIMARY-A';
 
+GRANT USAGE ON SCHEMA private TO authenticated;
 ALTER TABLE public.zavi_workspaces ENABLE ROW LEVEL SECURITY;
 GRANT SELECT,UPDATE ON public.zavi_workspaces TO authenticated;
 CREATE POLICY qa_owner_select ON public.zavi_workspaces
