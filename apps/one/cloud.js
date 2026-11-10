@@ -534,6 +534,20 @@ async function push(){if(!pending||!workspace||role!=='owner'||pushing||conflict
  const updateBody={payload:snapshot,revision:oldRev+1,updated_at:new Date().toISOString()};
  if(renameName&&renameName!==workspace.name)updateBody.name=renameName;const uploadWorkspace=workspace.id,uploadOwner=session?.user?.id,uploadTenantKey=window.zaviTenantKey?.();
  try{
+ // Stage 7: a replaced/revoked device cannot send a new CAS snapshot merely
+ // because its old owner's JWT still exists. Ask the canonical server guard
+ // for the active device and subscription; keep pending data on denial.
+ const deviceId=window.zaviDeviceActivation?.getDeviceId?.()||'';
+ if(!deviceId)throw Error('DEVICE_ID_REQUIRED_BEFORE_SYNC');
+ const decision=await request('/rest/v1/rpc/zavi_v28_device_sync_authorization',{
+  method:'POST',body:{p_workspace_id:uploadWorkspace,p_device_id:deviceId}
+ });
+ if(!workspace||workspace.id!==uploadWorkspace||session?.user?.id!==uploadOwner||
+    window.zaviTenantKey?.()!==uploadTenantKey||role!=='owner')return;
+ const allowed=Array.isArray(decision)?decision[0]:decision;
+ if(allowed?.workspace_id!==uploadWorkspace||allowed?.device_id!==deviceId||
+    allowed?.device_allowed!==true||allowed?.sync_allowed!==true)
+  throw Error('DEVICE_OR_SUBSCRIPTION_NOT_AUTHORIZED_FOR_SYNC');
  const rows=await request('/rest/v1/zavi_workspaces?select=id,name,revision,updated_at&id=eq.'+workspace.id+'&revision=eq.'+oldRev,{method:'PATCH',body:updateBody,prefer:'return=representation'});
  if(!workspace||workspace.id!==uploadWorkspace||session?.user?.id!==uploadOwner||window.zaviTenantKey?.()!==uploadTenantKey)return;
  if(!rows?.length){
