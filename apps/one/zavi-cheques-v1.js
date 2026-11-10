@@ -102,7 +102,7 @@
   return f;
  }
  function mount(w){
-  let context=null,rows=[],busy=false,queueBusy=false,lastScope='',lastError='',lastLoaded=0;
+  let context=null,rows=[],busy=false,registering=false,queueBusy=false,serverReady=false,lastScope='',lastError='',lastLoaded=0;
   const el=()=>w.document.getElementById('zaviStage4Cheques');
   const scope=()=>{
    const state=w.zaviCloudRestoreInfo?.()||{},uid=w.zaviCloudGetAuthSession?.()?.user?.id||'';
@@ -164,7 +164,7 @@
      '<label>'+escape(t.currency)+'<select name="currency" required>'+opts(currencies.map(c=>[c,c]),currentCurrency)+'</select></label>'+
      '<label>'+escape(t.issue)+'<input name="issue_date" type="date" value="'+escape(today)+'" required></label>'+
      '<label>'+escape(t.due)+'<input name="due_date" type="date" value="'+escape(today)+'" required></label>'+
-     '<button class="btn primary" type="submit"'+(offline||blocked?' disabled':'')+'>'+escape(t.save)+'</button>'+
+     '<button class="btn primary" type="submit"'+(offline||blocked||!serverReady?' disabled':'')+'>'+escape(t.save)+'</button>'+
      '</form></details><div class="zavi-cheque-list">'+(cards||'<p>'+escape(t.empty)+'</p>')+'</div>'+
      '<div class="zavi-cheque-queue"><strong>'+escape(t.queue)+': '+q.length+'</strong>'+
      (q.length?'<button class="btn subtle" type="button" data-cheque-action="retry">'+escape(t.retry)+'</button>':'')+
@@ -196,13 +196,14 @@
     const data=await api('zavi_cheques?select=id,workspace_id,direction,cheque_number,bank_name,counterparty_id,currency,amount,settled_amount,status,due_date,created_at&workspace_id=eq.'+
       encodeURIComponent(s.workspace)+'&order=created_at.desc&limit=150',null,'GET');
     if(scope().key!==s.key)return;
-    rows=Array.isArray(data)?data:[];lastLoaded=Date.now();setMessage('');render();
-   }catch(e){if(scope().key===s.key)setMessage(e.message)}
+    rows=Array.isArray(data)?data:[];serverReady=true;lastLoaded=Date.now();setMessage('');render();
+   }catch(e){if(scope().key===s.key){serverReady=false;setMessage(e.status===400||e.status===404?tr().unready:e.message);render()}}
    finally{busy=false}
   }
   async function register(form){
    const s=scope();
    if(!owner(s)||s.pending||s.conflict||w.navigator.onLine===false)throw Error(tr().blocked);
+   if(!serverReady)throw Error(tr().unready);
    const f=new FormData(form);
    const proposed=validateRegistration({
     workspace:s.workspace,direction:String(f.get('direction')||''),
@@ -283,16 +284,16 @@
    let node=el();
    if(!node){node=w.document.createElement('section');node.id='zaviStage4Cheques';
      node.className='card zavi-cheque-module';host.append(node)}
-   if(lastScope!==s.key){rows=[];lastScope=s.key;lastError='';lastLoaded=0}
+   if(lastScope!==s.key){rows=[];serverReady=false;lastScope=s.key;lastError='';lastLoaded=0}
    render();
    if(owner(s)&&w.navigator.onLine!==false&&Date.now()-lastLoaded>60000)
     void refresh();
   }
   w.document.addEventListener('submit',e=>{
    const form=e.target.closest('[data-cheque-register]');if(!form)return;
-   e.preventDefault();if(busy||queueBusy)return;
-   busy=true; // Prevent repeated registrations on double-click.
-   register(form).catch(err=>setMessage(err.message)).finally(()=>{busy=false;render()});
+   e.preventDefault();if(busy||queueBusy||registering)return;
+   registering=true; // Prevent repeated registrations on double-click.
+   register(form).catch(err=>setMessage(err.message)).finally(()=>{registering=false;render()});
   });
   w.document.addEventListener('click',e=>{
    const btn=e.target.closest('[data-cheque-action]');if(!btn||!btn.closest('#zaviStage4Cheques'))return;
@@ -313,8 +314,8 @@
   });
   w.addEventListener('online',()=>w.setTimeout(()=>flush().catch(()=>{}),1800));
   w.addEventListener('zavi-cloud-sync-confirmed',()=>w.setTimeout(()=>flush().catch(()=>{}),650));
-  w.addEventListener('zavi-cloud-workspace-selected',()=>{rows=[];lastScope='';lastError=''});
-  w.addEventListener('zavi-cloud-logged-out',()=>{rows=[];lastScope='';lastError=''});
+  w.addEventListener('zavi-cloud-workspace-selected',()=>{rows=[];serverReady=false;lastScope='';lastError=''});
+  w.addEventListener('zavi-cloud-logged-out',()=>{rows=[];serverReady=false;lastScope='';lastError=''});
   w.setInterval(()=>{if(el()&&w.navigator.onLine!==false)void flush().catch(()=>{})},45000);
   w.ZaviChequeStage4=Object.freeze({mount:attach,refresh,flush});
  }
