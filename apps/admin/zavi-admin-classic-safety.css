@@ -1,0 +1,13 @@
+/* Restore the established ADMIN look without re-enabling newer reference skins.
+ * Keep existing owner/session checks, billing, recovery and route handlers.
+ * Prevent inherited entry animation from leaving the actual overview dimmed. */
+html[data-zavi-theme] #view .admin-reference-dashboard-v5 {
+ opacity:1!important;animation:none!important;transform:none!important;
+}
+html[data-zavi-theme] #view [hidden] {display:none!important}
+html[data-zavi-theme] :is(button,input,select,textarea):focus-visible {
+ outline:3px solid var(--zav-blue-2,#3c91ec);outline-offset:2px;
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-zavi-theme] #view :is(.panel,.admin-item,.button) {transition:none!important;animation:none!important}
+}
