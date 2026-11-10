@@ -525,7 +525,7 @@ function zaviCloudSamePayload(left,right){
  }
  return true;
 }
-function afterSave(){if(role!=='owner'||!workspace)return;pending=true;writePending({workspace_id:workspace.id,revision,owner_uid:session?.user?.id});changeInfo(navigator.onLine?'تغییرات محلی محفوظ شد؛ تلاش برای ارسال به ابر...':'📴 خرید و فروش در همین دستگاه ذخیره شد؛ با وصل شدن انترنت همگام می‌شود.',false);clearTimeout(syncTimer);if(navigator.onLine)syncTimer=setTimeout(push,150)}
+function afterSave(){if(role!=='owner'||!workspace)return;pending=true;writePending({workspace_id:workspace.id,revision,owner_uid:session?.user?.id,local_updated_at:Number(db?.updatedAt)||0,recorded_at:new Date().toISOString(),source:'after_save'});changeInfo(navigator.onLine?'تغییرات محلی محفوظ شد؛ تلاش برای ارسال به ابر...':'📴 خرید و فروش در همین دستگاه ذخیره شد؛ با وصل شدن انترنت همگام می‌شود.',false);clearTimeout(syncTimer);if(navigator.onLine)syncTimer=setTimeout(push,150)}
 async function push(){if(!pending||!workspace||role!=='owner'||pushing||conflict||navigator.onLine===false)return;
  pushing=true;const snapshotJSON=JSON.stringify(db);const snapshot=JSON.parse(snapshotJSON);const oldRev=revision;
  // V65.11: compare the WHOLE saved payload after a request: equal timestamps do not prove equal ledgers.
