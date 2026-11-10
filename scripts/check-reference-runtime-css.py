@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""Regression: the 12-screenshot reference must be the ONLY active page-wide theme.
-Do not delete operational module styling or business handlers.
+"""Owner-approved classic V66.62-style appearance guard.
+Keep modern feature CSS/JS and both apps offline-safe; reject newer skins.
 """
 from pathlib import Path
 from urllib.parse import urlsplit
@@ -27,7 +27,24 @@ for app in ('one','admin'):
         assert not (ROOT/'apps'/app/name).exists(),(app,'retired CSS physically present',name)
     assert len(hrefs)==len(set(hrefs)),(app,'duplicate runtime CSS links')
     assert hrefs.index('zavi-reference-v3.css')>hrefs.index('zavi-approved-visual-v2.css')
-    assert hrefs[-1]==f'zavi-reference-{app}-v3.css',(app,hrefs[-4:])
+    if app=='one':
+        assert hrefs[-1]=='zavi-v6662-classic-restore.css',(app,hrefs[-4:])
+        assert '"zavi-v6662-classic-restore.css"' in sw,('classic safety CSS not cached',app)
+        retired_skins=('zavi-clean-professional-v6667.css','zavi-showcase-v6668.css',
+                       'zavi-mobile-photo-qa-v6669.css','zavi-pdf-final-v6760.css',
+                       'zavi-unified-compact-v1.css','zavi-approved-one-v2.css',
+                       'zavi-owner-reference-login-v1.css','zavi-reference-one-v3.css')
+    else:
+        assert hrefs[-1]=='zavi-reference-admin-v3.css',(app,hrefs[-4:])
+        retired_skins=('zavi-clean-professional-v1458.css','zavi-admin-showcase-v1459.css',
+                       'zavi-admin-pdf-final-v1467.css','zavi-unified-compact-v1.css',
+                       'zavi-approved-admin-v2.css','zavi-reference-admin-v3.css')
+    for name in retired_skins:
+        tags=re.findall(r'<link[^>]*>',html,re.I)
+        relevant=[tag for tag in tags if name in tag]
+        assert len(relevant)==1,(app,'missing/duplicate controlled skin',name)
+        assert 'media="not all"' in relevant[0],(app,'new skin was reactivated',name)
+    assert 'zavi-classic6662-v1' not in html,(app,'unexpected legacy marker')
     must={'design-system-v1.css',f'zavi-reference-{app}-v3.css'}
     if app=='one':must.update({'zavi-compact-workflow-v1.css','zavi-barcode-label-v6700.css'})
     else:must.update({'zavi-admin-settings-hub-v1.css','style.css'})
@@ -37,5 +54,5 @@ for app in ('one','admin'):
     assert cache and cache.group(1).startswith(f'zavi-{app}-design-tokens-unified-'),(app,'stale design token cache')
     assert '"../../packages/shared/ui/design-system-v1.css"' in sw,(app,'shared design not offline cached')
     assert '"../../packages/shared/ui/design-system-v1.js"' in sw,(app,'shared design helpers not offline cached')
-    print(f'PASS {app}: {len(hrefs)} active CSS links, retired theme files removed from root')
-print('PASS: reference theme is the final active design in ONE and ADMIN')
+    print(f'PASS {app}: classic styling enabled; {len(retired_skins)} newer skins inactive; functional CSS retained')
+print('PASS: original classic appearance is active; newer-only skins are inert in both apps')
