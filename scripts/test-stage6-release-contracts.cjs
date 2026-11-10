@@ -42,8 +42,19 @@ assert.match(wf,/--no-build-cache/);
 assert.doesNotMatch(wf,/actions\/upload-artifact/,'Never upload unsigned Android APK or unapproved installer');
 for(const app of ['one','admin']){
  const html=read('apps/'+app+'/index.html');
- assert.match(html,/design-system-v1\.css/);
- assert.match(html,/zavi-reference-/);
+ if(app==='one' && fs.existsSync('apps/one/v6662-original-design-lock.json')){
+   // Original 62MB V66.62 interface is the owner's approval baseline.
+   // Shared utility code must load without reactivating rejected PDF CSS.
+   assert.match(html,/zavi-theme-unified-v6538\.css/);
+   assert.doesNotMatch(html,/zavi-reference-one-v3\.css|zavi-showcase-v6668\.css/);
+   for(const mod of ['database/supabase-config.js','security/access-contract.js','i18n/language-core.js'])
+     assert.ok(html.includes('../../packages/shared/'+mod),'Missing functional import: '+mod);
+   assert.ok(fs.existsSync('scripts/prepare-v6662-native-webview.py'),
+     'Missing mandatory native-only legacy WebView safety repair');
+ }else{
+   assert.match(html,/design-system-v1\.css/);
+   assert.match(html,/zavi-reference-/);
+ }
 }
 console.log('PASS: Android 26..36, R8, two app identities, persistent-signing enforcement and no app data backup');
 console.log('PASS: Windows WebView2 isolation; no unsigned build or installer upload in Stage 6 gates');
