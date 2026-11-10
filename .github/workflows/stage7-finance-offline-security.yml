@@ -73,3 +73,9 @@ jobs:
           python3 scripts/test-accounting-edge-cases-browser.py
           python3 scripts/test-cloud-sync-browser.py
           python3 scripts/test-cloud-three-device-browser.py
+      - name: Recover original offline ledger through backup integrity and import regression
+        run: |
+          python3 scripts/test-backup-integrity-browser.py
+          python3 scripts/test-backup-import-browser.py
+      - name: Validate persistent signing preflight fails closed without owner keys
+        run: python3 scripts/test-prepare-ci-signing.py
