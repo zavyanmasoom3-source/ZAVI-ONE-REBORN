@@ -582,6 +582,21 @@ window.zaviCloudAfterRender=afterRender;
 window.zaviCloudRestoreInfo=()=>({workspace:workspace?.id,role,revision,pending,conflict});
 // V65.2: self-reported sync status; never asserts remote-offline device is clean.
 window.zaviCloudDeviceSyncStatus=()=>({workspace:workspace?.id,role,pending,conflict,last_sync_successful:!!lastSync&&!pending&&!conflict});
+ // Stage 4: a confirmed server-side cheque settlement increments the same
+ // workspace revision used by cloud.js CAS. Never reload over local pending
+ // invoices or unresolved conflicts. Only report reconciled after the new
+ // server revision is actually loaded into the active ledger.
+ window.zaviCloudReconcileServer=async(expectedRevision=0)=>{
+  const ws=workspace?.id,uid=session?.user?.id;
+  if(!ws||!uid||role!=='owner'||pending||pushing||conflict||polling||navigator.onLine===false)
+   throw Error('LOCAL_LEDGER_NOT_READY_FOR_RECONCILIATION');
+  await reloadCloud(true);
+  if(!session||session.user?.id!==uid||workspace?.id!==ws||pending||conflict||
+     (Number.isFinite(Number(expectedRevision))&&Number(expectedRevision)>0&&
+      revision<Number(expectedRevision)))throw Error('SERVER_LEDGER_RECONCILIATION_PENDING');
+  return {workspace:ws,revision};
+ };
+
 document.addEventListener('change',e=>{if(e.target.matches('.zavi-language-picker,#zaviSettingsLanguage'))setTimeout(()=>{if(typeof page!=='undefined'&&page==='settings')render()},120)});
 // Poll only when visible and no local unsent changes. Never overwrite pending local edits.
 setInterval(()=>{if(workspace&&document.visibilityState==='visible'&&navigator.onLine){if(pending&&!conflict)push();else if(!pushing&&!conflict)reloadCloud(false);if(role==='owner')loadMembers(true).catch(()=>{})}},18000);
