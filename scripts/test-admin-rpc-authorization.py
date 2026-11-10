@@ -23,6 +23,14 @@ READ_ONLY=(
     'zavi_admin_list_workspaces',
     'zavi_admin_finance_snapshot',
     'zavi_admin_v24_accounts',
+    'zavi_admin_v24_events',
+    'zavi_admin_recovery_catalog',
+    'zavi_admin_v241_overview',
+    'zavi_admin_v241_audit',
+    'zavi_admin_support_list',
+    'zavi_admin_registration_contacts',
+    'zavi_admin_message_history_v6595',
+    'zavi_admin_v6573_industry_edition_report',
 )
 failures=[]
 for name in READ_ONLY:
