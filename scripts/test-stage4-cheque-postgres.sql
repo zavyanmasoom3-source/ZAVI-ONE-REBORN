@@ -107,7 +107,7 @@ BEGIN
 END $$;
 
 -- Only the atomic server RPC may create non-pending or pre-settled cheques.
-DO $
+DO $$
 BEGIN
  BEGIN
   INSERT INTO public.zavi_cheques
@@ -131,7 +131,7 @@ BEGIN
   RAISE EXCEPTION 'Forged partly-cleared cheque INSERT unexpectedly accepted';
  EXCEPTION WHEN insufficient_privilege THEN NULL;
  END;
-END $;
+END $$;
 
 SELECT public.zavi_stage4_cheque_apply(
  'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
