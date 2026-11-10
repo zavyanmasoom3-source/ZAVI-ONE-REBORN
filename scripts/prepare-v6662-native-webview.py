@@ -20,13 +20,14 @@ REMOTE = (
 )
 SECOND_LOAD = '<script defer src="./zavi-store-recovery-v6594.js?v=66.14"></script>'
 ORIGINAL_LOAD = '<script src="./zavi-store-recovery-v6594.js?v=65.94" defer></script>'
-FONT_FACE = (
-    '<style data-zavi-native-font-only="v6662">'
-    "@font-face{font-family:'Vazirmatn';"
-    "src:url('./packages/shared/ui/fonts/Vazirmatn-Variable.ttf') format('truetype');"
-    "font-style:normal;font-weight:100 900;font-display:swap}"
-    '</style>\n'
-)
+def local_font_css(href):
+    return (
+        '<style data-zavi-native-font-only="v6662">'
+        "@font-face{font-family:'Vazirmatn';"
+        "src:url('"+href+"') format('truetype');"
+        "font-style:normal;font-weight:100 900;font-display:swap}"
+        '</style>\\n'
+    )
 
 def fix(staged: Path) -> dict:
     staged = staged.resolve()
@@ -48,12 +49,17 @@ def fix(staged: Path) -> dict:
         html = html.replace(link, '')
     if 'fonts.googleapis.com' in html or 'fonts.gstatic.com' in html:
         raise ValueError('Additional unapproved remote font fetch remains')
-    local_font=staged.parent/FONT
-    if not local_font.is_file() or local_font.stat().st_size < 200000:
+    candidates = (
+        ('./'+FONT, staged.parent/FONT),
+        ('../../'+FONT, staged.parent/'../../'/FONT),
+    )
+    local_candidates=[(href,p) for href,p in candidates if p.is_file() and p.stat().st_size>200000]
+    if not local_candidates:
         raise ValueError('Missing full offline Pashto-capable local font')
+    href,_=local_candidates[0]
     if html.count('</head>') < 1:
         raise ValueError('Missing HTML head')
-    html=html.replace('</head>', FONT_FACE+'</head>', 1)
+    html=html.replace('</head>', local_font_css(href)+'</head>', 1)
     if len(re.findall(r'<script[^>]+zavi-store-recovery-v6594\.js',html)) != 1:
         raise ValueError('Native script de-duplication failed')
     staged.write_text(html,encoding='utf8')
