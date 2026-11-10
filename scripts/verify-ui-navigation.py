@@ -3,6 +3,7 @@
 from pathlib import Path
 import shutil
 import subprocess
+import sys
 
 root = Path(__file__).resolve().parents[1]
 html = (root / "apps/one/index.html").read_text(encoding="utf-8")
@@ -10,6 +11,22 @@ route_map = (root / "apps/one/zavi-pdf-screen-map-v6740.js").read_text(encoding=
 ui_js = root / "apps/one/zavi-final-settings-store-v6559.js"
 ui_css = root / "apps/one/zavi-reference-one-v3.css"
 head = html.split("</head>", 1)[0]
+
+# The user explicitly rejected the new PDF screens. For exact legacy V66.62
+# bundles validate the verified original navigation rather than demanding
+# the newer PDF route markers or CSS.
+if (root / "apps/one/v6662-original-design-lock.json").is_file():
+    assert "function go(" in html, "Original V66.62 route dispatcher missing"
+    assert "let goEl=e.target.closest('[data-go]');if(goEl){go(goEl.dataset.go);return}" in html, "Original delegated navigation absent"
+    assert 'data-go="sales"' in html and 'data-go="purchases"' in html, "Original bottom tabs missing"
+    assert 'zavi-three-theme-v6627.js' in html, "Original three-theme switching removed"
+    assert 'zavi-concise-dari-v6662.js' in html, "Original Dari interface script removed"
+    assert 'zavi-reference-one-v3.css' not in html, "Rejected new PDF design still active"
+    assert ui_js.is_file(), "Canonical settings/legacy compatibility missing"
+    if shutil.which("node"):
+        subprocess.run(["node", "--check", str(ui_js)], check=True)
+    print("ZAVI exact original V66.62 navigation & source lock: PASS")
+    sys.exit(0)
 
 assert "document.body.dataset.zaviPage = route" in route_map, "Missing route attribute contract"
 assert "const pagingButton=e.target.closest('button[data-zavi-page][data-direction]');" in html, "Pager must only handle explicit pager buttons"
