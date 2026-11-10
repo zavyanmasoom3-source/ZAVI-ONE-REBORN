@@ -53,7 +53,8 @@ def check_asset(app, base, tag, rel, url, loaded):
     elif not target.is_file():
         FAILURES.append(f'{app}: missing referenced {tag} asset: {url}')
     elif tag == 'script' or (tag == 'link' and 'stylesheet' in rel):
-        loaded.append(str(target.relative_to(ROOT)))
+        # Normalize Windows backslashes before comparing the locked legacy exceptions.
+        loaded.append(target.relative_to(ROOT).as_posix())
 
 
 def audit(app):
