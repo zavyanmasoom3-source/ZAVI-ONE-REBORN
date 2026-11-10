@@ -10,7 +10,7 @@
  };
  const lang=()=>{const l=(q('#zaviTopLanguage')?.value||document.documentElement.lang||'fa').toLowerCase();return l.startsWith('en')?'en':l.startsWith('ps')?'ps':'fa'};
  const t=()=>words[lang()];
- let working=false,last='',lastAttempt=0,doneExp=0,failCode='',generation=0;
+ let working=false,last='',lastAttempt=0,doneExp=0,failCode='',generation=0,queuedRefresh=false,visibleScope='';
  const info=()=>window.zaviCloudRestoreInfo?.()||{};
  const authenticated=()=>window.zaviCloudGetAuthSession?.()?.user?.id||'';
  function message(str,kind){
@@ -26,19 +26,29 @@
  }
  async function run(force=false){
   const s=info(),uid=authenticated(),ws=s.workspace;
+  // Never display a lease result from a previous account or workspace.
+  const visible=uid&&s.role==='owner'&&ws?uid+'/'+ws:'';
+  if(visible!==visibleScope){
+   visibleScope=visible;doneExp=0;failCode=visible?'':'NO_OWNER';
+   last='';lastAttempt=0;render();
+  }
   // No cloud account, revoked main device, or coworker -> never auto-grant.
   if(!uid||s.role!=='owner'||!ws||navigator.onLine===false)return;
   const signed=window.zaviSecureOfflineLicense;
   if(!signed?.device?.()||!signed?.workspace||signed.workspace()!==ws||!signed?.request||!signed?.cached)return;
   const stamp=uid+'/'+ws+'/'+signed.device(),now=Date.now();
-  if(working||(!force&&stamp===last&&now-lastAttempt<20000))return;
+  if(working){queuedRefresh=true;return}
+  if(!force&&stamp===last&&now-lastAttempt<20000)return;
   working=true;last=stamp;lastAttempt=now;const serial=++generation;
+  const stillCurrent=()=>uid===authenticated()&&ws===info().workspace&&
+    info().role==='owner'&&visibleScope===visible;
   try{
    const cached=await signed.cached(ws).catch(()=>null);
+   if(!stillCurrent())return;
    if(!force&&cached?.claims?.exp*1000>now+48*3600000){doneExp=cached.claims.exp*1000;failCode='';render();return}
    const session=await window.zaviCloudRefreshAuthSession?.()||window.zaviCloudGetAuthSession?.();
    const cfg=window.zaviCloudGetPublicConfig?.();
-   if(!session?.access_token||!cfg?.url||!cfg?.key||uid!==authenticated()||ws!==info().workspace)return;
+   if(!session?.access_token||!cfg?.url||!cfg?.key||!stillCurrent())return;
    render();
    // The FIRST device can register automatically under its cloud-owner identity.
    // If another device is active, do NOT replace or revoke it; unsynced sales stay safe.
@@ -47,20 +57,29 @@
     headers:{'content-type':'application/json','apikey':cfg.key,'authorization':'Bearer '+session.access_token},
     body:JSON.stringify({p_workspace_id:ws,p_device_id:signed.device(),p_device_name:'ZAVI ONE Android'})
    });
+   if(!stillCurrent())return;
    if(!activation.ok)throw Error('DEVICE_REGISTRATION_REJECTED_'+activation.status);
    const deviceState=await activation.json();
    if(deviceState==='ANOTHER_DEVICE_ACTIVE')throw Error('ANOTHER_DEVICE_ACTIVE');
    if(!['DEVICE_ACTIVATED','DEVICE_ALREADY_ACTIVE'].includes(deviceState))throw Error('DEVICE_NOT_AUTHORISED');
    // Server signs only after checking owner, subscription validity and active registered device.
+   if(!stillCurrent())return;
    const lease=await signed.request(ws,session,cfg);
-   if(serial!==generation||uid!==authenticated()||ws!==info().workspace)return;
+   if(serial!==generation||!stillCurrent())return;
    doneExp=(Number(lease?.claims?.exp)||0)*1000;
    failCode='';render();
    window.dispatchEvent(new CustomEvent('zavi-offline-lease-ready',{detail:{workspace_id:ws,expires_at:new Date(doneExp).toISOString()}}));
    // A signed permit is not enough for offline work: cache the application files too.
    void Promise.resolve(window.zaviAutoOffline?.prepare?.()).catch(()=>{});
-  }catch(e){failCode=String(e?.code||e?.message||'UNAVAILABLE').slice(0,100);doneExp=0;render()}
-  finally{working=false}
+  }catch(e){
+   if(stillCurrent()){failCode=String(e?.code||e?.message||'UNAVAILABLE').slice(0,100);doneExp=0;render()}
+  }
+  finally{
+   working=false;
+   // An account/workspace change while a request was in flight must not
+   // swallow the newer request. Queue it only after the older one settles.
+   if(queuedRefresh){queuedRefresh=false;void Promise.resolve().then(()=>run(true))}
+  }
  }
  function start(){
   const target=q('#content');
