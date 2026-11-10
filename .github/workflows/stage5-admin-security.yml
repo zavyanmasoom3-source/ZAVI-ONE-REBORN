@@ -10,6 +10,7 @@ on:
       - 'supabase/migrations/20261110_stage5_retire_permanent_customer_deletion.sql'
       - 'scripts/test-stage5-admin-hard-delete-postgres.sql'
       - 'scripts/test-stage5-admin-client-guard.cjs'
+      - 'scripts/test-stage5-admin-no-hard-delete-paths.cjs'
       - 'scripts/test-stage5-admin-bulk-preview.cjs'
       - 'supabase/migrations/20261110_stage5_owner_only_recoverable_archive_rpc.sql'
       - 'scripts/test-stage5-admin-archive-postgres.sql'
@@ -47,6 +48,7 @@ jobs:
       - name: Run real ADMIN UI handler two-confirmation and recovery regression
         run: |
           node scripts/test-stage5-admin-client-guard.cjs
+          node scripts/test-stage5-admin-no-hard-delete-paths.cjs
           node scripts/test-stage5-admin-bulk-preview.cjs
           node scripts/test-admin-trash.cjs
           node scripts/test-admin-customer-trash.cjs
