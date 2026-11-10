@@ -94,3 +94,28 @@ Status: **STAGING SQL AND AUTOMATED CONTRACT QA PASSED; LIVE FEATURE NOT ENABLED
 **Production posture:** no cheque migration deployed, no accounting
 records touched, no claimed stable APK. Do not remove the existing
 \`zavi_cheque_initial_pending\` constraint until the above gates are passed.
+
+
+## Stage 4 security follow-up — RLS registration guard
+
+A second review found a real staging hazard: removing the original pending-only
+CHECK while keeping the old owner INSERT RLS policy (ownership only) would have
+allowed a normal owner INSERT with a forged \`cleared\` or
+\`partially_cleared\` cheque, bypassing balanced accounting posts.
+
+The staging SQL now replaces the owner INSERT policy with one requiring
+\`status='pending'\`, zero settled amount and null clearing/linked transaction
+timestamps. The synthetic fixture reproduces the original workspace, cheque
+and event RLS policies, and explicitly rejects forged cleared and partially
+cleared client INSERT operations.
+
+**42770256781 PASSED** (SHA \`cbf5b8d26e100ef0dc0c8a80bd9f0acb41b31f7a\`):
+PostgreSQL 17 settlement, original RLS + hardened insertion, two-session
+concurrency and lost ACK, and complete caller-transaction rollback.
+
+Independent **read-only** production check confirmed that
+\`zavi_cheque_initial_pending\` remains present, there is **no**
+\`public.zavi_stage4_cheque_apply\` in the live project, and the
+\`settled_amount\` column has **not** been added to the live cheque table.
+This proves no Stage 4 DDL was deployed through this work; it does not
+certify production readiness.
