@@ -54,7 +54,7 @@ def fix(staged: Path) -> dict:
     if html.count('</head>') < 1:
         raise ValueError('Missing HTML head')
     html=html.replace('</head>', FONT_FACE+'</head>', 1)
-    if len(re.findall(r'<script[^>]+zavi-store-recovery-v6594\\.js',html)) != 1:
+    if len(re.findall(r'<script[^>]+zavi-store-recovery-v6594\.js',html)) != 1:
         raise ValueError('Native script de-duplication failed')
     staged.write_text(html,encoding='utf8')
     after=hashlib.sha256(ORIGINAL.read_bytes()).hexdigest()
