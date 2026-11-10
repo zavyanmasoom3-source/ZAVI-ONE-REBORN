@@ -14,7 +14,10 @@
  const isAmount=s=>typeof s==='string'&&/^(?:0|[1-9]\d{0,13})(?:\.\d{1,2})?$/.test(s)&&Number(s)>0;
  const validRate=s=>typeof s==='string'&&/^(?:0|[1-9]\d{0,8})(?:\.\d{1,6})?$/.test(s)&&Number(s)>0;
  const escape=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
- const sameDate=s=>/^\d{4}-\d{2}-\d{2}$/.test(s)&&!Number.isNaN(Date.parse(s));
+ const sameDate=s=>{if(typeof s!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(s))return false;
+  const [year,month,day]=s.split('-').map(Number);
+  if(year<1900||year>2200)return false;
+  const d=new Date(Date.UTC(year,month-1,day));return !Number.isNaN(d.getTime())&&d.toISOString().slice(0,10)===s;} ;
  const queueKey=(uid,ws)=>'zavi_stage4_cheque_intents_'+uid+'_'+ws;
  const labels={
   'fa-AF':{title:'چک‌ها',intro:'دریافتی، پرداختی و تسویهٔ تأییدشده از سرور',received:'دریافتی',issued:'پرداختی',
@@ -122,8 +125,11 @@
    const local=context&&context.workspace===s.workspace?context:null;
    const contacts=(local?.contacts||[]).map(c=>[String(c.id),String(c.name||c.id)]);
    const accounts=(local?.accounts||[]).map(a=>[String(a.id),String(a.name||a.id)]);
-   const currencies=[...new Set([String(local?.currency||'AFN'),'AFN','USD','PKR','EUR','CNY','AED','SAR'])];
    const currentCurrency=String(local?.currency||'AFN');
+   const sourceCurrencies=w.ZaviCreditors6528?.currencies?.(currentCurrency)||
+     [['AFN','AFN'],['USD','USD'],['PKR','PKR'],['EUR','EUR'],['CNY','CNY']];
+   const currencies=[...new Map(sourceCurrencies.filter(x=>Array.isArray(x)&&
+     /^[A-Z]{3}$/.test(String(x[0]))).map(([code,title])=>[code,String(title)])).entries()];
    const offline=w.navigator.onLine===false;
    const blocked=s.pending||s.conflict;
    const today=new Date().toISOString().slice(0,10);
@@ -161,7 +167,7 @@
      '<label>'+escape(t.bank)+'<input name="bank_name" maxlength="150" required></label>'+
      '<label>'+escape(t.contact)+'<select name="counterparty_id" required>'+opts(contacts)+'</select></label>'+
      '<label>'+escape(t.amount)+'<input name="amount" type="number" step="0.01" min="0.01" required></label>'+
-     '<label>'+escape(t.currency)+'<select name="currency" required>'+opts(currencies.map(c=>[c,c]),currentCurrency)+'</select></label>'+
+     '<label>'+escape(t.currency)+'<select name="currency" required>'+opts(currencies,currentCurrency)+'</select></label>'+
      '<label>'+escape(t.issue)+'<input name="issue_date" type="date" value="'+escape(today)+'" required></label>'+
      '<label>'+escape(t.due)+'<input name="due_date" type="date" value="'+escape(today)+'" required></label>'+
      '<button class="btn primary" type="submit"'+(offline||blocked||!serverReady?' disabled':'')+'>'+escape(t.save)+'</button>'+
