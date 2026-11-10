@@ -31,7 +31,7 @@ for app in ('one','admin'):
         assert hrefs[-1]=='zavi-v6662-classic-restore.css',(app,hrefs[-4:])
         assert '"zavi-v6662-classic-restore.css"' in sw,('classic safety CSS not cached',app)
         retired_skins=('zavi-clean-professional-v6667.css','zavi-showcase-v6668.css',
-                       'zavi-mobile-photo-qa-v6669.css','zavi-pdf-final-v6760.css',
+                       'zavi-mobile-photo-qa-v6669.css',
                        'zavi-unified-compact-v1.css','zavi-approved-one-v2.css',
                        'zavi-owner-reference-login-v1.css','zavi-reference-one-v3.css')
     else:
@@ -40,6 +40,8 @@ for app in ('one','admin'):
         retired_skins=('zavi-clean-professional-v1458.css','zavi-admin-showcase-v1459.css',
                        'zavi-admin-pdf-final-v1467.css','zavi-unified-compact-v1.css',
                        'zavi-approved-admin-v2.css','zavi-reference-admin-v3.css')
+    if app=='one':
+        assert '<link rel="stylesheet" href="./zavi-pdf-final-v6760.css?v=6760" data-zavi-pdf-final="true">' in html, 'invoice print stylesheet must remain enabled'
     for name in retired_skins:
         tags=re.findall(r'<link[^>]*>',html,re.I)
         relevant=[tag for tag in tags if name in tag]
