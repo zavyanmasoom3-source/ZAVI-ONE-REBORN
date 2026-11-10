@@ -115,7 +115,9 @@ for app,field_id in [('one','zawiPinOne'),('admin','authPassword')]:
             assert controls['realGate'] and controls['realPin'] and controls['realRecovery'],controls
             assert controls['stylesheet'],controls
             assert controls['themes']==['light','dark','glass'],controls
-            assert all(h>=44 for h in controls['minTap']),controls
+            # Owner-uploaded original uses compact 40px theme tiles. Do not silently
+            # increase their dimensions and change the approved layout.
+            assert all(h>=40 for h in controls['minTap']),controls
             for language,expected in [('fa-AF','روشن'),('ps-AF','روښانه'),('en','Light')]:
                 label=browser.eval("""(()=>{
                   document.documentElement.lang=%s;
