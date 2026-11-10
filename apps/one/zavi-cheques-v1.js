@@ -248,7 +248,7 @@
    if(queueBusy||!owner(s)||w.navigator.onLine===false||s.pending||s.conflict)return;
    const queue=pendingRows(s);if(!queue.length)return;
    queueBusy=true;setMessage(tr().wait);
-   let confirmedRevision=0;
+   let confirmedRevision=0,stoppedOnError=false;
    try{
     for(const intent of queue){
      if(scope().key!==s.key||scope().pending||scope().conflict||w.navigator.onLine===false)break;
@@ -270,6 +270,7 @@
      }catch(e){
       if(scope().key===s.key)setMessage(e.status===404||/PGRST202/.test(e.message)?
         tr().unready:tr().failed+' '+e.message);
+      stoppedOnError=true;
       break; // Keep original operation UUID for safe retry, even if ACK was lost.
      }
     }
@@ -278,7 +279,9 @@
       try{await w.zaviCloudReconcileServer?.(confirmedRevision)}
       catch(_){setMessage('SERVER_LEDGER_RECONCILIATION_PENDING')}
      }
-     await refresh();
+     // A failed or ambiguous ACK must remain visible to the owner. An
+     // automatic background reload must not erase the rejection message.
+     if(!stoppedOnError)await refresh();
     }
    }finally{queueBusy=false;if(scope().key===s.key)render()}
   }
