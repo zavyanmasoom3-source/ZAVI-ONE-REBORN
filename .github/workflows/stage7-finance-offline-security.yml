@@ -10,6 +10,8 @@ on:
       - 'scripts/test-stage7-reset-pending-integrity.cjs'
       - 'scripts/test-cloud-sync-safety.cjs'
       - 'scripts/test-cloud-three-device-browser.py'
+      - 'supabase/migrations/20261110_stage7_server_cas_device_guard.sql'
+      - 'scripts/test-stage7-workspace-cas-postgres.sql'
   workflow_dispatch:
 permissions:
   contents: read
@@ -48,6 +50,13 @@ jobs:
         run: |
           psql -h 127.0.0.1 -U postgres -d postgres \
             -v ON_ERROR_STOP=1 -f scripts/test-stage7-sync-operation-postgres.sql
+      - name: Test new server-side CAS against revoked device, unsafe account and stale edits (PostgreSQL 17)
+        env:
+          PGPASSWORD: stage7-disposable-fixture
+        run: |
+          createdb -h 127.0.0.1 -U postgres stage7_cas_test
+          psql -h 127.0.0.1 -U postgres -d stage7_cas_test \
+            -v ON_ERROR_STOP=1 -f scripts/test-stage7-workspace-cas-postgres.sql
       - name: Read-only accounting and multi-device browser regression
         run: |
           python3 scripts/test-accounting-edge-cases-browser.py
