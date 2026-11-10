@@ -81,3 +81,10 @@ jobs:
           python3 scripts/test-accounting-edge-cases-browser.py
           python3 scripts/test-backup-import-browser.py
           python3 scripts/test-stage6-financial-theme-browser.py
+      - name: Preserve barcode, WhatsApp message, in-transit and primary device modules
+        run: |
+          node scripts/test-barcode-label.cjs
+          node scripts/test-message-center.cjs
+          node scripts/test-in-transit-contract.cjs
+          node scripts/test-phase3-device-activation.cjs
+          python3 scripts/test-in-transit-browser.py
