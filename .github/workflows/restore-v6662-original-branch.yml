@@ -1,0 +1,75 @@
+name: Restore verified original 66.62 appearance onto safe feature branch
+on:
+  push:
+    branches: [dev]
+    paths:
+      - ".github/workflows/restore-v6662-original-branch.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  restore-original:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Retrieve immutable historical 62MB ZAVI ONE 66.62 original
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --connect-timeout 20 --max-time 900 \
+            -o "$RUNNER_TEMP/ZAVI_one_V6662_DEBUG_QA.apk" \
+            https://github.com/zavyanmasoom3-source/Zavione/releases/download/zavi-v6662-one-debug-qa/ZAVI_one_V6662_DEBUG_QA.apk
+          test "$(stat -c %s "$RUNNER_TEMP/ZAVI_one_V6662_DEBUG_QA.apk")" = 62226180
+          echo "2eb852d7cdb026ccd828a660328bd26bb474f9880430e0ea3007f51489ee50dc  $RUNNER_TEMP/ZAVI_one_V6662_DEBUG_QA.apk" | sha256sum -c -
+      - name: Restore original HTML / 103 CSS references and preserve 10 newer feature modules
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/restore-original-v6662.py \
+            --apk "$RUNNER_TEMP/ZAVI_one_V6662_DEBUG_QA.apk" --root .
+          python3 scripts/check-v6662-original-restore.py
+      - name: Check complete native and offline dependency tree
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/check-offline-shell-assets.py
+          python3 scripts/check-public-source-security.py
+          python3 scripts/check-migration-integrity.py
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Verify original + added feature JavaScript syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          find apps/one packages/shared -name '*.js' -type f -print0 |
+            while IFS= read -r -d '' file; do node --check "$file"; done
+          node scripts/test-stage7-no-raw-workspace-write.cjs
+          node scripts/test-stage8-admin-source.cjs
+      - name: Verify local route usability and read-only Supabase public endpoint
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/verify-ui-navigation.py
+          node scripts/test-live-supabase-connection.cjs
+      - name: Commit original-look source to protected restoration branch ONLY
+        shell: bash
+        env:
+          GH_TOKEN: \${{ github.token }}
+        run: |
+          set -euo pipefail
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git add apps/one
+          if git diff --staged --quiet; then
+            echo "No restoration changes; existing branch may be current."
+            exit 0
+          fi
+          git commit -m "ui(one): reinstate exact V66.62 APK HTML/CSS and modern feature modules"
+          # Existing restore branch is a fast-forward ancestor of dev; do not force-push.
+          git push origin "HEAD:refs/heads/restore/v6662-original-ui"
+          echo "RESTORE BRANCH COMMITTED. Production dev/main were NOT changed by this step."
+          git show --stat --oneline HEAD | tail -35
