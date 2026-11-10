@@ -5,7 +5,7 @@
  */
 'use strict';
 const APK_ORIGIN='https://appassets.androidplatform.net';
-const CACHE_NAME='zavi-one-design-tokens-unified-20261109-phase3-owner-device-sync-lease-v1';;;
+const CACHE_NAME='zavi-one-design-tokens-unified-20261110-stage4-cheques-v1';;;
 const SHELL_PROTOCOL='zavi-shell-v2';
 const CACHE_PREFIX='zavi-one-';
 const CORE=[
@@ -26,6 +26,8 @@ const CORE=[
   "zavi-in-transit-v1.js",
   "zavi-in-transit-v1.css",
   "zavi-whatsapp-v1.js",
+  "zavi-cheques-v1.js",
+  "zavi-cheques-v1.css",
   "zavi-three-sizes-v6588.js",
   "zavi-three-sizes-v6588.css",
   "zavi-landscape-v6589.js",
