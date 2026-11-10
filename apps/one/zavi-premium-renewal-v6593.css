@@ -1,0 +1,38 @@
+/* ZAVI ONE ADMIN 1.4.39: premium bilingual renewal panel + polished shared surfaces */
+#z139-dialog[hidden]{display:none!important}
+#z139-dialog{position:fixed;inset:0;z-index:2147483100;display:grid;place-items:center;padding:clamp(8px,2vw,22px);background:rgba(2,13,36,.76);backdrop-filter:blur(9px)}
+#z139-dialog *{box-sizing:border-box}
+#z139-dialog .z139-panel{width:min(1160px,100%);max-height:calc(100dvh - 24px);overflow:auto;overscroll-behavior:contain;border-radius:clamp(16px,3vw,30px);padding:clamp(16px,2.7vw,30px);background:linear-gradient(165deg,#f2f8ff,#fff 70%);color:#173150;box-shadow:0 35px 110px #0008;border:1px solid #9fc6ed}
+#z139-dialog .z139-head{display:flex;align-items:start;justify-content:space-between;gap:16px;margin-bottom:18px}
+#z139-dialog h2{font-size:clamp(18px,2.4vw,28px);line-height:1.5;margin:0;color:#0e3472}
+#z139-dialog p{margin:6px 0;line-height:1.7}
+#z139-dialog .z139-close{min-height:44px;padding:8px 16px}
+#z139-dialog button{cursor:pointer;border-radius:12px;border:1px solid #a3c5e3;background:#fff;color:#134680;font-weight:750;min-height:44px;padding:9px 14px}
+#z139-dialog button:hover:not(:disabled){box-shadow:0 5px 16px #07598a27;border-color:#2492ee}
+#z139-dialog button:focus-visible,#z139-dialog input:focus-visible{outline:3px solid #00a7da;outline-offset:2px}
+#z139-dialog button:disabled{opacity:.48;cursor:not-allowed}
+#z139-dialog .z139-controls{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:15px}
+#z139-dialog .z139-controls input{flex:2 1 260px;min-width:0;min-height:46px;border-radius:12px;background:#fff;border:1px solid #abc5e8;padding:9px 14px;font-size:15px;color:#12375c}
+#z139-dialog .z139-controls [aria-pressed=true]{background:linear-gradient(120deg,#115bcd,#00a6ce);color:white;border-color:#0d93e4}
+#z139-dialog .z139-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:14px}
+#z139-dialog .z139-card{padding:18px;border-radius:20px;background:linear-gradient(155deg,#fff,#e8f4ff);border:1px solid #a7d2ee;box-shadow:0 9px 23px #0c62a813}
+#z139-dialog .z139-cardhead{display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between;align-items:center}
+#z139-dialog .z139-identity{display:grid;gap:5px;min-width:0;flex:1 1 150px}
+#z139-dialog .z139-identity strong{font-size:16px;color:#133e7f;overflow-wrap:anywhere}
+#z139-dialog .z139-identity small{color:#56718e;overflow-wrap:anywhere}
+#z139-dialog .z139-count{padding:7px 11px;border-radius:100px;background:#d5eaff;color:#064789;font-size:13px;font-weight:900}
+#z139-dialog .z139-critical{background:#fff0ba;color:#794100}
+#z139-dialog .z139-expired{background:#ffe0e6;color:#9d1532}
+#z139-dialog .z139-expiry{color:#334f73;font-size:14px}
+#z139-dialog .z139-nophone{display:block;color:#7d3448;margin:8px 0}
+#z139-dialog .z139-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:14px}
+#z139-dialog .z139-actions .z139-primary{grid-column:1/-1;background:linear-gradient(112deg,#087b52,#10b981);border-color:#098e6a;color:#fff}
+#z139-dialog .z139-status{background:#eef6ff;border-left:4px solid #137fdd;padding:12px;border-radius:9px;margin:8px 0 16px;color:#163d74;font-weight:750}
+#z139-dialog .z139-time{display:block;margin-top:14px;color:#536d88}
+#z139-dialog .z139-empty{grid-column:1/-1;padding:32px;text-align:center;color:#3f6697}
+body.z139-dialog-open{overflow:hidden!important}
+@media(max-width:600px){#z139-dialog{padding:7px}#z139-dialog .z139-panel{max-height:calc(100dvh - 12px);padding:13px}#z139-dialog .z139-card{padding:12px}#z139-dialog .z139-actions{grid-template-columns:1fr}#z139-dialog .z139-actions .z139-primary{grid-column:auto}}
+/* Premium polish with readable contrast; existing accounting and responsive sizing remain. */
+html.zavi-design-84 body #appScreen #view .panel,html.zavi-design-84 body #content .card{border-radius:clamp(14px,1.6vw,22px)!important;box-shadow:0 6px 24px #0a37651a!important}
+html.zavi-design-84 body :is(#appScreen .sidebar,#side.sidebar) :is(.nav-item,.nav-btn):focus-visible{outline:3px solid #07bafa!important;outline-offset:2px}
+@media(prefers-reduced-motion:reduce){#z139-dialog *{transition:none!important;animation:none!important}}

@@ -1,0 +1,162 @@
+/* ZAVI ONE V47: Responsive Neon Business UI — presentation only.
+   Do not modify accounting, licensing, authorization or local persistence code. */
+:root{--bg:#061127;--white:#0c2147;--ink:#eff8ff;--muted:#a5bce3;--line:#244b86;--primary:#138cf6;--primary2:#02cbd8;--teal:#21e2bc;--red:#ff7c97;--amber:#ffbf61;--shadow:0 20px 46px #02091a73;--radius:21px;
+ --zavi-pane:linear-gradient(145deg,rgba(18,48,103,.95),rgba(6,23,59,.97));--zavi-outline:rgba(81,153,255,.32);--zavi-text:#eff8ff;--zavi-soft:#a3bce1;--zavi-focus:#45dcfb; color-scheme:dark}
+html{background:#050d21;scrollbar-color:#315fa0 #091935}
+body{background:radial-gradient(ellipse at 87% 2%,#104197 0,transparent 33%),radial-gradient(ellipse at 6% 67%,#113477 0,transparent 30%),linear-gradient(165deg,#060e22 0%,#071a3b 52%,#040e23 100%) fixed!important;color:var(--zavi-text);line-height:1.85}
+::selection{background:#1fc5ee75;color:white}body,button,input,select,textarea{font-family:Tahoma,"Noto Sans Arabic",Arial,system-ui,sans-serif}
+button,select,input,textarea{accent-color:#14bbed}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--zavi-focus)!important;outline-offset:3px}
+.sidebar{background:linear-gradient(180deg,#0a1a40 0%,#071531 49%,#040d23 100%)!important;border-inline-start:1px solid #24518a;color:#bfcef0;box-shadow:-12px 0 35px #0003}
+.brand{margin-bottom:32px}.brand-name{color:#fff;letter-spacing:.5px}.brand-sub,.section-nav,.sidebar-footer{color:#94add7}.brand-logo,.mobile-brand .brand-logo{background:linear-gradient(155deg,#00e0e9,#0b74f6 72%,#1d4fcd)!important;box-shadow:0 6px 19px #0aa7f783,0 0 0 1px #8be7ff66;border-radius:17px}
+.nav-btn{color:#bdd3f5!important;border:1px solid transparent!important;border-radius:13px!important;min-height:45px;transition:background .17s,border-color .17s,transform .17s!important}
+.nav-btn:hover{background:#116fbc37!important;border-color:#3b7dbc5c!important;transform:translateY(-1px)}
+.nav-btn.active{background:linear-gradient(100deg,#04529dd8,#09b6dcab)!important;border-color:#28c7fb92!important;color:#fff!important;box-shadow:0 5px 20px #00aff944,inset 3px 0 #7cffef!important}
+.nav-btn svg{color:#bdeeff}.section-nav{font-weight:700}.sidebar-footer{border-color:#294f82}
+.main{background:transparent!important}.topbar{background:linear-gradient(95deg,#07142ecf,#0c2450d9)!important;border-bottom:1px solid #244977!important;color:#ecf9ff;backdrop-filter:blur(16px);position:sticky;top:0;z-index:30;height:auto;min-height:80px}
+.topbar-title{color:#f6fbff;font-weight:900;letter-spacing:0}.topbar-sub{color:#9cb8df!important}.top-label,.z20-profile{color:#bcd8fa!important;background:#0e2b57!important;border:1px solid #2b518d!important}.z20-dot{box-shadow:0 0 10px #1af1b2}.zavi-language-picker,.zavi-install-small{background:#123060!important;border:1px solid #3563a1!important;color:#e7f5ff!important}
+.content{max-width:1640px;min-height:calc(100vh - 80px);padding-top:28px}.page-head h2{color:#fff!important;font-size:clamp(20px,2vw,27px);font-weight:900}.page-head p{color:var(--zavi-soft)!important;font-size:12px!important}.card,.debt-card,.report-stat,.settings-card,.hawala-record,.record-card,.account-box,.detail-box,.zavi-custom-card,.z20-profile,.modal,.backup-reminder{background:var(--zavi-pane)!important;border:1px solid var(--zavi-outline)!important;color:var(--zavi-text)!important;box-shadow:0 8px 30px #00102c5a, inset 0 1px #ffffff0c;border-radius:var(--radius)}
+.card,.stat,.debt-card,.report-stat,.hawala-record{transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}.card:hover,.debt-card:hover{border-color:#30b9ed66!important;box-shadow:0 12px 36px #001c5080,inset 0 1px #ffffff0d}
+.welcome{min-height:206px!important;isolation:isolate;position:relative;background:linear-gradient(111deg,#071d49 1%,#054cbb 48%,#022762 95%)!important;border:1px solid #218dec!important;border-radius:26px!important;box-shadow:0 18px 44px #0063c230,inset 0 1px #61c4ff4d!important;margin-bottom:20px;overflow:hidden;gap:20px}
+.welcome:before{content:""!important;position:absolute!important;inset:0!important;width:auto!important;height:auto!important;border:0!important;border-radius:0!important;box-shadow:none!important;background:linear-gradient(90deg,#061c4b00 0%,#061c4b1a 33%,#061e47e3 67%,#061f53b0 100%)!important;pointer-events:none;z-index:-1}
+.welcome:after{content:""!important;position:absolute!important;left:0;top:-20px!important;bottom:0;right:auto!important;width:min(60%,640px)!important;height:calc(100% + 25px)!important;border:0!important;border-radius:0!important;box-shadow:none!important;background:url('./neon-hero.svg') no-repeat left bottom/contain!important;opacity:.92;z-index:-1;pointer-events:none}
+.welcome>div{max-width:62%;z-index:1}.welcome h2{color:#fff;font-size:clamp(22px,2.9vw,31px);font-weight:900;line-height:1.65}.welcome p,.welcome .eyebrow,.welcome .zv-today{color:#c5e6ff!important}.welcome .btn{background:linear-gradient(110deg,#04aaf1,#1766ec)!important;color:white!important;border:1px solid #5ae4ff80!important;box-shadow:0 9px 28px #00b4f950}
+.stat-grid,.report-grid,.layout-2,.debt-cards{gap:15px}.stat{min-height:144px;padding:18px 18px 15px;border-radius:19px;overflow:hidden}.stat-grid>.stat:nth-child(4n+1),.report-grid>.stat:nth-child(4n+1){background:linear-gradient(130deg,#063e56,#0b2865 85%)!important;border-color:#08caba87!important}
+.stat-grid>.stat:nth-child(4n+2),.report-grid>.stat:nth-child(4n+2){background:linear-gradient(130deg,#2a215e,#10255e 85%)!important;border-color:#825cff87!important}
+.stat-grid>.stat:nth-child(4n+3),.report-grid>.stat:nth-child(4n+3){background:linear-gradient(130deg,#392d3e,#10294f 85%)!important;border-color:#f1ae4d77!important}
+.stat-grid>.stat:nth-child(4n+4),.report-grid>.stat:nth-child(4n+4){background:linear-gradient(130deg,#073c6f,#092151 85%)!important;border-color:#05c4ff87!important}
+.stat-icon{width:45px;height:45px;border-radius:14px!important;box-shadow:0 0 0 1px #ffffff17,inset 0 1px #ffffff38}
+.stat-icon.blue{background:linear-gradient(140deg,#086acb,#119fed)!important;color:#def7ff!important}.stat-icon.green{background:linear-gradient(140deg,#007f72,#00c69a)!important;color:#e2fff6!important}.stat-icon.orange{background:linear-gradient(140deg,#7f5119,#cc8731)!important;color:#fff2ce!important}.stat-icon.pink{background:linear-gradient(140deg,#783c79,#d253a8)!important;color:#fff0fe!important}
+.stat-label{color:#b9d0f0!important;font-weight:700;font-size:13px!important}.stat-value{color:#fff!important;font-size:clamp(17px,1.75vw,26px)!important;white-space:normal;overflow-wrap:anywhere;text-shadow:0 2px 10px #0003}.stat-foot,.muted,.tiny-note,.small-info,.top-label{color:#a6bddd!important}
+.panel-head{border-color:#2a4977!important}.panel-head h3,.settings-card h3,.zavi-custom-head h3,.card h3{color:#f0f9ff!important;font-size:clamp(14px,1.4vw,18px)}.panel-body{color:#d7e8ff}
+/* 12-month Solar Hijri chart: first month Hamal on the RIGHT, Hoot on the LEFT */
+.z45-chart-scroll,.z47-chart-scroll{scrollbar-color:#2785c8 #0e2854!important;scrollbar-width:thin}
+.bar-chart{direction:rtl!important;min-width:770px!important;height:240px!important;gap:12px!important;padding:11px 8px 0!important;align-items:stretch!important}
+.bar-col{gap:8px!important;min-width:41px!important}.bar-col .track{background:linear-gradient(180deg,#15396c24,#0b3a7399)!important;border:1px solid #2a65ab44;width:min(51px,90%)!important;height:174px!important;border-radius:12px 12px 7px 7px!important}
+.bar-col .fill{background:linear-gradient(180deg,#3dffe3 0%,#09bce9 48%,#1255f9 100%)!important;border-radius:11px 11px 5px 5px!important;box-shadow:0 0 16px #00dfff60,inset 0 2px #b0fff595}
+.bar-col:nth-child(3n+2) .fill{background:linear-gradient(180deg,#45b8ff,#1687fa 48%,#1841b8)!important}.bar-col:nth-child(3n+3) .fill{background:linear-gradient(180deg,#30e5f8,#18adff 48%,#0e4bbf)!important}
+.bar-col .label{font-size:11px!important;color:#e7f4ff!important;white-space:nowrap}.bar-col .tip{color:#b3ebff!important;font-weight:700!important}.bar-col small.solar-chart-year{color:#91afd6!important}
+.z47-chart-header{border-color:#2a4e86!important}.z47-chart-header select,.z47-chart-year-label select{background:#0f3166!important;border:1px solid #386fa8!important;color:white!important;border-radius:10px}
+/* Tables / row cards / dashboards / reports */
+.transaction-table thead th,.ledger-table thead th{background:#0b3164!important;color:#c4e9ff!important;border-color:#2c5485!important;font-weight:700!important}.transaction-table tbody td,.ledger-table tbody td{color:#e4f2ff!important;border-color:#24436f!important}.transaction-table tbody tr:nth-child(even){background:#09274d80}.transaction-table tbody tr:hover{background:#144a8277!important}
+.record-card{border-radius:12px;margin:5px 7px 9px;padding:12px 15px!important;background:#102f627d!important;border-color:#294f8b!important}.rec-detail,.dc-contact,.small-info{color:#aac4e7!important}
+.pill{background:#16366f!important;color:#bbd9fb!important;border:1px solid #3a65a3!important}.pill.green{background:#0568469e!important;color:#70ffd2!important;border-color:#11b98a!important}.pill.amber{background:#71501f9c!important;color:#ffd28d!important;border-color:#bb8741!important}.pill.red{background:#742a489c!important;color:#ffa7ba!important;border-color:#bf6782!important}.pill.blue{background:#0756969e!important;color:#99ebff!important;border-color:#238ddb!important}
+.debt-card .dc-amount{color:#ffacb9!important}.stock-sub{color:#acc1de!important}.stock-item,.split-line,.zsh-row{border-color:#2b507d!important}
+/* Controls */
+.btn,.icon-button,.zawi-personal-action,.zavi-install-small,.zsh-btn,.zsh-btn-light{background:linear-gradient(140deg,#14376c,#0d2755)!important;border:1px solid #3a619b!important;color:#e9f8ff!important;border-radius:13px!important;box-shadow:inset 0 1px #ffffff13;transition:filter .18s,transform .18s,background .18s}
+.btn:hover:not(:disabled),.icon-button:hover:not(:disabled),.zsh-btn:hover:not(:disabled){background:#1a5291!important;filter:brightness(1.09);transform:translateY(-1px)}
+.btn.primary,.zsh-btn-primary,.zawi-pin-btn{background:linear-gradient(110deg,#1556eb,#08c9dd)!important;border:1px solid #54c7ff8a!important;color:#fff!important;box-shadow:0 8px 23px #0686df5d!important}
+.btn.subtle,.btn.tiny,.btn.secondary{background:#133967!important;color:#d8f5ff!important}.btn.danger{background:#642c46!important;color:#ffd4dd!important;border-color:#cc607b!important}
+.searchbox,.filterbar select,.filterbar input,.field input,.field textarea,.field select,.order-line input,.order-line select,.zavi-switch,.z20-toggle,.form-grid input,.form-grid textarea,.form-grid select,select:not(.zavi-language-picker),textarea,input:not([type=checkbox]):not([type=radio]):not([type=file]):not([type=hidden]){background:#0c2853!important;border:1px solid #31598b!important;color:#f0f9ff!important;border-radius:12px;box-shadow:none}
+input::placeholder,textarea::placeholder{color:#91add2!important;opacity:1}select option{background:#0e2955!important;color:#f1faff!important}
+label,.field label,.filterbar label,.z20-toggle,.zavi-switch{color:#e4f2ff!important}.searchbox{color:#a5d3ff!important}.field-hint{color:#a8bdde!important}
+.order-line{background:linear-gradient(110deg,#092750,#102f5e)!important;border-color:#2b5084!important}.order-line .remove-line{background:#492840!important;border-color:#924c70!important;color:#ffdce7!important}
+.notice{background:#443718!important;color:#ffe2a3!important;border-color:#a88434!important}.backup-reminder{background:linear-gradient(110deg,#173958,#24344b)!important}.backup-reminder b{color:#ffe0a1!important}.backup-reminder p{color:#c1d4e6!important}.zawi-inline-tip,.zawi-receipt-block{background:#0a3860!important;border-color:#277ba9!important;color:#b7edff!important}
+.zavi-custom-head p,.settings-card p,.z20-sub,.zavi-module-grid{color:#afc6e6!important}.zavi-switch,.z20-toggle{background:#0d2d5c!important;border-color:#31578a!important}.report-stat strong,.report-stat small{color:#effaff!important}
+/* Modals and overlays: preserve actual form workflow */
+.modal-backdrop{background:#020918d5!important;backdrop-filter:blur(9px)!important}.modal{background:linear-gradient(148deg,#112b58,#061831)!important;border:1px solid #3980c180!important;color:#f3fbff!important;box-shadow:0 30px 90px #000b25e0!important}.modal-head,.modal-foot{background:#102f5ad9!important;border-color:#315180!important}.modal-head h3{color:#fff!important}.modal-body,.modal label,.modal .field label{color:#e8f6ff!important}
+.modal .fx-preview{background:#07384c!important;border-color:#187e9a!important;color:#a2ffea!important}.modal .detail-box{background:#0e315d!important}
+/* Subscription and device status, keep controls and licensing logic untouched */
+.zsh,.zsh-card,.z46-offline-card{color:#ecf7ff!important}.zsh-hero{background:linear-gradient(115deg,#072159,#0a64ba 65%,#06a9c9)!important;border:1px solid #2ebcfa94!important;box-shadow:0 15px 40px #004eac60!important}.zsh-card,.z46-offline-card{background:var(--zavi-pane)!important;border:1px solid #34649d8c!important;box-shadow:0 8px 29px #000b285c!important}
+.zsh-card h3,.zsh-section-title h3{color:#fff!important}.zsh-caption,.zsh-section-title p,.zsh-hint,.zsh-progress-note,.zsh-note,.z46-recovery-message,.z46-technical-result,.z46-technical-options{color:#adc8e9!important}.zsh-days{color:#36e3ff!important}.zsh-days small,.zsh-row span{color:#acc8e9!important}.zsh-row strong{color:#f1f8ff}.zsh-progress{background:#123968!important}.zsh-progress span{background:linear-gradient(90deg,#137bff,#42f5e4)!important}.zsh-icon{background:#0d427e!important;color:#8cecff!important}
+.zsh-plan-choices span,.z46-offline-indicator,.zsh-btn-light{background:#0c315f!important;color:#d4eeff!important;border-color:#37699b!important}.z46-offline-card[data-state="ready"] .z46-offline-indicator{background:#045d4b!important;border-color:#15be91!important;color:#a3ffe6!important}
+.z46-offline-card[data-state="error"] .z46-offline-indicator,.z46-offline-card[data-state="action_required"] .z46-offline-indicator{background:#65471f!important;color:#ffdfa6!important;border-color:#c28e46!important}
+/* Preview statement / payment image remains intentionally light for clean print & readability */
+.statement-preview{background:#102953!important;border:1px solid #315581!important}.statement-preview img{background:white;border-radius:9px;max-width:100%}
+/* Toast and mobile navbar */
+.toast{background:#113e69!important;color:#fff!important;border:1px solid #51a9d7!important;box-shadow:0 10px 35px #0007!important}.mobile-bottom{background:linear-gradient(95deg,#0b214beF,#0c295bea)!important;border-top:1px solid #3b78be!important;box-shadow:0 -9px 32px #041026cb!important;backdrop-filter:blur(16px)!important}.bottom-btn{color:#b2c9ea!important;border-radius:12px!important}.bottom-btn.active{color:#54e4ff!important;background:#0d68a95a!important}.bottom-btn svg{width:22px;height:22px}
+.zawi-lock-screen{background:radial-gradient(circle at 70% 7%,#126ac1 0,transparent 35%),linear-gradient(145deg,#040d23,#081d43 60%,#060d24)!important}.zawi-auth-card{background:linear-gradient(155deg,#112d5e,#091b3b)!important;border:1px solid #4584bb8c!important;color:#e8f7ff!important}.zawi-auth-card h2{color:#fff!important}.zawi-brand-latin,.zawi-lock-info,.zawi-lock-description,.zawi-pin-field label{color:#a9c2e1!important}.zawi-pin-field input{background:#0b2d5c!important;color:#fff!important;border-color:#39679b!important}.zawi-lock-emblem{background:linear-gradient(145deg,#0871fa,#04d5d9)!important}
+/* Responsive: maintain existing layout/navigation, improve touch hitboxes and legibility */
+@media (min-width:1350px){.sidebar{width:262px}.main{margin-right:262px;width:calc(100% - 262px)}html[dir=ltr] .main{margin-left:262px;margin-right:0}.stat{min-height:153px}.bar-chart{height:250px!important}}
+@media (max-width:1050px){.topbar{min-height:68px}.main{width:100%;margin:0}.sidebar{box-shadow:0 18px 50px #0008}}
+@media (max-width:700px){.content{padding:18px 13px calc(104px + env(safe-area-inset-bottom));max-width:100%}.topbar{padding:9px 11px;min-height:67px}.topbar-title{font-size:16px}.topbar-sub{font-size:10px}.stat-grid,.report-grid{gap:10px}.stat{min-height:125px;padding:13px 12px}.stat-label{font-size:11px!important}.stat-value{font-size:clamp(15px,4.3vw,21px)!important}.stat-icon{height:38px;width:38px}.welcome{padding:17px 18px;min-height:163px!important;border-radius:20px!important}.welcome h2{font-size:20px}.welcome>div{max-width:80%}.welcome:after{width:63%!important;opacity:.5}.welcome p{font-size:11px}.panel-head{padding:14px}.panel-body{padding:14px}.bar-chart{min-width:820px!important;height:224px!important}.bar-col .track{height:158px!important}.modal{background:linear-gradient(148deg,#102c5b,#07162f)!important}.modal-backdrop{align-items:flex-end}.mobile-bottom{padding-bottom:env(safe-area-inset-bottom)}.btn,.zsh-btn{min-height:42px}}
+@media (max-width:390px){.stat-value{font-size:15px!important}.stat{padding:12px 10px}.content{padding-right:10px;padding-left:10px}.topbar .zavi-language-picker{width:77px!important}.welcome h2{font-size:17px}.welcome:after{opacity:.37}.bar-chart{min-width:790px!important}}
+@media (prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+@media print{html{color-scheme:light}body{background:white!important;color:#182944!important}.main{margin:0!important;width:100%!important}.content{padding:0!important}.card,.debt-card,.report-stat,.settings-card{background:white!important;color:#172940!important;border-color:#d4deee!important;box-shadow:none!important}.transaction-table tbody td,.transaction-table thead th,.stat-value,.stat-label,.page-head h2{color:#172940!important;text-shadow:none!important}.welcome{background:white!important;color:#152540!important;border:1px solid #d0dae7!important;box-shadow:none!important}.welcome:before,.welcome:after{display:none!important}.welcome h2,.welcome p{color:#172940!important}.sidebar,.topbar,.mobile-bottom{display:none!important}}
+
+
+/* V47 hotfix: stronger contrast on previously light/blank surfaces */
+.empty{background:linear-gradient(145deg,rgba(13,42,89,.94),rgba(7,26,57,.98))!important;border:1px dashed #356aa7!important;border-radius:16px!important}
+.empty,.empty strong,.empty span,.empty svg{color:#eaf6ff!important}
+.account-box,.detail-box,.totals,.hawala-record,.zv-journal-item,.backup-reminder,.z1-repair-entry,.zavi-inline-tip,.zavi-receipt-block{background:linear-gradient(145deg,rgba(14,44,92,.94),rgba(7,24,56,.98))!important;border:1px solid #30578e!important;color:#eef8ff!important}
+.account-box b,.account-box strong,.detail-box b,.hawala-record b,.hawala-record strong,.zv-journal-item strong,.z1-repair-entry b,.z1-repair-meta b,.z1-repair-meta small{color:#eef8ff!important}
+.account-box .muted,.detail-box .muted,.hawala-record .muted,.zv-journal-item small,.backup-reminder p,.empty span,.panel-body .muted,.small-info,.tiny-note{color:#b8d2ef!important}
+.badge{background:#15396e!important;color:#dff1ff!important;border:1px solid #34639d!important}
+.data-grid>div{background:rgba(10,35,76,.72)!important;border:1px solid #2f5d90!important;color:#ebf6ff!important;border-radius:12px!important;padding:12px!important}
+.data-grid>div b,.data-grid>div strong{display:block;color:#ffffff!important;margin-top:4px}
+.report-stat,.report-stat small,.report-stat strong,.panel-body,.panel-body b,.panel-body strong,.panel-body span{color:#ecf7ff!important}
+.transaction-table tbody td small,.ledger-table tbody td small{color:#b5d3f8!important}
+input[readonly],textarea[readonly]{color:#ffffff!important;-webkit-text-fill-color:#ffffff!important;opacity:1!important}
+.settings-card img[alt="پیش‌نمایش لوگو"]{background:#0d2e5c!important;border-color:#325b91!important}
+
+
+/* V50 full-theme alignment: remove remaining white panels across ZAVI ONE */
+body,.main,.content{color:#eff8ff!important}
+#overlay .modal,.z45-invoice-modal,.statement-preview,.statement-actions{background:transparent!important;color:#eff8ff!important}
+.notice,.backup-reminder,.detail-box,.account-box,.form-grid,.mini-card,.ledger-hero,.settings-card,.panel-body,.table-bar{color:#eff8ff!important}
+.z20-cloud,.z20-panel,.z20-alert,.z20-team,.z20-workspace,.z20-member,.z20-box,.z20-card,
+.zsh-card,.z46-offline-card,.z46-offline-indicator,#zavi-offline-panel,
+#z23CustomerPortal .cp-card,#z23CustomerPortal .cp-item,#z23ClientBannerBtn,
+#zaviAnnualBanner,.searchbox,.filterbar select,.filterbar input,.mobile-search,
+.transaction-table thead th,.searchbox input,.statement-preview img,.modal .card,
+.zawi-auth-card,.z20-advanced,.z20-row,.z20-actions{background:linear-gradient(135deg,#113262,#081b3b)!important;color:#eff9ff!important;border-color:#2b5a96!important;box-shadow:0 9px 32px #000c2480,inset 0 1px #ffffff12!important}
+.z20-cloud *,#z23CustomerPortal *,#zavi-offline-panel *,#zaviAnnualBanner *{color:inherit}
+.z20-sub,.z20-label,.z20-alert p,.z20-alert span,.z20-team span,.zsh-caption,.zsh-progress-note,.zsh-hint,.zsh-note,.cp-dim,.cp-read,.cp-err,.tiny-note,.muted,.small-info,.stock-sub{color:#b5ceeb!important}
+.z20-input,.z20-cloud input,.z20-cloud select,.z20-cloud textarea,
+.zsh input,.zsh select,.zsh textarea,
+#z23CustomerPortal .cp-input,#zavi-offline-panel button,
+.zawi-auth-card input,.zawi-auth-card select,.zawi-auth-card textarea{background:#0d2b58!important;color:#f2faff!important;border:1px solid #36639a!important}
+.z20-cloud .btn,.z20-cloud .btn.subtle,.z20-cloud .btn.tiny,.zsh-btn-light,#z23CustomerPortal .cp-btn.alt,#zaviAnnualContact,#zavi-offline-panel button,
+#z23ClientBannerBtn{background:#103364!important;color:#dff8ff!important;border:1px solid #356aa1!important}
+.z20-cloud .btn.primary,.zsh-btn-primary,#z23CustomerPortal .cp-btn,#zaviAnnualRefresh{background:linear-gradient(110deg,#1858ed,#06bcd7)!important;color:#fff!important;border:1px solid #2ca9fd!important}
+#zaviAnnualBanner{border-width:1px!important;padding:13px 15px!important}
+#zaviAnnualBanner span,#zaviAnnualBanner b[dir="ltr"]{color:inherit!important}
+#zaviAnnualBanner [style*="background:#fff"],#zaviAnnualBanner [style*="background:#e9f9ef"]{background:#103364!important;color:#dff8ff!important;border-color:#356aa1!important}
+#zaviAnnualBanner .zavi-renew-whatsapp{background:#0b4f48!important;color:#94ffdb!important;border-color:#199a83!important}
+#z23CustomerPortal{background:radial-gradient(ellipse at 88% 6%,#144694,transparent 46%),linear-gradient(135deg,#06132e,#0a2857)!important;color:#eff8ff!important}
+#z23CustomerPortal .cp-badge{background:#0b4f48!important;color:#94ffdb!important;border:1px solid #178c82!important}
+#z23CustomerPortal .cp-amount{color:#fff!important}
+.zsh{color:#e9f7ff!important}.zsh-emblem,.z46-offline-indicator .dot,.zsh-icon{background:#103364!important;color:#c9f6ff!important}
+.zsh-progress{background:#0d2b58!important}.zsh-progress span{background:linear-gradient(90deg,#18d7ff,#1462f0)!important}
+.zsh-state{background:#103364!important;border-color:#356aa1!important;color:#e4f7ff!important}
+.zsh-row{border-color:#2b507d!important}.zsh-row span{color:#b5ceeb!important}.zsh-row strong,.zsh-card h3,.zsh-days{color:#fff!important}
+#zavi-offline-panel{border-radius:16px!important;max-width:340px!important}
+#zavi-offline-panel button{border-radius:10px!important;padding:8px 10px!important}
+.zawi-lock-screen{color:#eff8ff!important}.zawi-auth-card{background:linear-gradient(145deg,#102f61,#081a38)!important;border:1px solid #3b6ea7!important;color:#eff8ff!important}
+.zawi-auth-card h2,.zawi-brand-latin{color:#eff8ff!important}
+.table-wrap,.panel-body,.settings-card,.zavi-custom-card,.statement-preview{background:transparent!important}
+.statement-preview img{background:#081b3b!important;border:1px solid #2b5a96!important}
+
+/* V51: visible persistent invoice/statement actions and consistent dark backgrounds */
+#overlay .z45-invoice-modal,#overlay .z51-debt-preview-modal{display:flex!important;flex-direction:column!important;overflow:hidden!important;max-height:min(95dvh,1080px)!important;background:linear-gradient(145deg,#102f61,#081b38)!important}
+#overlay .z45-invoice-modal #dialogForm,#overlay .z51-debt-preview-modal #dialogForm{display:flex!important;flex-direction:column!important;min-height:0!important;flex:1!important;overflow:hidden!important}
+#overlay .z45-invoice-modal .modal-body,#overlay .z51-debt-preview-modal .modal-body{overflow:auto!important;flex:1!important;min-height:0!important;overscroll-behavior:contain!important;padding:12px!important;background:#091c3c!important}
+#overlay .z45-invoice-modal .statement-preview,#overlay .z51-debt-preview-modal .statement-preview{max-height:none!important;overflow:visible!important;background:#06142e!important;border:1px solid #356aa1!important;padding:10px!important}
+#overlay .z45-invoice-modal .statement-preview img,#overlay .z51-debt-preview-modal .statement-preview img{display:block!important;max-height:none!important;width:min(100%,640px)!important;height:auto!important;box-shadow:0 11px 34px #0009!important}
+#overlay .modal-foot.z51-invoice-actions-footer{flex:0 0 auto!important;display:flex!important;align-items:center!important;flex-wrap:wrap!important;gap:8px!important;background:#0d2a57!important;border-top:1px solid #3871a4!important;padding:10px!important;z-index:3!important}
+#overlay .z51-invoice-actions-footer .statement-actions{margin:0!important;display:flex!important;justify-content:center!important;flex:1 1 420px!important;flex-wrap:wrap!important;gap:8px!important}
+#overlay .z51-invoice-actions-footer .btn{background:#133b77!important;border:1px solid #4a8dc7!important;color:#fff!important;min-height:42px!important;line-height:1.5!important;font-size:12px!important;white-space:normal!important;padding:9px 10px!important;text-align:center!important}
+#overlay .z51-invoice-actions-footer .btn.primary{background:linear-gradient(112deg,#174ee0,#0bc4ce)!important;border-color:#54cae2!important}
+#overlay .modal-head,#overlay .modal-foot{background:#0e2a55!important;color:#fff!important}
+#overlay .modal-head .icon-button{background:#163f78!important;color:#effaff!important;border:1px solid #4883b8!important}
+#overlay .modal-body .small-info{color:#bad7ef!important}
+@media(max-width:700px){#overlay .z51-invoice-actions-footer .statement-actions{flex:1 1 100%!important;display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important}#overlay .z51-invoice-actions-footer .btn{font-size:11px!important;padding:8px!important;min-width:0!important}#overlay .z45-invoice-modal .modal-body,#overlay .z51-debt-preview-modal .modal-body{padding:7px!important}}
+/* Previously white surfaces: keep product typography readable */
+.zv-feature-card,.zv-phone-strip,.settings-card,.receipt-preview,.ledger-intro,.report-stat,.report-card,.debt-card .dc-actions,.stock-item,.modal .ledger-intro,.transaction-table thead th,.ledger-table thead th,.statement-actions,.card .table-bar{background:linear-gradient(130deg,#133a79,#0b2551)!important;color:#eff9ff!important;border-color:#315e9b!important}
+.zv-feature-card strong,.zv-feature-card>strong,.ledger-intro strong,.zv-journal-item strong,.report-stat strong,.stock-item b,.stock-item strong{color:#ffffff!important}
+.zv-feature-card span,.zv-feature-card small,.zv-feature-card>span,.zv-feature-card>small,.ledger-intro small,.stock-item small,.debt-card .dc-contact{color:#bed8f2!important}
+.card>.panel-head,.card>.panel-body,.report-card>.panel-head{background:transparent!important;color:#e9f6ff!important}
+#overlay .modal-body>.table-wrap,.report-stat .panel-head,.modal-body .field{background:transparent!important}
+.modal .field label{color:#d4eaff!important}
+.modal input,.modal select,.modal textarea{color:#fff!important;border-color:#376fa7!important;background:#0f3267!important}
+.modal input::placeholder,.modal textarea::placeholder{color:#a5c8e6!important}
+
+/* V57: owner-only business name editor; matches the existing navy/cyan theme. */
+.zavi-rename-card{border:1px solid #2e81d6!important;background:linear-gradient(135deg,rgba(7,50,116,.92),rgba(8,29,80,.94))!important;color:#eaf7ff!important;box-shadow:0 12px 32px rgba(0,100,255,.12)!important;margin:16px 0!important;}
+.zavi-rename-card .zavi-rename-title{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px;}
+.zavi-rename-card h3,.zavi-rename-card label{color:#e9f7ff!important;}
+.zavi-rename-card p,.zavi-rename-card .tiny-note{color:#b6d7ef!important;}
+.zavi-rename-card input{color:#fff!important;background:rgba(3,21,56,.82)!important;border:1px solid #3c8fd2!important;outline-color:#21d8ed!important;}
+.zavi-rename-card input:focus{border-color:#22dcf1!important;box-shadow:0 0 0 3px rgba(16,210,233,.18)!important;}
+.zavi-rename-card .zavi-rename-button{justify-content:flex-end;}
+.zavi-rename-card .zavi-rename-button .btn{min-width:190px;background:linear-gradient(90deg,#138ad9,#05c9ce)!important;color:white!important;border:0!important;}
+@media(max-width:690px){.zavi-rename-card .zavi-rename-button{justify-content:stretch;}.zavi-rename-card .zavi-rename-button .btn{width:100%;}}

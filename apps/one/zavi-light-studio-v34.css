@@ -1,0 +1,252 @@
+/* ZAVI ONE • V34 LIGHT STUDIO — editorial accessibility pass
+   Preserves original dark mode and accounting behavior. Branding kept navy/blue.
+   Progressive overrides for legacy components, desktop, tablet and mobile.
+   This is the LAST linked stylesheet in app pages. */
+
+/* Readable modern Dari/Pashto type, with offline OS fallbacks. External web font
+   is an optional enhancement, NEVER required for login or offline accounting. */
+html:lang(fa-AF) body, html:lang(ps-AF) body,
+html:lang(fa) body, html:lang(ps) body,
+html:lang(fa-AF) button,html:lang(ps-AF) button,
+html:lang(fa-AF) input,html:lang(ps-AF) input,
+html:lang(fa-AF) select,html:lang(ps-AF) select,
+html:lang(fa-AF) textarea,html:lang(ps-AF) textarea {
+  font-family:"Vazirmatn","Noto Sans Arabic","Noto Naskh Arabic",Tahoma,"Segoe UI",sans-serif!important;
+}
+html:lang(fa-AF) body,html:lang(ps-AF) body {font-size:15px;line-height:1.9}
+html:lang(fa-AF) :is(h1,h2,h3,h4,h5,h6,.nav-btn,.nav-item,.button,.btn,.zavi-theme-choice),
+html:lang(ps-AF) :is(h1,h2,h3,h4,h5,h6,.nav-btn,.nav-item,.button,.btn,.zavi-theme-choice) {
+  letter-spacing:normal!important;font-weight:750;
+}
+html:lang(ps-AF) :is(input,textarea,.field, .form-group),
+html:lang(fa-AF) :is(input,textarea,.field,.form-group){line-height:1.85}
+
+html[data-zavi-theme="light"] {
+  color-scheme:light;
+  --bg:#f3f7fc;--ink:#102338;--muted:#475569;--line:#dae5f0;
+  --navy:#ffffff;--navy2:#f4f9ff;--soft:#ebf5ff;
+  --zavi-pane:#ffffff;--zavi-text:#102338;--zavi-soft:#475569;
+  --z23-foreground:#102338;--z23-muted:#475569;
+  --z23-surface:#ffffff;--z23-surface2:#f5faff;--z23-outline:#cbd9e8;
+  --z34-bg:#f3f7fc;--z34-paper:#ffffff;--z34-ink:#102338;
+  --z34-body:#1e334b;--z34-sub:#475569;--z34-line:#d5e2ee;
+  --z34-accent:#0765ca;--z34-mint:#0891b2;
+  --z34-shadow:0 8px 24px rgba(22,53,92,.08);
+  background:var(--z34-bg)!important;
+}
+html[data-zavi-theme="light"] body{
+  color:var(--z34-ink)!important;
+  background:linear-gradient(154deg,#f8fbff 0%,#f1f6fc 50%,#edf5fd 100%) fixed!important;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+}
+html[data-zavi-theme="light"] :is(.app,.app-shell,.workspace,.main,.content,#view,#pageContent,main){color:var(--z34-ink)!important}
+
+/* At every breakpoint side nav has visibly filled cells (same density as dark)
+   rather than nearly invisible transparent links. */
+html[data-zavi-theme="light"] :is(.sidebar,.side-nav,.app-sidebar){
+  background:linear-gradient(179deg,#fff 0%,#f6faff 67%,#edf5ff 100%)!important;
+  color:#173451!important;border-color:#d3e1f0!important;
+  box-shadow:0 9px 26px rgba(13,63,113,.10)!important;
+}
+html[data-zavi-theme="light"] .sidebar :is(.brand,.brand-name,.brand strong,.brand span){color:#102338!important}
+html[data-zavi-theme="light"] .sidebar :is(.brand-sub,.brand small,.sidebar-caption,.section-nav,.sidebar-footer,.sidebar-bottom small,.nav-caption){color:#425e7a!important;opacity:1!important}
+html[data-zavi-theme="light"] .sidebar :is(.nav,.sidebar-menu){gap:4px!important}
+html[data-zavi-theme="light"] .sidebar :is(.nav-btn,.nav-item,.bottom-btn):not(.active):not(.selected):not([aria-current="page"]){
+  display:flex!important;align-items:center!important;gap:11px!important;
+  min-height:43px!important;margin-block:2px!important;
+  padding:10px 13px!important;border:1px solid #dbe8f5!important;
+  background:linear-gradient(110deg,#f6faff,#eaf3fc)!important;
+  color:#1e4265!important;border-radius:12px!important;
+  font-weight:750!important;text-shadow:none!important;
+  box-shadow:0 1px 3px rgba(30,67,105,.025)!important;
+}
+html[data-zavi-theme="light"] .sidebar :is(.nav-btn,.nav-item):not(.active):not(.selected):hover{
+  background:#e2efff!important;color:#064e94!important;border-color:#9ac7ed!important;
+}
+html[data-zavi-theme="light"] .sidebar :is(.nav-btn.active,.nav-item.active,.nav-item.selected,[aria-current="page"]){
+  background:linear-gradient(112deg,#0867d9,#048fc9)!important;
+  color:#fff!important;border:1px solid #1686dd!important;
+  border-radius:12px!important;box-shadow:0 7px 17px #0b66bb36!important;
+  font-weight:800!important;text-shadow:none!important;
+}
+html[data-zavi-theme="light"] .sidebar :is(.nav-btn.active,.nav-item.active,.nav-item.selected,[aria-current="page"]) :is(svg,i,span,small,b,strong){color:#fff!important;stroke:currentColor!important;opacity:1!important}
+html[data-zavi-theme="light"] .sidebar :is(.nav-btn,.nav-item):not(.active):not(.selected) :is(svg,i,span){color:#205c90!important;stroke:currentColor!important;opacity:1!important}
+html[data-zavi-theme="light"] .sidebar :is(.nav-btn,.nav-item) svg{width:19px;height:19px;stroke-width:2.1}
+html[data-zavi-theme="light"] :is(.sidebar-footer,.sidebar-bottom){border-color:#d9e6f0!important}
+html[data-zavi-theme="light"] :is(.sidebar-footer,.sidebar-bottom) :is(p,b,strong,small){color:#23455f!important;opacity:1!important}
+
+/* App chrome / typographic contrast */
+html[data-zavi-theme="light"] :is(.topbar,.header,.page-top,.page-topbar,.zavi-topbar){
+  background:#fff!important;color:#0f2840!important;border-color:#dce6f1!important;
+  box-shadow:0 3px 13px rgba(17,55,96,.045)!important;
+}
+html[data-zavi-theme="light"] :is(.topbar-title,.topbar-sub,.breadcrumbs,.page-head h1,.page-head h2,.page-head p,.panel-heading h2,.panel-head h3){color:#152f48!important;opacity:1!important;text-shadow:none!important}
+html[data-zavi-theme="light"] :is(.muted,.subtle,.small-muted,.help-text,.hint,.form-helper,.tiny-note,.small-info,.footnote,.caption,.empty p,.empty span,.empty small,.empty-state p,.empty-state small){
+  color:#475569!important;opacity:1!important;text-shadow:none!important;
+}
+html[data-zavi-theme="light"] :is(.card,.panel,.settings-card,.metric,.stat,.report-card,.report-panel,
+  .report-stat,.summary-card,.summary-box,.detail-box,.account-box,.stock-item,
+  .stat-card,.metric-card,.kpi-card,.fin-metric,.finbar,.zv18-insight,.zv18-kpi,
+  .zv18-stock-row,.fin-form,.finance-summary,.receipt-preview,.order-line,.empty,
+  .empty-state,.zavi-phone-card,.zavi-phonebook,.zavi-receipt-block,.zavi-inline-tip,
+  .zv-journal-item,.z1-repair-entry,.backup-reminder,.cash-account,.bank-account,
+  .transfer-account,.hawala-record,.zavi-feature-card,.zv-feature-card,
+  .zsh-card,.z46-offline-card,.z20-card,.z20-box,.z20-panel,.z23-card,
+  .v24-card,.v24-box,.v24-panel,.v24-stat,.z53-reset-card,.z53-reset-center,
+  .zsvc-extra-card,.zsvc-card,.zsvc-shortcut,.zsvc-follow,.zsvc-help){
+  background:#fff!important;border-color:#d3e0ec!important;
+  color:#122c43!important;box-shadow:var(--z34-shadow)!important;
+}
+html[data-zavi-theme="light"] :is(.stat-grid,.report-grid,.metric-grid,.fin-grid,.zv18-grid,.zavi-phone-grid,.z20-grid,.zavi-module-grid){background:transparent!important;box-shadow:none!important;border-color:transparent!important}
+html[data-zavi-theme="light"] :is(.card,.panel,.settings-card,.metric,.stat,.report-card,.report-panel,.report-stat,.summary-card,.detail-box,.account-box,.stock-item,.zv18-kpi,.zv18-insight,.zv18-stock-row,.zsh-card,.z20-card,.z23-card,.v24-card,.v24-stat)
+  :is(h1,h2,h3,h4,h5,h6,p,label,.label,.stat-label,.stat-value,.value,.amount,.title,b,strong,small){color:#152d45!important;opacity:1!important;text-shadow:none!important}
+/* Do NOT recolor designated meaningful coloured chips, icons or calls to action.
+   These override dark text only within white paper cards. */
+html[data-zavi-theme="light"] :is(.stat-label,.metric .label,.stat-foot,.metric small,.fin-metric span,.fin-metric small,.zv18-kpi>span,.zv18-kpi small,.zv18-note,.zv18-stock-row span,.data-table small){color:#425973!important;opacity:1!important;text-shadow:none!important}
+html[data-zavi-theme="light"] :is(.stat-value,.metric strong,.fin-metric strong,.zv18-kpi strong){color:#0e2742!important;opacity:1!important;font-weight:900!important}
+
+/* Tiny navy legacy labels, which appeared in screenshots as blank dark rectangles */
+html[data-zavi-theme="light"] :is(.top-label,.z20-profile,.stat-chip,.stat-period,.stat-badge,.stat-foot,.panel-badge,.metric-caption,.summary-hint,.stock-hint){
+  background:#ebf4ff!important;color:#164a79!important;border:1px solid #bfd6ec!important;
+  -webkit-text-fill-color:#164a79!important;box-shadow:none!important;text-shadow:none!important;
+  opacity:1!important;white-space:normal!important;max-width:100%!important;
+  font-size:12px!important;line-height:1.5!important;font-weight:750!important;
+  min-height:0!important;height:auto!important;min-width:0!important;
+}
+html[data-zavi-theme="light"] :is(.top-label,.z20-profile,.stat-chip,.stat-badge) :is(span,b,small,strong){color:#164a79!important;opacity:1!important}
+
+/* Consistent soft-blue headers and strong, readable zebra tables */
+html[data-zavi-theme="light"] :is(.panel-head,.panel-heading,.table-bar,.table-head,.table-header,.report-head,.report-toolbar,.report-filter,.filter-strip,.summary-strip,.smart-strip,.finance-head){
+  background:#f4f8ff!important;color:#17344f!important;border-color:#d6e3f0!important;
+}
+html[data-zavi-theme="light"] :is(.panel-head,.panel-heading,.table-bar,.table-head,.report-head,.report-filter,.summary-strip,.smart-strip,.finance-head) :is(h2,h3,h4,p,span,small,b,strong){color:#17344f!important;opacity:1!important}
+html[data-zavi-theme="light"] :is(.table-wrap,.table-scroll,.zsvc-table-scroll,.data-table,.transaction-table,.ledger-table,.z23-table,.zsvc-table){background:#fff!important;color:#142d44!important}
+html[data-zavi-theme="light"] :is(.data-table,.transaction-table,.ledger-table,.z23-table,.zsvc-table) thead :is(tr,th),
+html[data-zavi-theme="light"] :is(.data-table,.transaction-table,.ledger-table,.z23-table,.zsvc-table) th{
+  background:#eaf3fc!important;color:#193d5f!important;border-color:#cfdde9!important;
+  font-weight:800!important;opacity:1!important;
+}
+html[data-zavi-theme="light"] :is(.data-table,.transaction-table,.ledger-table,.z23-table,.zsvc-table) tbody tr:nth-child(even){background:#f4f8fd!important}
+html[data-zavi-theme="light"] :is(.data-table,.transaction-table,.ledger-table,.z23-table,.zsvc-table) tbody tr:nth-child(odd){background:#fff!important}
+html[data-zavi-theme="light"] :is(.data-table,.transaction-table,.ledger-table,.z23-table,.zsvc-table) tbody td{
+ background:transparent!important;color:#213b52!important;border-color:#e1e9f1!important;opacity:1!important;
+}
+html[data-zavi-theme="light"] :is(.data-table,.transaction-table,.ledger-table,.z23-table,.zsvc-table) tbody td :is(span,small,p,b,strong){color:#294761!important;opacity:1!important}
+html[data-zavi-theme="light"] :is(.data-table,.transaction-table,.ledger-table,.z23-table,.zsvc-table) tbody tr:hover{background:#e8f3ff!important}
+
+/* Light full-width forms, checkboxes, dropdowns and modal fields */
+html[data-zavi-theme="light"] :is(input:not([type="checkbox"]):not([type="radio"]),select,textarea,.searchbox,.search-field,.input,.input-group){
+  background:#fff!important;color:#102c47!important;border-color:#bacde0!important;
+  -webkit-text-fill-color:#102c47!important;opacity:1!important;
+}
+html[data-zavi-theme="light"] :is(input,textarea)::placeholder{color:#4b6176!important;opacity:1!important;-webkit-text-fill-color:#4b6176!important}
+html[data-zavi-theme="light"] :is(input[readonly],textarea[readonly]){-webkit-text-fill-color:#1d3955!important;color:#1d3955!important}
+html[data-zavi-theme="light"] :is(.zavi-switch,.z20-toggle,.zavi-module-grid label,.z20-grid label,.feature-toggle,.check-card){
+  background:#f0f6ff!important;color:#172f48!important;border:1px solid #c3d8ec!important;
+  box-shadow:0 1px 4px rgba(18,54,88,.06)!important;
+}
+html[data-zavi-theme="light"] :is(.zavi-switch,.z20-toggle,.zavi-module-grid label,.z20-grid label,.feature-toggle,.check-card) :is(label,span,strong,b,small){color:#183b5b!important;opacity:1!important}
+html[data-zavi-theme="light"] input[type="checkbox"],html[data-zavi-theme="light"] input[type="radio"]{accent-color:#0866d3!important;opacity:1!important}
+html[data-zavi-theme="light"] :is(label,.field label,.form-group label,.fin-form label){color:#1c3b56!important;opacity:1!important;font-weight:700!important}
+html[data-zavi-theme="light"] :is(input,textarea,select,button,a):focus-visible{outline:3px solid #0a85cb!important;outline-offset:3px!important}
+html[data-zavi-theme="light"] :is(input,textarea,select):focus{border-color:#2083d9!important;box-shadow:0 0 0 3px #0b7acc1a!important}
+
+/* Secondary actions read as actual controls, primary blue actions remain blue */
+html[data-zavi-theme="light"] :is(.btn,.button,.icon-btn,.icon-button,.mobile-menu,.zsh-btn-light):not(.primary):not(.danger):not(.selected):not(.active){
+  background:#edf5ff!important;color:#134a79!important;border:1px solid #bfd6ed!important;
+  box-shadow:none!important;text-shadow:none!important;opacity:1!important;
+}
+html[data-zavi-theme="light"] :is(.btn.primary,.btn-primary,.button.primary,button.primary,.zavi-theme-choice.is-selected,.zavi-theme-choice[aria-pressed="true"]){
+  background:linear-gradient(110deg,#0867dc,#039fc9)!important;color:#fff!important;
+  border-color:#147bd1!important;font-weight:800!important;
+}
+html[data-zavi-theme="light"] :is(.btn.primary,.btn-primary,.button.primary,button.primary,.zavi-theme-choice.is-selected,.zavi-theme-choice[aria-pressed="true"]) :is(span,small,b,strong,svg){color:#fff!important;stroke:currentColor!important}
+html[data-zavi-theme="light"] :is(.btn.danger,.button.danger,.danger,.status.expired){background:#fff0f2!important;color:#a11c3c!important;border-color:#f0adb9!important}
+html[data-zavi-theme="light"] :is(.status,.badge,.tag,.pill,.zsvc-chip){color:#1f4c71!important;background:#eaf3fe!important;border-color:#c6d9e9!important;opacity:1!important}
+html[data-zavi-theme="light"] :is(.status.active,.pill.green,.badge.green){background:#dcfce7!important;color:#13683d!important;border-color:#a1dcc0!important}
+html[data-zavi-theme="light"] :is(.status.warning,.pill.amber){background:#fef3c7!important;color:#81500d!important;border-color:#e8cb8e!important}
+html[data-zavi-theme="light"] :is(.status.suspended,.status.expired,.pill.red){background:#ffe7e9!important;color:#9d253e!important;border-color:#f0b6c2!important}
+
+/* Large dark modules in light theme: turn them into clear but visually grounded cards.
+   Light gray-blue surfaces maintain the original panel hierarchy. */
+html[data-zavi-theme="light"] :is(.inventory-dashboard,.smart-inventory,.inventory-card,.smart-inventory-panel,.zv18-stock-list,.zv18-stock-grid,
+  .report-summary,.report-kpis,.finance-grid,.fin-chart-rail,.chart-container,.chart-card,
+  .statement-preview,.zv-journal-list,.invoice-archive-row,.manual-invoice-row,
+  .zavi-phone-grid,.zavi-phone-main,.zavi-phone-actions,.record-card,.debt-card,.debt-list,
+  .stock-list,.list-container,.records-list,.financial-card,.zsvc-timeline,
+  .zsvc-forecast,.zsvc-results-head,.z23-scroll,.z23-body,.z20-member,.z20-team,
+  .z20-workspace,.z20-row,.z20-actions,.zavi-custom-card){
+  background:#fff!important;color:#17344b!important;border-color:#d5e1ee!important;
+  box-shadow:none!important;
+}
+html[data-zavi-theme="light"] :is(.inventory-dashboard,.smart-inventory,.zv18-stock-list,.zv-journal-list,.zavi-phone-grid,.z20-team,.fin-chart-rail) :is(p,span,small,label,strong,b){color:#1f405d!important;opacity:1!important}
+html[data-zavi-theme="light"] :is(.zavi-phone-card,.invoice-archive-row,.manual-invoice-row,.record-card,.zv-journal-item,.zv18-stock-row){
+  background:linear-gradient(145deg,#fff,#f8fbff)!important;
+  border:1px solid #d5e1ee!important;border-radius:13px!important;
+}
+html[data-zavi-theme="light"] :is(.zavi-phone-card,.invoice-archive-row,.manual-invoice-row,.record-card,.zv-journal-item,.zv18-stock-row) :is(h3,h4,p,span,small,b,strong){color:#1a3855!important;opacity:1!important}
+html[data-zavi-theme="light"] :is(.zavi-phone-number,.account-number,.zv18-kpi strong){color:#075caa!important}
+
+/* Modals and overlays should not carry the original dark skin */
+html[data-zavi-theme="light"] :is(.modal,.modal-card,.modal-body,.modal-head,.modal-foot,.modal-content,
+  .popup,.dialog,.v24-modal,.v24-dialog,.offcanvas,.popover,.drawer,.zavi-modal){
+  background:#fff!important;border-color:#d1dfed!important;color:#16314b!important;
+  box-shadow:0 16px 40px rgba(10,38,76,.17)!important;
+}
+html[data-zavi-theme="light"] :is(.modal,.modal-card,.modal-body,.modal-head,.modal-foot,.modal-content,.popup,.dialog,.v24-modal,.v24-dialog) :is(h1,h2,h3,h4,p,span,label,small,b,strong){color:#1b354f!important;opacity:1!important}
+html[data-zavi-theme="light"] :is(.modal-backdrop,.modal-bg){background:rgba(15,36,60,.5)!important}
+
+/* Hero retains contrast, brand chart art and blue gradient like the chosen reference. */
+html[data-zavi-theme="light"] :is(.welcome,.dashboard-hero,.hero-banner,.zavi-hero,.zsh-hero,.z23-top-banner,.zsvc-banner){
+  background:linear-gradient(115deg,#0874e7 0%,#0755bc 52%,#073776 100%)!important;
+  color:white!important;border-color:#2b92e5!important;
+  box-shadow:0 9px 27px rgba(6,83,158,.2)!important;
+}
+html[data-zavi-theme="light"] :is(.welcome,.dashboard-hero,.hero-banner,.zavi-hero,.zsh-hero,.z23-top-banner,.zsvc-banner) :is(h1,h2,h3,h4,h5,p,span,small,b,strong,.eyebrow){color:#fff!important;text-shadow:none!important}
+/* Keep any white hero button readable in the blue banner. */
+html[data-zavi-theme="light"] .welcome .btn:not(.primary){background:#fff!important;color:#134571!important;border-color:#fff!important}
+
+/* Full-screen ADMIN service and account pages, finance charts / cards. */
+html[data-zavi-theme="light"] :is(#z23AdminPortal,#zaviServiceCenter,#z24Root,#z53Root){color:#142e45!important}
+html[data-zavi-theme="light"] :is(#z23AdminPortal,#zaviServiceCenter,#z24Root,#z53Root) :is(.z23-card,.z23-scroll,.zsvc-extra-card,.zsvc-shortcut,.zsvc-tools,.zsvc-follow,.zsvc-help,.v24-box,.v24-stat,.v24-panel,.z53-reset-card,.z53-reset-center){
+ background:#fff!important;color:#14304b!important;border-color:#d4e0ed!important;box-shadow:var(--z34-shadow)!important;
+}
+html[data-zavi-theme="light"] :is(#z23AdminPortal,#zaviServiceCenter,#z24Root,#z53Root) :is(.z23-card,.z23-scroll,.zsvc-extra-card,.zsvc-shortcut,.zsvc-follow,.v24-box,.v24-stat,.z53-reset-card) :is(p,span,small,label,b,strong,h1,h2,h3,h4){color:#183550!important;opacity:1!important}
+/* PIN login/account panels on clean white paper */
+html[data-zavi-theme="light"] :is(.zawi-auth-card,.auth-card,.auth-wrapper,.zawi-lock-screen){color:#142b43!important}
+html[data-zavi-theme="light"] :is(.auth-card,.zawi-auth-card){background:#fff!important;border-color:#cdddeb!important;box-shadow:0 16px 44px rgba(14,43,73,.13)!important}
+html[data-zavi-theme="light"] :is(.auth-card,.zawi-auth-card) :is(h1,h2,p,label,small,.hint,.zawi-lock-description,.zawi-lock-info){color:#243f59!important;opacity:1!important}
+html[data-zavi-theme="light"] :is(.zawi-pin-btn,.zawi-auth-card button[type="submit"],.auth-card button[type="submit"]){background:linear-gradient(110deg,#0668d7,#0499bb)!important;color:#fff!important;font-weight:800!important}
+html[data-zavi-theme="light"] .auth-promo{background:linear-gradient(130deg,#054c9d,#0b3672)!important;color:#fff!important}
+html[data-zavi-theme="light"] .auth-promo :is(h1,h2,p,span,b,strong,small){color:#fff!important}
+
+/* Accessibility, responsive compact density and right-to-left alignment */
+html[data-zavi-theme="light"] :is(.nav-btn,.nav-item,.button,.btn,.form-group label,.field label,.card h3,.panel h3){text-shadow:none!important}
+html[dir="ltr"][data-zavi-theme="light"] :is(.nav-btn,.nav-item,.breadcrumbs,.searchbox,.table-wrap){text-align:left}
+html[dir="rtl"][data-zavi-theme="light"] :is(.nav-btn,.nav-item,.breadcrumbs,.searchbox,.table-wrap){text-align:right}
+@media(max-width:900px){
+  html[data-zavi-theme="light"] :is(.sidebar,.mobile-drawer .sidebar){border-color:#d2e2ef!important}
+  html[data-zavi-theme="light"] :is(.card,.panel,.stat,.metric,.zavi-phone-card){box-shadow:0 5px 15px rgba(14,49,82,.07)!important}
+}
+@media(max-width:560px){
+ html[data-zavi-theme="light"] :is(.top-label,.stat-chip,.stat-badge){font-size:11px!important;padding:3px 6px!important}
+ html[data-zavi-theme="light"] :is(.btn,.button,.nav-btn,.nav-item){min-height:41px}
+ html[data-zavi-theme="light"] :is(.card,.panel,.modal-card,.settings-card){border-radius:14px!important}
+}
+@media print{
+  html[data-zavi-theme="light"] :is(.invoice,.invoice-paper,.paper,.invoice-page){background:white!important;color:#111827!important;box-shadow:none!important}
+  html[data-zavi-theme="light"] :is(.invoice,.invoice-paper,.paper,.invoice-page) :is(td,th,span,p,b,strong,label){color:#162c44!important}
+}
+
+/* ONE V34 – softer navy mini-panels and clear smart inventory / invoice archive */
+html[data-zavi-theme="light"] .sidebar .brand-logo{box-shadow:0 5px 13px #1075d63d!important}
+html[data-zavi-theme="light"] :is(.zv18-insight,.zv18-stock-list,.zv18-stock-row,.zv18-kpi){background:#fff!important;border-color:#d8e4f0!important}
+html[data-zavi-theme="light"] :is(.zv18-title,.zv18-note,.zv18-insight p,.zv18-stock-list p){color:#273f5b!important;opacity:1!important}
+html[data-zavi-theme="light"] :is(.zavi-phone-card,.zv-journal-item,.account-box,.detail-box){padding:14px!important}
+html[data-zavi-theme="light"] :is(.empty,.empty-state){border:1px dashed #b8d0e3!important;background:#f7fbff!important;color:#375269!important}
+html[data-zavi-theme="light"] :is(.empty,.empty-state) :is(h3,strong,small,p,span){color:#3b556b!important;opacity:1!important}
+html[data-zavi-theme="light"] :is(.stat-icon.blue,.stat-icon.green,.stat-icon.orange,.stat-icon.pink){box-shadow:0 5px 11px rgba(14,78,131,.08)!important}
+html[data-zavi-theme="light"] :is(.stat-icon.blue,.stat-icon.green,.stat-icon.orange,.stat-icon.pink) :is(svg,i){stroke:currentColor!important;opacity:1!important}
+html[data-zavi-theme="light"] .zsh-hero{background:linear-gradient(110deg,#0874e7,#0754b5)!important}
+html[data-zavi-theme="light"] :is(.order-line,.stock-item,.receipt-card,.data-grid>div){background:#fff!important;color:#1f3950!important;border:1px solid #d2e1ef!important}
+html[data-zavi-theme="light"] :is(.order-line,.stock-item,.receipt-card,.data-grid>div) :is(span,b,strong,small,label){color:#23415b!important}

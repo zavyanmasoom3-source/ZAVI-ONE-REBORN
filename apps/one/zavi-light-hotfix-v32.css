@@ -1,0 +1,92 @@
+/* ZAVI ONE / ADMIN • Light Mode Hotfix V32
+   Purpose: remove remaining dark surfaces in light mode, especially smart inventory,
+   profit/loss widgets, report strips, icons, modals, and legacy financial panels.
+   Dark mode remains untouched because every rule is scoped to html[data-zavi-theme="light"]. */
+html[data-zavi-theme="light"] :is(.zv18-insight,.zv18-kpi,.zv18-stock-row,.zv18-stock-list,.zv18-grid,.zv18-title,.zv18-note){box-sizing:border-box}
+html[data-zavi-theme="light"] .zv18-insight{
+  background:#ffffff!important;
+  border:1px solid #cbd8e6!important;
+  box-shadow:0 6px 18px rgba(15,40,70,.08)!important;
+  color:#142d48!important;
+}
+html[data-zavi-theme="light"] .zv18-title h3,
+html[data-zavi-theme="light"] .zv18-insight :is(p,span,strong,small,b){color:#17324d!important}
+html[data-zavi-theme="light"] .zv18-pill{
+  background:#edf5ff!important;
+  color:#15508a!important;
+  border:1px solid #bfd6ea!important;
+}
+html[data-zavi-theme="light"] .zv18-kpi{
+  background:#ffffff!important;
+  border:1px solid #cfdae6!important;
+  box-shadow:0 4px 12px rgba(15,40,70,.05)!important;
+  color:#17324d!important;
+}
+html[data-zavi-theme="light"] .zv18-kpi > span{color:#506477!important}
+html[data-zavi-theme="light"] .zv18-kpi strong{color:#102c47!important}
+html[data-zavi-theme="light"] .zv18-kpi small,
+html[data-zavi-theme="light"] .zv18-note{color:#536679!important}
+html[data-zavi-theme="light"] .zv18-highlight{
+  background:linear-gradient(180deg,#f2fbff,#ffffff)!important;
+  border-color:#85c9e8!important;
+}
+html[data-zavi-theme="light"] .zv18-warn{
+  background:linear-gradient(180deg,#fffaf2,#ffffff)!important;
+  border-color:#efc88d!important;
+}
+html[data-zavi-theme="light"] .zv18-stock-row{
+  background:#f8fbff!important;
+  border:1px solid #d5e1ec!important;
+}
+html[data-zavi-theme="light"] .zv18-stock-row strong,
+html[data-zavi-theme="light"] .zv18-stock-row span{color:#17324d!important}
+
+html[data-zavi-theme="light"] :is(.stat-grid .stat,.report-summary .stat,.report-kpi,.summary-strip .stat,.finance-summary .stat,.finance-grid .stat,.metric-card,.summary-box,.kpi-card){
+  background:#ffffff!important;
+  border-color:#cfdae6!important;
+  color:#17324d!important;
+}
+html[data-zavi-theme="light"] :is(.panel-head,.report-head,.report-filter,.report-toolbar,.filter-strip,.summary-strip,.finance-head,.finance-toolbar,.smart-strip){
+  background:#f1f7fe!important;
+  color:#17324d!important;
+  border-color:#d3dfeb!important;
+}
+html[data-zavi-theme="light"] :is(.panel-head,.report-head,.report-filter,.report-toolbar,.filter-strip,.summary-strip,.finance-head,.finance-toolbar,.smart-strip) :is(h1,h2,h3,h4,span,small,b,strong,label){
+  color:#17324d!important;
+}
+
+html[data-zavi-theme="light"] :is(.modal,.modal-card,.dialog,.popup,.sheet-modal,.drawer,.offcanvas,.popover,.menu-panel,.zavi-modal,.v24-modal,.v24-dialog){
+  background:#ffffff!important;
+  color:#17324d!important;
+  border-color:#ced8e4!important;
+}
+html[data-zavi-theme="light"] :is(.modal,.modal-card,.dialog,.popup,.sheet-modal,.drawer,.offcanvas,.popover,.menu-panel,.zavi-modal,.v24-modal,.v24-dialog) :is(h1,h2,h3,h4,h5,p,span,small,strong,b,label,td,th){
+  color:#17324d!important;
+}
+
+html[data-zavi-theme="light"] :is(.nav-btn,.nav-item,.sidebar button,.sidebar a,.bottom-btn,.menu-link,.tab,.icon-btn) :is(svg,path,circle,rect,line,polyline,polygon){
+  stroke:currentColor!important;
+}
+html[data-zavi-theme="light"] :is(.nav-btn,.nav-item,.sidebar button,.sidebar a,.bottom-btn,.menu-link,.tab,.icon-btn) :is(svg){opacity:1!important}
+
+/* Residual dark inline panels in light mode */
+html[data-zavi-theme="light"] :is([style*="#06132e"],[style*="#0a2857"],[style*="#0c2b52"],[style*="#081831"],[style*="#0f2c58"],[style*="#0a2145"],[style*="#102850"],[style*="#05536b"],[style*="#06214d"],[style*="#071c43"],[style*="#081b3b"],[style*="#113262"]){
+  background:#ffffff!important;
+  color:#17324d!important;
+  border-color:#cfdae6!important;
+}
+html[data-zavi-theme="light"] :is([style*="#06132e"],[style*="#0a2857"],[style*="#0c2b52"],[style*="#081831"],[style*="#0f2c58"],[style*="#0a2145"],[style*="#102850"],[style*="#05536b"],[style*="#06214d"],[style*="#071c43"],[style*="#081b3b"],[style*="#113262"]) :is(h1,h2,h3,h4,h5,p,span,small,strong,b,em,label,td,th){
+  color:#17324d!important;
+}
+/* Preserve the primary hero/banner look even if inline colors were matched above. */
+html[data-zavi-theme="light"] :is(.welcome,.dashboard-hero,.hero-banner,.zavi-hero,.zsh-hero,.z23-top-banner,.zsvc-banner){
+  background:linear-gradient(110deg,#0c60c3 0%,#0778d5 51%,#0656a2 100%)!important;
+  border-color:#3e99e5!important;
+  color:#fff!important;
+}
+html[data-zavi-theme="light"] :is(.welcome,.dashboard-hero,.hero-banner,.zavi-hero,.zsh-hero,.z23-top-banner,.zsvc-banner) :is(h1,h2,h3,h4,p,span,small,strong,b){color:#fff!important}
+
+/* Print / invoice helpers */
+html[data-zavi-theme="light"] .paper,
+html[data-zavi-theme="light"] .invoice,
+html[data-zavi-theme="light"] .invoice-paper{background:#fff!important;color:#17324d!important}

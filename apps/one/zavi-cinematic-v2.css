@@ -1,0 +1,160 @@
+/* ZAVI ONE & ZAVI ONE ADMIN | Cinematic UI V2.
+ * Additive visual layer: NEVER replaces original events, permissions, data, routes or forms.
+ * Motion: transform/opacity only; reduced-motion and low-powered Android devices supported.
+ */
+html{
+ --zx-blue:#238cf7;--zx-cyan:#2ad9f5;--zx-green:#17caa4;--zx-purple:#a77afa;
+ --zx-radius:17px;--zx-ease:cubic-bezier(.2,.72,.2,1);
+ --zx-grad:linear-gradient(112deg,#1687f6 0%,#18c9ed 56%,#258cf7 100%);
+ --zx-grad-soft:linear-gradient(135deg,rgba(36,155,245,.12),rgba(23,200,223,.035));
+}
+html:not([data-zavi-theme="light"]){
+ --zx-surface:#0d2036;--zx-bg:#071423;--zx-bg2:#0d1f35;
+ --zx-line:rgba(91,166,236,.19);--zx-strong:#f0f7ff;--zx-muted:#a4bdd6;
+ --zx-glow:rgba(16,154,252,.22);--zx-glow2:rgba(19,228,223,.12);
+ --zx-shadow:0 12px 32px rgba(0,5,22,.23);
+}
+html[data-zavi-theme="light"]{
+ --zx-surface:#fff;--zx-bg:#f4f8fe;--zx-bg2:#eaf4ff;
+ --zx-line:rgba(78,135,203,.18);--zx-strong:#122d4c;--zx-muted:#617893;
+ --zx-glow:rgba(41,128,245,.11);--zx-glow2:rgba(37,199,237,.10);
+ --zx-shadow:0 10px 24px rgba(24,79,138,.065);
+}
+html,html body{max-width:100%;overflow-x:clip}
+html body{min-height:100dvh}
+body #content,body #appScreen #view{isolation:isolate}
+body #content .welcome,body #appScreen #view .admin-hero{
+ position:relative!important;overflow:hidden!important;isolation:isolate;
+ border:1px solid var(--zx-line)!important;border-radius:21px!important;
+ background:radial-gradient(ellipse 75% 120% at 8% 2%,var(--zx-glow),transparent 80%),
+ radial-gradient(ellipse 60% 100% at 98% 94%,var(--zx-glow2),transparent 79%),
+ linear-gradient(117deg,var(--zx-surface),var(--zx-bg2))!important;
+ box-shadow:var(--zx-shadow)!important;
+}
+body #content .welcome::before,body #appScreen #view .admin-hero::after{
+ content:"";position:absolute;z-index:0;pointer-events:none;
+ inset:auto -8% -115px auto;width:340px;height:340px;border-radius:50%;
+ border:1px solid rgba(47,170,253,.19);
+ background:radial-gradient(circle at center,rgba(43,185,241,.10),transparent 70%);
+ box-shadow:0 0 0 37px rgba(54,151,246,.025),0 0 0 80px rgba(54,151,246,.018);
+ opacity:.9;animation:zx-orbit 13s ease-in-out infinite alternate;
+}
+body #content .welcome>*,body #appScreen #view .admin-hero>*{position:relative;z-index:1}
+body #content .welcome h2,body #appScreen #view .admin-hero :is(h1,h2,h3){
+ letter-spacing:-.025em;text-shadow:0 2px 15px rgba(33,131,236,.065);font-weight:900!important;
+}
+body #content .stat-grid,body #appScreen #view .admin-kpis{gap:12px!important}
+body #content .stat-grid>*,body #appScreen #view .admin-kpi{
+ position:relative;isolation:isolate;overflow:hidden;
+ border-radius:var(--zx-radius)!important;border:1px solid var(--zx-line)!important;
+ box-shadow:var(--zx-shadow)!important;
+ transition:transform .25s var(--zx-ease),border-color .25s ease,box-shadow .25s ease!important;
+ animation:zx-rise .55s var(--zx-ease) both;
+}
+body #content .stat-grid>*:nth-child(2),body #appScreen #view .admin-kpi:nth-child(2){animation-delay:.055s}
+body #content .stat-grid>*:nth-child(3),body #appScreen #view .admin-kpi:nth-child(3){animation-delay:.11s}
+body #content .stat-grid>*:nth-child(4),body #appScreen #view .admin-kpi:nth-child(4){animation-delay:.165s}
+body #content .stat-grid>*:nth-child(5),body #appScreen #view .admin-kpi:nth-child(5){animation-delay:.19s}
+body #content .stat-grid>*::before,body #appScreen #view .admin-kpi::before{
+ content:"";position:absolute;inset:0 0 auto 0;height:3px;pointer-events:none;
+ background:var(--zx-grad);opacity:.9;
+}
+body #content .stat-grid>*::after,body #appScreen #view .admin-kpi::after{
+ content:"";position:absolute;inset:0 0 auto auto;width:100px;height:100px;pointer-events:none;
+ border-radius:0 0 0 100%;background:radial-gradient(circle at 100% 0%,var(--zx-glow),transparent 75%);
+}
+body #content .stat-grid>*:nth-child(2)::before,body #appScreen #view .admin-kpi:nth-child(2)::before{background:linear-gradient(90deg,#1bc1e5,#2f7ff5)}
+body #content .stat-grid>*:nth-child(3)::before,body #appScreen #view .admin-kpi:nth-child(3)::before{background:linear-gradient(90deg,#9e71fb,#6e8cf6)}
+body #content .stat-grid>*:nth-child(4)::before,body #appScreen #view .admin-kpi:nth-child(4)::before{background:linear-gradient(90deg,#12cb9b,#44d3c8)}
+body #content .stat-grid>*:is(:hover,:focus-within),body #appScreen #view .admin-kpi:is(:hover,:focus-within){
+ transform:translate3d(0,-3px,0);border-color:rgba(30,141,241,.48)!important;
+ box-shadow:0 14px 30px var(--zx-glow)!important;
+}
+body #content .card,body #content .panel,body #content .dashboard-card,
+body #content .z649-dashboard-extras,body #appScreen #view .panel,
+body #appScreen #view .admin-analytics-main,body #appScreen #view .admin-distribution{
+ border-color:var(--zx-line)!important;border-radius:var(--zx-radius)!important;
+ box-shadow:var(--zx-shadow)!important;
+}
+body #content :is(.card,.panel,.dashboard-card),body #appScreen #view :is(.panel,.admin-analytics-main,.admin-distribution){
+ animation:zx-soft-in .40s ease both;
+}
+body #content .zavi-reference-quick .btn,body #appScreen #view .admin-quick-grid button{
+ position:relative;overflow:hidden;border-radius:13px!important;
+ transition:transform .2s var(--zx-ease),filter .2s ease,box-shadow .2s ease!important;
+}
+body #content .zavi-reference-quick .btn:hover,body #appScreen #view .admin-quick-grid button:hover{
+ transform:translate3d(0,-3px,0);filter:saturate(1.12);
+ box-shadow:0 9px 21px var(--zx-glow)!important;
+}
+body #content .btn.primary,body #appScreen #view .button.primary{
+ background:var(--zx-grad)!important;box-shadow:0 7px 18px rgba(22,123,230,.20)!important;
+ transition:transform .18s ease,filter .18s ease!important;
+}
+body #content .btn.primary:active,body #appScreen #view .button.primary:active{transform:scale(.985)}
+body #side .nav-btn,body #appScreen .nav-item{
+ border-radius:12px!important;transition:background .18s ease,color .18s ease,transform .18s ease!important;
+}
+body #side .nav-btn.active,body #side .nav-btn.selected,body #appScreen .nav-item.selected{
+ background:var(--zx-grad-soft)!important;
+ box-shadow:inset 3px 0 0 #269aff,0 2px 8px var(--zx-glow)!important;
+}
+body #content table,body #appScreen #view table{font-variant-numeric:tabular-nums}
+body #content table tbody tr,body #appScreen #view table tbody tr{transition:background-color .15s ease!important}
+body #content :is(input,select,textarea),body #appScreen #view :is(input,select,textarea){border-radius:11px!important}
+body #content :is(button,input,select,textarea):focus-visible,
+body #appScreen #view :is(button,input,select,textarea):focus-visible,
+body #side .nav-btn:focus-visible,body #appScreen .nav-item:focus-visible{
+ outline:2px solid var(--zx-cyan)!important;outline-offset:2px!important;
+}
+body #content .zavi-clean-settings-group,body #appScreen #view .zavi-clean-settings-group{
+ border-radius:16px!important;transition:border-color .20s ease,box-shadow .20s ease!important;
+}
+body #content .zavi-clean-settings-group[open],body #appScreen #view .zavi-clean-settings-group[open]{
+ border-color:rgba(32,142,244,.48)!important;box-shadow:0 8px 22px var(--zx-glow)!important;
+}
+body #content .zavi-clean-settings-group>summary:focus-visible,
+body #appScreen #view .zavi-clean-settings-group>summary:focus-visible{
+ outline:2px solid var(--zx-blue);outline-offset:-3px;
+}
+body #content .zavi-reference-quick,body #appScreen #view .admin-quick-grid{max-width:100%;min-width:0}
+body #side.sidebar,body #appScreen .sidebar,body #appScreen .zavi-v6-menu-scroll{
+ overscroll-behavior:contain;scrollbar-width:thin;
+}
+@keyframes zx-rise{from{opacity:.5;transform:translate3d(0,14px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
+@keyframes zx-soft-in{from{opacity:.5;transform:translate3d(0,6px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
+@keyframes zx-orbit{from{transform:translate3d(-9px,8px,0) scale(.94);opacity:.55}to{transform:translate3d(14px,-8px,0) scale(1.06);opacity:.98}}
+@media(max-width:850px){
+ body #content .welcome::before,body #appScreen #view .admin-hero::after{width:190px;height:190px;inset:auto -60px -100px auto;box-shadow:0 0 0 30px rgba(20,125,240,.02)}
+ body #content .welcome,body #appScreen #view .admin-hero{border-radius:17px!important}
+ body #content .stat-grid,body #appScreen #view .admin-kpis{gap:9px!important}
+ body #content .stat-grid>*,body #appScreen #view .admin-kpi{border-radius:14px!important}
+ body #content .stat-grid>*:is(:hover,:focus-within),body #appScreen #view .admin-kpi:is(:hover,:focus-within){transform:none}
+ body #content .card,body #content .panel,body #appScreen #view .panel{border-radius:14px!important}
+}
+@media(max-width:480px){
+ body #content .zavi-reference-quick .btn{min-height:43px!important;padding:8px 6px!important}
+ body #content .stat-grid>*::after,body #appScreen #view .admin-kpi::after{width:68px;height:68px}
+ body #content,body #appScreen #view{padding-inline:10px!important}
+}
+@media(hover:none),(pointer:coarse){
+ body #content .stat-grid>*:hover,body #appScreen #view .admin-kpi:hover,
+ body #content .zavi-reference-quick .btn:hover,body #appScreen #view .admin-quick-grid button:hover{
+ transform:none!important;box-shadow:var(--zx-shadow)!important;
+ }
+}
+html.zx-lite body #content .welcome::before,html.zx-lite body #appScreen #view .admin-hero::after{animation:none!important}
+html.zx-lite body #content .stat-grid>*,html.zx-lite body #appScreen #view .admin-kpi,
+html.zx-lite body #content :is(.card,.panel,.dashboard-card),html.zx-lite body #appScreen #view :is(.panel,.admin-analytics-main,.admin-distribution){
+ animation:none!important;transition:none!important;
+}
+@media(prefers-reduced-motion:reduce){
+ body #content *,body #content *::before,body #content *::after,
+ body #appScreen #view *,body #appScreen #view *::before,body #appScreen #view *::after{
+ animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;
+ }
+}
+@media print{
+ body #content .welcome::before,body #appScreen #view .admin-hero::after{display:none!important}
+ body #content .stat-grid>*,body #appScreen #view .admin-kpi{animation:none!important;box-shadow:none!important}
+}

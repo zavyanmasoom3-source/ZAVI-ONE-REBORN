@@ -1,0 +1,20 @@
+/* V66.12: target actual HTML IDs/classes observed in V66.06 assets. */
+
+@media(max-width:650px){
+#zawiPrivateGate.zawi-lock-screen{padding:8px!important;overflow-y:auto!important;align-items:center!important;justify-content:center!important}
+#zawiPrivateGate .zawi-auth-card{box-sizing:border-box!important;width:min(88vw,330px)!important;max-width:330px!important;min-width:0!important;padding:12px 14px!important;margin:8px auto!important;max-height:calc(100dvh - 16px)!important;overflow-y:auto!important;border-radius:19px!important}
+#zawiPrivateGate .zawi-lock-emblem{width:48px!important;height:48px!important;margin:0 auto 5px!important}
+#zawiPrivateGate .zawi-brand-latin{font-size:11px!important;margin:3px 0!important}
+#zawiPrivateGate .zavi-gate-eyebrow{font-size:11px!important;margin:2px!important}
+#zawiPrivateGate #zawiGateTitle{font-size:18px!important;line-height:1.3!important;margin:5px 0!important}
+#zawiPrivateGate .zawi-lock-description{font-size:12px!important;margin:4px 0 8px!important}
+#zawiPrivateGate .zawi-pin-field{margin:5px 0!important}
+#zawiPrivateGate :is(input,select,button){min-height:38px!important;box-sizing:border-box!important}
+#zawiPrivateGate :is(p,label,small){line-height:1.45!important}
+.z94-recovery-card{width:min(92vw,370px)!important;padding:12px!important}
+.z94-recovery-card .z94-recovery-steps{font-size:12px!important;padding:9px!important;gap:4px!important}
+}
+@media(prefers-reduced-motion:no-preference){
+#zawiPrivateGate .zawi-auth-card{animation:zaviGateAppear .35s ease-out both}
+@keyframes zaviGateAppear{from{opacity:.5;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}
+}

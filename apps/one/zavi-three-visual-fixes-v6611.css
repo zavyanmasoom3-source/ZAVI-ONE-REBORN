@@ -1,0 +1,10 @@
+/* QA: remove only obsolete floating star launcher; preserve AI panels and commands. */
+#z605-panel .z605-badge{display:none!important}
+/* Compact mobile login without changing authentication logic */
+@media(max-width:600px){
+#loginScreen,#zaviPrivateGate{box-sizing:border-box!important;max-height:100dvh!important;overflow-y:auto!important;padding:10px!important}
+#loginScreen :is(.login-card,.login-box,.auth-card,.login-panel,.gate-card),#zaviPrivateGate :is(.gate-card,.zavi-private-card,.zavi-gate-card){width:min(92vw,355px)!important;max-width:355px!important;max-height:calc(100dvh - 22px)!important;overflow-y:auto!important;padding:14px!important;margin:8px auto!important;border-radius:17px!important}
+#loginScreen :is(h1,h2),#zaviPrivateGate :is(h1,h2){font-size:19px!important;line-height:1.35!important;margin:5px 0!important}
+#loginScreen :is(input,button,select),#zaviPrivateGate :is(input,button,select){min-height:40px!important;max-width:100%!important}
+#loginScreen :is(.logo,img),#zaviPrivateGate :is(.logo,img){max-height:56px!important}
+}

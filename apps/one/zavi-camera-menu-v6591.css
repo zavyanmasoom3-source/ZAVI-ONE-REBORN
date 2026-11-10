@@ -1,0 +1,34 @@
+/* ZAVI ONE 65.91 + ADMIN 1.4.37 — luminous, responsive tablet & desktop polish. */
+:root{--z91-glow:#18b9ff;--z91-deep:#0b45cb;--z91-round:19px}
+.zavi-camera-panel.zavi-camera-v6591{
+ position:relative;display:flex!important;flex-direction:column!important;gap:10px!important;
+ width:100%!important;max-width:100%!important;min-width:0!important;margin:14px 0 6px!important;
+ padding:clamp(12px,2vw,20px)!important;border:1px solid rgba(80,211,255,.65)!important;
+ border-radius:24px!important;color:#f6fdff!important;
+ background:linear-gradient(155deg,#102f61,#061a3e 75%)!important;
+ box-shadow:inset 0 1px 0 #b4ecff33,0 12px 32px #001b453d!important;
+ overflow:hidden!important;direction:inherit;
+}
+.zavi-camera-panel.zavi-camera-v6591 .zavi-camera-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.zavi-camera-v6591 .zavi-camera-head strong{font-size:clamp(15px,2vw,21px);font-weight:850;color:#f1fdff}
+.zavi-camera-v6591 .zavi-camera-close{display:grid;place-items:center;min-width:44px!important;height:44px!important;font-size:26px!important;border:1px solid #7bcfff99!important;background:#144b86!important;color:white!important;border-radius:14px!important}
+.zavi-camera-v6591 .zavi-camera-preview{position:relative;isolation:isolate;overflow:hidden;border:1px solid #3e89c5;border-radius:18px;min-height:180px;background:#030d1d}
+.zavi-camera-v6591 video{display:block!important;width:100%!important;height:clamp(190px,36vh,370px)!important;max-height:none!important;object-fit:cover!important;transform:none!important}
+.zavi-camera-v6591 .zavi-camera-target{position:absolute;inset:17% 17%;border:3px solid rgba(55,237,255,.85);border-radius:20px;box-shadow:0 0 0 100vmax rgba(0,0,0,.24),0 0 26px #17e5fe66;pointer-events:none}
+.zavi-camera-v6591 .zavi-camera-target:after{content:"";position:absolute;inset-block-start:50%;inset-inline:6%;border-top:2px solid #8ceeff;box-shadow:0 0 14px #49e8ff}
+.zavi-camera-v6591 .zavi-camera-hint{color:#f2fbff!important;margin:0!important;font-size:clamp(13px,1.4vw,16px)!important}
+.zavi-camera-v6591 .zavi-camera-footer{color:#b8dffa!important;font-size:12px!important}
+.zavi-camera-v6591 :is(button,input):focus-visible{outline:3px solid #60f8ff!important;outline-offset:3px}
+body #side .z6547MenuTop, body #appScreen .sidebar .z6547MenuTop{
+ background:linear-gradient(120deg,#12346c 0%,#0569af 56%,#079bd0 100%)!important;
+ border:1px solid #8de6ff66!important;box-shadow:0 8px 28px #001a4530,inset 0 1px #fff5!important;
+ border-radius:20px!important;margin:8px 4px 14px!important;padding:14px!important;
+}
+body #side .z6547MenuTop .z6547MenuTitle,body #appScreen .sidebar .z6547MenuTitle{font-size:clamp(17px,1.5vw,21px)!important;color:#fff!important}
+body #side .z6547MenuSearch,body #appScreen .sidebar .z6547MenuSearch{border:1px solid #b7e8ff!important;background:#f8fcff!important;color:#143358!important;min-height:48px!important;font-size:15px!important;box-shadow:inset 0 1px 2px #004d9922!important}
+body #side :is(.nav-btn,.z6547MenuTop button),body #appScreen .sidebar :is(button[data-page],.z6547MenuTop button){transition:background-color .15s ease,border-color .15s ease,box-shadow .15s ease}
+body #side .nav-btn:focus-visible,body #appScreen .sidebar button[data-page]:focus-visible{outline:2px solid #37b8fc!important;outline-offset:2px}
+@media(min-width:700px){body :is(#side,#appScreen .sidebar) .z6547MenuTop .z6547MenuClose{display:none!important}}
+@media(max-width:699px){body :is(#side,#appScreen .sidebar) .z6547MenuTop .z6547MenuClose{width:42px!important;height:42px!important;padding:0!important;border-radius:13px!important;min-width:42px!important}}
+@media(max-width:900px){.zavi-camera-v6591 video{height:clamp(185px,31vh,290px)!important}}
+@media(prefers-reduced-motion:reduce){.zavi-camera-v6591 *{animation:none!important;transition:none!important}}

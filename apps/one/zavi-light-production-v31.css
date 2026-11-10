@@ -1,0 +1,174 @@
+/* ZAVI ONE • Light Mode V31 — final scoped contrast and surface repair.
+ * Scope: only html[data-zavi-theme="light"]. Original Dark Mode untouched.
+ * No financial, device, subscription, database or offline logic is changed.
+ * Components are mapped to semantic surfaces rather than recolored by element type.
+ */
+html[data-zavi-theme="light"] {
+  color-scheme:light;
+  --bg:#f3f7fc; --white:#ffffff; --ink:#0f172a; --muted:#475569;
+  --line:#d1deeb; --soft:#edf5fd; --shadow:0 6px 20px rgba(16,40,75,.08);
+  --zavi-pane:#fff; --zavi-outline:#c8d8e9; --zavi-text:#0f172a;
+  --zavi-soft:#475569; --zavi-focus:#0871bd;
+  --z31-canvas:#f3f7fc; --z31-surface:#fff; --z31-ink:#0f172a;
+  --z31-secondary:#334155; --z31-muted:#475569; --z31-border:#cbd5e1;
+  --z31-blue:#0865cb; --z31-pale:#edf5ff;
+  background:var(--z31-canvas)!important;
+}
+html[data-zavi-theme="light"] body {
+  background:linear-gradient(155deg,#f8fbff,#f1f7ff 68%,#f4f8fc) fixed!important;
+  color:var(--z31-ink)!important;
+  font-size:clamp(14px,1.08vw,16px)!important;line-height:1.75!important;
+}
+/* App shell, safe for both RTL and LTR and independent of screen width. */
+html[data-zavi-theme="light"] :is(.app,.app-shell,.main,.workspace,.content,#view,.main-content,main,.page,.page-body,.layout-main){color:var(--z31-ink)!important}
+html[data-zavi-theme="light"] :is(.sidebar,.side-nav,.app-sidebar,.topbar,.navbar,.toolbar,.page-top,.header,.page-header,.zavi-topbar,.mobile-bottom){
+  background:#ffffff!important;color:#0f172a!important;border-color:#d7e3ef!important;
+  box-shadow:0 3px 18px rgba(15,43,80,.055)!important;
+}
+html[data-zavi-theme="light"] :is(.topbar-title,.breadcrumbs,.breadcrumbs b,.page-head h2,.page-head p,.section-nav,.sidebar-caption,.brand-name,.brand-sub,.topbar-sub,.page-title,.z20-profile,.top-label){color:#1c3554!important;text-shadow:none!important}
+html[data-zavi-theme="light"] :is(.section-nav,.brand-sub,.topbar-sub,.sidebar-caption,.page-head p){color:#475569!important}
+html[data-zavi-theme="light"] :is(.nav-btn,.nav-item,.bottom-btn,.sidebar a,.sidebar button):not(.active):not(.selected){color:#244567!important;background:transparent!important}
+html[data-zavi-theme="light"] :is(.nav-btn.active,.nav-item.active,.nav-item.selected,.bottom-btn.active,.sidebar [aria-current="page"]){background:linear-gradient(105deg,#0966cc,#08a5cf)!important;color:white!important;border-color:#1684db!important}
+html[data-zavi-theme="light"] :is(.nav-btn.active,.nav-item.active,.nav-item.selected,.bottom-btn.active,.sidebar [aria-current="page"]) :is(span,small,b,i,svg){color:white!important}
+html[data-zavi-theme="light"] :is(.nav-btn,.nav-item,.bottom-btn):hover:not(.active):not(.selected){background:#e8f4ff!important;color:#123f67!important}
+/* The previous release missed settings module labels and many dynamically composed containers.
+   Those retained dark navy with almost invisible navy ink. */
+html[data-zavi-theme="light"] :is(
+ .zavi-switch,.z20-toggle,.z20-panel,.z20-box,.z20-cloud,.z20-alert,.z20-team,
+ .z20-workspace,.z20-row,.z20-actions,.z20-advanced,.z20-member,.z20-profile,
+ .zv-feature-card,.zv-phone-strip,.ledger-intro,.ledger-table,.statement-preview,
+ .statement-actions,.receipt-preview,.order-line,.backup-reminder,.stock-item,
+ .table-bar,.transaction-table,.dc-actions,.debt-card,.detail-box,.fx-preview,
+ .modal-body,.modal-head,.modal-foot,.form-grid,.zavi-module-grid,.z20-grid,
+ .v24-card,.v24-dialog,.v24-form,.v24-modal,.v24-pane,.v24-panel,
+ .z53-reset-card,.z53-reset-center,.z23-scroll,.promo-stat,.timeline-item,
+ .fin-grid,.fin-form,.finbar,.fin-date,.fin-help,.fin-chart-rail,
+ .steps,.demo-banner,.table-scroll,.report-grid,.report-panel,.report-card,
+ .chart-container,.chart-card,.z46-offline-card,.zsh-plan-choices span,
+ .z46-offline-indicator,.zsh-state,.zsh-note,.zsh-card,
+ .data-table,.table-card,.settings-card,.mini-box,.form-card,.notice-panel,
+ .cash-account,.bank-account,.transfer-account,.receipt-card,
+ .financial-card,.summary-card,.stat,.report-stat,.metric,.fin-metric,
+ .stock-box,.list-container,.records-list,.ledger-card,.inventory-card,
+ .zavi-rename-card,.zawi-inline-tip,.zawi-receipt-block,
+ #zaviServiceCenter .zsvc-extra-card,#zaviServiceCenter .zsvc-internet,
+ #zaviServiceCenter .zsvc-results-head,#zaviServiceCenter .zsvc-forecast,
+ #z23AdminPortal .z23-card,#z23AdminPortal .z23-scroll
+ ){
+  background:#fff!important;color:var(--z31-ink)!important;
+  border-color:#cbd5e1!important;
+  box-shadow:0 5px 16px rgba(15,40,70,.07)!important;
+}
+/* Those two settings grids are collections; spacing, not an oversized white card. */
+html[data-zavi-theme="light"] :is(.zavi-module-grid,.z20-grid,.report-grid,.fin-grid){box-shadow:none!important;border:0!important;background:transparent!important}
+html[data-zavi-theme="light"] :is(.zavi-switch,.z20-toggle){
+  display:flex;align-items:center;gap:12px;min-height:48px;padding:11px 14px!important;
+  border:1px solid #c7d9ec!important;background:#fff!important;border-radius:12px!important;
+  color:#17324c!important;font-size:clamp(13px,1vw,15px)!important;
+  font-weight:650!important;line-height:1.65!important;
+  overflow-wrap:anywhere;
+}
+html[data-zavi-theme="light"] :is(.zavi-switch,.z20-toggle) :is(span,label,small,b,strong){color:#17324c!important;opacity:1!important;text-shadow:none!important}
+html[data-zavi-theme="light"] :is(.zavi-switch,.z20-toggle):hover{background:#eaf5ff!important;border-color:#83b8e8!important}
+html[data-zavi-theme="light"] :is(.zavi-switch,.z20-toggle) input{accent-color:#0865cb!important;flex:0 0 auto!important;min-width:18px;min-height:18px;opacity:1!important}
+html[data-zavi-theme="light"] :is(.zavi-switch,.z20-toggle) input:disabled+span{color:#40556c!important}
+/* Typography for nested labels created by string templates, including spans under darker legacy styles. */
+html[data-zavi-theme="light"] :is(.settings-card,.panel,.card,.zv-feature-card,.zv-phone-strip,.z20-panel,
+ .z20-cloud,.z20-alert,.z20-team,.z20-row,.z20-box,.z20-toggle,.zavi-switch,.stat,.metric,
+ .finance-card,.fin-metric,.fin-form,.finbar,.report-card,.report-stat,.table-card,.form-card,
+ .stock-item,.mini-box,.ledger-card,.receipt-preview,.zsh-card,.z46-offline-card,
+ .zsvc-card,.zsvc-help,.zsvc-extra-card,.z23-card,.v24-box,.v24-stat)
+ :is(h1,h2,h3,h4,h5,h6,label,p,span,small,strong,b,em,.title,.label,.name,.value,.amount,.stat-value,.stat-label,.form-helper,.hint,.help,.tiny-note,.z20-sub,.z20-muted,.muted,.subtle){
+ color:#172b44!important;opacity:1!important;text-shadow:none!important;
+}
+html[data-zavi-theme="light"] :is(.settings-card,.panel,.card,.z20-panel,.zavi-switch,.z20-toggle,
+ .zv-feature-card,.z46-offline-card,.fin-metric,.report-card,.stock-item,.table-card,.receipt-preview)
+ :is(.muted,.subtle,.tiny-note,.small-info,.help,.hint,.form-helper,.description,.stat-label,.stat-foot,.z20-sub,.z20-muted){color:#475569!important}
+/* Minimum comfortable reading size without breaking compact financial tables. */
+html[data-zavi-theme="light"] :is(.card,.panel,.settings-card,.stat,.metric,.report-stat,.z20-toggle,.zavi-switch,
+ .zsvc-card,.zsvc-shortcut,.z23-card,.v24-box,.v24-stat) :is(small,.tiny-note,.hint,.muted,.form-helper){font-size:clamp(12px,.88vw,14px)!important;line-height:1.6!important}
+html[data-zavi-theme="light"] :is(.card,.panel,.settings-card,.stat,.metric,.report-stat,
+ .zsvc-card,.v24-box,.z23-card) :is(h2,h3,h4){font-weight:750!important}
+/* Lists, inputs, light tables and zebra rows */
+html[data-zavi-theme="light"] :is(.filterbar,.table-bar,.list-head,.table-head,.panel-head,.panel-heading,
+ .section-heading,.form-section-title,.z20-actions,.z20-row,.z20-profile,.finance-kpi){
+ background:#f0f6fe!important;color:#17324d!important;border-color:#c9daeb!important;
+}
+html[data-zavi-theme="light"] :is(.filterbar,.table-bar,.list-head,.table-head,.panel-head,.panel-heading,
+ .section-heading,.form-section-title,.z20-actions,.z20-row,.z20-profile) :is(h1,h2,h3,h4,small,span,strong,b,p,label){color:#17324d!important}
+html[data-zavi-theme="light"] :is(input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),select,textarea,.searchbox,
+ .form-control,.v24-input,.z20-input,.cp-input,.filterbar select,.field input,.field select,.dropdown-trigger){
+ background:#fff!important;color:#10263d!important;border-color:#9cb5cb!important;
+ opacity:1!important;box-shadow:none!important;
+}
+html[data-zavi-theme="light"] :is(input,textarea)::placeholder{color:#475569!important;opacity:1!important}
+html[data-zavi-theme="light"] :is(.field,.form-group,.form-grid) label{color:#17324d!important;opacity:1!important}
+html[data-zavi-theme="light"] :is(input,select,textarea,button,a,[role="button"]):focus-visible{outline:3px solid #0e83ce!important;outline-offset:2px!important}
+html[data-zavi-theme="light"] :is(.transaction-table,.ledger-table,.data-table,.zsvc-table,.z23-table,.v24-table,table){background:#fff!important;color:#162d46!important}
+html[data-zavi-theme="light"] :is(.transaction-table,.ledger-table,.data-table,.zsvc-table,.z23-table,.v24-table,table) :is(th,thead td){background:#e8f1fa!important;color:#132c46!important;border-color:#bdcfe0!important}
+html[data-zavi-theme="light"] :is(.transaction-table,.ledger-table,.data-table,.zsvc-table,.z23-table,.v24-table,table) tbody tr:nth-child(even){background:#f1f6fb!important}
+html[data-zavi-theme="light"] :is(.transaction-table,.ledger-table,.data-table,.zsvc-table,.z23-table,.v24-table,table) tbody tr:nth-child(odd){background:#fff!important}
+html[data-zavi-theme="light"] :is(.transaction-table,.ledger-table,.data-table,.zsvc-table,.z23-table,.v24-table,table) tbody :is(td,th,span,small,b,strong){color:#172b44!important;opacity:1!important}
+/* Buttons: no aggressive blanket override of brand primary buttons. */
+html[data-zavi-theme="light"] :is(.btn,.button,.zsh-btn,.z20-button,.z20-actions button,.z23-btn,.v24-btn):not(.primary):not(.danger):not(.active):not(.selected):not(.btn-primary){background:#e9f3ff!important;color:#174669!important;border-color:#b2cde5!important}
+html[data-zavi-theme="light"] :is(.btn.primary,.button.primary,.btn-primary,.zsh-btn-primary,.zavi-rename-button,.btn.active,.button.active){background:linear-gradient(105deg,#095bd5,#05abc6)!important;color:#fff!important;border-color:#167fe0!important}
+html[data-zavi-theme="light"] :is(.btn.primary,.button.primary,.btn-primary,.zsh-btn-primary,.zavi-rename-button,.btn.active,.button.active) :is(span,b,small,strong,svg){color:#fff!important}
+html[data-zavi-theme="light"] :is(.btn.danger,.button.danger,[data-danger]){background:#fee2e2!important;color:#9f1239!important;border-color:#f9a8b7!important}
+html[data-zavi-theme="light"] :is(.pill,.badge,.tag,.status,.stat-period,.stat-chip,.metric-caption,.summary-hint,.stock-hint,.status-chip){background:#e8f2ff!important;color:#173c63!important;border-color:#b4cce2!important}
+html[data-zavi-theme="light"] :is(.pill.green,.badge.green,.badge.success,.status-chip.active){background:#dcfce7!important;color:#166534!important}
+html[data-zavi-theme="light"] :is(.pill.red,.badge.danger,.status-chip.expired){background:#fee2e2!important;color:#9f1239!important}
+html[data-zavi-theme="light"] :is(.pill.amber,.badge.warning,.status-chip.warning){background:#fef3c7!important;color:#854d0e!important}
+/* Preserve intentionally colored banner and legible blue call-to-action, unlike leaked dark panels. */
+html[data-zavi-theme="light"] :is(.welcome,.zsh-hero,.zavi-hero,.hero-banner,.dashboard-hero,.v24-hero,
+ .z23-top-banner,.zsvc-banner){
+ background:linear-gradient(110deg,#0c60c3 0%,#0778d5 51%,#0656a2 100%)!important;
+ color:#fff!important;border-color:#3e99e5!important;
+}
+html[data-zavi-theme="light"] :is(.welcome,.zsh-hero,.zavi-hero,.hero-banner,.dashboard-hero,.v24-hero,.z23-top-banner,.zsvc-banner)
+ :is(h1,h2,h3,h4,p,span,small,b,strong,.title,.label,.eyebrow,.zv-today){color:white!important;text-shadow:none!important}
+html[data-zavi-theme="light"] .welcome .btn{background:#fff!important;color:#114872!important}
+/* Calendar/chart plot remains vividly blue; axis labels and chart form are light. */
+html[data-zavi-theme="light"] :is(.z47-chart-scroll,.z47-chart-header,.chart-container,.bar-chart,.z47-chart-year-label,.z47-chart-year){background:#fff!important;color:#143451!important;border-color:#c7dbe8!important}
+html[data-zavi-theme="light"] :is(.bar-col .label,.bar-col .tip,.solar-chart-year,.chart-label,.chart-axis,.fin-chart-month,.fin-chart-value,.fin-chart-year,.z47-chart-year-label){color:#183a56!important}
+html[data-zavi-theme="light"] :is(.bar-col .track,.bar-chart .track){background:#e3f0ff!important;border-color:#abc9e3!important}
+html[data-zavi-theme="light"] :is(.fin-chart-rail,.fin-chart-col){background:#e4f2ff!important;border-color:#bcd4e9!important}
+html[data-zavi-theme="light"] .fin-chart-rail>div{background:linear-gradient(0deg,#0668cf,#07b5db)!important}
+/* Popups, customer portal, subscription UI, receipts and account control. */
+html[data-zavi-theme="light"] :is(.modal-card,.dialog,.auth-card,.zawi-auth-card,.zavi-modal,
+ .popover,.dropdown-menu,.cp-card,.cp-item,#z23AdminPortal .z23-card,#z24Root .v24-box,
+ #z24Root .v24-stat,#zaviServiceCenter .zsvc-page,#zaviServiceCenter .zsvc-shortcut){
+ background:#fff!important;color:#152b45!important;border-color:#c7d9e8!important;
+}
+html[data-zavi-theme="light"] :is(.cp-card,.cp-item,.z20-cloud,.z20-panel,.z20-box,.modal-card,.v24-stat,.zsvc-page)
+ :is(h1,h2,h3,h4,label,p,span,small,em,b,strong){color:#17324d!important}
+html[data-zavi-theme="light"] .modal-backdrop{background:#0f233b85!important}
+html[data-zavi-theme="light"] :is(#overlay .modal-head,#overlay .modal-foot,#overlay .modal-body,.z45-invoice-modal .modal-body,
+ .z51-debt-preview-modal .modal-body){background:#fff!important;color:#17324d!important}
+html[data-zavi-theme="light"] :is(.zsh-hero,.v24-hero) :is(h1,h2,h3,p,b,strong,span){color:white!important}
+html[data-zavi-theme="light"] :is(.zsh-plan-choices span,.zsh-state,.z46-offline-indicator){background:#eff6ff!important;color:#1d3b54!important;border-color:#c5d9e8!important}
+html[data-zavi-theme="light"] :is(.z46-offline-indicator .dot,.zsh-emblem,.zsh-icon){background:#dbeafe!important;color:#0b65bd!important}
+/* Report cards, mini-stats and older panels not using .card. */
+html[data-zavi-theme="light"] :is(.report-summary,.report-section,.report-table,.finance-summary,.balance-bar,.zsh-row,
+ .v24-top,.v24-pane,.z53-reset-center,.z53-reset-card,.z23-scroll,.fin-metric,.finance-metric){
+ background:#fff!important;color:#142d48!important;border-color:#cbd5e1!important;
+}
+html[data-zavi-theme="light"] :is(.report-summary,.report-section,.report-table,.finance-summary,.balance-bar,.zsh-row,.v24-top,.v24-pane,.z53-reset-center,.z53-reset-card)
+ :is(h1,h2,h3,h4,p,span,small,em,b,strong,label){color:#183451!important}
+/* Admin security actions and a few historical forms require warm warnings. */
+html[data-zavi-theme="light"] :is(.warn,.warning,.warning-box,.z53-reset-note,.notice,.backup-reminder){background:#fffbeb!important;color:#78350f!important;border-color:#f6d48f!important}
+html[data-zavi-theme="light"] :is(.warn,.warning,.warning-box,.z53-reset-note,.notice,.backup-reminder) :is(p,small,span,b,strong){color:#78350f!important}
+/* Dedicated purple/green tiles survive as icons only, not solid dark backgrounds. */
+html[data-zavi-theme="light"] :is(.stat-icon,.card-icon,.metric-icon){box-shadow:none!important}
+/* iPad/tablets: readable controls and no narrow centered admin overlay. */
+@media(min-width:760px) and (max-width:1300px){
+ html[data-zavi-theme="light"] :is(.page-head h2,.panel-head h3){font-size:clamp(17px,1.9vw,24px)!important}
+ html[data-zavi-theme="light"] :is(.zavi-module-grid){grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ html[data-zavi-theme="light"] :is(#z24Root .v24-shell,#z23AdminPortal .z23-wrap){width:min(100%,1380px)!important;max-width:100%!important}
+}
+@media(max-width:759px){
+ html[data-zavi-theme="light"] :is(.zavi-module-grid,.z20-grid){grid-template-columns:1fr!important}
+ html[data-zavi-theme="light"] :is(.zavi-switch,.z20-toggle){min-height:46px!important;padding:9px 12px!important}
+ html[data-zavi-theme="light"] :is(.content,.main,.workspace){min-width:0!important}
+}
+/* Print remains a true paper document. */
+@media print{html[data-zavi-theme="light"] :is(.paper,.invoice-paper,.print-page){background:#fff!important;color:#0f172a!important;box-shadow:none!important}}

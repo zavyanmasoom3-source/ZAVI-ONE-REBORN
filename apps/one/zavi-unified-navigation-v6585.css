@@ -1,0 +1,254 @@
+/* ZAVI ONE + ZAVI ONE ADMIN 65.85 / 1.4.31
+   One screenshot-matched navy/cyan navigation system.
+   Scoped to known navigation containers; contains NO backend, finance or auth logic.
+   Tablet landscape => 3 columns, mobile portrait => 2 columns,
+   phone under 360px => 1 column. The visual style remains the same. */
+html.zavi-design-84 {
+  --z85-electric:#1565f7;
+  --z85-cyan:#05bfeb;
+  --z85-grad:linear-gradient(112deg,#2053ea 0%,#147af8 59%,#03c4dd 100%);
+  --z85-radius:13px;
+  --z85-pad:clamp(10px,2vw,20px);
+  --z85-gap:clamp(8px,1.4vw,13px);
+}
+/* Store All Sections fullscreen menu, follows the provided portrait tablet screenshot. */
+html.zavi-design-84 #zrf-all.zrf-all-overlay,
+html.zavi-design-84 #za67-menu {
+  box-sizing:border-box!important;
+  position:fixed!important;inset:0!important;
+  width:100%!important;max-width:100%!important;
+  height:100dvh!important;max-height:100dvh!important;
+  min-width:0!important;min-height:0!important;
+  margin:0!important;border:0!important;border-radius:0!important;
+  overflow:hidden!important;
+  transform:none!important;translate:none!important;
+  filter:none!important;
+  isolation:isolate;
+  overscroll-behavior:contain!important;
+  background:var(--z84-bg)!important;color:var(--z84-text)!important;
+}
+html.zavi-design-84 #zrf-all .zrf-all-panel,
+html.zavi-design-84 #za67-menu .za67-panel {
+  display:flex!important;flex-direction:column!important;
+  box-sizing:border-box!important;
+  width:100%!important;max-width:100%!important;
+  height:100%!important;max-height:100%!important;
+  min-width:0!important;min-height:0!important;
+  margin:0!important;overflow:hidden!important;
+  gap:0!important;
+  padding:calc(env(safe-area-inset-top,0px) + 10px) max(11px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 9px) max(11px,env(safe-area-inset-left,0px))!important;
+  background:var(--z84-bg)!important;color:var(--z84-text)!important;
+}
+html.zavi-design-84 #zrf-all .zrf-all-brand,
+html.zavi-design-84 #za67-menu .za67-head{
+  flex:0 0 auto!important;min-height:47px!important;
+  max-height:68px!important;min-width:0!important;
+  margin-bottom:10px!important;
+  align-items:center!important;
+}
+html.zavi-design-84 #zrf-all .zrf-all-hero,
+html.zavi-design-84 #za67-menu .za67-hero{
+  box-sizing:border-box!important;flex:0 0 auto!important;
+  min-height:78px!important;height:auto!important;
+  max-height:165px!important;
+  display:flex!important;justify-content:center!important;
+  border:1px solid rgba(73,222,246,.53)!important;
+  padding:12px 17px!important;
+  border-radius:16px!important;
+  background:var(--z85-grad)!important;color:#fff!important;
+  box-shadow:0 9px 22px rgba(4,58,129,.15)!important;
+  margin:0 0 11px!important;
+}
+html.zavi-design-84 #zrf-all .zrf-all-hero :is(b,strong,small,span),
+html.zavi-design-84 #za67-menu .za67-hero :is(b,strong,small,span){
+  color:#fff!important;-webkit-text-fill-color:#fff!important;
+  opacity:1!important;text-shadow:none!important;
+}
+html.zavi-design-84 #zrf-all .zrf-all-grid,
+html.zavi-design-84 #za67-menu .za67-grid{
+  box-sizing:border-box!important;
+  flex:1 1 0!important;min-height:0!important;
+  width:100%!important;max-width:100%!important;
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  grid-auto-rows:minmax(72px,auto)!important;
+  gap:var(--z85-gap)!important;
+  align-content:start!important;align-items:stretch!important;
+  overflow-y:auto!important;overflow-x:hidden!important;
+  scrollbar-gutter:stable;
+  -webkit-overflow-scrolling:touch!important;
+  overscroll-behavior-y:contain!important;
+  padding:3px 2px calc(20px + env(safe-area-inset-bottom,0px))!important;
+}
+html.zavi-design-84 #zrf-all .zrf-all-item,
+html.zavi-design-84 #za67-menu .za67-item{
+  box-sizing:border-box!important;
+  position:relative!important;
+  display:flex!important;flex-direction:row!important;
+  align-items:center!important;justify-content:flex-start!important;
+  gap:9px!important;
+  min-width:0!important;max-width:100%!important;width:100%!important;
+  min-height:72px!important;height:auto!important;
+  margin:0!important;padding:10px 11px!important;
+  border-radius:var(--z85-radius)!important;
+  border:1px solid var(--z84-line)!important;
+  background:var(--z84-card)!important;
+  box-shadow:var(--z84-shadow)!important;
+  color:var(--z84-text)!important;-webkit-text-fill-color:var(--z84-text)!important;
+  font-size:clamp(11px,1.45vw,14px)!important;
+  font-weight:800!important;line-height:1.65!important;
+  white-space:normal!important;overflow-wrap:break-word!important;
+  text-align:start!important;
+  overflow:visible!important;
+}
+html.zavi-design-84 #zrf-all .zrf-all-item:active,
+html.zavi-design-84 #za67-menu .za67-item:active{
+  border-color:var(--z85-cyan)!important;
+  background:var(--z84-soft)!important;
+}
+html.zavi-design-84 #zrf-all :is(.zrf-all-name,.zrf-all-chevron),
+html.zavi-design-84 #za67-menu :is(.za67-label,.za67-chevron) {
+  color:var(--z84-text)!important;-webkit-text-fill-color:var(--z84-text)!important;
+  min-width:0!important;
+  white-space:normal!important;
+  overflow-wrap:break-word!important;
+  text-overflow:clip!important;
+}
+html.zavi-design-84 #zrf-all .zrf-all-name,
+html.zavi-design-84 #za67-menu .za67-label{
+  display:block!important;flex:1 1 0!important;
+  font-size:inherit!important;font-weight:850!important;line-height:1.55!important;
+  overflow:visible!important;
+}
+html.zavi-design-84 #zrf-all .zrf-all-icon,
+html.zavi-design-84 #za67-menu .za67-symbol{
+  flex:0 0 35px!important;
+  width:35px!important;height:35px!important;
+  display:grid!important;place-items:center!important;
+  border:1px solid rgba(255,255,255,.13)!important;
+  border-radius:11px!important;color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+  font-size:18px!important;
+}
+html.zavi-design-84 #zrf-all :is(.zrf-all-chevron),
+html.zavi-design-84 #za67-menu .za67-chevron{
+  flex:0 0 13px!important;width:13px!important;
+  color:#52c4f5!important;-webkit-text-fill-color:#52c4f5!important;
+}
+html.zavi-design-84 #zrf-all .zrf-all-item.z67-long,
+html.zavi-design-84 #za67-menu .za67-item.za67-long{
+  grid-column:span 2!important;
+  min-height:67px!important;
+}
+html.zavi-design-84 #zrf-all .zrf-all-close,
+html.zavi-design-84 #za67-menu .za67-close{
+  color:var(--z84-text)!important;-webkit-text-fill-color:var(--z84-text)!important;
+  background:var(--z84-card)!important;
+  border:1px solid var(--z84-line)!important;
+  width:40px!important;height:40px!important;
+  border-radius:11px!important;
+}
+/* Reuse screenshot's cards on the general business dashboard and ADMIN home. */
+html.zavi-design-84 #content :is(.z74-link-grid,.z649-dashboard-extras,.z6524-dashboard-grid,.quick-actions,.quick-grid,.dashboard-grid,.dashboard-shortcuts),
+html.zavi-design-84 #appScreen #view :is(.admin-quick-grid,.admin-grid-actions){
+  display:grid!important;
+  width:100%!important;min-width:0!important;max-width:100%!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:var(--z85-gap)!important;
+  align-items:stretch!important;
+}
+html.zavi-design-84 #content :is(.z74-link-grid,.quick-actions,.quick-grid,.dashboard-grid,.dashboard-shortcuts) > :is(a,button),
+html.zavi-design-84 #appScreen #view :is(.admin-quick-grid,.admin-grid-actions) > :is(a,button){
+  box-sizing:border-box!important;display:flex!important;align-items:center!important;
+  min-width:0!important;max-width:100%!important;width:100%!important;
+  min-height:65px!important;height:auto!important;
+  padding:11px!important;gap:9px!important;margin:0!important;
+  white-space:normal!important;text-align:start!important;
+  overflow-wrap:break-word!important;line-height:1.55!important;
+  background:var(--z84-card)!important;color:var(--z84-text)!important;
+  -webkit-text-fill-color:var(--z84-text)!important;
+  border-radius:var(--z85-radius)!important;
+  border:1px solid var(--z84-line)!important;
+  box-shadow:var(--z84-shadow)!important;
+}
+html.zavi-design-84 #content :is(.z74-link-grid,.quick-actions,.quick-grid,.dashboard-grid,.dashboard-shortcuts) > :is(a,button):focus-visible{
+  outline:3px solid var(--z85-cyan)!important;outline-offset:2px!important;
+}
+/* Solve the shrink-to-sidebar and half-screen content seen at 50%-150% display scale. */
+html.zavi-design-84 body :is(#content,#appScreen,#appScreen #view,#appScreen main){
+  min-width:0!important;max-width:100%!important;
+  box-sizing:border-box!important;
+}
+html.zavi-design-84 body #content{
+  margin-inline:auto!important;
+}
+html.zavi-design-84 body #appScreen #view > *{
+  min-width:0!important;max-width:100%!important;
+}
+html.zavi-design-84 body #appScreen :is(.admin-layout,.admin-secondary,.admin-analytics){
+  min-width:0!important;max-width:100%!important;
+  grid-template-columns:minmax(0,1fr)!important;
+}
+html.zavi-design-84 body :is(#content,#appScreen #view) :is(input,select,textarea,button,a){
+  max-width:100%;box-sizing:border-box;
+}
+html.zavi-design-84 body :is(#content,#appScreen #view) :is(.panel,.card,.settings-card,.z76-settings-group){
+  min-width:0!important;max-width:100%!important;
+}
+html.zavi-design-84 body :is(#content,#appScreen #view) :is(.form-grid,.filters,.toolbar){
+  min-width:0!important;max-width:100%!important;
+  flex-wrap:wrap;
+}
+html.zavi-design-84 body #appScreen .sidebar:not(.open):not(.visible){
+  /* Never modify visibility: existing owner's drawer open/close logic remains authoritative. */
+  max-width:min(88vw,340px);
+}
+@media(max-width:359px){
+ html.zavi-design-84 #zrf-all .zrf-all-grid,
+ html.zavi-design-84 #za67-menu .za67-grid{
+   grid-template-columns:minmax(0,1fr)!important;
+   grid-auto-rows:minmax(61px,auto)!important;
+ }
+ html.zavi-design-84 #zrf-all .zrf-all-item.z67-long,
+ html.zavi-design-84 #za67-menu .za67-item.za67-long{grid-column:1/-1!important}
+ html.zavi-design-84 #zrf-all .zrf-all-item,
+ html.zavi-design-84 #za67-menu .za67-item{min-height:61px!important}
+}
+@media(min-width:690px){
+ html.zavi-design-84 #zrf-all .zrf-all-grid,
+ html.zavi-design-84 #za67-menu .za67-grid{
+   grid-template-columns:repeat(3,minmax(0,1fr))!important;
+ }
+ html.zavi-design-84 #zrf-all .zrf-all-item.z67-long,
+ html.zavi-design-84 #za67-menu .za67-item.za67-long{grid-column:auto!important}
+ html.zavi-design-84 #content :is(.z74-link-grid,.quick-actions,.quick-grid,.dashboard-grid,.dashboard-shortcuts),
+ html.zavi-design-84 #appScreen #view :is(.admin-quick-grid,.admin-grid-actions){
+   grid-template-columns:repeat(3,minmax(0,1fr))!important;
+ }
+}
+@media(min-width:1280px){
+ html.zavi-design-84 #zrf-all .zrf-all-grid,
+ html.zavi-design-84 #za67-menu .za67-grid{
+   grid-template-columns:repeat(4,minmax(0,1fr))!important;
+ }
+ html.zavi-design-84 #content :is(.z74-link-grid,.quick-actions,.quick-grid,.dashboard-grid,.dashboard-shortcuts),
+ html.zavi-design-84 #appScreen #view :is(.admin-quick-grid,.admin-grid-actions){
+   grid-template-columns:repeat(4,minmax(0,1fr))!important;
+ }
+}
+@media(orientation:landscape) and (max-height:540px){
+ html.zavi-design-84 #zrf-all .zrf-all-brand,
+ html.zavi-design-84 #za67-menu .za67-head{min-height:36px!important;margin-bottom:5px!important}
+ html.zavi-design-84 #zrf-all .zrf-all-hero,
+ html.zavi-design-84 #za67-menu .za67-hero{min-height:59px!important;max-height:95px!important;padding:9px 12px!important;margin-bottom:7px!important}
+ html.zavi-design-84 #zrf-all .zrf-all-grid,
+ html.zavi-design-84 #za67-menu .za67-grid{
+   grid-auto-rows:minmax(60px,auto)!important;
+   gap:8px!important;padding-bottom:12px!important;
+ }
+ html.zavi-design-84 #zrf-all .zrf-all-item,
+ html.zavi-design-84 #za67-menu .za67-item{min-height:60px!important;padding:7px 10px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ html.zavi-design-84 :is(#zrf-all,#za67-menu) *{animation:none!important;transition:none!important}
+}

@@ -1,0 +1,545 @@
+/* ZAVI ONE / ADMIN visual refinement 66.24: additive, reversible, no business logic changes */
+:root{--zavi-ui-radius:16px;--zavi-ui-gap:12px}
+body :is(.settings-card,.dashboard-card,.menu-card,.panel,.card){
+ box-sizing:border-box;min-width:0;border-radius:var(--zavi-ui-radius);
+}
+body :is(.settings-card,.dashboard-card,.menu-card) :is(h2,h3,h4){
+ line-height:1.45;letter-spacing:0;overflow-wrap:break-word;word-break:normal;
+}
+body :is(.settings-card,.dashboard-card,.menu-card) :is(p,label,small){
+ line-height:1.65;
+}
+body :is(.settings-card,.dashboard-card,.menu-card) button{
+ min-height:40px;border-radius:11px;
+}
+body :is(.settings-card,.dashboard-card,.menu-card) :is(input,select,textarea){
+ max-width:100%;box-sizing:border-box;
+}
+#zavi-assistant-settings,#zavi-advanced-preference{
+ box-shadow:none!important;max-width:100%;min-width:0;grid-column:1/-1;
+}
+@media(max-width:600px){
+ body :is(.settings-card,.dashboard-card,.menu-card,.panel,.card){max-width:100%}
+ body :is(.settings-card,.dashboard-card,.menu-card){padding:clamp(10px,3vw,16px)}
+ body :is(.settings-card,.dashboard-card,.menu-card) :is(h2,h3){font-size:clamp(14px,3.8vw,19px)}
+ body :is(.settings-card,.dashboard-card,.menu-card) :is(p,label){font-size:clamp(12px,3.4vw,15px)}
+}
+@media(prefers-reduced-motion:reduce){
+ body :is(.settings-card,.dashboard-card,.menu-card){animation:none!important;transition:none!important}
+}
+
+/* V66.25 compact typography: preserve complete financial and warning text. */
+:root{--zavi-compact-line:1.45}
+body :is(.settings-card,.dashboard-card,.menu-card,.panel,.card,.tile){
+  min-width:0;max-width:100%;box-sizing:border-box;
+}
+body :is(.settings-card,.dashboard-card,.menu-card,.panel,.card,.tile) :is(h1,h2,h3,h4){
+  line-height:var(--zavi-compact-line);overflow-wrap:break-word;word-break:normal;
+  margin-block-start:.35em;margin-block-end:.4em;
+}
+body :is(.settings-card,.dashboard-card,.menu-card,.panel,.card,.tile) :is(p,small){
+  margin-block-start:.3em;margin-block-end:.55em;
+}
+body :is(.settings-card,.dashboard-card,.menu-card,.panel,.card,.tile) :is(button,[role="button"]){
+  white-space:normal;overflow-wrap:break-word;text-align:center;
+}
+@media(max-width:600px){
+  body :is(.settings-card,.dashboard-card,.menu-card,.panel,.card,.tile){padding:clamp(10px,2.8vw,14px)}
+  body :is(.settings-card,.dashboard-card,.menu-card,.panel,.card,.tile) :is(h2,h3,h4){font-size:clamp(13px,3.6vw,17px)}
+  body :is(.settings-card,.dashboard-card,.menu-card,.panel,.card,.tile) :is(p,small){line-height:1.5}
+}
+
+/* ZAVI three-theme foundation: opt-in glass, light and deep-dark modes.
+   Works with html[data-zavi-theme] and html.zavi-theme-* without changing business logic. */
+:root{--zavi-accent:#536dff;--zavi-surface:#ffffff;--zavi-text:#17223e;--zavi-border:rgba(73,101,165,.17);--zavi-shadow:0 8px 26px rgba(15,35,84,.09)}
+html[data-zavi-theme="glass"],html.zavi-theme-glass{
+ --zavi-surface:rgba(34,55,116,.64);--zavi-text:#f7f9ff;
+ --zavi-border:rgba(204,221,255,.32);--zavi-shadow:0 12px 38px rgba(13,18,66,.26);
+}
+html[data-zavi-theme="light"],html.zavi-theme-light{
+ --zavi-surface:#fff;--zavi-text:#16243f;--zavi-border:rgba(72,106,176,.16);
+}
+html[data-zavi-theme="dark"],html.zavi-theme-dark{
+ --zavi-surface:#111d35;--zavi-text:#f1f5ff;--zavi-border:rgba(151,178,235,.19);
+ --zavi-shadow:0 12px 30px rgba(0,0,0,.23);
+}
+html:is([data-zavi-theme="glass"],.zavi-theme-glass) body{
+ background:radial-gradient(ellipse at 85% 10%,#5e53ad 0,transparent 40%),linear-gradient(135deg,#0b1736,#233b77 55%,#452878);
+}
+html:is([data-zavi-theme="dark"],.zavi-theme-dark) body{background:#091327}
+html:is([data-zavi-theme="light"],.zavi-theme-light) body{background:#f3f7ff}
+html:is([data-zavi-theme="glass"],[data-zavi-theme="dark"],[data-zavi-theme="light"],.zavi-theme-glass,.zavi-theme-dark,.zavi-theme-light)
+ body :is(.settings-card,.dashboard-card,.menu-card,.panel,.card,.tile){
+ background:var(--zavi-surface);color:var(--zavi-text);
+ border:1px solid var(--zavi-border);box-shadow:var(--zavi-shadow);
+ border-radius:18px;transition:transform .2s ease,box-shadow .2s ease,background-color .2s ease;
+}
+html:is([data-zavi-theme="glass"],.zavi-theme-glass) body :is(.settings-card,.dashboard-card,.menu-card,.panel,.card,.tile){
+ -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
+}
+@media(hover:hover) and (prefers-reduced-motion:no-preference){
+ html:is([data-zavi-theme="glass"],[data-zavi-theme="dark"],[data-zavi-theme="light"],.zavi-theme-glass,.zavi-theme-dark,.zavi-theme-light)
+ body :is(.settings-card,.dashboard-card,.menu-card,.panel,.card,.tile):hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(17,29,75,.22)}
+}
+@media(prefers-reduced-motion:reduce){body :is(.settings-card,.dashboard-card,.menu-card,.panel,.card,.tile){transition:none!important}}
+
+/* Shared compact labels/layout, mobile + desktop. Never truncate invoices, amounts, or alerts. */
+body :is(.settings-card,.dashboard-card,.menu-card,.panel,.card,.tile) :is(button,.btn,[role="button"],label){
+ min-width:0;max-width:100%;overflow-wrap:break-word;word-break:normal;
+}
+body :is(.settings-card,.dashboard-card,.menu-card,.panel,.card,.tile) :is(button,.btn,[role="button"]){
+ display:inline-flex;align-items:center;justify-content:center;gap:.4em;
+ padding-inline:clamp(9px,1.2vw,16px);line-height:1.35;
+}
+body :is(.settings-card,.dashboard-card,.menu-card,.panel,.card,.tile) :is(.description,.subtitle,.helper-text,.hint){
+ font-size:clamp(12px,1.05vw,14px);line-height:1.45;
+}
+body :is(.settings-card,.dashboard-card,.menu-card,.panel,.card,.tile) :is(.grid,.row,.flex){
+ min-width:0;max-width:100%;
+}
+@media(max-width:420px){
+ body :is(.settings-card,.dashboard-card,.menu-card,.panel,.card,.tile) :is(button,.btn,[role="button"]){font-size:clamp(12px,3.3vw,14px)}
+ body :is(.settings-card,.dashboard-card,.menu-card,.panel,.card,.tile) :is(.description,.subtitle,.helper-text,.hint){font-size:12px}
+}
+
+/* Unified visual system for ZAVI modules; respects explicit three-theme selection. */
+html:is([data-zavi-theme="glass"],[data-zavi-theme="light"],[data-zavi-theme="dark"],.zavi-theme-glass,.zavi-theme-light,.zavi-theme-dark)
+ body :is(.settings-card,.dashboard-card,.menu-card,.panel,.card,.tile,.modal-content,.dialog-content,.report-card,.invoice-card,.customer-card){
+ border-radius:18px;min-width:0;box-sizing:border-box;
+ border:1px solid var(--zavi-border);box-shadow:var(--zavi-shadow);
+}
+html:is([data-zavi-theme="glass"],.zavi-theme-glass) body :is(.modal-content,.dialog-content,.report-card,.invoice-card,.customer-card){
+ background:var(--zavi-surface);color:var(--zavi-text);
+ backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+}
+html:is([data-zavi-theme="dark"],.zavi-theme-dark) body :is(.modal-content,.dialog-content,.report-card,.invoice-card,.customer-card){
+ background:var(--zavi-surface);color:var(--zavi-text);
+}
+html:is([data-zavi-theme="light"],.zavi-theme-light) body :is(.modal-content,.dialog-content,.report-card,.invoice-card,.customer-card){
+ background:var(--zavi-surface);color:var(--zavi-text);
+}
+body :is(.settings-card,.dashboard-card,.menu-card,.panel,.card,.tile,.modal-content,.dialog-content,.report-card,.invoice-card,.customer-card) :is(button,input,select,textarea){
+ border-radius:11px;max-width:100%;box-sizing:border-box;
+}
+@media(prefers-reduced-motion:no-preference){
+ body :is(.modal-content,.dialog-content,.report-card,.invoice-card,.customer-card){transition:box-shadow .22s ease,background-color .22s ease}
+}
+@media(prefers-reduced-motion:reduce){
+ body :is(.modal-content,.dialog-content,.report-card,.invoice-card,.customer-card){animation:none!important;transition:none!important}
+}
+
+/* Settings decluttering without hiding or deleting any preference. */
+body :is(#settings,.settings-page,[data-page="settings"],#content) :is(.settings-card,.settings-section){
+ min-width:0;max-width:100%;box-sizing:border-box;
+ padding:clamp(12px,2vw,20px);margin-block:10px;
+ border-radius:16px;
+}
+body :is(#settings,.settings-page,[data-page="settings"]) :is(h2,h3,h4){
+ line-height:1.45;margin-block:0 10px;overflow-wrap:break-word;
+}
+body :is(#settings,.settings-page,[data-page="settings"]) :is(label,.setting-row,.settings-row){
+ min-height:42px;min-width:0;max-width:100%;box-sizing:border-box;
+ gap:10px;line-height:1.5;
+}
+body :is(#settings,.settings-page,[data-page="settings"]) :is(input,select,textarea){
+ max-width:100%;min-width:0;
+}
+@media(max-width:600px){
+ body :is(#settings,.settings-page,[data-page="settings"]) :is(.settings-card,.settings-section){padding:12px;margin-block:8px}
+ body :is(#settings,.settings-page,[data-page="settings"]) :is(.setting-row,.settings-row){flex-wrap:wrap}
+}
+
+/* Shared visual language across dashboard, invoice, stock, customers, reports and settings.
+   Keep data tables readable, printing unmodified and accessible contrast. */
+html[data-zavi-theme] body :is(
+ .dashboard,.dashboard-page,.invoice,.invoice-page,.invoices,.sales-page,
+ .purchase-page,.customers-page,.debtors-page,.inventory-page,.reports-page,
+ .settings-page,.admin-page,.daily-management,.cashbox,.cash-box
+){min-width:0;max-width:100%;box-sizing:border-box}
+html[data-zavi-theme] body :is(
+ .dashboard,.dashboard-page,.invoice-page,.invoices,.sales-page,.purchase-page,
+ .customers-page,.debtors-page,.inventory-page,.reports-page,.settings-page,.admin-page
+) :is(.card,.panel,.tile,.stat-card,.summary-card,.report-card,.invoice-card,.customer-card,.settings-card){
+ border-radius:18px;border:1px solid var(--zavi-border);
+ box-shadow:var(--zavi-shadow);background:var(--zavi-surface);color:var(--zavi-text);
+}
+html[data-zavi-theme] body :is(.dashboard,.dashboard-page,.settings-page,.reports-page,.invoice-page,.admin-page)
+ :is(.section-title,.card-title,h2,h3){line-height:1.4;letter-spacing:0;overflow-wrap:break-word}
+html[data-zavi-theme] body :is(.dashboard,.dashboard-page,.settings-page,.reports-page,.invoice-page,.admin-page)
+ :is(.icon-button,.quick-action,.action-tile){border-radius:14px;min-height:42px}
+html[data-zavi-theme] body :is(.invoice-page,.invoices,.reports-page,.debtors-page,.customers-page)
+ :is(table,.table){width:100%;border-collapse:separate;border-spacing:0}
+html[data-zavi-theme] body :is(.invoice-page,.invoices,.reports-page,.debtors-page,.customers-page)
+ :is(th,td){overflow-wrap:break-word;vertical-align:middle}
+@media(max-width:600px){
+ html[data-zavi-theme] body :is(.invoice-page,.invoices,.reports-page,.debtors-page,.customers-page)
+ :is(.table-wrap,.table-responsive){overflow-x:auto;max-width:100%;-webkit-overflow-scrolling:touch}
+}
+@media print{
+ html[data-zavi-theme] body :is(.invoice,.invoice-page,.invoices,.report-card,.invoice-card){
+  box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+  background:#fff!important;color:#000!important;border-color:#bbb!important
+ }
+ #zavi-theme-controls{display:none!important}
+}
+
+/* V66.29: unified financial UI across both apps, including legacy markup.
+   Do not style native print receipts, barcode overlays or business calculations. */
+html[data-zavi-theme] body :is(main,[role="main"],.app-content,.page-content,.content-area,.screen,.view,.page){
+ min-width:0;box-sizing:border-box;
+}
+html[data-zavi-theme] body :is(
+ .card,.panel,.widget,.tile,.box-card,.info-card,.stat-card,.summary-card,
+ .invoice-card,.customer-card,.product-card,.report-card,.setting-card,
+ .settings-card,.dashboard-card,.menu-card,.account-card,.balance-card
+){
+ background:var(--zavi-surface);color:var(--zavi-text);
+ border:1px solid var(--zavi-border);border-radius:18px;
+ box-shadow:var(--zavi-shadow);min-width:0;box-sizing:border-box;
+}
+html[data-zavi-theme] body :is(
+ .card,.panel,.widget,.tile,.invoice-card,.customer-card,.product-card,
+ .report-card,.settings-card,.dashboard-card
+) :is(h1,h2,h3,h4,p,small,label){overflow-wrap:break-word}
+html[data-zavi-theme] body :is(
+ .page,.screen,.dashboard,.invoice-page,.sales-page,.purchase-page,
+ .inventory-page,.reports-page,.settings-page,.admin-page
+) :is(button:not(.unstyled),input:not([type="checkbox"]):not([type="radio"]),select,textarea){
+ box-sizing:border-box;max-width:100%;font:inherit;
+}
+html[data-zavi-theme] body :is(
+ .page,.screen,.dashboard,.invoice-page,.sales-page,.purchase-page,
+ .inventory-page,.reports-page,.settings-page,.admin-page
+) :is(input:not([type="checkbox"]):not([type="radio"]),select,textarea){
+ border-radius:12px;border:1px solid var(--zavi-border);
+}
+html[data-zavi-theme] body :is(.invoice-page,.sales-page,.purchase-page,.reports-page,.inventory-page,.customers-page)
+ :is(.table-container,.table-responsive,.table-wrapper){max-width:100%;overflow-x:auto}
+html[data-zavi-theme] body :is(.sidebar,.nav-menu,.bottom-nav,.toolbar,.topbar,.header-bar){
+ box-sizing:border-box;
+}
+@media(max-width:600px){
+ html[data-zavi-theme] body :is(.page,.screen,.dashboard,.invoice-page,.reports-page,.settings-page,.admin-page){
+  max-width:100%;min-width:0;
+ }
+ html[data-zavi-theme] body :is(.card,.panel,.widget,.tile,.invoice-card,.customer-card,.product-card,.report-card){
+  border-radius:15px;
+ }
+}
+@media print{
+ html[data-zavi-theme] body :is(.card,.panel,.widget,.tile,.invoice-card,.report-card){
+  background:#fff!important;color:#000!important;box-shadow:none!important;
+  border-color:#ccc!important;backdrop-filter:none!important;
+ }
+}
+
+/* V66.31 reference-aligned premium financial dashboard */
+html[data-zavi-theme="dark"]{color-scheme:dark;--zavi-surface:linear-gradient(145deg,#192d55,#111d3d);--zavi-text:#f4f7ff;--zavi-border:rgba(131,178,255,.33);--zavi-shadow:0 12px 32px rgba(0,4,28,.35)}
+html[data-zavi-theme="glass"]{color-scheme:dark;--zavi-surface:linear-gradient(130deg,rgba(63,83,168,.68),rgba(34,55,117,.5));--zavi-text:#f8faff;--zavi-border:rgba(190,213,255,.45);--zavi-shadow:0 14px 36px rgba(10,16,69,.3)}
+html[data-zavi-theme="light"]{color-scheme:light;--zavi-surface:linear-gradient(145deg,#fff,#f0f6ff);--zavi-text:#172544;--zavi-border:rgba(56,98,176,.2);--zavi-shadow:0 10px 26px rgba(32,73,146,.11)}
+html[data-zavi-theme] body :is(.dashboard-card,.stat-card,.summary-card,.balance-card,.account-card,.report-card,.invoice-card,.customer-card,.settings-card){
+ background:var(--zavi-surface);color:var(--zavi-text);border:1px solid var(--zavi-border);
+ border-radius:18px;box-shadow:var(--zavi-shadow);transition:transform .18s ease,box-shadow .18s ease;
+}
+html[data-zavi-theme] body :is(.dashboard-card,.stat-card,.summary-card,.balance-card,.account-card) :is(.icon,.card-icon,svg){
+ filter:drop-shadow(0 3px 8px rgba(43,125,255,.22));
+}
+html[data-zavi-theme] body :is(.dashboard-card,.stat-card,.summary-card,.balance-card,.account-card):focus-within{
+ outline:2px solid #6cbfff;outline-offset:2px;
+}
+html[data-zavi-theme] body :is(.dashboard,.dashboard-page,.home-page) :is(.stats-grid,.summary-grid,.cards-grid){
+ gap:12px;
+}
+html[data-zavi-theme] body :is(.dashboard,.dashboard-page,.home-page) :is(.stats-grid,.summary-grid,.cards-grid)>*{min-width:0}
+html[data-zavi-theme] body :is(.settings-page,.settings-screen,.settings-content) :is(.settings-card,.setting-card){
+ margin-block:8px;padding:clamp(12px,2vw,18px);
+}
+#zavi-theme-controls[hidden]{display:none!important}
+#zavi-theme-controls{position:static!important;inset:auto!important;bottom:auto!important;z-index:auto!important}
+@media(prefers-reduced-motion:reduce){
+ html[data-zavi-theme] body :is(.dashboard-card,.stat-card,.summary-card,.balance-card,.account-card,.report-card){transition:none}
+}
+
+
+/* V66.32: unified replacement visual language. Legacy components keep their
+   data/handlers, while old visual skins are superseded in all app screens. */
+html[data-zavi-theme]{
+ --zavi-radius:20px;--zavi-accent:#6895ff;--zavi-accent-2:#32d6bd;
+ --zavi-canvas:#0a1329;--zavi-input:rgba(20,37,72,.78);
+ --zavi-muted:#a7b9da;
+}
+html[data-zavi-theme="light"]{
+ --zavi-canvas:#edf3ff;--zavi-input:#fff;--zavi-muted:#536685;
+}
+html[data-zavi-theme="glass"]{
+ --zavi-canvas:#101e43;--zavi-input:rgba(40,59,109,.64);--zavi-muted:#c5d7f5;
+}
+html[data-zavi-theme] body{
+ background:var(--zavi-canvas)!important;color:var(--zavi-text);
+ font-feature-settings:"tnum" 1;line-height:1.55;
+}
+html[data-zavi-theme] body :is(main,[role="main"],.app-content,.page-content,.content-area,.dashboard,.dashboard-page,.page,.screen,.view){
+ min-width:0;max-width:100%;box-sizing:border-box;
+}
+html[data-zavi-theme] body :is(.card,.panel,.widget,.tile,.stat-card,.summary-card,.dashboard-card,.report-card,.invoice-card,.customer-card,.settings-card,.setting-card,.account-card,.balance-card,.product-card,.menu-card,.info-card){
+ background:var(--zavi-surface)!important;color:var(--zavi-text)!important;
+ border:1px solid var(--zavi-border)!important;border-radius:var(--zavi-radius)!important;
+ box-shadow:var(--zavi-shadow)!important;
+}
+html[data-zavi-theme] body :is(.card,.panel,.widget,.tile,.stat-card,.summary-card,.dashboard-card,.report-card,.invoice-card,.customer-card,.settings-card,.setting-card,.account-card,.balance-card,.product-card) :is(h1,h2,h3,h4,p,small,span){
+ overflow-wrap:anywhere;
+}
+html[data-zavi-theme] body :is(input:not([type=checkbox]):not([type=radio]),select,textarea){
+ background:var(--zavi-input);color:var(--zavi-text);
+ border:1px solid var(--zavi-border);border-radius:13px;
+ min-height:42px;max-width:100%;box-sizing:border-box;
+}
+html[data-zavi-theme] body :is(input,textarea)::placeholder{color:var(--zavi-muted);opacity:1}
+html[data-zavi-theme] body :is(button,.btn,.action-button,.quick-action){
+ border-radius:13px;min-height:40px;touch-action:manipulation;
+}
+html[data-zavi-theme] body :is(.bottom-nav,.bottom-navigation,.sidebar,.topbar,.navbar,.app-header){
+ background:var(--zavi-surface);border-color:var(--zavi-border);
+ backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+}
+html[data-zavi-theme] body :is(.stats-grid,.summary-grid,.cards-grid,.dashboard-grid,.quick-actions,.actions-grid){
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;
+}
+html[data-zavi-theme] body :is(.table-responsive,.table-wrap,.table-container,.table-wrapper){
+ overflow-x:auto;max-width:100%;-webkit-overflow-scrolling:touch;
+}
+html[data-zavi-theme] body :is(.chart,.chart-card,canvas,svg){max-width:100%}
+html[data-zavi-theme] body :is(button,input,select,textarea,a):focus-visible{
+ outline:2px solid var(--zavi-accent);outline-offset:2px;
+}
+@media(min-width:850px){
+ html[data-zavi-theme] body :is(.stats-grid,.summary-grid,.cards-grid,.dashboard-grid){grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+@media(max-width:520px){
+ html[data-zavi-theme] body :is(.stats-grid,.summary-grid,.cards-grid,.dashboard-grid){gap:9px}
+ html[data-zavi-theme] body :is(.card,.panel,.widget,.tile,.stat-card,.summary-card,.dashboard-card,.report-card,.invoice-card,.customer-card,.settings-card,.setting-card,.account-card,.balance-card){border-radius:16px!important}
+}
+@media print{
+ html[data-zavi-theme] body{background:#fff!important;color:#000!important}
+ html[data-zavi-theme] body :is(.invoice,.invoice-card,.report-card,.print-area,.receipt,.receipt-print){
+  background:#fff!important;color:#000!important;box-shadow:none!important;
+  border-color:#ccc!important;backdrop-filter:none!important;
+ }
+}
+
+
+/* V66.33: consistent premium controls in every financial screen, not only dashboard. */
+html[data-zavi-theme] body :is(h1,h2,h3,h4){color:var(--zavi-text);letter-spacing:-.015em}
+html[data-zavi-theme] body :is(.page-title,.screen-title,.section-title,.header-title){font-weight:750;line-height:1.4;color:var(--zavi-text)}
+html[data-zavi-theme] body :is(.subtitle,.sub-title,.description,.muted,.text-muted,.helper-text){color:var(--zavi-muted)}
+html[data-zavi-theme] body :is(.modal,.modal-content,.dialog,.dialog-content,.popover,.dropdown-menu,.drawer,.sheet){
+ background:var(--zavi-surface)!important;color:var(--zavi-text)!important;
+ border:1px solid var(--zavi-border);border-radius:18px;box-shadow:var(--zavi-shadow);
+ max-width:calc(100vw - 20px);box-sizing:border-box;
+}
+html[data-zavi-theme] body :is(.list-item,.contact-row,.customer-row,.debtor-row,.invoice-row,.transaction-row,.account-row,.product-row,.settings-row){
+ border-bottom:1px solid var(--zavi-border);padding-block:10px;min-width:0;
+}
+html[data-zavi-theme] body :is(.table,table):not(.calendar){
+ border-collapse:separate;border-spacing:0;width:100%;
+}
+html[data-zavi-theme] body :is(.table,table):not(.calendar) :is(th,td){
+ border-bottom:1px solid var(--zavi-border);padding:10px 12px;text-align:start;
+}
+html[data-zavi-theme] body :is(.table,table):not(.calendar) th{
+ color:var(--zavi-muted);font-weight:700;background:var(--zavi-input);
+}
+html[data-zavi-theme] body :is(.tabs,.tab-bar,.segmented-control,.filter-row){
+ gap:6px;max-width:100%;overflow-x:auto;scrollbar-width:thin;
+}
+html[data-zavi-theme] body :is(.badge,.chip,.status-pill,.tag){
+ border-radius:999px;padding:4px 9px;max-width:100%;overflow-wrap:anywhere;
+}
+html[data-zavi-theme] body :is(.empty-state,.no-data,.placeholder-state){
+ color:var(--zavi-muted);text-align:center;padding:24px 12px;
+}
+html[data-zavi-theme] body :is(.sidebar,.side-menu,.nav-drawer,.bottom-nav,.bottom-navigation){
+ border:1px solid var(--zavi-border);box-shadow:var(--zavi-shadow);
+}
+html[data-zavi-theme] body :is(.sidebar,.side-menu,.nav-drawer,.bottom-nav,.bottom-navigation) :is(a,button){
+ border-radius:12px;min-width:0;
+}
+html[data-zavi-theme] body :is(.form-group,.field-group,.input-group,.settings-row){min-width:0}
+html[data-zavi-theme] body :is(.form-group,.field-group,.input-group) label{display:block;margin-bottom:5px;color:var(--zavi-text)}
+html[data-zavi-theme] body :is(.invoice-page,.purchase-page,.sales-page,.debtors-page,.customers-page,.inventory-page,.reports-page,.settings-page,.admin-page,.daily-management){
+ overflow-wrap:break-word;
+}
+@media(max-width:620px){
+ html[data-zavi-theme] body :is(.modal,.modal-content,.dialog,.dialog-content,.drawer,.sheet){max-height:90dvh;overflow-y:auto}
+ html[data-zavi-theme] body :is(.table,table):not(.calendar) :is(th,td){padding:8px}
+ html[data-zavi-theme] body :is(.page-title,.screen-title){font-size:clamp(18px,5vw,23px)}
+}
+@media print{
+ html[data-zavi-theme] body :is(.bottom-nav,.bottom-navigation,.sidebar,.nav-drawer,#zavi-theme-controls){display:none!important}
+ html[data-zavi-theme] body :is(table,thead,tr,td,th){break-inside:avoid}
+}
+
+
+/* V66.34: replace actual legacy debtors markup and restore scrolling. */
+html[data-zavi-theme] body #content{min-width:0;max-width:100%;overflow-x:hidden;overflow-y:visible;padding-bottom:100px}
+html[data-zavi-theme] body .debt-cards{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;visibility:visible!important;opacity:1!important;height:auto!important;overflow:visible!important;margin:16px 0 28px}
+html[data-zavi-theme] body .debt-card{display:block!important;visibility:visible!important;opacity:1!important;min-height:170px;height:auto!important;overflow:visible!important;padding:18px!important;background:var(--zavi-surface)!important;color:var(--zavi-text)!important;border:1px solid var(--zavi-border)!important;border-radius:20px!important;box-shadow:var(--zavi-shadow)!important}
+html[data-zavi-theme] body .debt-card h3{font-size:17px;font-weight:800;color:var(--zavi-text)!important}
+html[data-zavi-theme] body .debt-card .dc-amount{color:#ff829e!important;font-size:clamp(20px,3vw,28px);font-weight:850}
+html[data-zavi-theme="light"] body .debt-card .dc-amount{color:#b22b55!important}
+html[data-zavi-theme] body .debt-card .dc-contact{color:var(--zavi-muted)!important;font-size:13px;flex-wrap:wrap}
+html[data-zavi-theme] body .debt-card .dc-contact a{color:var(--zavi-accent)!important}
+html[data-zavi-theme] body .debt-card .dc-actions{display:flex!important;flex-wrap:wrap;gap:8px}
+html[data-zavi-theme] body .debt-card .dc-actions .btn{background:var(--zavi-input);color:var(--zavi-text);border:1px solid var(--zavi-border);border-radius:12px;white-space:normal;text-align:center}
+html[data-zavi-theme] body .debt-hero{background:linear-gradient(120deg,#183e82,#344eab 65%,#146d94)!important;color:#fff!important;border:1px solid rgba(152,195,255,.35);border-radius:22px;box-shadow:0 14px 34px rgba(9,31,83,.3)}
+html[data-zavi-theme] body .debt-hero :is(small,strong,span){color:#fff!important}
+html[data-zavi-theme] body .table-bar{min-width:0;flex-wrap:wrap;gap:10px}
+html[data-zavi-theme] body .searchbox{min-width:0;flex:1 1 220px}
+html[data-zavi-theme] body .searchbox input{width:100%;min-width:0}
+@media(max-width:760px){html[data-zavi-theme] body .debt-cards{grid-template-columns:minmax(0,1fr)!important}html[data-zavi-theme] body .debt-card{padding:15px!important}}
+
+
+/* V66.35: bridge legacy inline design tokens to the approved premium system.
+   The original HTML used --bg/--white/--ink/--line rather than --zavi-*.
+   Rebinding those variables changes every legacy component without deleting
+   its business logic or transaction handlers. */
+html[data-zavi-theme="dark"]{
+ --bg:#09152e;--white:#172849;--ink:#f3f7ff;--muted:#aebedb;
+ --line:#345078;--primary:#608dff;--primary2:#4775e6;
+ --teal:#2bd4b9;--shadow:0 12px 32px rgba(0,6,27,.32);
+}
+html[data-zavi-theme="glass"]{
+ --bg:#111e40;--white:rgba(41,62,111,.83);--ink:#f4f8ff;--muted:#c1d0e9;
+ --line:rgba(167,199,255,.37);--primary:#9aabff;--primary2:#6f86e5;
+ --teal:#3ee0ce;--shadow:0 14px 34px rgba(5,13,47,.35);
+}
+html[data-zavi-theme="light"]{
+ --bg:#edf3ff;--white:#fff;--ink:#172544;--muted:#536685;
+ --line:#d8e3f6;--primary:#385ec9;--primary2:#284cae;
+ --teal:#087c73;--shadow:0 10px 26px rgba(32,73,146,.11);
+}
+html[data-zavi-theme] body :is(.page-head,.page-header,.hero,.summary-box,.summary-panel,.stat,.stat-box,.kpi,.kpi-card,.metric-card,.account-summary,.ledger-intro,.contact-card,.person-card,.data-card){
+ background:var(--zavi-surface)!important;color:var(--zavi-text)!important;
+ border:1px solid var(--zavi-border)!important;border-radius:18px!important;
+ box-shadow:var(--zavi-shadow)!important;
+}
+html[data-zavi-theme] body :is(.ledger-intro,.summary-box,.account-summary) :is(strong,small,span){color:var(--zavi-text)}
+html[data-zavi-theme] body :is(.pill,.badge,.chip){border:1px solid var(--zavi-border)}
+html[data-zavi-theme] body :is(.debt-card,.contact-card,.person-card,.ledger-intro) :is(p,small,label){color:var(--zavi-muted)}
+
+
+/* V66.43 unified premium layout: presentation only; accounting and authentication unchanged. */
+:root{--zavi-premium-radius:18px;--zavi-premium-space:14px;--zavi-premium-focus:#5b93ee}
+body :is(.card,.debt-card,.dashboard-card,.settings-card,.menu-card,.panel){
+ border-radius:var(--zavi-premium-radius);min-width:0;overflow-wrap:anywhere;
+}
+body :is(.card,.debt-card,.dashboard-card,.settings-card,.menu-card,.panel):focus-within{
+ outline:1px solid color-mix(in srgb,var(--zavi-premium-focus) 45%,transparent);
+ outline-offset:1px;
+}
+body :is(button,.btn,input,select,textarea){font:inherit;max-width:100%;box-sizing:border-box}
+body :is(button,.btn){min-height:38px;touch-action:manipulation}
+body :is(input,select,textarea){min-height:40px}
+body :is(.debt-card,.settings-card,.dashboard-card) :is(h2,h3,h4){line-height:1.4}
+body .debt-card .dc-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+body .debt-card .dc-actions>.btn{min-width:0;white-space:normal;line-height:1.4}
+body .debt-card .dc-actions>.zavi-more-actions{grid-column:1/-1;min-width:0}
+body .zavi-more-actions>summary{cursor:pointer;min-height:38px;display:flex;justify-content:center;align-items:center;border-radius:12px;border:1px solid currentColor;opacity:.85}
+body .zavi-more-actions-inner{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:8px}
+body .zavi-receipts-panel>summary{cursor:pointer}
+@media(max-width:480px){
+ body :is(.card,.debt-card,.settings-card,.dashboard-card){padding:clamp(10px,3vw,16px)}
+ body .debt-card .dc-actions{gap:6px}
+ body .debt-card .dc-actions>.btn{font-size:clamp(11px,2.9vw,14px);padding:8px 4px}
+ body .zavi-more-actions-inner{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){
+ body :is(.card,.debt-card,.dashboard-card,.settings-card,.menu-card,.panel,.btn,button){animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
+
+
+/* V66.44 classic-modern visual system; scoped to existing theme attribute. */
+html[data-zavi-theme]{color-scheme:light}
+html[data-zavi-theme="dark"],html[data-zavi-theme="glass"]{color-scheme:dark}
+html[data-zavi-theme="light"]{--zavi-premium-focus:#2856b7;--zavi-premium-radius:18px}
+html[data-zavi-theme="dark"]{--zavi-premium-focus:#76aaff;--zavi-premium-radius:18px}
+html[data-zavi-theme="glass"]{--zavi-premium-focus:#9eaaff;--zavi-premium-radius:20px}
+html[data-zavi-theme] body :is(.card,.panel,.settings-card,.dashboard-card,.debt-card,.menu-card){
+ border-color:var(--zavi-border,var(--line))!important;
+}
+html[data-zavi-theme] body :is(input,textarea,select){
+ background:var(--zavi-surface,var(--white));color:var(--zavi-text,var(--ink));
+ border:1px solid var(--zavi-border,var(--line));border-radius:12px;
+}
+html[data-zavi-theme] body :is(input,textarea,select)::placeholder{color:var(--zavi-muted,var(--muted));opacity:1}
+html[data-zavi-theme] body :is(input,textarea,select,button,a):focus-visible{
+ outline:2px solid var(--zavi-premium-focus);outline-offset:2px;
+}
+html[data-zavi-theme] body :is(.page,.screen,.content,.settings-content,.dashboard){min-width:0}
+html[data-zavi-theme] body :is(.table-wrap,.table-container,.scroll-table){max-width:100%;overflow-x:auto}
+html[data-zavi-theme] body :is(.card,.panel,.settings-card,.dashboard-card,.debt-card,.menu-card) :is(h1,h2,h3){overflow-wrap:anywhere}
+html[data-zavi-theme="glass"] body :is(.card,.panel,.settings-card,.dashboard-card,.debt-card,.menu-card){
+ backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+}
+@media(max-width:600px){
+ html[data-zavi-theme] body :is(.page,.screen,.content,.settings-content,.dashboard){max-width:100%;overflow-x:clip}
+ html[data-zavi-theme] body :is(.card,.panel,.settings-card,.dashboard-card,.debt-card,.menu-card){border-radius:16px}
+}
+
+
+/* V66.45 crystal glass: translucent surfaces with strong text contrast.
+   Scoped to glass mode only. No accounting, permissions, or data writes. */
+html[data-zavi-theme="glass"]{
+ --bg:#101d3d;--white:rgba(34,53,99,.60);--ink:#f7faff;
+ --muted:#d5e1f8;--line:rgba(215,231,255,.38);
+ --zavi-surface:rgba(35,57,105,.62);--zavi-text:#f7faff;
+ --zavi-muted:#d5e1f8;--zavi-border:rgba(211,230,255,.42);
+ --zavi-shadow:0 16px 44px rgba(2,9,31,.30);
+ background-color:#101d3d;
+}
+html[data-zavi-theme="glass"] body{
+ background:radial-gradient(ellipse at 12% 6%,rgba(79,145,241,.45),transparent 48%),
+ radial-gradient(ellipse at 95% 22%,rgba(153,108,225,.40),transparent 42%),
+ radial-gradient(ellipse at 50% 100%,rgba(20,196,197,.21),transparent 55%),
+ linear-gradient(135deg,#0b1731,#1b2e61 54%,#151e45)!important;
+ background-attachment:fixed!important;color:#f7faff;
+}
+html[data-zavi-theme="glass"] body :is(
+ .card,.panel,.settings-card,.dashboard-card,.debt-card,.menu-card,.tile,
+ .report-card,.invoice-card,.customer-card,.contact-card,.person-card,.data-card,
+ .stat,.stat-box,.kpi,.kpi-card,.metric-card,.summary-box,.summary-panel,
+ .account-summary,.ledger-intro,.modal-content,.dialog-content,.page-head,.page-header
+){
+ background:linear-gradient(145deg,rgba(91,126,198,.30),rgba(29,47,92,.55))!important;
+ border:1px solid rgba(220,237,255,.38)!important;
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 14px 36px rgba(2,10,35,.25)!important;
+ -webkit-backdrop-filter:blur(22px) saturate(155%);backdrop-filter:blur(22px) saturate(155%);
+ color:#f7faff!important;border-radius:20px!important;
+}
+html[data-zavi-theme="glass"] body :is(input,select,textarea){
+ background:rgba(12,26,57,.72)!important;color:#fff!important;
+ border:1px solid rgba(210,231,255,.48)!important;
+ -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+}
+html[data-zavi-theme="glass"] body :is(input,textarea)::placeholder{color:#d3def1!important}
+html[data-zavi-theme="glass"] body :is(.card,.panel,.settings-card,.dashboard-card,.debt-card,.menu-card,.tile,.modal-content,.dialog-content) :is(h1,h2,h3,h4,p,label,small){
+ color:inherit;
+}
+html[data-zavi-theme="glass"] body :is(.badge,.chip,.pill){
+ background:rgba(21,39,77,.74);color:#f7faff;border-color:rgba(211,230,255,.4);
+}
+html[data-zavi-theme="glass"] body #zavi-theme-controls{
+ background:rgba(30,49,95,.74)!important;
+ border-color:rgba(211,230,255,.5)!important;
+ -webkit-backdrop-filter:blur(22px);backdrop-filter:blur(22px);
+}
+@supports not ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){
+ html[data-zavi-theme="glass"] body :is(.card,.panel,.settings-card,.dashboard-card,.debt-card,.menu-card,.tile,.modal-content,.dialog-content){
+  background:rgba(30,47,88,.96)!important;
+ }
+}
+@media(prefers-reduced-transparency:reduce){
+ html[data-zavi-theme="glass"] body :is(.card,.panel,.settings-card,.dashboard-card,.debt-card,.menu-card,.tile,.modal-content,.dialog-content){
+  background:rgba(26,43,82,.98)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+ }
+}
