@@ -35,7 +35,8 @@ for app in ('one','admin'):
                        'zavi-unified-compact-v1.css','zavi-approved-one-v2.css',
                        'zavi-owner-reference-login-v1.css','zavi-reference-one-v3.css')
     else:
-        assert hrefs[-1]=='zavi-reference-admin-v3.css',(app,hrefs[-4:])
+        assert hrefs[-1]=='zavi-admin-classic-safety.css',(app,hrefs[-4:])
+        assert '"zavi-admin-classic-safety.css"' in sw,('admin classic safety CSS not cached',app)
         retired_skins=('zavi-clean-professional-v1458.css','zavi-admin-showcase-v1459.css',
                        'zavi-admin-pdf-final-v1467.css','zavi-unified-compact-v1.css',
                        'zavi-approved-admin-v2.css','zavi-reference-admin-v3.css')
