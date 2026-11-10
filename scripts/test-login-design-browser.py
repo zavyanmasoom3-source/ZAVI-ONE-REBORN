@@ -86,7 +86,7 @@ for app,field_id in [('one','zawiPinOne'),('admin','authPassword')]:
               const root=document.documentElement;
               return {appearance:root.dataset.zaviAppearance,
                 theme:root.dataset.zaviTheme,
-                token:getComputedStyle(root).getPropertyValue('--zds-text').trim(),
+                token:(getComputedStyle(root).getPropertyValue('--zds-text')||getComputedStyle(root).getPropertyValue('--z38-text')).trim(),
                 field:!!document.getElementById(%s)};
             })()""" %(json.dumps(mode),json.dumps(field_id)))
             if proof['appearance']!=mode or not proof['token'] or not proof['field']:
@@ -96,6 +96,50 @@ for app,field_id in [('one','zawiPinOne'),('admin','authPassword')]:
             if p.stat().st_size<10000:
                 raise SystemExit('Tiny/blank screenshot: '+p.name)
             print('PASS:',app,mode,'real login theme + password control + screenshot',p.name)
+
+        if app=='one' and (ROOT/'apps/one/v6662-original-design-lock.json').is_file():
+            # The user's genuine 62MB V66.62 has PIN and recovery on its
+            # classic entry, while the three original theme controls live in
+            # Settings. Do NOT require the rejected PDF-only login sheet.
+            legacy=browser.eval("""(()=>({
+              pin:!!document.getElementById('zawiPinOne'),
+              recovery:!!document.getElementById('zawiForgotPinBtn'),
+              original:!!document.getElementById('zawiPrivateGate')
+            }))()""")
+            assert all(legacy.values()),legacy
+            err=browser.unlock_one()
+            if err:raise AssertionError('Original PIN unlock failed: '+str(err))
+            state=browser.route('settings')
+            assert state['selected'] and state['visible'] and not state['locked'],state
+            browser.until("""document.querySelectorAll(
+              '#zavi-theme-controls [data-zavi-theme-choice]').length===3""",
+              'genuine legacy three-mode settings picker',seconds=20)
+            for choice in ['light','dark','glass']:
+                proof=browser.eval("""(()=>{
+                  window.ZaviThemeV29.set(%s);
+                  const root=document.documentElement;
+                  const buttons=[...document.querySelectorAll(
+                    '#zavi-theme-controls [data-zavi-theme-choice]')];
+                  return {theme:root.dataset.zaviTheme,
+                    appearance:root.dataset.zaviAppearance,
+                    controls:buttons.map(b=>b.dataset.zaviThemeChoice),
+                    selected:buttons.filter(b=>b.getAttribute('aria-pressed')==='true')
+                      .map(b=>b.dataset.zaviThemeChoice)};
+                })()""" %json.dumps(choice))
+                assert proof['theme']==choice and proof['appearance']==choice,proof
+                assert proof['controls']==['light','dark','glass'] and proof['selected']==[choice],proof
+                image=OUT/('one-original-settings-'+choice+'.png')
+                image.write_bytes(browser.screenshot())
+                assert image.stat().st_size>10000,image
+            for language,direction in [('fa-AF','rtl'),('ps-AF','rtl'),('en','ltr')]:
+                lang=browser.eval("""(()=>{
+                  window.ZaviLocaleV22.set(%s);
+                  return {lang:document.documentElement.lang,
+                    dir:document.documentElement.dir};
+                })()""" %json.dumps(language))
+                assert lang['lang']==language and lang['dir']==direction,lang
+            print('PASS: original 66.62 PIN/recovery, settings-based 3 themes, 3 languages, existing look')
+            continue
 
         if app=='one':
             # Owner's last light-reference sheet: test the real gate controls,
