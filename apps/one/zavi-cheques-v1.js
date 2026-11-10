@@ -248,6 +248,7 @@
    if(queueBusy||!owner(s)||w.navigator.onLine===false||s.pending||s.conflict)return;
    const queue=pendingRows(s);if(!queue.length)return;
    queueBusy=true;setMessage(tr().wait);
+   let confirmedRevision=0;
    try{
     for(const intent of queue){
      if(scope().key!==s.key||scope().pending||scope().conflict||w.navigator.onLine===false)break;
@@ -260,6 +261,7 @@
       // Remove ONLY the server-confirmed idempotent intent.
       const left=pendingRows(s).filter(x=>x.id!==intent.id);
       saveQueue(w.localStorage,s.uid,s.workspace,left);
+      confirmedRevision=Math.max(confirmedRevision,Number(response.ledger_revision)||0);
       if(scope().key===s.key){
        setMessage(tr().done);
        w.dispatchEvent(new CustomEvent('zavi-cheque-settlement-confirmed',{detail:{
@@ -272,7 +274,10 @@
      }
     }
     if(scope().key===s.key&&w.navigator.onLine!==false){
-     await w.zaviCloudReconcileServer?.().catch(()=>{});
+     if(confirmedRevision){
+      try{await w.zaviCloudReconcileServer?.(confirmedRevision)}
+      catch(_){setMessage('SERVER_LEDGER_RECONCILIATION_PENDING')}
+     }
      await refresh();
     }
    }finally{queueBusy=false;if(scope().key===s.key)render()}
