@@ -1,0 +1,76 @@
+name: Publish verified classic offline APK previews (NOT RELEASE)
+on:
+  push:
+    branches: [dev]
+    paths:
+      - ".github/workflows/publish-classic-offline-preview.yml"
+  workflow_dispatch:
+permissions:
+  actions: read
+  contents: write
+concurrency:
+  group: zavi-classic-offline-preview-20261110
+  cancel-in-progress: false
+jobs:
+  publish:
+    name: Publish verified independent APK files
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+      EXPECTED_COMMIT: b4a6b38ce05bb1e0e3a43d34884696dd5a42759f
+      EXPECTED_ONE_SHA256: e15fe113db214f5f4510ea385efc333e72a7ba343faff09f1da0bc82aec4a309
+      EXPECTED_ADMIN_SHA256: 8faf2daa54a75b0eb37ad218197bcfa848f97caf6ad5e05f1eaf30cd79209b32
+      TAG: zavi-classic-66-62-stage8-offline-preview-20261110
+    steps:
+      - uses: actions/checkout@v4
+      - name: Retrieve Android 8+ preview APKs from the exact successful dual-app build
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p incoming/one incoming/admin published
+          gh run download 42797490945 -R "$GITHUB_REPOSITORY" -n OFFLINE-PREVIEW-NOT-RELEASE-Android-one -D incoming/one
+          gh run download 42797490945 -R "$GITHUB_REPOSITORY" -n OFFLINE-PREVIEW-NOT-RELEASE-Android-admin -D incoming/admin
+          test -s incoming/one/ZAVI_one_OFFLINE-PREVIEW-NOT-RELEASE.apk
+          test -s incoming/admin/ZAVI_admin_OFFLINE-PREVIEW-NOT-RELEASE.apk
+          printf "%s  %s\n" "$EXPECTED_ONE_SHA256" incoming/one/ZAVI_one_OFFLINE-PREVIEW-NOT-RELEASE.apk | sha256sum -c -
+          printf "%s  %s\n" "$EXPECTED_ADMIN_SHA256" incoming/admin/ZAVI_admin_OFFLINE-PREVIEW-NOT-RELEASE.apk | sha256sum -c -
+          (cd incoming/one && sha256sum -c SHA256SUMS.txt)
+          (cd incoming/admin && sha256sum -c SHA256SUMS.txt)
+          python3 - <<'PY'
+          import json, os, zipfile
+          expected = os.environ["EXPECTED_COMMIT"]
+          for app, path, pkg in (
+              ("one", "incoming/one/ZAVI_one_OFFLINE-PREVIEW-NOT-RELEASE.apk", "com.zavione.one.offlinepreview"),
+              ("admin", "incoming/admin/ZAVI_admin_OFFLINE-PREVIEW-NOT-RELEASE.apk", "com.zavione.one.admin.offlinepreview"),
+          ):
+              with zipfile.ZipFile(path) as apk:
+                  info=json.loads(apk.read("assets/zavi-build-info.json"))
+                  assert info["commit"] == expected and info["app"] == app, info
+                  assert info["package"] == pkg and info["kind"] == "OFFLINE-PREVIEW-NOT-RELEASE", info
+                  assert info["signing"] == "ephemeral-offline-preview", info
+                  assert info["run"] == "23", info
+              print("VERIFIED original source, package and offline-only identity", app)
+          PY
+          cp incoming/one/ZAVI_one_OFFLINE-PREVIEW-NOT-RELEASE.apk published/ZAVI_ONE_CLASSIC_66_62_STAGE8_OFFLINE_TEST.apk
+          cp incoming/admin/ZAVI_admin_OFFLINE-PREVIEW-NOT-RELEASE.apk published/ZAVI_ONE_ADMIN_CLASSIC_STAGE8_OFFLINE_TEST.apk
+      - name: Publish two individually downloadable APKs (pre-release, not production)
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > published/README.txt <<'NOTES'
+          THIS IS AN OFFLINE, SEPARATELY INSTALLABLE, NON-PRODUCTION TEST ONLY.
+          Restored classic ZAVI 66.62-era UI styling with stage-8 app sources.
+          SHA and embedded provenance independently checked against build run 42797490945.
+          Requires Android, not iOS. Never enter real accounting or client records.
+          No production Supabase, owner login or cloud syncing in this preview.
+          Signed with an ephemeral preview key, not the production release key.
+          Source commit: b4a6b38ce05bb1e0e3a43d34884696dd5a42759f
+          NOTE: All features are not device-verified.
+          NOTES
+          if gh release view "$TAG" -R "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release upload "$TAG" published/*.apk --clobber -R "$GITHUB_REPOSITORY"
+          else
+            gh release create "$TAG" published/*.apk --prerelease --target "$EXPECTED_COMMIT" --title "ZAVI ONE classic 66.62-style: two OFFLINE TEST APKs (NOT RELEASE)" --notes-file published/README.txt -R "$GITHUB_REPOSITORY"
+          fi
+          gh release view "$TAG" -R "$GITHUB_REPOSITORY" --json url,assets --jq '{url: .url, assets: [.assets[] | {name: .name, url: .url}]}'
