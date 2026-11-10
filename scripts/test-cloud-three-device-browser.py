@@ -17,7 +17,7 @@ BASE='https://zavi-disposable-qa.supabase.co'
 KEY='qa-publishable-key-this-is-not-a-real-credential'
 TOKEN='qa-access-token-this-is-not-a-real-credential'
 lock=Lock()
-server_state={'workspace':None,'patches':[],'drop_for':None,'entitlement_checks':0}
+server_state={'workspace':None,'patches':[],'drop_for':None,'entitlement_checks':0,'device_auth_checks':0,'blocked_devices':set()}
 
 def json_reply(handler,code,body):
     raw=json.dumps(body,separators=(',',':')).encode()
@@ -58,6 +58,20 @@ class MockSupabase(BaseHTTPRequestHandler):
                 'expires_at':'2099-01-01T00:00:00Z',
                 'server_time':'2026-11-08T12:00:00Z'
             }])
+        if parsed.path=='/rest/v1/rpc/zavi_v28_device_sync_authorization':
+            if self.headers.get('Authorization')!='Bearer '+TOKEN:
+                return json_reply(self,401,{'message':'QA device check unauthorized'})
+            length=int(self.headers.get('Content-Length','0'))
+            try:body=json.loads(self.rfile.read(length))
+            except ValueError:return json_reply(self,400,{'message':'Invalid JSON'})
+            device_id=body.get('p_device_id')
+            if body.get('p_workspace_id')!=WID or not isinstance(device_id,str) or not device_id:
+                return json_reply(self,403,{'message':'Wrong device/workspace'})
+            with lock:
+                server_state['device_auth_checks']+=1
+                granted=device_id not in server_state['blocked_devices']
+            return json_reply(self,200,[{'workspace_id':WID,'device_id':device_id,
+                'device_allowed':granted,'sync_allowed':granted}])
         # This browser fixture deliberately does not issue offline leases.
         return json_reply(self,403,{'message':'QA server: unrelated RPC denied'})
     def do_PATCH(self):
@@ -251,5 +265,39 @@ with ExitStack() as stack:
           'revision-CAS write under skewed timestamp')
     assert server_state['workspace']['payload']['storeName']=='QA CLOCK SKEW PROOF'
     print('PASS: server revision CAS, not wall clock, controls accepted upload')
-    print(json.dumps({'profiles':3,'cases':4,'last_revision':server_state['workspace']['revision'],
+    # Case 5: an already-signed-in but REVOKED main device cannot upload a
+    # new offline sale. The durable queue must remain intact until the server
+    # grants a renewed device authorization.
+    safe.command('Page.reload',{'ignoreCache':True})
+    until(lambda:info(safe).get('revision')==server_state['workspace']['revision'],
+          'device authorization case reloaded')
+    device_id=safe.eval('window.zaviDeviceActivation?.getDeviceId?.()||""')
+    assert device_id,'real device ID API missing'
+    with lock:
+        server_state['blocked_devices'].add(device_id)
+        old_revision=server_state['workspace']['revision']
+        old_patches=len(server_state['patches'])
+        old_checks=server_state['device_auth_checks']
+    mutate(safe,"n.tx.push({id:'qa-revoked-unsent',type:'sale',date:'2026-11-08',created:'2026-11-08T00:00:00Z',paid:4,items:[]});")
+    until(lambda:server_state['device_auth_checks']>old_checks,
+          'server refused revoked primary before a PATCH',25)
+    # A second attempt may be scheduled, but neither can upload.
+    time.sleep(.3)
+    with lock:
+        assert server_state['workspace']['revision']==old_revision
+        assert len(server_state['patches'])==old_patches
+        server_state['blocked_devices'].remove(device_id)
+    assert info(safe).get('pending') is True
+    assert safe.eval("db.tx.some(t=>t.id==='qa-revoked-unsent')") is True
+    assert safe.eval("!!localStorage.getItem('zavi_v34_pending_'+window.zaviCloudGetAuthSession().user.id+'_'+window.zaviCloudRestoreInfo().workspace)") is True
+    print('PASS: revoked device cannot upload; unsent invoice and durable pending queue remain on-device')
+    safe.eval('window.zaviCloudAfterSave()')
+    until(lambda:server_state['workspace']['revision']==old_revision+1,
+          'authorized device resumes exactly once',35)
+    until(lambda:info(safe).get('pending') is False,'authorized ACK clears queue',35)
+    with lock:
+        assert [t['id'] for t in server_state['workspace']['payload']['tx']].count('qa-revoked-unsent')==1
+    print('PASS: restored device permission uploads the preserved sale once')
+    print(json.dumps({'profiles':3,'cases':5,'last_revision':server_state['workspace']['revision'],
+
        'server_patches':server_state['patches']},ensure_ascii=False))
