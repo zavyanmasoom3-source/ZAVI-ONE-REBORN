@@ -10,7 +10,7 @@ Rebuild workspace for **ZAVI ONE** and **ZAVI ONE ADMIN**.
 - `apps/admin` — owner administration and subscription management
 - `packages/shared` — shared language, database and access contracts
 - `android-build` — Android Java WebView wrapper
-- `supabase/migrations` — SQL under review; **not automatically executed on production**
+- `supabase/migrations` — version-controlled SQL; selected reviewed Stage 4, 5, 7 and 8 security migrations were manually deployed to primary Supabase and verified. Other migrations are **not** auto-run on production.
 - `scripts` — integrity and navigation checks
 - `docs/REBORN_PDF_PARITY_AND_RELEASE_GATES.md` — PDF-to-feature acceptance matrix
 
@@ -30,7 +30,7 @@ python3 scripts/check-migration-integrity.py
 python3 scripts/verify-ui-navigation.py
 ```
 
-Android QA workflow: `.github/workflows/build-reborn-qa.yml`. It creates **debug QA artifacts only**, not public releases. The migration gate must pass before build.
+Android QA workflow: `.github/workflows/build-reborn-qa.yml`. It requires original, certificate-pinned per-app signing Secrets and **fails closed when missing**; it does not generate debug-signing replacements or publish public releases. The migration gate must pass before build.
 
 ## Verified release status (2026-11-08)
 
