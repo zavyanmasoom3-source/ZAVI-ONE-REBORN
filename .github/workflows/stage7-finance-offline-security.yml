@@ -1,0 +1,54 @@
+name: Stage 7 financial offline sync and security regression
+on:
+  push:
+    branches: [dev]
+    paths:
+      - '.github/workflows/stage7-finance-offline-security.yml'
+      - 'apps/one/cloud.js'
+      - 'supabase/migrations/20261110_stage7_sync_operation_device_entitlement_guard.sql'
+      - 'scripts/test-stage7-sync-operation-postgres.sql'
+      - 'scripts/test-stage7-reset-pending-integrity.cjs'
+      - 'scripts/test-cloud-sync-safety.cjs'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  stage7-security:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: stage7-disposable-fixture
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Ensure JavaScript parses and no privileged client secrets leak
+        run: |
+          node --check apps/one/cloud.js
+          node scripts/test-cloud-sync-safety.cjs
+          node scripts/test-stage7-reset-pending-integrity.cjs
+          python3 scripts/check-public-source-security.py
+      - name: Test owner, revoked device, archived subscription, replay and financial queue in PostgreSQL17
+        env:
+          PGPASSWORD: stage7-disposable-fixture
+        run: |
+          psql -h 127.0.0.1 -U postgres -d postgres \
+            -v ON_ERROR_STOP=1 -f scripts/test-stage7-sync-operation-postgres.sql
+      - name: Read-only accounting and multi-device browser regression
+        run: |
+          python3 scripts/test-accounting-edge-cases-browser.py
+          python3 scripts/test-cloud-sync-browser.py
+          python3 scripts/test-cloud-three-device-browser.py
