@@ -153,3 +153,71 @@ sale/purchase, reconnect synchronization, and no duplicate financial postings.
 A disconnected older device can retain a prior unexpired offline lease until
 expiration/reconnection. Do not mark Stage 3 100% certified or ship stable
 APKs until those on-device checks are evidenced.
+
+
+## Cross-account offline lease refresh regression — 2026-11-10
+
+Read-only source audit found a second Stage 3 client issue: while an automatic
+signed-lease request for owner/workspace A was pending, the shared
+\`working\` flag could drop a refresh for owner/workspace B. Late A errors
+could also overwrite B's status indicator. The correction at
+\`apps/one/zavi-store-v6579-auto-signed-offline.js\`:
+
+- clears display and retry state when the authenticated owner/workspace changes;
+- ignores late cached, device-registration and lease results that belong to
+  the previous owner/workspace;
+- preserves a queued refresh when the active request is still in flight,
+  and executes it after the previous request settles;
+- keeps the existing signed-server authorization and offline cache rules
+  unchanged.
+
+\`scripts/test-phase3-auto-lease-scope.cjs\` exercises both delayed previous
+device registration and delayed previous cached-license retrieval with isolated
+fake sessions and requests. The test is enforced in
+\`.github/workflows/migration-integrity.yml\`.
+
+GitHub Actions run **42767706561**, commit
+\`3a9486850ad70b3ad3020a484f611e07abfdd7e5\`: **SUCCESS**, including
+the new regression, client-side ES256 verifier contract, three-device sync,
+navigation/browser checks and JavaScript syntax.
+
+A production Supabase *read-only* check confirmed that
+\`zavi_v6580_owner_one_tap_transfer\`, \`zavi_v41_owner_replace_device\`,
+\`zavi_admin_replace_device\` and \`zavi_v652_owner_revoke_device\` all
+contain guards referencing pending transactions, device heartbeat and last
+sync timestamps. The live \`zavi-offline-lease\` function is active (v7)
+and its source includes 7/180/365-day policy, verified subscription,
+device-check and ES256 signing. This inspection does not establish that
+a token issued by the live signer verifies on an actual Android device.
+
+### Physical acceptance procedure — NOT YET EXECUTED
+
+Use a *dedicated empty test workspace* and authorized owner sessions on two
+real Android devices. Never experiment with existing customer invoices.
+
+1. Start with primary phone A registered, create a sale offline and keep it
+   intentionally unsent. Attempt ordinary transfer to phone B. Expect both
+   app preflight and server to refuse. A's unsent sale must remain intact.
+2. Reconnect A; verify upload and zero pending status, refresh cloud data and
+   confirm a recent server check-in. Transfer to B and verify A is no longer
+   an authorized online primary. Confirm the signed B lease actually verifies
+   with the embedded public key.
+3. On B disconnect internet, enter a sale and purchase, close and reopen the
+   app and verify the records and amounts persist locally. Reconnect and
+   verify all records upload *exactly once*; check inventory, invoices and
+   account balances against the test ledger. Repeat with a network drop after
+   upload but before acknowledgment.
+4. Using safe test entitlements, verify trial 7, semiannual 180 and annual
+   365-day policy, and verify upgrade trial -> paid without a stale 7-day
+   policy. Check subscription expiration cannot be exceeded by a lease.
+5. Switch signed-in account/workspace during a delayed lease request and
+   verify only the current owner/workspace can report a ready signed lease.
+6. Test loss of connection after server revocation: an already signed
+   unexpired lease on the old disconnected phone may remain usable until
+   expiry, which must be disclosed. Instant offline remote revocation is
+   not technically guaranteed.
+
+**Stage 3 status:** server migrations and isolated source/CI regression are
+verified; Android hardware tests, real customer-authenticated signer matching,
+and genuine offline financial replay remain UNVERIFIED. No release
+certification or stable APK is claimed.
