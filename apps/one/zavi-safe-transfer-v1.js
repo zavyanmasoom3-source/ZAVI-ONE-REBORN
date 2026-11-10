@@ -136,7 +136,11 @@
   }
   function attach() {
     const host=$('#content'); if(!host)return;
-    const settings=document.body.dataset.zaviPage==='settings' ||
+    // Genuine V66.62 has a historic global `page` route, not PDF dataset.
+    // Keep it functional only on Settings; no extra home/dashboard cards.
+    const historic=typeof page==='string' && page==='settings';
+    const settings=historic ||
+      document.body.dataset.zaviPage==='settings' ||
       host.classList.contains('zpdf-settings') ||
       host.querySelector('[data-module="settings"]')!==null;
     if(!settings) return;
