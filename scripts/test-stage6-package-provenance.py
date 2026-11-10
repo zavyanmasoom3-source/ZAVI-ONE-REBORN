@@ -34,6 +34,14 @@ for app in ('one','admin'):
             assert digest(assets/'packages/shared'/filename)==digest(
                 ROOT/'packages/shared'/filename),filename
         assert './packages/shared/' in (assets/'index.html').read_text()
+        if app=='one' and (ROOT/'apps/one/v6662-original-design-lock.json').exists():
+            native=(assets/'index.html').read_text(encoding='utf8')
+            assert 'fonts.googleapis.com' not in native
+            assert 'fonts.gstatic.com' not in native
+            assert 'data-zavi-native-font-only="v6662"' in native
+            assert native.count('zavi-store-recovery-v6594.js')==1
+            assert (assets/'packages/shared/ui/fonts/Vazirmatn-Variable.ttf').is_file()
+
         assert (assets/VARIANTS[app][2]).is_file()
         assert digest(assets/'icon-192.png')==digest(
             res/'drawable-nodpi/zavi_launcher_image.png')
