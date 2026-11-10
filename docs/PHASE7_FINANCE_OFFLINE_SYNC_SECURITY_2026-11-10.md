@@ -49,3 +49,88 @@ No customer subscription, device authorization, invoice, warehouse, payment, or 
 5. The persistent owner signing Secrets from Stage 6 are still missing in GitHub Actions. No new signed APK or Windows installer was delivered or declared Release-ready here.
 
 **Disposition:** Stage 7's concrete offline-loss and historical sync-bypass vulnerabilities were fixed and validated in source, isolated server tests and live function read-back. The broader system is **not 100% release-certified** until direct workspace update paths, genuine signed-in test sessions and on-device installation are independently verified.
+
+
+## 2026-11-10 final server CAS hardening — code and production deployment
+
+A second pass found that a client-only device-authorization preflight
+was insufficient: a raw REST `PATCH zavi_workspaces` can bypass the
+preflight if the caller still holds a valid owner JWT. This must not be
+misreported as cryptographically-enforced device revocation.
+
+**Non-destructive source and server additions:**
+
+- Added `supabase/migrations/20261110_stage7_server_cas_device_guard.sql`:
+  a new `public.zavi_stage7_workspace_cas(uuid,text,bigint,jsonb,text)`
+  SECURITY DEFINER RPC, with pinned empty search path, explicit server owner
+  UID check, active non-archived subscription, active unrevoked registered
+  primary device, required financial arrays, 64-MiB payload bound and
+  atomic `revision=expected` compare-and-swap. It can never update
+  `owner_uid`, `id` or anything outside the selected workspace.
+  The server owns `updated_at`.
+- Replaced the **shipping** `apps/one/cloud.js` raw REST financial PATCH
+  with a POST to the new server RPC, supplying workspace ID, expected
+  revision, device ID and the full current snapshot. Existing conditional
+  retry still queries the original workspace and checks the **whole
+  payload** before acknowledging a lost HTTP response. Revisions never
+  auto-merge conflicting offline financial records.
+- The disposable three-device mock now implements the actual server RPC
+  and **rejects any direct PATCH**. It verifies real concurrent invoice
+  edits, dropped server ACK, stock delete/edit, clock skew, revoked-device
+  pending persistence and exactly-once replay after reauthorization.
+- New `scripts/test-stage7-workspace-cas-postgres.sql` runs the exact
+  migration against isolated PostgreSQL 17 data, testing the real RPC for
+  authentic owner, cross-tenant refusal, invalid payload, stale revision,
+  revoked device, expired subscription, archived customer, no authentication
+  and unchanged committed financial data on invalid attempts.
+- `scripts/test-stage7-no-raw-workspace-write.cjs` enforces a permanent
+  source-level prohibition on reintroducing the direct PATCH path.
+  CI `.github/workflows/stage7-finance-offline-security.yml` includes
+  both new real-source and PostgreSQL regression tests.
+
+**Production read-back** after applying named migration
+`stage7_atomic_workspace_cas_device_subscription`:
+RPC exists; `anon` cannot execute; `authenticated` has access only
+subject to strict internal owner+device+entitlement checks; CAS guards
+were read back directly from the installed function. Existing values
+remained **6** workspaces, **60** registered devices, **0** stored legacy
+sync operations and **1** recoverable customer archive. No customer
+record was modified by this function-definition migration.
+
+**CI evidence**:
+- [Stage 7 RPC + three-device financial regression 42783785949](https://github.com/zavyanmasoom3-source/ZAVI-ONE-REBORN/actions/runs/42783785949) — **SUCCESS**.
+- [Full migration integrity 42783401204](https://github.com/zavyanmasoom3-source/ZAVI-ONE-REBORN/actions/runs/42783401204) — **SUCCESS** on the new RPC client path. Refer to the latest run for the newest SHA.
+
+**Hard release safety limit:** we have NOT revoked the older `authenticated
+UPDATE` permission on `public.zavi_workspaces`, because older installed
+versions still send direct PATCH. Revoking it without producing,
+signing and physically upgrading customer APKs could strand unsent
+sales and purchases. The current new-client RPC blocks direct bypass
+in the shipping source, but a modified old client with a valid
+owner JWT may still bypass device preflight through legacy REST until
+that UPDATE grant is revoked in a **separate rollout**.
+
+**Device identity limit:** `device_id` is a client-issued opaque string
+not hardware-bound proof. The new RPC checks it against current server
+registration, but a malicious authenticated client that knows the
+current active ID could impersonate it. For a full threat-model
+closure, verify an owner-session-to-device credential bound by
+asymmetric key possession or comparable authenticated device binding;
+then retire raw UPDATE only after a tested signed upgrade.
+
+**Next acceptance gates before 100% completion:**
+1. Configure original persistent Android signing secrets and verify
+   an in-place test upgrade preserves unsent offline accounting;
+2. Test real Supabase JWTs (owner, revoked device, unrelated owner,
+   expired/archived subscriber), device transfer and API replays in
+   a disposable empty workspace, never real customer ledgers;
+3. Test signed Android 8–16 WebView restarts/printing/camera/offline
+   financial persistence; deploy to customers without data loss;
+4. Only after compatibility proof, revoke `authenticated UPDATE`
+   on `zavi_workspaces` and verify cross-tenant/old-client rejection;
+5. If strict device revocation against an adversarial owner token is
+   necessary, replace spoofable ID with non-replayable signed device
+   possession and verify invalidated sessions on sensitive writes.
+
+**No final APK, Windows Installer or unconditional Stage 7 = 100%
+certification is claimed at this point.**
