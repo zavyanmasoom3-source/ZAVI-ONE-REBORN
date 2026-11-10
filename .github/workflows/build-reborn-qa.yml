@@ -1,7 +1,7 @@
 name: REBORN clean Android QA builds
 
 # Owner authorized new APKs in the current conversation.
-# Only changes to this workflow on dev trigger QA builds; production Release remains gated.
+# Trigger: owner APK original design locked, client read-only Supabase verification, persistent signed QA build. Production Release remains gated.
 on:
   workflow_dispatch:
   push:
@@ -37,9 +37,13 @@ jobs:
         run: python3 scripts/check-offline-shell-assets.py
       - name: Verify route navigation and settings design
         run: python3 scripts/verify-ui-navigation.py
+      - name: Lock the actual owner-uploaded APK appearance
+        run: python3 scripts/check-reference-runtime-css.py
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Verify connected Supabase configuration and public Auth endpoint without touching user data
+        run: node scripts/test-live-supabase-connection.cjs
       - name: Verify JavaScript parses in both apps and shared modules
         shell: bash
         run: |
