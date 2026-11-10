@@ -54,6 +54,7 @@ def restore(apk,root):
         old_refs=[basename(m.group(1)) for m in FILE_PATTERN.finditer(original_html)
                   if not re.match(r'^(?:https?://|data:|blob:)',m.group(1),re.I)]
         old_css=[x for x in old_refs if x.endswith('.css')]
+        old_js=[x for x in old_refs if x.endswith('.js')]
         assert len(old_css)>=100,(len(old_css),'not the complete original interface')
         copied=[]
         for record in z.infolist():
@@ -113,7 +114,7 @@ def restore(apk,root):
         original_assets=sorted(set(old_css))
         missing=[name for name in original_assets if ('"'+name+'"') not in old_sw]
         # Precache originals, plus modern feature module entries for offline.
-        add=sorted(set(missing+list(FEATURE_CSS)+list(FEATURE_JS)))
+        add=sorted(set(missing+old_js+list(FEATURE_CSS)+list(FEATURE_JS)))
         existing_names=set(re.findall(r'["\x27]([\w./-]+\.(?:css|js))["\x27]',old_sw))
         add=[n for n in add if n not in existing_names]
         replacement="const CORE=[\n"+''.join(f'  "{n}",\n' for n in add)
