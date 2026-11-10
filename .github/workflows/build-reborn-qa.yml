@@ -1,6 +1,7 @@
 name: REBORN clean Android QA builds
 
 # Owner authorized new APKs in the current conversation.
+# Owner source design locked to uploaded originals; public Supabase health check now sends apikey.
 # Trigger: owner APK original design locked, client read-only Supabase verification, persistent signed QA build. Production Release remains gated.
 on:
   workflow_dispatch:
