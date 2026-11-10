@@ -90,26 +90,36 @@ async function refreshSession(){
  })();
  try{return await adminRefreshInFlight}finally{adminRefreshInFlight=null}
 }
-const ZAVI_ADMIN_ALLOWED_EMAILS=new Set(['zavyanmasoom6@gmail.com']);
+let centralOwnerVerified=false;
+// A central administrator is the server-approved UID and current Auth session,
+// never the spelling of an email address in this JavaScript bundle.
+async function verifyCentralOwnerSession(){
+ centralOwnerVerified=false;
+ const allowed=await api('/rest/v1/rpc/zavi_stage8_admin_owner_session',{method:'POST',body:{}});
+ centralOwnerVerified=allowed===true;
+ if(!centralOwnerVerified)throw Error('دسترسی فقط برای مالک اصلی با نشست معتبر سرور مجاز است.');
+ return true;
+}
 async function login(){
  const btn=el('loginBtn');btn.disabled=true;
  try{
   config={url:el('cfgUrl').value.trim().replace(/\/$/,''),key:el('cfgKey').value.trim()};checkConfig();saveConfig();
   const email=el('authEmail').value.trim().toLowerCase();
   const password=el('authPassword').value;
-  if(!ZAVI_ADMIN_ALLOWED_EMAILS.has(email))throw Error('این ایمیل در فهرست مدیران مجاز نیست.');
+  if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))throw Error('ایمیل معتبر وارد کنید.');
   if(!password)throw Error('رمز عبور خود را وارد کنید.');
   const r=await api('/auth/v1/token?grant_type=password',{method:'POST',auth:false,body:{email,password}});
   el('authPassword').value='';
   if(!r.access_token||!r.user)throw Error('ورود تأیید نشد.');
-  if(!ZAVI_ADMIN_ALLOWED_EMAILS.has(String(r.user.email||'').toLowerCase()))throw Error('حساب مجاز نیست.');
+  if(String(r.user.email||'').trim().toLowerCase()!==email)throw Error('حساب بازگشتی با ایمیل واردشده مطابقت ندارد.');
   session={...r,expires_at:r.expires_at||(r.expires_in?Math.floor(Date.now()/1000)+Number(r.expires_in):null)};
   // Backend admin RPC must authorize the authenticated UID, not just the email.
   await fetchRows();storeSession();mode='live';showApp();
   toast('با موفقیت وارد حساب خود شدید.');
- }catch(e){session=null;storeSession();el('authPassword').value='';toast(e.message,true)}finally{btn.disabled=false}
+ }catch(e){centralOwnerVerified=false;session=null;storeSession();el('authPassword').value='';toast(e.message,true)}finally{btn.disabled=false}
 }
 async function fetchRows(){
+ await verifyCentralOwnerSession();
  const result=await api('/rest/v1/rpc/zavi_admin_list_workspaces',{method:'POST',body:{}});
  if(!Array.isArray(result))throw Error('فهرست مشتریان دریافت نشد.');
  // Archived accounts stay on the server; the ordinary customer list excludes them.
@@ -259,7 +269,7 @@ function renderBrand(){
 // V53: dangerous operations are deliberately separate and never run on page load.
 let adminFinancePeriodStart=null;
 let adminResetBusy=false;
-const isMainAdmin=()=>mode==='live' && String(session?.user?.email||'').toLowerCase()==='zavyanmasoom6@gmail.com';
+const isMainAdmin=()=>mode==='live' && centralOwnerVerified===true && !!session?.access_token;
 const RESET_FINANCE_PHRASE='RESET ADMIN REPORTS';
 const RESET_CUSTOMERS_PHRASE='TRASH ALL CUSTOMER ACCOUNTS';
 function renderAdminResetCenter(){
@@ -578,6 +588,7 @@ function confirmStatus(){if(selected)changeSubscriptionStatus(selected)}
 async function loadHistory(){let place=el('historyArea');if(!place||!selected)return;let result=mode==='demo'?demoPayments:await api('/rest/v1/rpc/zavi_admin_billing_history',{method:'POST',body:{p_workspace_id:selected}});if(!Array.isArray(result)||!result.length){place.innerHTML='<div class="empty">هنوز پرداخت یا تمدیدی برای این فروشگاه ثبت نشده است.</div>';return}place.innerHTML=`<div class="table-scroll"><table class="data-table"><thead><tr><th>تاریخ ثبت (شمسی / عیسوی)</th><th>نوع عملیات</th><th>مبلغ</th><th>روش پرداخت</th><th>شماره رسید</th><th>یادداشت</th></tr></thead><tbody>${result.map(t=>`<tr><td>${formatSubscriptionBoth(t.recorded_at)}</td><td>${t.event_type==='annual_payment'?'تمدید سالانه':t.event_type==='semiannual_payment'?'تمدید شش‌ماهه':t.event_type==='lifetime_payment'?'طرح ویژه قدیمی':'تغییر وضعیت'}</td><td dir="ltr">${t.amount!=null?money(t.amount,t.currency):'—'}</td><td>${escapeHTML(t.payment_method||'—')}</td><td>${escapeHTML(t.receipt_reference||'—')}</td><td>${escapeHTML(t.notes||'—')}</td></tr>`).join('')}</tbody></table></div>`}
 function downloadCsv(){let arr=[['نام فروشگاه','ایمیل مالک','نوع اشتراک','وضعیت','تاریخ پایان هجری شمسی','تاریخ پایان عیسوی','آخرین تمدید هجری شمسی','آخرین تمدید عیسوی','روزهای باقی‌مانده','آخرین مبلغ'],...rows.map(r=>[r.workspace_name,r.owner_email,planTitle(r),status(r)[1],date(r.expires_at),formatGregorianKabul(r.expires_at),date(r.last_paid_at),formatGregorianKabul(r.last_paid_at),r.expires_at?daysLeft(r.expires_at):'',r.last_amount??''])];let csv='\uFEFF'+arr.map(row=>row.map(x=>'"'+String(x??'').replace(/"/g,'""')+'"').join(',')).join('\r\n');let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='ZAVI_ONE_Customers.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)}
 async function logout(){
+ centralOwnerVerified=false;
  closeModal();
  const token=session?.access_token;
  session=null;storeSession();el('resumeBtn').hidden=true;mode='login';
@@ -600,10 +611,10 @@ document.addEventListener('submit',async e=>{
  catch(err){toast('ذخیره سیاست آفلاین انجام نشد: '+err.message,true)}finally{btn.disabled=false}
 });
 document.addEventListener('input',e=>{if(e.target.id==='customerSearch'){search=e.target.value;let elTable=el('view').querySelector('[data-zavi-customer-table]');if(elTable){let list=rows.filter(r=>(r.workspace_name+' '+r.owner_email).toLowerCase().includes(search.toLowerCase())&&(filter==='all'||status(r)[0]===filter));elTable.innerHTML=customerRows(list)}}});document.addEventListener('change',e=>{if(e.target.id==='customerFilter'){filter=e.target.value;render()}if(e.target.id==='historyWorkspace'){selected=e.target.value;loadHistory().catch(x=>toast(x.message,true))}});
-async function resumeSavedSession(){if(!session?.access_token||!ZAVI_ADMIN_ALLOWED_EMAILS.has(String(session?.user?.email||'').toLowerCase()))return toast('دسترسی مخصوص مالک اصلی است.',true);
+async function resumeSavedSession(){if(!session?.access_token||!session?.refresh_token)return toast('برای ادامه باید با حساب مالک وارد شوید.',true);
  const btn=el('resumeBtn');btn.disabled=true;
  try{await refreshSession();await fetchRows();mode='live';showApp();toast('اتصال قبلی دوباره برقرار شد.');}
- catch(e){toast('اتصال به سرور برقرار نشد: '+e.message,true)}finally{btn.disabled=false}
+ catch(e){centralOwnerVerified=false;toast('اتصال به سرور برقرار نشد: '+e.message,true)}finally{btn.disabled=false}
 }
 el('resumeBtn').addEventListener('click',resumeSavedSession);
 el('loginBtn').addEventListener('click',login);el('authPassword').addEventListener('keydown',e=>{if(e.key==='Enter')login()});el('refreshBtn').addEventListener('click',async()=>{if(mode==='demo')return toast('این یک پیش‌نمایش نمایشی است.');try{await fetchRows();if(page==='finance')await fetchFinance();render();toast('اطلاعات تازه شد.')}catch(e){toast(e.message,true)}});if(['localhost','127.0.0.1'].includes(location.hostname))el('demoBtn').hidden=false;el('demoBtn').addEventListener('click',()=>{mode='demo';session=null;rows=demoRows;archivedRows=[];showApp();toast('نسخه نمایشی بدون دسترسی به سرور باز شد.')});el('modalBg').addEventListener('click',e=>{if(e.target===el('modalBg'))closeModal()});
@@ -631,9 +642,10 @@ document.addEventListener('visibilitychange',()=>{if(document.visibilityState===
 window.ZaviAdminAPI={request:(path,opts)=>api(path,opts),getRows:()=>rows,getMode:()=>mode,notify:toast};
 closeModal();el('appScreen').hidden=true;el('authScreen').hidden=false;restoreConfig();(async()=>{
  if(['localhost','127.0.0.1'].includes(location.hostname)&&new URLSearchParams(location.search).get('demo')==='1'){mode='demo';rows=demoRows;page=new URLSearchParams(location.search).get('view')||'overview';showApp();return}
- session=savedSession();if(!session?.access_token||!session?.refresh_token||!ZAVI_ADMIN_ALLOWED_EMAILS.has(String(session?.user?.email||'').toLowerCase())){session=null;storeSession();return;}el('resumeBtn').hidden=false;
+ session=savedSession();if(!session?.access_token||!session?.refresh_token){session=null;storeSession();return;}el('resumeBtn').hidden=false;
  try{await refreshSession();await fetchRows();mode='live';showApp()}
  catch(e){ // A transient failure or an invalid subscription RPC must not delete login.
+  centralOwnerVerified=false;
   el('authEmail').value=session?.user?.email||'';
   toast('حساب شما در این دستگاه محفوظ است. دریافت معلومات سرور مشکل داشت: '+e.message+' — انترنت را بررسی کنید یا دوباره وارد شوید.',true);
  }
@@ -673,7 +685,8 @@ document.addEventListener('submit',async event=>{
  button.disabled=true;
  try{
   const email=String(session.user?.email||'').trim().toLowerCase();
-  if(!ZAVI_ADMIN_ALLOWED_EMAILS.has(email))throw Error('حساب مدیریت مجاز نیست.');
+  await verifyCentralOwnerSession();
+  if(!email)throw Error('ایمیل حساب مدیر معتبر نیست.');
   await api('/auth/v1/token?grant_type=password',{method:'POST',auth:false,body:{email,password:current}});
   await api('/auth/v1/user',{method:'PUT',body:{password:next}});
   form.reset();
