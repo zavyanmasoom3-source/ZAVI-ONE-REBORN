@@ -5,6 +5,7 @@ on:
     paths:
       - 'apps/**'
       - 'packages/**'
+      - 'scripts/diagnose-theme-qa.py'
       - 'scripts/render-qa-screens.py'
       - 'scripts/test-pdf-59-route-coverage.py'
       - 'scripts/test-login-design-browser.py'
