@@ -332,6 +332,44 @@
   w.addEventListener('zavi-cloud-logged-out',()=>{rows=[];serverReady=false;lastScope='';lastError=''});
   w.setInterval(()=>{if(el()&&w.navigator.onLine!==false)void flush().catch(()=>{})},45000);
   w.ZaviChequeStage4=Object.freeze({mount:attach,refresh,flush});
+  // Original V66.62 uses the historic go()/render() path, not the discarded
+  // PDF navigation bridge. Add the cheques module ONLY when Money is visible.
+  // This does not change the original HTML/CSS, financial ledger or RPC rules.
+  function legacyState(){
+   try{
+    const current=typeof db!=='undefined'&&db?db:null;
+    return {
+     workspace:w.zaviCloudRestoreInfo?.()?.workspace||'',
+     contacts:Array.isArray(current?.contacts)?current.contacts:[],
+     accounts:Array.isArray(current?.accounts)?current.accounts:[],
+     currency:typeof current?.currency==='string'?current.currency:'AFN'
+    };
+   }catch(_){return {workspace:'',contacts:[],accounts:[],currency:'AFN'}}
+  }
+  function reconcileLegacyMoney(){
+   const host=w.document.getElementById('content');
+   if(!host||w.document.documentElement.classList.contains('zawi-locked'))return;
+   let currentPage='';
+   try{currentPage=typeof page==='string'?page:''}catch(_){}
+   if(currentPage!=='money')return;
+   if(host.querySelector(':scope > #zaviStage4Cheques'))return;
+   attach(legacyState());
+  }
+  function watchLegacyMoney(){
+   const host=w.document.getElementById('content');
+   if(!host)return;
+   let scheduled=false;
+   const queue=()=>{
+    if(scheduled)return;scheduled=true;
+    w.queueMicrotask(()=>{scheduled=false;reconcileLegacyMoney()});
+   };
+   new w.MutationObserver(queue).observe(host,{childList:true,subtree:false});
+   w.document.addEventListener('zavi:page-rendered',queue);
+   queue();
+  }
+  if(w.document.readyState==='loading')
+   w.document.addEventListener('DOMContentLoaded',watchLegacyMoney,{once:true});
+  else watchLegacyMoney();
  }
  return Object.freeze({mount,validateRegistration,validateOperation,queueKey,safeQueue,saveQueue});
 });
