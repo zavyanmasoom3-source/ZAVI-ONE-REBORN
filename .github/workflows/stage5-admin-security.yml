@@ -10,6 +10,8 @@ on:
       - 'supabase/migrations/20261110_stage5_retire_permanent_customer_deletion.sql'
       - 'scripts/test-stage5-admin-hard-delete-postgres.sql'
       - 'scripts/test-stage5-admin-client-guard.cjs'
+      - 'supabase/migrations/20261110_stage5_owner_only_recoverable_archive_rpc.sql'
+      - 'scripts/test-stage5-admin-archive-postgres.sql'
   workflow_dispatch:
 permissions:
   contents: read
@@ -52,3 +54,9 @@ jobs:
         run: |
           psql -h 127.0.0.1 -U postgres -d postgres \
             -v ON_ERROR_STOP=1 -f scripts/test-stage5-admin-hard-delete-postgres.sql
+      - name: Prove owner-only idempotent audited archive without financial impact
+        env:
+          PGPASSWORD: stage5-disposable-only
+        run: |
+          psql -h 127.0.0.1 -U postgres -d postgres \
+            -v ON_ERROR_STOP=1 -f scripts/test-stage5-admin-archive-postgres.sql
