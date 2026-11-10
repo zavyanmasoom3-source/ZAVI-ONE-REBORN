@@ -13,6 +13,11 @@ html[data-zavi-theme] body > button.z6524-launch {
   display: none !important;
   pointer-events: none !important;
 }
+/* Keep touch targets large while retaining the compact original login. */
+html[data-zavi-theme] #zawiPrivateGate .zavi-gate-appearance [data-zavi-theme-choice] {
+  min-height: 44px !important;
+  box-sizing: border-box;
+}
 html[data-zavi-theme] [hidden] { display: none !important; }
 html[data-zavi-theme] :is(input, textarea, select) { max-width: 100%; min-width: 0; }
 html[data-zavi-theme] :is(button, input, textarea, select, a):focus-visible {
