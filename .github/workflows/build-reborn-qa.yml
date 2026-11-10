@@ -52,6 +52,29 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
+      - name: Enforce Stage 6 accounting, themes and ADMIN controls before a signed QA build
+        run: |
+          python3 scripts/test-stage6-package-provenance.py
+          node scripts/test-stage6-release-contracts.cjs
+          node scripts/test-stage5-admin-no-hard-delete-paths.cjs
+          python3 scripts/test-accounting-edge-cases-browser.py
+          python3 scripts/test-stage6-financial-theme-browser.py
+      # Early persistent signing check: missing owner credentials must fail
+      # before downloading the Android SDK and Gradle distribution.
+      - name: Require persistent per-app QA certificate (no debug fallback)
+        shell: bash
+        env:
+          # Accept both the owner-requested secret names and legacy aliases.
+          # Never fall back to a generated/debug signing key.
+          ZAVI_KEYSTORE_BASE64: ${{ matrix.app == 'one' && (secrets.ZAVI_KEYSTORE_BASE64 || secrets.ZAVI_ONE_KEYSTORE_BASE64) || (secrets.ADMIN_KEYSTORE_BASE64 || secrets.ZAVI_ADMIN_KEYSTORE_BASE64) }}
+          ZAVI_STORE_PASSWORD: ${{ matrix.app == 'one' && (secrets.ZAVI_KEYSTORE_PASSWORD || secrets.ZAVI_ONE_STORE_PASSWORD) || (secrets.ADMIN_KEYSTORE_PASSWORD || secrets.ZAVI_ADMIN_STORE_PASSWORD) }}
+          ZAVI_KEY_ALIAS: ${{ matrix.app == 'one' && (secrets.ZAVI_KEY_ALIAS || secrets.ZAVI_ONE_KEY_ALIAS) || (secrets.ADMIN_KEY_ALIAS || secrets.ZAVI_ADMIN_KEY_ALIAS) }}
+          ZAVI_KEY_PASSWORD: ${{ matrix.app == 'one' && (secrets.ZAVI_KEY_PASSWORD || secrets.ZAVI_ONE_KEY_PASSWORD) || (secrets.ADMIN_KEY_PASSWORD || secrets.ZAVI_ADMIN_KEY_PASSWORD) }}
+        run: |
+          set -euo pipefail
+          # Decodes to private RUNNER_TEMP, pins SHA-256, emits masked Gradle
+          # environment variables to GITHUB_ENV, never logs credential values.
+          python3 scripts/prepare-ci-signing.py --app "${{ matrix.app }}"
       - uses: gradle/actions/setup-gradle@v4
       - name: Configure Android SDK
         shell: bash
@@ -100,20 +123,6 @@ jobs:
           sed -i "s#^distributionUrl=.*#distributionUrl=file://$zip#" gradle/wrapper/gradle-wrapper.properties
           chmod +x ./gradlew
           ./gradlew --version --no-daemon
-      - name: Require persistent per-app QA certificate (no debug fallback)
-        shell: bash
-        env:
-          # Accept both the owner-requested secret names and legacy aliases.
-          # Never fall back to a generated/debug signing key.
-          ZAVI_KEYSTORE_BASE64: ${{ matrix.app == 'one' && (secrets.ZAVI_KEYSTORE_BASE64 || secrets.ZAVI_ONE_KEYSTORE_BASE64) || (secrets.ADMIN_KEYSTORE_BASE64 || secrets.ZAVI_ADMIN_KEYSTORE_BASE64) }}
-          ZAVI_STORE_PASSWORD: ${{ matrix.app == 'one' && (secrets.ZAVI_KEYSTORE_PASSWORD || secrets.ZAVI_ONE_STORE_PASSWORD) || (secrets.ADMIN_KEYSTORE_PASSWORD || secrets.ZAVI_ADMIN_STORE_PASSWORD) }}
-          ZAVI_KEY_ALIAS: ${{ matrix.app == 'one' && (secrets.ZAVI_KEY_ALIAS || secrets.ZAVI_ONE_KEY_ALIAS) || (secrets.ADMIN_KEY_ALIAS || secrets.ZAVI_ADMIN_KEY_ALIAS) }}
-          ZAVI_KEY_PASSWORD: ${{ matrix.app == 'one' && (secrets.ZAVI_KEY_PASSWORD || secrets.ZAVI_ONE_KEY_PASSWORD) || (secrets.ADMIN_KEY_PASSWORD || secrets.ZAVI_ADMIN_KEY_PASSWORD) }}
-        run: |
-          set -euo pipefail
-          # Decodes to private RUNNER_TEMP, pins SHA-256, emits masked Gradle
-          # environment variables to GITHUB_ENV, never logs credential values.
-          python3 scripts/prepare-ci-signing.py --app "${{ matrix.app }}"
       - name: Stage app and shared assets
         shell: bash
         run: |
