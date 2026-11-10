@@ -4,6 +4,8 @@ on:
     branches: [dev]
     paths:
       - ".github/workflows/restore-v6662-original-branch.yml"
+      - "scripts/restore-original-v6662.py"
+      - "scripts/check-v6662-original-restore.py"
   workflow_dispatch:
 permissions:
   contents: write
