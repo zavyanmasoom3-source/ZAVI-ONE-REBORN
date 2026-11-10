@@ -1,0 +1,211 @@
+name: Stage 6 real accounting and native compile acceptance
+on:
+  push:
+    branches: [dev]
+    paths:
+      - '.github/workflows/stage6-release-readiness.yml'
+      - 'scripts/stage6-stage-android-compile.py'
+      - 'scripts/test-stage6-package-provenance.py'
+      - 'scripts/test-stage6-financial-theme-browser.py'
+      - 'scripts/test-stage6-release-contracts.cjs'
+      - 'android-build/**'
+      - 'desktop/windows/**'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  accounting-and-admin:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify source and package provenance
+        run: |
+          python3 scripts/check-public-source-security.py
+          python3 scripts/check-migration-integrity.py
+          python3 scripts/test-stage6-package-provenance.py
+          node scripts/test-stage6-release-contracts.cjs
+      - name: Audit real accounting engine, scenarios and nine theme-language states
+        run: |
+          python3 scripts/test-accounting-edge-cases-browser.py
+          python3 scripts/test-persisted-data-browser.py
+          python3 scripts/test-stage6-financial-theme-browser.py
+          node scripts/test-cheque-settlement.cjs
+          node scripts/test-stage4-cheque-client.cjs
+      - name: Reconcile synthetic three-device cloud and protect ADMIN
+        run: |
+          node scripts/test-cloud-sync-safety.cjs
+          python3 scripts/test-cloud-three-device-browser.py
+          node scripts/test-admin-trash.cjs
+          node scripts/test-stage5-admin-client-guard.cjs
+          node scripts/test-stage5-admin-bulk-preview.cjs
+          node scripts/test-stage5-admin-no-hard-delete-paths.cjs
+
+  themes-and-locales:
+    runs-on: ubuntu-latest
+    timeout-minutes: 22
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify shared colors and locale contracts
+        run: |
+          node scripts/test-shared-design-system.cjs
+          node scripts/test-local-vazirmatn.cjs
+          python3 scripts/check-reference-runtime-css.py
+      - name: Test actual three theme ONE/ADMIN screens
+        run: |
+          python3 scripts/test-shared-design-browser.py
+          python3 scripts/test-unified-reference-browser.py
+          python3 scripts/test-phase2-display-sizes-browser.py
+          python3 scripts/test-admin-settings-layout-browser.py
+          python3 scripts/test-12-reference-design-browser.py
+
+  android-r8-unsigned:
+    name: R8 unsigned Android ${{ matrix.app }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        app: [one, admin]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Validate staging and checksum-pinned Gradle wrapper
+        run: |
+          python3 scripts/check-migration-integrity.py
+          python3 scripts/check-offline-shell-assets.py
+          python3 scripts/test-stage6-package-provenance.py
+          test "$(git hash-object gradle/wrapper/gradle-wrapper.jar)" = '9bbc975c742b298b441bfb90dbc124400a3751b9'
+      - name: Configure Android 36 SDK
+        shell: bash
+        run: |
+          set -euo pipefail
+          SDK_ROOT="$ANDROID_SDK_ROOT"
+          test -d "$SDK_ROOT"
+          SDKMANAGER="$SDK_ROOT/cmdline-tools/latest/bin/sdkmanager"
+          if [[ ! -x "$SDKMANAGER" ]]; then
+            SDKMANAGER=$(find "$SDK_ROOT/cmdline-tools" -type f -name sdkmanager -print -quit 2>/dev/null || true)
+          fi
+          test -x "$SDKMANAGER"
+          yes | "$SDKMANAGER" --sdk_root="$SDK_ROOT" --licenses >/dev/null || true
+          "$SDKMANAGER" --sdk_root="$SDK_ROOT" "platforms;android-36" "build-tools;36.0.0"
+      - name: Download official Gradle distribution and verify SHA-256
+        shell: bash
+        run: |
+          set -euo pipefail
+          zip="$RUNNER_TEMP/gradle-8.13-bin.zip"
+          expected='20f1b1176237254a6fc204d8434196fa11a4cfb387567519c61556e8710aed78'
+          valid=false
+          for url in 'https://downloads.gradle.org/distributions/gradle-8.13-bin.zip' 'https://repo.huaweicloud.com/gradle/gradle-8.13-bin.zip'; do
+            if curl --fail --location --silent --show-error --retry 2 --retry-all-errors --connect-timeout 20 --max-time 240 --output "$zip" "$url"; then
+              if printf '%s  %s\n' "$expected" "$zip" | sha256sum --check --status; then
+                valid=true; break
+              fi
+            fi
+          done
+          test "$valid" = true
+          sed -i "s#^distributionUrl=.*#distributionUrl=file://$zip#" gradle/wrapper/gradle-wrapper.properties
+          chmod +x gradlew
+          ./gradlew --version --no-daemon
+      - name: Stage exact fresh app commit with all native resources
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/stage6-stage-android-compile.py --app "${{ matrix.app }}" --run "${{ github.run_number }}" --commit "$GITHUB_SHA"
+          python3 scripts/fix-webview-receipt.py
+          python3 scripts/validate-webview-html.py
+      - name: R8 optimized Release compilation with signing explicitly DISABLED
+        run: |
+          ./gradlew :app:clean :app:assembleRelease -PzaviApp=${{ matrix.app }} -PzaviBuildNumber=${{ github.run_number }} -PzaviUnsignedReleaseQa=true --no-build-cache --stacktrace
+      - name: Confirm compiled source and refuse installable or signed artifacts
+        shell: bash
+        env:
+          ZAVI_APP: ${{ matrix.app }}
+        run: |
+          set -euo pipefail
+          apk=$(find android-build/app/build/outputs/apk/release -maxdepth 1 -type f -name '*unsigned.apk' -print -quit)
+          test -s "$apk"
+          unzip -t "$apk" >/dev/null
+          unzip -p "$apk" assets/zavi-build-info.json | python3 -c 'import json,os,sys; p=json.load(sys.stdin); assert p["commit"]==os.environ["GITHUB_SHA"] and p["app"]==os.environ["ZAVI_APP"]; assert p["kind"]=="UNSIGNED_R8_COMPILE_ONLY" and p["release_approved"] is False and p["installable"] is False'
+          if "$ANDROID_SDK_ROOT/build-tools/36.0.0/apksigner" verify "$apk" >/dev/null 2>&1; then echo 'FAIL: unexpected signing'; exit 1; fi
+          badge=$("$ANDROID_SDK_ROOT/build-tools/36.0.0/aapt" dump badging "$apk")
+          printf '%s\n' "$badge" | grep -F "sdkVersion:'26'"
+          printf '%s\n' "$badge" | grep -F "targetSdkVersion:'36'"
+          unzip -Z -1 "$apk" | grep -Fx 'assets/packages/shared/security/access-contract.js'
+          if [[ "$ZAVI_APP" == 'one' ]]; then
+            printf '%s\n' "$badge" | grep -F "package: name='com.zavione.one' "
+            unzip -Z -1 "$apk" | grep -Fx 'assets/zavi-pdf-final-v6760.css'
+          else
+            printf '%s\n' "$badge" | grep -F "package: name='com.zavione.one.admin' "
+            unzip -Z -1 "$apk" | grep -Fx 'assets/zavi-admin-pdf-final-v1467.css'
+          fi
+          echo 'PASS: new R8 native compile without distributable APK'
+
+  windows-compile:
+    name: Windows WebView2 x64 ${{ matrix.app }} compile
+    runs-on: windows-2022
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        app: [one, admin]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Stage original app and shared files and create launcher icon
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $app='${{ matrix.app }}'
+          python scripts/check-migration-integrity.py
+          if ($LASTEXITCODE -ne 0) { throw 'Source missing' }
+          if (Test-Path 'desktop/windows/web') { Remove-Item 'desktop/windows/web' -Recurse -Force }
+          New-Item -ItemType Directory -Force "desktop/windows/web/apps/$app" | Out-Null
+          New-Item -ItemType Directory -Force 'desktop/windows/web/packages/shared' | Out-Null
+          Copy-Item "apps/$app/*" "desktop/windows/web/apps/$app/" -Recurse -Force
+          Copy-Item 'packages/shared/*' 'desktop/windows/web/packages/shared/' -Recurse -Force
+          python scripts/stamp-desktop-qa.py --app $app --assets "desktop/windows/web/apps/$app" --run $env:GITHUB_RUN_NUMBER --commit $env:GITHUB_SHA
+          if ($LASTEXITCODE -ne 0) { throw 'Build provenance failed' }
+          python -m pip install 'Pillow==12.0.0' --disable-pip-version-check --quiet
+          if ($LASTEXITCODE -ne 0) { throw 'Pillow failed' }
+          python -c "from PIL import Image; Image.open('apps/$app/icon-192.png').save('desktop/windows/zavi.ico', sizes=[(16,16),(32,32),(48,48),(64,64),(128,128),(192,192)])"
+          if ($LASTEXITCODE -ne 0) { throw 'Icon missing' }
+      - name: Build Windows Release runtime only - NO INSTALLER uploaded
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $app='${{ matrix.app }}'
+          if ($app -eq 'admin') {
+            $assembly='ZAVI_ONE_ADMIN'
+            $version="1.4.69.$env:GITHUB_RUN_NUMBER"
+            $label="1.4.69-reborn.qa.$env:GITHUB_RUN_NUMBER"
+            $extra=@('-p:DefineConstants=ZAVI_ADMIN')
+          } else {
+            $assembly='ZAVI_ONE'
+            $version="66.78.$env:GITHUB_RUN_NUMBER"
+            $label="66.78-reborn.qa.$env:GITHUB_RUN_NUMBER"
+            $extra=@()
+          }
+          dotnet publish desktop/windows/ZaviOneDesktop.csproj -c Release -r win-x64 --self-contained true -o desktop/windows/publish "-p:Version=$version" "-p:InformationalVersion=$label" "-p:AssemblyName=$assembly" @extra
+          if ($LASTEXITCODE -ne 0) { throw 'Native compile failed' }
+          if (-not (Test-Path "desktop/windows/publish/$assembly.exe")) { throw 'Host missing' }
+          if (-not (Test-Path "desktop/windows/publish/web/apps/$app/index.html")) { throw 'Web app missing' }
+          if (-not (Test-Path 'desktop/windows/publish/web/packages/shared/security/access-contract.js')) { throw 'Shared modules absent' }
+          $stamp=Get-Content "desktop/windows/publish/web/apps/$app/zavi-build-info.json" | ConvertFrom-Json
+          if ($stamp.commit -ne $env:GITHUB_SHA -or $stamp.app -ne $app -or $stamp.version -ne $label) { throw 'Stale packaged content' }
+          Write-Host "PASS: $app x64 host and resources compiled, no installer or binary distributed"
