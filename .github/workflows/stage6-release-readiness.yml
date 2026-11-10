@@ -10,6 +10,13 @@ on:
       - 'scripts/test-stage6-release-contracts.cjs'
       - 'android-build/**'
       - 'desktop/windows/**'
+      # A modified WebView application must always be compiled on both
+      # Android/R8 and Windows. Previously app.js/CSS updates skipped this gate.
+      - 'apps/one/**'
+      - 'apps/admin/**'
+      - 'packages/shared/**'
+      - 'scripts/test-stage8*.py'
+      - 'supabase/migrations/20261110_stage8_admin_owner_live_session.sql'
   workflow_dispatch:
 permissions:
   contents: read
