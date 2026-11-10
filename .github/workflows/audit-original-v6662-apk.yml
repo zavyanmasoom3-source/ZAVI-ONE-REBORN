@@ -1,0 +1,89 @@
+name: Audit exact original ZAVI ONE V66.62 APK as restore baseline
+on:
+  push:
+    branches: [dev]
+    paths:
+      - ".github/workflows/audit-original-v6662-apk.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit-original:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download historical 62 MB original APK and verify its published SHA-256
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p old-apk legacy-extracted
+          curl --fail --location --retry 3 --retry-delay 3 \
+            --connect-timeout 30 --max-time 900 \
+            -o old-apk/ZAVI_one_V6662_DEBUG_QA.apk \
+            https://github.com/zavyanmasoom3-source/Zavione/releases/download/zavi-v6662-one-debug-qa/ZAVI_one_V6662_DEBUG_QA.apk
+          test "$(stat -c %s old-apk/ZAVI_one_V6662_DEBUG_QA.apk)" -eq 62226180
+          echo '2eb852d7cdb026ccd828a660328bd26bb474f9880430e0ea3007f51489ee50dc  old-apk/ZAVI_one_V6662_DEBUG_QA.apk' | sha256sum -c -
+          unzip -t old-apk/ZAVI_one_V6662_DEBUG_QA.apk >/dev/null
+          echo "VERIFIED: original old repo V66.62 APK, 62226180 bytes, exact GitHub release SHA-256."
+      - name: Extract and compare original SOURCE appearance/asset structure (read-only)
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import zipfile, json, hashlib, re, collections
+          z=zipfile.ZipFile('old-apk/ZAVI_one_V6662_DEBUG_QA.apk')
+          entries=[i for i in z.infolist() if not i.is_dir()]
+          assets=[i for i in entries if i.filename.startswith('assets/')]
+          web=[i for i in assets if i.filename.lower().endswith(('.html','.css','.js','.json','.svg','.woff','.woff2','.ttf','.webmanifest'))]
+          root=Path('legacy-extracted')
+          for i in web:
+              if i.file_size>12_000_000:continue
+              rel=Path(i.filename).relative_to('assets')
+              if '..' in rel.parts:raise ValueError('Unsafe ZIP path')
+              target=root/rel
+              target.parent.mkdir(parents=True,exist_ok=True)
+              target.write_bytes(z.read(i))
+          oldindex=root/'index.html'
+          if not oldindex.exists():
+              print('WARNING: old APK has no assets/index.html. Top assets:',[i.filename for i in assets[:45]])
+          index=oldindex.read_text(encoding='utf-8',errors='replace') if oldindex.exists() else ''
+          links=re.findall(r'<link\b[^>]*>',index,re.I)
+          css=[l for l in links if 'stylesheet' in l.lower()]
+          css_names=[re.search(r'href=["\x27]([^"\x27]+)',l).group(1) for l in css if re.search(r'href=["\x27]([^"\x27]+)',l)]
+          scripts=re.findall(r'<script\b[^>]*\bsrc=["\x27]([^"\x27]+)',index,re.I)
+          new=Path('apps/one/index.html').read_text(encoding='utf-8')
+          new_css=re.findall(r'<link\b[^>]*>',new,re.I)
+          new_names=[re.search(r'href=["\x27]([^"\x27]+)',l).group(1) for l in new_css if 'stylesheet' in l.lower() and re.search(r'href=["\x27]([^"\x27]+)',l)]
+          result={
+            'original_release':'zavi-v6662-one-debug-qa',
+            'source_commit': 'd238c4c8d5ae5d53de7ff5f60b55a3dba839123b',
+            'apk_size':62226180,
+            'apk_sha256':'2eb852d7cdb026ccd828a660328bd26bb474f9880430e0ea3007f51489ee50dc',
+            'total_apk_entries':len(entries),'total_assets':len(assets),'web_assets_count':len(web),
+            'original_index_sha256':hashlib.sha256(index.encode()).hexdigest() if index else None,
+            'original_index_length':len(index),
+            'original_css_links':css_names,
+            'original_script_links':scripts,
+            'new_css_count':len(new_names),
+            'css_in_old_and_new':list(sorted(set(x.split('/')[-1].split('?')[0] for x in css_names) & set(x.split('/')[-1].split('?')[0] for x in new_names))),
+            'old_assets_paths': [i.filename for i in assets if i.file_size<12000000][:400],
+            'assets_larger_than_12mb': [(i.filename,i.file_size) for i in assets if i.file_size>=12000000],
+          }
+          (root/'legacy-apk-audit.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
+          print('OLD 66.62 index bytes:',len(index),'CSS links:',len(css_names),'Scripts:',len(scripts))
+          print('FIRST 30 CSS:',css_names[:30])
+          print('LAST 30 CSS:',css_names[-30:])
+          print('FIRST 15 JS:',scripts[:15])
+          print('LAST 20 JS:',scripts[-20:])
+          print('SHARED CSS:',result['css_in_old_and_new'][:60])
+          print('EXTRACTED source text/web files:',len(list(root.rglob('*'))))
+          print('LARGE ASSETS:',result['assets_larger_than_12mb'])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ORIGINAL-66-62-VERIFIED-WEB-ASSETS-READ-ONLY
+          path: legacy-extracted/
+          retention-days: 7
+          if-no-files-found: error
