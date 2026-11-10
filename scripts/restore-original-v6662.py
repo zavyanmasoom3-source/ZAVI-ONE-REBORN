@@ -124,8 +124,8 @@ def restore(apk,root):
                       old_sw,count=1)
         # Never precache deleted new-design assets: they otherwise make the
         # offline install fail even when the visible page is correct.
-        for retired in RETIRED_VISUAL_ONLY:
-            old_sw=re.sub(r'(?m)^\\s*["\\x27]'+re.escape(retired)+r'["\\x27],?\\s*\\n','',old_sw)
+        old_sw=''.join(line for line in old_sw.splitlines(keepends=True)
+                       if not any('"'+retired+'"' in line for retired in RETIRED_VISUAL_ONLY))
         sw.write_text(old_sw,encoding='utf-8')
         proof={
           'original_apk_sha256':APK_SHA,'original_html_sha256':ORIGINAL_HTML_SHA,
