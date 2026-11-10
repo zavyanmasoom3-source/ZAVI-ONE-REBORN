@@ -24,11 +24,22 @@ with Session() as browser:
               window.ZaviLocaleV22.set(%s);
             })()"""%(json.dumps(mode),json.dumps(locale)))
             for target in bottom:
+                # The click is real; wait for the route DOM and the reference
+                # MutationObserver to finish before checking visual classes.
+                browser.eval("""(()=>{
+                  const tab=document.querySelector('#mobileBottom .bottom-btn[data-go='+%s+']');
+                  if(!tab)throw Error('Missing bottom navigation button');
+                  tab.click();
+                })()"""%json.dumps(target))
+                browser.until("""(()=>{
+                  const content=document.getElementById('content');
+                  return page===%s && !!content && content.innerText.trim().length>15 &&
+                    (page==='dashboard' || !content.classList.contains('zrf-dashboard'));
+                })()"""%json.dumps(target),'actual '+target+' page rendered after native click',12)
                 value=browser.eval("""(()=>{
                   const target=%s;
                   const tab=document.querySelector('#mobileBottom .bottom-btn[data-go="'+target+'"]');
                   if(!tab)throw Error('Missing real bottom nav '+target);
-                  tab.click();
                   const content=document.getElementById('content');
                   const cs=content?getComputedStyle(content):null;
                   return {
