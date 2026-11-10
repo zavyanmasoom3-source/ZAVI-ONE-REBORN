@@ -299,7 +299,7 @@ async function z53DeleteAllCustomers(){
     const entered=prompt('تأیید دوم: دقیقاً این عبارت را وارد کنید:\n'+RESET_CUSTOMERS_PHRASE);
     if(entered!==RESET_CUSTOMERS_PHRASE){toast('تأیید عملیات مطابقت نداشت؛ هیچ تغییری انجام نشد.',true);return;}
     const result=await api('/rest/v1/rpc/zavi_admin_trash_all_customer_accounts',{method:'POST',body:{p_confirmation:RESET_CUSTOMERS_PHRASE}});
-    if(!Number.isSafeInteger(Number(result))||Number(result)<0)throw Error('تأیید تعداد بایگانی از سرور دریافت نشد.');
+    if(typeof result!=='number'||!Number.isSafeInteger(result)||result<0)throw Error('تأیید تعداد بایگانی از سرور دریافت نشد.');
     await fetchRows();finance=null;await fetchFinance().catch(()=>{});
     page='customers';render();toast(faDigits(result)+' حساب به سطل بازیابی منتقل شد و سوابق مالی محفوظ ماند.');
   }catch(e){toast('انتقال گروهی تأیید نشد: '+e.message+' — وضعیت حساب‌ها را تازه کنید.',true)}
