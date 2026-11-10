@@ -31,22 +31,22 @@ for app, originals in BASE.items():
     base=ROOT/'apps'/app
     html=(base/'index.html').read_text(encoding='utf8')
     sw=(base/'sw.js').read_text(encoding='utf8')
-    links=re.findall(r'<link\\b[^>]*>',html,re.I)
+    links=re.findall('<link\\b[^>]*>',html,re.I)
     active=[]
     for tag in links:
         if 'stylesheet' not in tag or 'href=' not in tag:
             continue
         if 'media="not all"' not in tag:
-            href=re.search(r'href=["\\']([^"\\']+)',tag)
+            href=re.search('href="([^"]+)"',tag)
             if href:active.append(urlsplit(href.group(1)).path.split('/')[-1])
     expected=[name for name,_ in originals]
     assert active[-len(expected):]==expected,(app,'active original APK skins must load LAST',active[-8:])
     for name,expected_blob in originals:
-        tags=[t for t in links if re.search(r'href=["\\'][^"\\']*'+re.escape(name),t)]
+        tags=[t for t in links if re.search('href="[^"]*'+re.escape(name),t)]
         assert len(tags)==1 and 'media="not all"' not in tags[0],(app,'original skin not active exactly once',name)
         assert 'data-zavi-owner-baseline="apk-uploaded-20261110"' in tags[0],(app,'skin not owner-locked',name)
         raw=(base/name).read_bytes()
-        blob=hashlib.sha1(b'blob '+str(len(raw)).encode()+b'\\0'+raw).hexdigest()
+        blob=hashlib.sha1(b'blob '+str(len(raw)).encode()+bytes([0])+raw).hexdigest()
         assert blob==expected_blob,(app,'owner original CSS content was changed',name,blob)
         assert '"'+name+'"' in sw,(app,'original CSS missing from offline precache',name)
     for name in OLD_PAGE_SKINS[app]:
