@@ -95,9 +95,26 @@ let centralOwnerVerified=false;
 // never the spelling of an email address in this JavaScript bundle.
 async function verifyCentralOwnerSession(){
  centralOwnerVerified=false;
- const allowed=await api('/rest/v1/rpc/zavi_stage8_admin_owner_session',{method:'POST',body:{}});
- centralOwnerVerified=allowed===true;
- if(!centralOwnerVerified)throw Error('دسترسی فقط برای مالک اصلی با نشست معتبر سرور مجاز است.');
+ let allowed;
+ try{
+  allowed=await api('/rest/v1/rpc/zavi_stage8_admin_owner_session',{method:'POST',body:{}});
+ }catch(error){
+  // A failed network check must never leave stale privileged rows visible.
+  if(mode==='live'){
+   closeModal();rows=[];archivedRows=[];mode='login';
+   el('appScreen').hidden=true;el('authScreen').hidden=false;
+  }
+  throw error;
+ }
+ if(allowed!==true){
+  if(mode==='live'){
+   closeModal();rows=[];archivedRows=[];mode='login';
+   el('appScreen').hidden=true;el('authScreen').hidden=false;
+  }
+  session=null;storeSession();
+  throw Error('دسترسی فقط برای مالک اصلی با نشست معتبر سرور مجاز است.');
+ }
+ centralOwnerVerified=true;
  return true;
 }
 async function login(){
