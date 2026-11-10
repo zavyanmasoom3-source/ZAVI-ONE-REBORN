@@ -4186,6 +4186,13 @@ document.addEventListener('change',e=>{if(e.target.dataset.moduleId){zaviSaveMod
 <!-- Owner-requested classic V66.62 appearance: newer visual-only skins disabled. Feature assets, financial and offline logic, language/theme switches, security and navigation preserved. -->
 
 
+<!-- Functional language visibility only; no original colors, sizing, cards or layout changed. -->
+<style data-zavi-original-appearance-safe-locale>
+#zawiPrivateGate .zavi-gate-lang{display:none}
+html:not([lang^="ps"]):not([lang^="en"]) #zawiPrivateGate .zavi-gate-fa{display:inline}
+html[lang^="ps"] #zawiPrivateGate .zavi-gate-ps{display:inline}
+html[lang^="en"] #zawiPrivateGate .zavi-gate-en{display:inline}
+</style>
 <!-- Owner-approved appearance: EXACT original uploaded APK design styles; do not replace with reference/PDF skins. -->
 <link rel="stylesheet" href="./zavi-clean-professional-v6667.css?v=1" data-zavi-preserve-features="true" data-zavi-owner-baseline="apk-uploaded-20261110">
 <link rel="stylesheet" href="./zavi-showcase-v6668.css?v=1" data-zavi-showcase="true" data-zavi-owner-baseline="apk-uploaded-20261110">
