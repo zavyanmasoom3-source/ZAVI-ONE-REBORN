@@ -1,0 +1,27 @@
+/* Stage 4 cheque module: compact, all three modes, RTL/LTR, 320px+. */
+.zavi-cheque-module{margin-block:18px;padding:clamp(12px,3vw,18px);color:inherit;min-width:0}
+.zavi-cheque-heading,.zavi-cheque-row-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.zavi-cheque-heading h3{margin:0;font-size:1.05rem}
+.zavi-cheque-heading p,.zavi-cheque-row p{margin:.4rem 0;color:var(--muted,var(--text-muted,#687587));font-size:.87rem}
+.zavi-cheque-notice{border:1px solid var(--border,#7893b34d);border-radius:12px;padding:10px 12px;font-size:.85rem;line-height:1.7;background:var(--surface,transparent)}
+.zavi-cheque-module [data-cheque-message]{min-height:1.6rem;font-size:.86rem;overflow-wrap:anywhere}
+.zavi-cheque-entry{border:1px solid var(--border,#7893b34d);border-radius:12px;padding:12px;margin-block:12px}
+.zavi-cheque-entry summary{cursor:pointer;font-weight:750;min-height:35px}
+.zavi-cheque-entry form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-block:12px}
+.zavi-cheque-entry label,.zavi-cheque-settle label{display:grid;gap:5px;font-size:.83rem;font-weight:650;min-width:0}
+.zavi-cheque-module input,.zavi-cheque-module select{box-sizing:border-box;width:100%;min-height:42px;max-width:100%;border:1px solid var(--border,#9db0c4);border-radius:10px;padding:8px;color:var(--text,#182637);background:var(--card,var(--surface,#fff));font:inherit}
+.zavi-cheque-module input:focus-visible,.zavi-cheque-module select:focus-visible,.zavi-cheque-module button:focus-visible{outline:2px solid var(--primary,#1483cf);outline-offset:2px}
+.zavi-cheque-entry form>button{grid-column:1/-1;justify-self:start}
+.zavi-cheque-list{display:grid;gap:10px;margin-block:12px}
+.zavi-cheque-row{border:1px solid var(--border,#7893b34d);border-radius:14px;padding:12px;background:var(--card,var(--surface,transparent));min-width:0}
+.zavi-cheque-row-head strong{font-size:.96rem;overflow-wrap:anywhere}
+.zavi-cheque-row-head span{font-size:.78rem;border-radius:9px;padding:4px 8px;border:1px solid var(--border,#7893b34d)}
+.zavi-cheque-row small{color:var(--muted,var(--text-muted,#687587))}
+.zavi-cheque-actions{display:flex;gap:8px;flex-wrap:wrap;margin-block:10px}
+.zavi-cheque-actions button,.zavi-cheque-queue button{min-height:36px}
+.zavi-cheque-settle:not([hidden]){display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-block:10px}
+.zavi-cheque-settle button{align-self:end;min-height:42px}
+.zavi-cheque-queue{border-top:1px solid var(--border,#7893b34d);padding-top:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.zavi-cheque-queue p{flex:1 1 100%;font-size:.82rem;margin:0}
+@media(max-width:620px){.zavi-cheque-settle:not([hidden]){grid-template-columns:1fr 1fr}.zavi-cheque-settle button{grid-column:1/-1}.zavi-cheque-entry form{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){.zavi-cheque-module *{transition:none!important;animation:none!important}}
