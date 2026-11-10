@@ -6,9 +6,14 @@ with Session() as browser:
     result={}
     for theme in ('light','dark'):
         browser.navigate('one')
-        browser.eval("localStorage.setItem('zavi_ui_appearance_v2',"+repr(theme)+");localStorage.setItem('zavi_theme_preference_v29',"+repr(theme)+")")
-        browser.unlock_one()
-        browser.route('sales')
+        error=browser.unlock_one()
+        if error:raise AssertionError('PIN unlock failed: '+str(error))
+        state=browser.route('sales')
+        assert state['selected'] and state['visible'] and not state['locked'],state
+        # Change theme through the real application API *after* the old PIN
+        # renderer finishes; rewriting storage directly before unlock is not
+        # a real user action and can be overridden by initialization.
+        browser.eval("window.ZaviThemeV29.set("+json.dumps(theme)+")")
         result[theme]=browser.eval("""(()=>{
           const css=selector=>{const element=document.querySelector(selector);if(!element)return null;
             const style=getComputedStyle(element);return {name:element.tagName.toLowerCase(),class:element.className?.toString().slice(0,60),background:style.backgroundColor,image:style.backgroundImage.slice(0,100),color:style.color};};
