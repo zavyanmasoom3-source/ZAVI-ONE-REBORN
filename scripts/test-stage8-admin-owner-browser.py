@@ -131,6 +131,9 @@ with Session() as browser:
     assert outsider['listReads']==before,('customer list request before privilege check',outsider)
     print('PASS: ordinary account rejected; no list RPC and no persisted access')
 
+    # Restore the fake backend owner's role before the separate re-entry
+    # scenario: the earlier test intentionally revoked this exact role.
+    browser.eval("window.__stage8Mock.gateOwner=true")
     # Successful login again must resume after an ordinary page reload with
     # refresh token: no fixed address whitelist or manual relogin.
     login(OWNER)
