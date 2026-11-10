@@ -261,14 +261,14 @@ let adminFinancePeriodStart=null;
 let adminResetBusy=false;
 const isMainAdmin=()=>mode==='live' && String(session?.user?.email||'').toLowerCase()==='zavyanmasoom6@gmail.com';
 const RESET_FINANCE_PHRASE='RESET ADMIN REPORTS';
-const RESET_CUSTOMERS_PHRASE='DELETE ALL CUSTOMER ACCOUNTS';
+const RESET_CUSTOMERS_PHRASE='TRASH ALL CUSTOMER ACCOUNTS';
 function renderAdminResetCenter(){
  const owner=isMainAdmin();
  const current=adminFinancePeriodStart?`گزارش مالی فعلی از ${window.ZaviDualDate?.formatBoth?.(adminFinancePeriodStart)||shortDate(adminFinancePeriodStart)} آغاز شده است.`:'هنوز دوره مالی جدیدی ثبت نشده است؛ همه سوابق موجود در گزارش نمایش داده می‌شوند.';
  return `<section class="panel z53-reset-center" aria-labelledby="z53ResetHeading"><div class="panel-heading"><h2 id="z53ResetHeading">🛡️ مرکز صفرسازی و پاکسازی مدیریت</h2><span class="tag">فقط مالک اصلی</span></div>
  <p class="form-helper">دو عملیات مستقل دارید. هیچ‌کدام هنگام ورود یا تازه‌کردن برنامه خودکار اجرا نمی‌شود.</p>
  <div class="z53-reset-grid"><article class="z53-reset-card"><h3>صفرسازی حسابداری ZAVI ONE ADMIN</h3><p>یک دوره مالی جدید از صفر آغاز کنید. مجموع درآمد، مصارف و کمیشن در گزارش دوره جدید صفر می‌شود و با معاملات بعدی افزایش می‌یابد.</p><p class="z53-reset-note">${escapeHTML(current)}</p><p class="z53-reset-note">سوابق پرداخت و رسیدهای قبلی حذف نمی‌شوند؛ تنها تاریخ شروع گزارش تغییر می‌کند. بدهی‌های واقعی با این کار بخشوده نمی‌شوند.</p><button id="z53ResetFinance" class="button ghost" type="button" ${!owner||adminResetBusy?'disabled':''}>↻ شروع دوره مالی صفر</button></article>
- <article class="z53-reset-card z53-destructive"><h3>حذف همه حساب‌های مشتریان</h3><p>همه فروشگاه‌های مشتریان غیرمالک و اطلاعات ذخیره‌شده آن‌ها از سرور به شکل دائمی حذف می‌شود. حساب مالک اصلی و امکان ورود ADMIN محفوظ می‌ماند.</p><p class="z53-reset-note">داده‌های حذف‌شده بدون پشتیبان قابل بازیابی نیستند. رویداد حذف برای ممیزی حفظ می‌شود. مجوزهای آفلاین صادرشده ممکن است تا پایان اعتبارشان در دستگاه باقی بمانند.</p><button id="z53DeleteCustomers" class="button danger" type="button" ${!owner||adminResetBusy?'disabled':''}>⌫ بررسی و حذف همه مشتریان</button></article></div>
+ <article class="z53-reset-card z53-destructive"><h3>انتقال گروهی مشتریان به سطل بازیابی</h3><p>حساب‌های غیرمالک فقط بایگانی می‌شوند. فاکتورها، سوابق پرداخت، گدام و اطلاعات مالی هر فروشگاه در سرور محفوظ می‌مانند و مدیر اصلی می‌تواند حساب را بازگرداند.</p><p class="z53-reset-note">این عملیات به دو تأیید نیاز دارد و برای لغو دسترسی دستگاه آفلاین، بررسی مجدد سرور ضرورت دارد.</p><button id="z53DeleteCustomers" class="button danger" type="button" ${!owner||adminResetBusy?'disabled':''}>🗃 بررسی و انتقال به سطل بازیابی</button></article></div>
  ${!owner?'<div class="notice warn">این گزینه‌ها تنها در نشست آنلاین مالک اصلی فعال می‌شوند.</div>':''}</section>`;
 }
 async function z53ResetFinance(){
@@ -287,23 +287,23 @@ async function z53ResetFinance(){
  }catch(e){toast('صفرسازی انجام نشد: '+e.message,true)}finally{adminResetBusy=false;render()}
 }
 async function z53DeleteAllCustomers(){
- if(adminResetBusy||!isMainAdmin())return toast('فقط مالک اصلی اجازه حذف همه مشتریان را دارد.',true);
- if(mode!=='live'||!navigator.onLine)return toast('برای حذف حساب‌ها اتصال به انترنت لازم است.',true);
- adminResetBusy=true;
- try{
-   const preview=await api('/rest/v1/rpc/zavi_owner_reset_customer_accounts',{method:'POST',body:{p_preview:true,p_confirmation:null}});
-   const count=Number(preview?.customer_count);
-   if(!Number.isSafeInteger(count)||count<0)throw Error('تعداد حساب‌ها از سرور تأیید نشد.');
-   if(count===0){toast('هیچ حساب مشتری برای حذف موجود نیست.');return;}
-   const entered=prompt(`اخطار: ${faDigits(count)} فروشگاه و معلومات آن‌ها برای همیشه حذف خواهند شد. حساب مدیر اصلی حذف نمی‌شود. برای ادامه دقیقاً این عبارت را وارد کنید:
-${RESET_CUSTOMERS_PHRASE}`);
-   if(entered!==RESET_CUSTOMERS_PHRASE){toast('تأیید عملیات انجام نشد. هیچ حسابی حذف نشد.',true);return;}
-   if(!confirm(`تأیید نهایی حذف دائمی ${faDigits(count)} حساب مشتری و اطلاعات آن‌ها؟ امکان بازیابی بدون پشتیبان نیست.`))return;
-   const result=await api('/rest/v1/rpc/zavi_owner_reset_customer_accounts',{method:'POST',body:{p_preview:false,p_confirmation:RESET_CUSTOMERS_PHRASE}});
-   if(result?.completed!==true)throw Error('سرور تأیید نهایی حذف را برنگرداند.');
-   await fetchRows();finance=null;await fetchFinance().catch(()=>{});
-   page='customers';render();toast(`${faDigits(result.deleted_count||0)} حساب مشتری حذف شد. گزارش حذف در سرور نگهداری شد.`);
- }catch(e){toast('عملیات حذف نهایی نشد: '+e.message+' — وضعیت حساب‌ها را تازه کنید.',true)}finally{adminResetBusy=false}
+  if(adminResetBusy||!isMainAdmin())return toast('فقط مالک اصلی اجازه انتقال گروهی دارد.',true);
+  if(mode!=='live'||!navigator.onLine)return toast('برای این عملیات اتصال به انترنت لازم است.',true);
+  adminResetBusy=true;
+  try{
+    const preview=await api('/rest/v1/rpc/zavi_owner_reset_customer_accounts',{method:'POST',body:{p_preview:true,p_confirmation:null}});
+    const count=Number(preview?.customer_count);
+    if(!Number.isSafeInteger(count)||count<0||preview?.completed!==false)throw Error('پیش‌نمایش معتبر از سرور دریافت نشد.');
+    if(count===0){toast('حسابی برای انتقال موجود نیست.');return;}
+    if(!confirm('انتقال قابل‌بازیابی حساب‌های مشتریان به سطل انجام شود؟ هیچ معلومات مالی حذف نمی‌شود.'))return;
+    const entered=prompt('تأیید دوم: دقیقاً این عبارت را وارد کنید:\n'+RESET_CUSTOMERS_PHRASE);
+    if(entered!==RESET_CUSTOMERS_PHRASE){toast('تأیید عملیات مطابقت نداشت؛ هیچ تغییری انجام نشد.',true);return;}
+    const result=await api('/rest/v1/rpc/zavi_admin_trash_all_customer_accounts',{method:'POST',body:{p_confirmation:RESET_CUSTOMERS_PHRASE}});
+    if(!Number.isSafeInteger(Number(result))||Number(result)<0)throw Error('تأیید تعداد بایگانی از سرور دریافت نشد.');
+    await fetchRows();finance=null;await fetchFinance().catch(()=>{});
+    page='customers';render();toast(faDigits(result)+' حساب به سطل بازیابی منتقل شد و سوابق مالی محفوظ ماند.');
+  }catch(e){toast('انتقال گروهی تأیید نشد: '+e.message+' — وضعیت حساب‌ها را تازه کنید.',true)}
+  finally{adminResetBusy=false}
 }
 document.addEventListener('click',e=>{
  const b=e.target.closest('button');if(!b)return;
