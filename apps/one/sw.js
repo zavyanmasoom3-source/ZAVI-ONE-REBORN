@@ -5,10 +5,11 @@
  */
 'use strict';
 const APK_ORIGIN='https://appassets.androidplatform.net';
-const CACHE_NAME='zavi-one-design-tokens-unified-20261110-stage4-cheques-v1';;;
+const CACHE_NAME='zavi-one-design-tokens-unified-20261110-classic6662-v1';;;
 const SHELL_PROTOCOL='zavi-shell-v2';
 const CACHE_PREFIX='zavi-one-';
 const CORE=[
+  "zavi-v6662-classic-restore.css",
   "../../packages/shared/ui/zavi-reference-v3.css",
   "../../packages/shared/ui/zavi-reference-navigation-v3.js",
   "zavi-reference-one-v3.css",
