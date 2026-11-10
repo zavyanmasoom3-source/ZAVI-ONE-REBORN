@@ -142,3 +142,36 @@ warning and is not changed by these migrations.
 **Conclusion:** Stage 5 critical hard-delete vulnerability is closed in
 source and production; real authenticated tenant tests and Android physical
 acceptance are still required before 100% release certification.
+
+
+## Final ADMIN JavaScript regression sweep — 2026-11-10
+
+A direct review of all 46 JavaScript files under \`apps/admin\` found no
+executable invocation of the old \`zavi_owner_delete_customer\` RPC or
+\`p_preview:false\` permanent bulk purge. Remaining literal
+\`permanent-delete\` selectors in \`zavi-admin-recovery-v141.js\` are
+compatibility interceptors that route legacy UI clicks to recoverable trash;
+some older i18n dictionaries retain historical translation source keys,
+but these are not invoked as customer deletion actions. No blanket string
+replacement was attempted because that could break dictionary mapping.
+
+Added \`scripts/test-stage5-admin-no-hard-delete-paths.cjs\` and wired it
+into \`.github/workflows/stage5-admin-security.yml\`, so any future
+executable irreversible deletion route blocks the CI gate.
+
+GitHub Actions run
+[42776802207](https://github.com/zavyanmasoom3-source/ZAVI-ONE-REBORN/actions/runs/42776802207):
+**SUCCESS** — every step including full ADMIN script scan, the real click
+handlers, nested SECURITY DEFINER hard-delete prevention and PostgreSQL 17
+owner/nonowner/archive/recovery assertions.
+
+The primary Supabase read-only catalog audit examined **42 management RPCs**:
+**0** callable by anonymous role; **0** authenticated SECURITY DEFINER
+routines missing the inspected admin-role or pinned search-path signatures.
+These catalog heuristics do not prove that every nested helper implements
+correct row-level authorization. No normal signed-in user may UPDATE the
+private archive table or INSERT management audit records directly.
+
+Outstanding **release-only** gates: genuine user JWTs in isolated tenant
+tests, revoked-session scenario and physical Android install/upgrade on
+both apps. No stable release APK claim.
