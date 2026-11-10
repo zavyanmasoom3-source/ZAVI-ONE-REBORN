@@ -34,10 +34,10 @@ assert.match(win,/AppVariant = "one"/);
 assert.match(win,/LocalApplicationData/);
 assert.match(win,/SetVirtualHostNameToFolderMapping/);
 assert.match(csproj,/Microsoft\.Web\.WebView2/);
-assert.match(wf,/android-optimized-compile:/);
-assert.match(wf,/windows-source-compile:/);
-assert.match(wf,/financial-and-admin-contracts:/);
-assert.match(wf,/visual-and-translation-contracts:/);
+assert.match(wf,/android-r8-unsigned:/);
+assert.match(wf,/windows-compile:/);
+assert.match(wf,/accounting-and-admin:/);
+assert.match(wf,/themes-and-locales:/);
 assert.match(wf,/--no-build-cache/);
 assert.doesNotMatch(wf,/actions\/upload-artifact/,'Never upload unsigned Android APK or unapproved installer');
 for(const app of ['one','admin']){
