@@ -45,7 +45,7 @@ Android QA workflow: `.github/workflows/build-reborn-qa.yml`. It creates **debug
 
 ## Stage 6 acceptance update (2026-11-10)
 
-- All six jobs of [Stage 6 native/financial/visual acceptance](https://github.com/zavyanmasoom3-source/ZAVI-ONE-REBORN/actions/runs/42778022511) passed on commit \`735431295\`: account/debt/FX/stock and three-device mock regressions, Light/Dark/Glass across three languages, **R8 unsigned Android compilation** for both apps and **Windows x64 WebView2 source compilation** for both apps.
+- All six jobs of [Stage 6 native/financial/visual acceptance](https://github.com/zavyanmasoom3-source/ZAVI-ONE-REBORN/actions/runs/42778022511) passed on commit `735431295`: account/debt/FX/stock and three-device mock regressions, Light/Dark/Glass across three languages, **R8 unsigned Android compilation** for both apps and **Windows x64 WebView2 source compilation** for both apps.
 - Both installable persistent-signed QA APK jobs were attempted in [run 42778428487](https://github.com/zavyanmasoom3-source/ZAVI-ONE-REBORN/actions/runs/42778428487) but stopped at the **missing owner signing Secrets preflight**. Neither produced a new signed APK; temporary/debug keystores were never substituted.
 - [Complete Stage 6 report](docs/PHASE6_SOURCE_BUILD_AND_RELEASE_ACCEPTANCE_2026-11-10.md) includes the exact missing secret names, the release safety contract, and still-required real Android/Windows installation and owner-authenticated financial acceptance tests.
 
