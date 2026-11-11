@@ -14,7 +14,7 @@ on:
       - 'scripts/test-phase3-offline-status-browser.py'
       - 'scripts/test-shared-design-browser.py'
       - 'scripts/test-unified-reference-browser.py'
-      - 'scripts/test-compact-workflow-browser.py'
+      - 'scripts/test-stage6-financial-theme-browser.py'
       - 'scripts/test-admin-settings-layout-browser.py'
       - 'scripts/test-owner-apk-style-browser.py'
       - 'scripts/check-reference-runtime-css.py'
@@ -59,8 +59,8 @@ jobs:
         run: python3 scripts/test-unified-reference-browser.py
       - name: Measure actual shared color contrast, language, date and field errors in Chrome
         run: python3 scripts/test-shared-design-browser.py
-      - name: Test live money, reports and purchase stages in Chrome
-        run: python3 scripts/test-compact-workflow-browser.py
+      - name: Test original V66.62 workflows with real synthetic finance across three themes and languages
+        run: python3 scripts/test-stage6-financial-theme-browser.py
       - name: Verify ADMIN settings controls survive compact grouping in disposable browser
         run: python3 scripts/test-admin-settings-layout-browser.py
       - name: Verify exact owner-uploaded original ONE and ADMIN styles in actual browser
