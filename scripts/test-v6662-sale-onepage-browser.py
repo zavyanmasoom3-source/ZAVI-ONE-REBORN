@@ -87,7 +87,12 @@ with Session() as browser:
       const f=document.getElementById('dialogForm');
       const buttons=f.querySelectorAll('.z66-sale-paymode');
       const start=db.tx.length;
-      f.querySelector('[data-z66-payment="cash"]').click();
+      const cashBtn=f.querySelector('[data-z66-payment="cash"]');
+      const cashDisabled=cashBtn.disabled;
+      cashBtn.click();
+      const cashPressed=cashBtn.getAttribute('aria-pressed');
+      const lastCash=f.querySelector('.z66-sale-paymodes').dataset.z66LastPaymentMode;
+      const cashCalculated=f.querySelector('.z66-sale-paymodes').dataset.z66CashCalculated;
       const full=Number(f.elements.paid.value);
       f.querySelector('[data-z66-payment="credit"]').click();
       const zero=Number(f.elements.paid.value);
@@ -95,6 +100,8 @@ with Session() as browser:
       return {choices:buttons.length,full,zero,
         partial:f.querySelector('[data-z66-payment="partial"]').getAttribute('aria-pressed')==='true',
         sameJournal:db.tx.length===start,
+        cashDisabled,cashPressed,lastCash,cashCalculated,
+        cashButtons:[...buttons].map(b=>({key:b.dataset.z66Payment,disabled:b.disabled})),
         calcError:f.querySelector('.z66-sale-paymodes')?.dataset.z66PaymentCalcError,
         totalText:f.querySelector('#sumTotal')?.textContent,
         linePrices:[...f.querySelectorAll('#orderItems .order-line')].map(r=>({
