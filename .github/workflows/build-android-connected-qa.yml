@@ -5,6 +5,9 @@ on:
     branches: [dev]
     paths:
       - '.github/workflows/build-android-connected-qa.yml'
+      - 'apps/one/zavi-compact-workflow-v1.js'
+      - 'apps/one/zavi-compact-workflow-v1.css'
+      - 'scripts/test-v6662-sale-onepage-browser.py'
 
 permissions:
   contents: write
@@ -37,6 +40,11 @@ jobs:
           set -euo pipefail
           find apps packages/shared -name '*.js' -type f -print0 |
             while IFS= read -r -d '' f; do node --check "$f"; done
+      - name: Verify approved ONE V66.62 sale with disposable Chrome before building APK
+        if: matrix.app == 'one'
+        run: |
+          python3 scripts/test-v6662-sale-onepage-browser.py
+          python3 scripts/test-stage6-financial-theme-browser.py
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -176,6 +184,9 @@ jobs:
           printf '%s\n' '<?xml version="1.0" encoding="utf-8"?><paths xmlns:android="http://schemas.android.com/apk/res/android"><cache-path name="camera" path="."/></paths>' > android-build/app/src/main/res/xml/zavi_camera_paths.xml
       - name: Validate WebView source
         run: |
+          if [[ "${{ matrix.app }}" == "one" ]]; then
+            python3 scripts/prepare-v6662-native-webview.py android-build/app/src/main/assets/index.html
+          fi
           python3 scripts/fix-webview-receipt.py
           python3 scripts/validate-webview-html.py
       - name: Clean and assemble distinct connected sandbox test APK
@@ -304,10 +315,12 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          tag="zavi-owner-design-connected-test-20261110-run${GITHUB_RUN_NUMBER}"
+          tag="zavi-v6662-approved-sale-connected-test-20261111-run${GITHUB_RUN_NUMBER}"
           cat > release-notes.txt <<'NOTES'
           THESE ARE NOT PRODUCTION APKs.
-          Owner-uploaded ZAVI ONE & ADMIN original CSS is kept exactly.
+          Owner-uploaded ZAVI ONE 66.62 original appearance is retained outside the approved sale form.
+          Sale is compact one-page, with original live accounting inputs, barcode and editable price.
+          Repeated barcode adds one quantity in the existing product row.
           Exact GitHub dev SHA is embedded in both APKs, built with a separate ephemeral test key.
           Connected to the existing live Supabase project using PUBLIC publishable key only.
           CAUTION: Do not log in using an active business account. Test ONLY using a disposable account.
@@ -317,7 +330,7 @@ jobs:
           NOTES
           gh release create "$tag" direct-apks/*.apk \
             --prerelease --target "$GITHUB_SHA" \
-            --title "ZAVI ONE original look — CONNECTED TEST ONLY — run ${GITHUB_RUN_NUMBER}" \
+            --title "ZAVI ONE 66.62 design + approved sale — CONNECTED TEST ONLY — run ${GITHUB_RUN_NUMBER}" \
             --notes-file release-notes.txt -R "$GITHUB_REPOSITORY"
           gh release view "$tag" --json url,assets \
             --jq '{release: .url, assets: [.assets[] | {name:.name,url:.url}]}'
