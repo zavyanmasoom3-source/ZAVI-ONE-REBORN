@@ -106,3 +106,16 @@ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",
  script.async=false;
  (document.head||document.documentElement).append(script);
 })();
+
+
+/* V66.62 approved adaptive catalog: original DOM/submit remain authoritative. */
+(()=>{
+ 'use strict';
+ const style=document.createElement('link');
+ style.rel='stylesheet';style.href='./zavi-product-adaptive-v6662.css?v=1';
+ style.dataset.z66ProductStyle='1';document.head.append(style);
+ const script=document.createElement('script');
+ script.src='./zavi-product-adaptive-v6662.js?v=1';
+ script.async=false;script.dataset.z66ProductScript='1';
+ document.head.append(script);
+})();
