@@ -1620,6 +1620,7 @@ body{font-size:15px;line-height:1.9}button,input,select,textarea{font-size:14px;
 <script src="./zavi-barcode-v641.js?v=64.1"></script>
 <script src="./zavi-decimal-v636.js?v=63.6"></script>
 <script src="./zavi-trade-plus-v6530.js?v=65.30" defer></script><script src="./zavi-industry-forms-v6529.js?v=65.29"></script>
+<script src="./zavi-variant-inventory-v6662.js?v=66.62"></script>
 <script src="./zavi-paging-v647.js?v=64.7"></script><script src="./zavi-backup-integrity-v647.js?v=64.7"></script><script src="./zavi-smart-business-v642.js?v=64.2"></script><script src="./zavi-ops-center-v643.js?v=64.3"></script><script src="./zavi-business-plus-v644.js?v=64.4"></script><script src="./zavi-display-digits-v645.js?v=64.5" defer></script>
 <script>
 
@@ -2810,6 +2811,15 @@ function openEntity(kind,id,creditorMode=false){if(kind==='product'||kind==='edi
  const p=db.products.find(x=>x.id===id)||{},edit=!!p.id;
  const actualQty=edit?stockOf(id):0;
  const buyingPrice=edit?(p.purchasePrice??unitCost(id)):(p.purchasePrice??p.openingCost??0);
+  const variantEngine=window.ZaviVariantInventory6662;
+  let productVariantDetails=p.industryDetails;
+  if(edit&&variantEngine?.tracked(p)){
+   try{
+    const entries=variantEngine.verify(p,db.tx,actualQty);
+    productVariantDetails={...p.industryDetails,values:{...(p.industryDetails?.values||{}),
+      colorVariants:JSON.stringify(entries.map(x=>({color:x.color,qty:x.qty,barcode:x.barcode})))}};
+   }catch(error){toast('موجودی رنگ‌ها قابل تأیید نیست: '+error.message);return;}
+  }
  let pendingProductImage=zaviSafeProductImage(p.imageData),productImageBusy=false;
  const productIndustry=zaviBusinessTypeV638();
  const catData=`<datalist id="zawiCategoryOptions">${[...PRODUCT_CATS,'سایر'].map(x=>`<option value="${escapeHtml(x)}"></option>`).join('')}</datalist>`;
@@ -2824,7 +2834,7 @@ function openEntity(kind,id,creditorMode=false){if(kind==='product'||kind==='edi
  ${field('purchasePrice','قیمت آمد / خرید هر واحد',buyingPrice,'number','min="0" step="any" required')}
   ${selectField('productPriceCurrency','واحد پول قیمت‌های واردشده',[[db.currency,'پول اصلی ('+db.currency+')'],...(db.currency==='USD'?[]:[['USD','دالر امریکایی (USD)']])],db.currency)}
   <div class="field full"><div class="small-info">اگر قیمت را به دالر می‌نویسید، نخست نرخ دالر را در داشبورد ثبت کنید. بعد قیمت فروش و قیمت خرید را هر دو به دالر وارد کنید؛ هنگام ذخیره، معادل حسابداری به پول اصلی ثبت می‌شود.</div></div>
- ${window.ZaviIndustryForms6529.render(productIndustry,p.industryDetails,{expanded:!!p.industryDetails})}
+ ${window.ZaviIndustryForms6529.render(productIndustry,productVariantDetails,{expanded:!!p.industryDetails})}
  ${field('openingQty',edit?'تعداد فعلی در گدام *':'تعداد محصول در آغاز *',edit?actualQty:0,'number','min="0" step="0.001" required')}
  ${field('reorder','هشدار در موجودی کمتر یا مساوی',p.reorder??5,'number','min="0" step="0.001" required')}
  <div class="field full"><label>عکس محصول (اختیاری)</label><div class="zavi-photo-preview" id="zaviProductPhotoPreview">${zaviPhotoMarkup({name:p.name,imageData:pendingProductImage})}<div><label class="btn subtle" style="cursor:pointer">انتخاب عکس<input id="zaviProductPhotoInput" type="file" accept="image/jpeg,image/png,image/webp" hidden></label> <button class="btn tiny" type="button" id="zaviProductPhotoClear">حذف عکس</button><div class="tiny-note">عکس کوچک و فشرده ذخیره می‌شود. برای نگهداری تعداد زیاد عکس، پشتیبان JSON بگیرید.</div></div></div></div>
@@ -2885,6 +2895,10 @@ function openEntity(kind,id,creditorMode=false){if(kind==='product'||kind==='edi
   const priceMult=f.productPriceCurrency.value==='USD'?(fxUsdRate()||0):1; if(priceMult<=0)return toast('اول نرخ دالر را در تنظیمات ذخیره کنید.');const salePrice=money(num(f.salePrice.value)*priceMult),purchasePrice=money(num(f.purchasePrice.value)*priceMult),qty=qtyRound(num(f.openingQty.value)),reorder=qtyRound(num(f.reorder.value));
   if(!name)return toast('نام محصول را بنویسید.');
   let industryDetails;try{industryDetails=window.ZaviIndustryForms6529.collect(productForm.querySelector('.z629-industry'),productIndustry)}catch(e){return toast(e.message)}
+   let variantRows;try{variantRows=variantEngine.rows({industryDetails})}catch(e){return toast(e.message)}
+   if(edit&&variantEngine.tracked(p)&&!variantRows.length)return toast('رنگ‌های دارای دفتر موجودی را نمی‌توان حذف کرد.');
+   if(edit&&!variantEngine.tracked(p)&&variantRows.length&&qtyRound(num(f.openingQty.value))!==actualQty)
+    return toast('برای آغاز دفتر مستقل رنگ‌ها، مجموع رنگ‌ها باید برابر موجودی فعلی باشد. اصلاح موجودی را جدا ثبت کنید.');
   if([salePrice,purchasePrice,qty,reorder].some(x=>!Number.isFinite(x)||x<0))return toast('تعداد و قیمت‌ها نمی‌توانند منفی باشند.');
   if(industryDetails.type==='mobile'&&industryDetails.values.imei){
    const imei=industryDetails.values.imei;
@@ -2894,8 +2908,26 @@ function openEntity(kind,id,creditorMode=false){if(kind==='product'||kind==='edi
   if(commit(n=>{
    let obj=edit?n.products.find(x=>x.id===id):{id:newId('p')};
    Object.assign(obj,{name,sku,barcodes,category,salePrice,purchasePrice,reorder,imageData:pendingProductImage,industryDetails});
-   if(!edit){obj.openingQty=qty;obj.openingCost=purchasePrice;n.products.push(obj)}
-   else {const diff=qtyRound(qty-actualQty);if(Math.abs(diff)>.00001){n.tx.push({id:newId('t'),code:nextCode(n),type:'stock_adjust',date:nowISO(),created:new Date().toISOString(),productId:id,delta:diff,cost:diff>0?(purchasePrice||unitCost(id)):unitCost(id),note:'اصلاح تعداد محصول از بخش محصول و گدام'})}}
+   if(!edit){
+    obj.openingQty=qty;obj.openingCost=purchasePrice;
+    if(variantRows.length)variantEngine.begin(obj,variantRows,qty,n.tx);
+    n.products.push(obj);
+   }else if(variantEngine.tracked(obj)){
+    const adjustments=variantEngine.changes(obj,n.tx,actualQty,variantRows);
+    variantEngine.addNewColours(obj,variantRows);
+    for(const change of adjustments)n.tx.push({id:newId('t'),code:nextCode(n),type:'stock_adjust',
+     date:nowISO(),created:new Date().toISOString(),productId:id,variantKey:change.variantKey,
+     delta:change.delta,cost:change.delta>0?(purchasePrice||unitCost(id)):unitCost(id),
+     note:'اصلاح موجودی رنگ از فرم محصول'});
+    variantEngine.verify(obj,n.tx,qty);
+   }else if(variantRows.length){
+    variantEngine.begin(obj,variantRows,actualQty,n.tx);
+   }else{
+    const diff=qtyRound(qty-actualQty);
+    if(Math.abs(diff)>.00001)n.tx.push({id:newId('t'),code:nextCode(n),type:'stock_adjust',
+     date:nowISO(),created:new Date().toISOString(),productId:id,delta:diff,
+     cost:diff>0?(purchasePrice||unitCost(id)):unitCost(id),note:'اصلاح تعداد محصول از بخش محصول و گدام'});
+   }
   })){closeModal();toast('مشخصات و موجودی محصول ذخیره شد.');}
  };
  return;
