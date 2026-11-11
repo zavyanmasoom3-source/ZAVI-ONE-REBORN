@@ -42,6 +42,76 @@ function sourceHas(route){
  const nav=document.querySelector('#sidebarLinks [data-go="'+route+'"],#sidebarLinks2 [data-go="'+route+'"]');
  return !!nav&&!nav.disabled&&!nav.hidden;
 }
+// Approved: an actual, read-only invoice window from the tenant's native ledger.
+// Its buttons use the application's existing data-detail/data-go handlers.
+let invoiceKind='sale',invoiceQuery='';
+const INV_LABELS={
+ fa:{title:'نمایش فاکتورها',desc:'فروش و خرید · هجری شمسی و میلادی',sale:'فاکتور فروش',purchase:'فاکتور خرید',all:'مشاهده همه',search:'جستجوی شماره یا مشتری',empty:'در این ماه فاکتوری ثبت نشده است.',view:'دیدن فاکتور',amount:'مبلغ',date:'تاریخ'},
+ ps:{title:'د بلونو ليدل',desc:'پلور او پېرود · لمریز او میلادي',sale:'د پلور بلونه',purchase:'د پېرود بلونه',all:'ټول وګورئ',search:'د بل يا پېرودونکي لټون',empty:'په دې میاشت کې بل نشته.',view:'بل وګورئ',amount:'مبلغ',date:'نېټه'},
+ en:{title:'Invoices',desc:'Sales and purchases · two calendars',sale:'Sales invoices',purchase:'Purchase invoices',all:'View all',search:'Search invoice or customer',empty:'No invoices in this month.',view:'View invoice',amount:'Amount',date:'Date'}
+};
+function getInvoiceEntries(){
+ if(typeof db==='undefined'||!Array.isArray(db.tx))return [];
+ let range=null;
+ try{if(typeof zaviDashboardSelectedSpan==='function')range=zaviDashboardSelectedSpan()}catch(_){}
+ return db.tx.filter(t=>t&&!t.voided&&t.type===invoiceKind&&(!range||
+  typeof t.date==='string'&&t.date.slice(0,10)>=range.start&&t.date.slice(0,10)<=range.end))
+  .sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));
+}
+function addInvoiceCard(root){
+ if(root.querySelector(':scope > .z66d-invoices'))return;
+ const t=INV_LABELS[lang()],section=node('section','z66d-section z66d-invoices');
+ section.dataset.z66DashSection='invoices';section.append(node('h3','z66d-heading',t.title));
+ section.append(node('p','z66d-invoice-subtitle',t.desc));
+ const tabs=node('div','z66d-invoice-tabs');
+ for(const [kind,label] of [['sale',t.sale],['purchase',t.purchase]]){
+  const button=node('button','z66d-invoice-tab',label);button.type='button';
+  button.dataset.z66InvoiceKind=kind;button.setAttribute('aria-pressed',String(invoiceKind===kind));tabs.append(button);
+ }
+ section.append(tabs);
+ const search=node('input','z66d-invoice-search');search.type='search';
+ search.placeholder=t.search;search.value=invoiceQuery;search.setAttribute('aria-label',t.search);
+ section.append(search);
+ const list=node('div','z66d-invoice-list');section.append(list);
+ const route=node('button','z66d-invoice-all',t.all);route.type='button';
+ route.dataset.go=invoiceKind==='sale'?'sales':'purchases';section.append(route);
+ const renderList=()=>{
+  const q=invoiceQuery.toLocaleLowerCase();
+  const matches=getInvoiceEntries().filter(item=>
+    [item.code,item.customerName,typeof contactName==='function'?contactName(item.contactId):'']
+      .some(v=>String(v||'').toLocaleLowerCase().includes(q))).slice(0,4);
+  list.replaceChildren();
+  if(!matches.length){list.append(node('p','z66d-invoice-empty',t.empty));return;}
+  for(const item of matches){
+   const button=node('button','z66d-invoice-entry');button.type='button';button.dataset.detail=String(item.id);
+   const head=node('span','z66d-invoice-head');
+   head.append(node('strong','z66d-invoice-number',String(item.code||item.id)));
+   head.append(node('span','z66d-invoice-view',t.view));
+   button.append(head);
+   const partner=String(item.customerName||
+    (typeof contactName==='function'?contactName(item.contactId):'')||'');
+   if(partner)button.append(node('span','z66d-invoice-partner',partner));
+   let dual='';try{dual=window.ZaviDualDate?.formatBoth?.(String(item.date||'').slice(0,10)+'T12:00:00Z')||''}catch(_){}
+   if(!dual&&typeof fmtDate==='function')dual=fmtDate(item.date);
+   button.append(node('span','z66d-invoice-date',dual));
+   const value=typeof txTotal==='function'?txTotal(item):Number(item.total||0);
+   const amount=typeof fmt==='function'?fmt(value):String(value);
+   const iso=String(db.currency||'AFN');
+   button.append(node('strong','z66d-invoice-amount',amount+' '+iso));
+   list.append(button);
+  }
+ };
+ tabs.addEventListener('click',e=>{
+  const b=e.target.closest('button[data-z66-invoice-kind]');if(!b)return;
+  invoiceKind=b.dataset.z66InvoiceKind;invoiceQuery='';search.value='';
+  tabs.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));
+  route.dataset.go=invoiceKind==='sale'?'sales':'purchases';renderList();
+ });
+ search.addEventListener('input',()=>{invoiceQuery=search.value;renderList()});
+ renderList();
+ const anchor=root.querySelector(':scope > .z66d-charts')||root.querySelector(':scope > .z66d-summary');
+ if(anchor)anchor.after(section);else root.append(section);
+}
 function paint(){
  const root=document.getElementById(CONTENT);
  if(!root)return;
@@ -50,6 +120,7 @@ function paint(){
  // the summary section. Restore the scoped theme class, never strip it.
  if(hero?.dataset.z66DashDone==='1'&&root.querySelector(':scope > .z66d-summary')){
    root.classList.add('z66d-root');
+   addInvoiceCard(root);
    return;
  }
  const stats=root.querySelector(':scope > .stat-grid');
@@ -158,6 +229,7 @@ function paint(){
  if(footer)footer.classList.add('z66d-footnote');
  // Show all user-approved sections; don't require "more reports" to be clicked.
  root.classList.add('zrf-details-open');
+ addInvoiceCard(root);
 }
 function handleActions(event){
  const button=event.target.closest?.('#content.z66d-root [data-z66-dash-action]');
