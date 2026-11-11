@@ -46,8 +46,8 @@
   const owners=[];
   for(const token of uniqueCodes){const matches=lookup(products,token,currentId);for(const p of matches)if(!owners.some(x=>x.product.id===p.id&&x.code===token))owners.push({code:token,product:p})}
   const primary=code(sku);
-  return {ok:!invalid&&uniqueCodes.filter(c=>c!==code(sku)).length<=16&&!owners.length,
-   invalid:invalid||'',tooMany:uniqueCodes.filter(c=>c!==code(sku)).length>16,
+  return {ok:!invalid&&uniqueCodes.filter(c=>c!==code(sku)).length<=20&&!owners.length,
+   invalid:invalid||'',tooMany:uniqueCodes.filter(c=>c!==code(sku)).length>20,
    duplicateCount:tokens.length-uniqueCodes.length,primary,
    barcodes:uniqueCodes.filter(c=>c!==primary),owners,hasCode:uniqueCodes.length>0};
  }
