@@ -100,7 +100,15 @@ with Session() as browser:
        themeValue=browser.eval("""(()=>{
          const x=document.querySelector('.z66sales-stats > .stat');
          return {bg:getComputedStyle(x).backgroundImage,
-             ink:getComputedStyle(x.querySelector('.stat-label')).color};
+             ink:getComputedStyle(x.querySelector('.stat-label')).color,
+             background:getComputedStyle(x).background,
+             paper:getComputedStyle(x).getPropertyValue('--z66s-paper'),
+             field:getComputedStyle(x).getPropertyValue('--z66s-field'),
+             link:document.getElementById('z66SalesCss')?.href,
+             cssLoaded:!!document.getElementById('z66SalesCss')?.sheet,
+             cssRules:document.getElementById('z66SalesCss')?.sheet?.cssRules.length,
+             selectorMatches:!!document.querySelector('#content.z66sales-root .z66sales-stats > .stat'),
+             classes:x.className};
        })()""")
        assert 'linear-gradient' in themeValue['bg'],themeValue
     browser.eval("document.documentElement.dataset.z637NoMotion='true'")
