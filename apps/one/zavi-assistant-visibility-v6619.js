@@ -22,9 +22,9 @@ function settingsRoot(){
  // Do not use heading text: dashboards and menu cards may also say "تنظیمات".
  const language=document.querySelector('#zaviSettingsLanguage');
  const content=document.getElementById('content');
- if(!language||!content||!content.contains(language)||!visible(language))return null;
+ if(!language||!content||!content.contains(language))return null;
  const card=language.closest('.settings-card');
- if(!card||!content.contains(card)||!visible(card))return null;
+ if(!card||!content.contains(card))return null;
  return card;
 }
 function mount(){
