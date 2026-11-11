@@ -182,7 +182,7 @@ function enhance(form){
      const manually=String(extras.value||'').split(/[,;\n]+/).map(x=>x.trim())
        .filter(x=>x&&!priorBarcodes.has(x));
      const combined=[...new Set([...manually,...all.map(x=>x.barcode).filter(Boolean)])];
-     if(combined.length>16)throw Error('مجموع بارکدها نباید بیشتر از ۱۶ باشد.');
+     if(combined.length>20)throw Error('مجموع بارکدها نباید بیشتر از ۲۰ باشد.');
      extras.value=combined.join('\n');
      extras.dispatchEvent(new Event('input',{bubbles:true}));
     }catch(error){
