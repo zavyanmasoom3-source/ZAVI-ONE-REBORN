@@ -73,13 +73,16 @@ html[dir="rtl"] #z24Recovery{direction:rtl!important}
   calc(12px + env(safe-area-inset-bottom,0px))
   max(12px,env(safe-area-inset-left,0px))!important;
  overflow-x:hidden!important;
+ scrollbar-width:none!important;
 }
+#z24Recovery::-webkit-scrollbar{display:none!important;width:0!important}
 #z24Recovery .z24-pbox{
  position:relative;isolation:isolate;
  width:min(410px,100%)!important;
- max-height:calc(100vh - 24px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));
- max-height:calc(100dvh - 24px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));
- overflow-x:hidden;overflow-y:auto;
+ max-height:calc(100vh - 24px)!important;
+ max-height:calc(100dvh - 24px)!important;
+ overflow-x:hidden!important;overflow-y:auto!important;
+ scrollbar-width:none!important;
  margin:auto!important;padding:16px!important;
  background:linear-gradient(150deg,var(--z66r-paper),var(--z66r-deep) 90%)!important;
  border:1px solid #71d8f2bc!important;border-radius:23px!important;
@@ -88,6 +91,7 @@ html[dir="rtl"] #z24Recovery{direction:rtl!important}
  color:var(--z66r-ink)!important;
  animation:z66rec-pop .48s cubic-bezier(.19,1,.22,1) both;
 }
+#z24Recovery .z24-pbox::-webkit-scrollbar{display:none!important;width:0!important}
 #z24Recovery .z24-pbox::before{
  content:"";display:block;position:absolute;inset:0 0 auto;height:3px;z-index:0;
  background:linear-gradient(90deg,#6a4dff,#18daff,#2e82ff,#9b53ff);
@@ -95,7 +99,7 @@ html[dir="rtl"] #z24Recovery{direction:rtl!important}
  pointer-events:none;
 }
 #z24Recovery .z24-pbox::after{
- content:"";position:absolute;inset:auto -12% -13% -12%;height:130px;
+ content:"";position:absolute;inset:auto 0 -13% 0;height:130px;
  z-index:0;pointer-events:none;opacity:.65;
  background:radial-gradient(ellipse at 45% 95%,#0bd2ff75,transparent 65%),
  radial-gradient(ellipse at 95% 80%,#8853eb8a,transparent 65%);
@@ -248,7 +252,7 @@ html.zx-lite #z24Recovery .z24-pbox::before{
 }
 @media(max-height:600px){
  #z24Recovery .z24-pbox{
- max-height:calc(100dvh - 12px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));
+ max-height:calc(100dvh - 12px)!important;
  padding:10px!important;
  }
  #z24Recovery .z66rec-shield{width:52px;height:52px;border-radius:17px}
