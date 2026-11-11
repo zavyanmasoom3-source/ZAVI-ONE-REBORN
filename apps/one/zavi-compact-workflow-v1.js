@@ -311,7 +311,17 @@
     const form=document.getElementById('dialogForm');
     if(!form||form.dataset.zaviFlowDone)return;
     const body=form.querySelector(':scope > .modal-body');
-    if(!body||!body.querySelector('.zui-invoice-form')||!body.querySelector('#orderItems'))return;
+    // The authentic V66.62 restored invoice has NO .zui-invoice-form marker.
+    // Identify the NEW SALE by native modal title + real order fields.
+    // Never restyle sale returns or purchases when the original marker is absent.
+    if(!body||!body.querySelector('#orderItems'))return;
+    const headingMarker=body.querySelector('.zui-invoice-form');
+    const modalTitle=form.closest('.modal')?.querySelector('.modal-head h3')?.textContent||'';
+    const purchaseField=body.querySelector('[name="originalCurrency"]');
+    const isNewSale=!purchaseField &&
+      (/فاکتور فروش جدید|new sale|نوی پلور/i.test(modalTitle) ||
+       headingMarker?.dataset.module==='sales');
+    if(!headingMarker&&!isNewSale)return;
     const children=[...body.children];
     const itemIndex=children.findIndex(el=>el.id==='orderItems');
     const totalsIndex=children.findIndex(el=>el.matches?.('.totals'));
@@ -319,8 +329,8 @@
     let productIndex=-1;
     for(let i=0;i<itemIndex;i++)if(children[i].matches?.('.form-section-title'))productIndex=i;
     if(productIndex<0||productIndex>=totalsIndex)return;
-    const isPurchase=body.querySelector('.zui-invoice-form')?.dataset.module==='purchases';
-    const heading=body.querySelector('.zui-invoice-form');
+    const isPurchase=!!purchaseField || headingMarker?.dataset.module==='purchases';
+    const heading=headingMarker;
     const general=children.filter((el,i)=>i<productIndex&&el!==heading);
     const products=children.slice(productIndex,totalsIndex);
     const payment=children.slice(totalsIndex);
