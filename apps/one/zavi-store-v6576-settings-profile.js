@@ -148,6 +148,8 @@ function reorganize(){
     if(first)first.before(personal);else content.prepend(personal);
   }
  }
+ // Let the approved unified hub move the ORIGINAL profile editor without replacing any handlers.
+ if(window.ZaviUnifiedSettingsApproved)return;
  const cards=Array.from(content.children).filter(x=>x.matches?.('section.settings-card,div.settings-card,section.z6524-launch'));
  let groups=q('#z76-settings-groups',content);
  if(!cards.length&&!groups)return;
