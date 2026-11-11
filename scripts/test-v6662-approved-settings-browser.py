@@ -27,7 +27,8 @@ with Session() as browser:
         legacyProfile:document.querySelectorAll('#content #z76-settings-groups').length,
         nativeBulk:hub.querySelectorAll('#zaviEnableAllFeatures').length,
         detachedForms:[...document.querySelectorAll('#content form')].filter(f=>!f.isConnected).length,
-        css:!![...document.styleSheets].find(s=>String(s.href||'').includes('zavi-approved-settings-v6662.css')),
+        css:[...document.styleSheets].some(s=>String(s.href||'').includes('zavi-final-settings-common-v1.css') &&
+          [...(s.cssRules||[])].some(r=>String(r.href||'').includes('zavi-approved-settings-v6662.css'))),
         features:hub.querySelectorAll('.zavi-settings-feature').length,
         moduleGrid:!!hub.querySelector('.zavi-settings-extra .zavi-module-grid'),
         optionsGrid:!!hub.querySelector('.zavi-settings-extra .z20-grid')
