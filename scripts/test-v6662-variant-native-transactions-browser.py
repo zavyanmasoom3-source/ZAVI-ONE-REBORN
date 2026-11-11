@@ -10,6 +10,10 @@ with Session() as browser:
     browser.eval("""(()=>{
       window.__qaOriginalTrade=zaviBusinessTypeV638;
       window.__qaOriginalActive=window.zaviActiveIndustry;
+      window.__qaCanEdit=window.zaviCloudCanEdit;
+      window.__qaCloudSave=window.zaviCloudAfterSave;
+      window.zaviCloudCanEdit=()=>true;
+      window.zaviCloudAfterSave=()=>{};
       zaviBusinessTypeV638=()=> 'accessories';
       window.zaviActiveIndustry=()=> 'accessories';
       openEntity('product');
@@ -91,5 +95,7 @@ with Session() as browser:
     browser.eval("""(()=>{
       zaviBusinessTypeV638=window.__qaOriginalTrade;
       window.zaviActiveIndustry=window.__qaOriginalActive;
+      window.zaviCloudCanEdit=window.__qaCanEdit;
+      window.zaviCloudAfterSave=window.__qaCloudSave;
     })()""")
     print("PASS native original 66.62 product registration, variant sale/purchase, real saved lines, void and durable offline ledger")
