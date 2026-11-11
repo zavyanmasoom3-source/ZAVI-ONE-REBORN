@@ -5,7 +5,7 @@
  */
 'use strict';
 const APK_ORIGIN='https://appassets.androidplatform.net';
-const CACHE_NAME='zavi-one-exact-original-v6662-restored-20261111-colour-ledger-v1';
+const CACHE_NAME='zavi-one-exact-original-v6662-restored-20261111-settings-compact-v1';
 const SHELL_PROTOCOL='zavi-shell-v2';
 const CACHE_PREFIX='zavi-one-';
 const CORE=[
@@ -249,6 +249,7 @@ const CORE=[
   "zavi-pdf-final-v6760.css",
   "zavi-reference-store-v6557.js",
   "zavi-final-settings-store-v6559.js",
+  "zavi-approved-settings-v6662.css",
   "zavi-final-reference-store.js",
   "zavi-dashboard-polish-v6562.js",
   "zavi-mobile-cleanup-v6563.js",
