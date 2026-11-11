@@ -2935,7 +2935,57 @@ function openEntity(kind,id,creditorMode=false){if(kind==='product'||kind==='edi
 if(kind==='creditor_contact'){openEntity('contact','',true);return}if(kind==='contact'||kind==='edit_contact'){let c=db.contacts.find(x=>x.id===id)||{},edit=!!c.id;showModal(edit?'ویرایش مشخصات شخص':'ثبت مشتری یا عرضه‌کننده',`<div class="form-grid">${field('name','نام شخص / شرکت *',c.name||'','text','required maxlength="100"')}${field('phone','شماره تماس (برای واتساپ)',c.phone||'','tel','maxlength="40"')}${field('reminderDate','یادآوری پرداخت (اختیاری)',c.reminderDate||'','date')}${selectField('type','نوع شخص',[['customer','مشتری'],['supplier','عرضه‌کننده'],['both','هر دو']],c.type||(creditorMode?'supplier':'customer'))}<details class="z6528-opening" ${edit?'open':''}><summary>آیا از قبل با این شخص قرض دارید؟ (اختیاری)</summary><p>اگر تازه ZAVI را شروع می‌کنید و از قبل به این شخص بدهکار بودید، مبلغ را فقط یک‌بار این‌جا وارد کنید. <b>این مبلغ پولی به صندوق اضافه نمی‌کند.</b> اگر قرض تازه می‌گیرید، این قسمت را صفر بگذارید و بعد «گرفتن قرض نقدی» بزنید.</p>${field('openingPayable','قرض قبلی ما به این شخص ('+escapeHtml(db.currency)+')',c.openingPayable||0,'number',`min="0" step="0.01" ${edit?'disabled':''}`)}${field('openingReceivable','طلب قبلی ما از این شخص ('+escapeHtml(db.currency)+')',c.openingReceivable||0,'number',`min="0" step="0.01" ${edit?'disabled':''}`)}<small>اگر مبلغ قبلی را همین‌جا ثبت کرده‌اید، از ثبت دوباره آن به‌عنوان «قرض قدیمی» خودداری کنید.</small></details><div class="field full">${'<label>یادداشت</label><textarea name="note" maxlength="450">'+escapeHtml(c.note||'')+'</textarea>'}</div></div>${edit?'<p class="tiny-note">طلب و بدهی آغاز دوره بعد از ایجاد شخص قفل هستند تا سابقه حساب محفوظ بماند.</p>':''}`);document.getElementById('dialogForm').onsubmit=e=>{e.preventDefault();let f=e.target.elements;if(!f.name.value.trim())return toast('نام شخص را وارد کنید.');if(commit(n=>{let obj=edit?n.contacts.find(c=>c.id===id):{id:newId('c')};Object.assign(obj,{name:f.name.value.trim(),phone:f.phone.value.trim(),reminderDate:readDate(f.reminderDate.value,true),type:f.type.value,note:f.note.value.trim()});if(!edit){obj.openingReceivable=money(num(f.openingReceivable.value));obj.openingPayable=money(num(f.openingPayable.value));n.contacts.push(obj)}})){closeModal();toast('مشخصات شخص ذخیره شد.')}};return}
 if(kind==='account'||kind==='edit_account'){let a=db.accounts.find(x=>x.id===id)||{},edit=!!a.id,used=db.tx.some(t=>!t.voided&&(t.accountId===id||t.fromAccountId===id||t.toAccountId===id));showModal(edit?'ویرایش حساب':'حساب پولی جدید',`<div class="form-grid">${field('name','نام حساب *',a.name||'','text','required maxlength="70"')}${field('opening','مانده آغاز دوره',a.opening||0,'number',`step="0.01" ${used?'disabled':''}`)}</div>${used?'<p class="tiny-note">چون تراکنش در این حساب ثبت شده، مانده افتتاحیه قفل است.</p>':''}`);document.getElementById('dialogForm').onsubmit=e=>{e.preventDefault();if(commit(n=>{let f=e.target.elements,obj=edit?n.accounts.find(x=>x.id===id):{id:newId('a')};obj.name=f.name.value.trim();if(!obj.name)throw Error('نام حساب لازم است.');if(!used)obj.opening=money(num(f.opening.value));if(!edit)n.accounts.push(obj)})){closeModal();toast('حساب ذخیره شد.')}};return}
 if(kind==='china_purchase'){openOrder('purchase','',true);return}if(['sale','purchase','sale_return','purchase_return'].includes(kind)){openOrder(kind,id);return}
-if(kind==='stock_adjust'){if(!db.products.length)return toast('نخست محصول ثبت کنید.');showModal('اصلاح موجودی گدام',`<div class="form-grid">${selectField('productId','محصول *',db.products.map(p=>[p.id,p.name]))}${selectField('direction','نوع اصلاح',[['in','افزایش موجودی'],['out','کاهش موجودی']])}${field('qty','تعداد اصلاح *',1,'number','min="0.001" step="0.001" required')}${field('cost','بهای واحد برای افزایش',0,'number','min="0" step="0.01"')}<div class="field full">${field('date','تاریخ (میلادی)',nowISO(),'date','required')}</div><div class="field full"><label>دلیل اصلاح</label><textarea name="note" placeholder="شمارش گدام، ضایعات، اصلاح ثبت..." required maxlength="300"></textarea></div></div><p class="tiny-note">کاهش موجودی به عنوان ضایعات در محاسبه سود منظور می‌شود؛ افزایش موجودی، درآمد فروش محسوب نمی‌شود.</p>`);document.getElementById('dialogForm').onsubmit=e=>{e.preventDefault();const f=e.target.elements,pid=f.productId.value,d=f.direction.value==='in'?1:-1,q=qtyRound(num(f.qty.value));if(q<=0)return toast('تعداد باید مثبت باشد.');if(d<0&&stockOf(pid)<q)return toast('موجودی محصول برای کاهش کافی نیست.');let cost=d>0?money(num(f.cost.value)):unitCost(pid);if(commit(n=>n.tx.push({id:newId('t'),code:nextCode(n),type:'stock_adjust',created:new Date().toISOString(),date:readDate(f.date.value),productId:pid,delta:d*q,cost,note:f.note.value.trim()}))){closeModal();toast('موجودی اصلاح شد.')}};return}
+if(kind==='stock_adjust'){
+ if(!db.products.length)return toast('نخست محصول ثبت کنید.');
+ showModal('اصلاح موجودی گدام',`<div class="form-grid">
+  ${selectField('productId','محصول *',db.products.map(p=>[p.id,p.name]))}
+  ${selectField('direction','نوع اصلاح',[['in','افزایش موجودی'],['out','کاهش موجودی']])}
+  ${field('qty','تعداد اصلاح *',1,'number','min="0.001" step="0.001" required')}
+  ${field('cost','بهای واحد برای افزایش',0,'number','min="0" step="0.01"')}
+  <div class="field full">${field('date','تاریخ (میلادی)',nowISO(),'date','required')}</div>
+  <div class="field full"><label>دلیل اصلاح</label><textarea name="note" placeholder="شمارش گدام، ضایعات، اصلاح ثبت..." required maxlength="300"></textarea></div></div>
+  <p class="tiny-note">کاهش موجودی به عنوان ضایعات در محاسبه سود منظور می‌شود؛ افزایش موجودی، درآمد فروش محسوب نمی‌شود.</p>`);
+ const form=document.getElementById('dialogForm'),f=form.elements,engine=window.ZaviVariantInventory6662;
+ const wrap=document.createElement('div');wrap.className='field z66-invoice-colour';wrap.hidden=true;
+ const label=document.createElement('label');label.textContent='رنگ محصول *';
+ const variantChoice=document.createElement('select');variantChoice.name='variantKey';
+ label.appendChild(variantChoice);wrap.appendChild(label);f.productId.closest('.field').after(wrap);
+ function refreshColour(){
+  const p=db.products.find(x=>x.id===f.productId.value);
+  variantChoice.replaceChildren();wrap.hidden=!p||!engine.tracked(p);
+  if(!p||!engine.tracked(p))return;
+  try{
+   const available=engine.verify(p,db.tx,stockOf(p.id));
+   available.forEach(x=>variantChoice.add(new Option(x.color+' · '+fmtQty(x.qty),x.key)));
+  }catch(error){toast('موجودی رنگ‌ها قابل تأیید نیست: '+error.message)}
+ }
+ f.productId.addEventListener('change',refreshColour);refreshColour();
+ form.onsubmit=e=>{
+  e.preventDefault();
+  const pid=f.productId.value,d=f.direction.value==='in'?1:-1,q=qtyRound(num(f.qty.value));
+  if(q<=0)return toast('تعداد باید مثبت باشد.');
+  const p=db.products.find(x=>x.id===pid);
+  if(!p)return toast('محصول موجود نیست.');
+  let colourKey='';
+  if(engine.rows(p).length&&!engine.tracked(p))return toast('ابتدا مقدار رنگ‌ها را در فرم محصول توسط مالک تطبیق کنید.');
+  if(engine.tracked(p)){
+   try{
+    const current=engine.verify(p,db.tx,stockOf(pid)).find(x=>x.key===variantChoice.value);
+    if(!current)return toast('رنگ معتبر انتخاب کنید.');
+    if(d<0&&current.qty+.00001<q)return toast('موجودی رنگ «'+current.color+'» کافی نیست.');
+    colourKey=current.key;
+   }catch(error){return toast(error.message)}
+  }
+  if(d<0&&stockOf(pid)<q)return toast('موجودی محصول برای کاهش کافی نیست.');
+  const cost=d>0?money(num(f.cost.value)):unitCost(pid);
+  if(commit(n=>n.tx.push({id:newId('t'),code:nextCode(n),type:'stock_adjust',
+   created:new Date().toISOString(),date:readDate(f.date.value),productId:pid,
+   ...(colourKey?{variantKey:colourKey}:{}),delta:d*q,cost,note:f.note.value.trim()}))){
+   closeModal();toast('موجودی اصلاح شد.');
+  }
+ };
+ return;
+}
 if(['customer_payment','customer_loan','supplier_payment','creditor_loan','supplier_debt','expense','transfer','hawala_transfer','capital_in','owner_draw'].includes(kind)){openCashForm(kind,id);return}}
 function nextCode(n){return 'ZW-'+String(n.tx.length+1).padStart(5,'0')}
 function normalizeName(x){return toLatin(String(x||'')).trim().replace(/\s+/g,' ').toLocaleLowerCase()}
