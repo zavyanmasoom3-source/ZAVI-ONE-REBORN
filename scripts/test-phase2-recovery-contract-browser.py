@@ -105,7 +105,8 @@ with Session() as browser:
       return {modal:!!document.getElementById('z24Recovery'),
         title:document.getElementById('z24RecoveryHeading')?.textContent};
     })()""")
-    assert mocked=={'modal':True,'title':'Recover private PIN'},mocked
+    assert mocked=={'modal':True,'title':'Recover account'},mocked
+    assert browser.eval("document.getElementById('z24Recovery').dataset.z24CurrentStage")=='1'
     # Missing credentials remain a client-side validation failure: no request.
     browser.eval("document.getElementById('z24Login').click()")
     browser.until("(document.getElementById('z24RecoveryStatus')?.textContent||'').includes('Enter your online account email and password.')",
@@ -118,7 +119,9 @@ with Session() as browser:
     })()""")
     browser.until("""!!document.querySelector(
       '#z24Workspace option[value="fixture-shop"]') &&
-      !document.getElementById('z24Ask').disabled""",'owner-scoped store loaded')
+      !document.getElementById('z24Next').disabled &&
+      document.getElementById('z24Recovery').dataset.z24CurrentStage==='2'""",
+      'owner-scoped store loaded in stage 2')
     login=browser.eval("""(()=>({
       noPasswordKept:!document.getElementById('z24Password').value,
       selected:document.getElementById('z24Workspace').value,
@@ -127,6 +130,10 @@ with Session() as browser:
     }))()""")
     assert login['noPasswordKept'] and login['selected']=='fixture-shop',login
     assert login['pinStillStored'],login
+    # The approved UI must require store selection before the request step.
+    browser.eval("document.getElementById('z24Next').click()")
+    browser.until("document.getElementById('z24Recovery').dataset.z24CurrentStage==='3' && !document.getElementById('z24Ask').disabled",'stage 3 request visibly ready')
+    assert browser.eval("document.querySelector('[data-z24-panel=\"2\"]').hidden")
     browser.eval("document.getElementById('z24Ask').click()")
     browser.until("""!document.getElementById('z24Check').disabled &&
       !!localStorage.getItem('zavi_v24_pin_request_fixture-shop')""",
@@ -135,6 +142,8 @@ with Session() as browser:
     browser.eval("document.getElementById('z24Check').click()")
     browser.until("(document.getElementById('z24RecoveryStatus')?.textContent||'').includes('Waiting for management approval.')",
                   'pending request cannot reset PIN')
+    assert browser.eval("document.getElementById('z24Recovery').dataset.z24CurrentStage")=='3'
+    assert browser.eval("document.getElementById('z24Finish').disabled")
     assert browser.eval("!!localStorage.getItem('zawi_store_personal_pin_v1')")
     browser.eval("""(()=>{
       window.__phase2Approval='denied';
@@ -150,6 +159,8 @@ with Session() as browser:
     browser.until("(document.getElementById('z24RecoveryStatus')?.textContent||'').includes('Management approved your request.')",
                   'approved status available')
     assert browser.eval("!!localStorage.getItem('zawi_store_personal_pin_v1')")
+    browser.until("document.getElementById('z24Recovery').dataset.z24CurrentStage==='4' && !document.getElementById('z24Finish').disabled",'only approved server response reveals stage 4')
+    assert browser.eval("document.querySelector('[data-z24-panel=\"3\"]').hidden")
     # Actual consume action must be the sole path that deletes the local PIN.
     browser.eval("document.getElementById('z24Finish').click()")
     browser.until("""!document.getElementById('z24Recovery') &&
