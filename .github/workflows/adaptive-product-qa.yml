@@ -14,6 +14,7 @@ on:
       - 'apps/one/v25-business.html'
       - 'scripts/test-v6662-21-trade-product-schema.cjs'
       - 'scripts/test-v6662-variant-stock-ledger.cjs'
+      - 'scripts/test-v6662-colour-warehouse-journal.cjs'
       - 'scripts/test-v6662-owner-business-type-lock.cjs'
       - 'scripts/test-v6662-adaptive-products-browser.py'
       - 'scripts/test-v6662-variant-native-transactions-browser.py'
@@ -31,6 +32,8 @@ jobs:
         run: node scripts/test-v6662-21-trade-product-schema.cjs
       - name: Test colour ledger arithmetic and migration safety (offline)
         run: node scripts/test-v6662-variant-stock-ledger.cjs
+      - name: Test colour-by-warehouse transfers, offline replay, and negative-stock prevention
+        run: node scripts/test-v6662-colour-warehouse-journal.cjs
       - name: Test explicit owner confirmation and stable business type offline
         run: python3 scripts/test-v6662-business-type-locked-browser.py
       - name: Verify actual owner trade-save guard and no automatic type switching
