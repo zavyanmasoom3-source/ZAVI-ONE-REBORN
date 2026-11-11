@@ -22,6 +22,16 @@ on:
       - 'apps/one/zavi-assistant-visibility-v6619.js'
       - 'apps/one/zavi-store-v6576-settings-profile.js'
       - 'scripts/test-v6662-approved-settings-browser.py'
+      - 'apps/one/index.html'
+      - 'apps/one/invoice.html'
+      - 'apps/one/pin-recovery.js'
+      - 'apps/one/zavi-approved-entry-v6662.css'
+      - 'apps/one/zavi-dual-calendar-v22.js'
+      - 'apps/admin/zavi-dual-calendar-v22.js'
+      - 'apps/one/zavi-display-digits-v645.js'
+      - 'apps/admin/zavi-display-digits-v645.js'
+      - 'scripts/test-v6662-approved-three-section-finish-browser.py'
+      - 'scripts/test-v6662-neon-recovery-browser.py'
 
 permissions:
   contents: write
@@ -59,6 +69,9 @@ jobs:
         run: |
           python3 scripts/test-v6662-sale-onepage-browser.py
           python3 scripts/test-v6662-login-center-browser.py
+          python3 scripts/test-phase2-recovery-contract-browser.py
+          python3 scripts/test-v6662-neon-recovery-browser.py
+          python3 scripts/test-v6662-approved-three-section-finish-browser.py
           python3 scripts/test-v6662-owner-dashboard-browser.py
           python3 scripts/test-v6662-approved-settings-browser.py
           python3 scripts/test-stage6-financial-theme-browser.py
