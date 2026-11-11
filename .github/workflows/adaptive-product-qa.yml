@@ -4,6 +4,7 @@ on:
     branches: [dev]
     paths:
       - 'apps/one/zavi-product-adaptive-v6662.js'
+      - 'apps/one/zavi-compact-workflow-v1.js'
       - 'apps/one/zavi-variant-inventory-v6662.js'
       - 'apps/one/index.html'
       - 'apps/one/zavi-product-adaptive-v6662.css'
