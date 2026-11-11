@@ -70,6 +70,30 @@ with Session() as browser:
                and x['key']=='سیاه' for x in result['bins']),result
     assert any(x['warehouse']=='11111111-1111-4111-8111-111111111111' and x['qty']==2
                and x['key']=='سیاه' for x in result['bins']),result
+    tenant_roundtrip=browser.eval("""(()=>{
+      const uid='cccccccc-cccc-4ccc-8ccc-cccccccccccc';
+      const wid='dddddddd-dddd-4ddd-8ddd-dddddddddddd';
+      const payload=JSON.parse(JSON.stringify(db)),before=window.zaviVariantWarehouseRead()
+        .filter(x=>x.productId==='p_variant_warehouse_qa').map(x=>[x.variantKey,x.warehouseId,x.qty]);
+      const restored=zaviTenantActivate(uid,wid,payload,false);
+      const saved=JSON.parse(localStorage.getItem(zaviTenantStorageKey(uid,wid))||'{}');
+      const p=db.products.find(x=>x.id==='p_variant_warehouse_qa');
+      const live=ZaviVariantInventory6662.warehouseBalances(p,db.tx)
+       .map(x=>[x.variantKey,x.warehouseId,x.qty]);
+      const empty=blankDB();
+      zaviTenantActivate('eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee',
+        'ffffffff-ffff-4fff-8fff-ffffffffffff',empty,false);
+      const isolated=db.products.length===0;
+      zaviTenantActivate(uid,wid,null,true);
+      const again=db.products.find(x=>x.id==='p_variant_warehouse_qa');
+      const after=ZaviVariantInventory6662.warehouseBalances(again,db.tx)
+       .map(x=>[x.variantKey,x.warehouseId,x.qty]);
+      return {restored,stored:saved.products?.some(x=>x.id===p?.id),
+       before,live,after,isolated,verified:ZaviVariantInventory6662.verifyWorkspace(db)};
+    })()""")
+    assert tenant_roundtrip['restored'] and tenant_roundtrip['stored'] and tenant_roundtrip['isolated'],tenant_roundtrip
+    assert tenant_roundtrip['before']==tenant_roundtrip['live']==tenant_roundtrip['after'],tenant_roundtrip
+    assert tenant_roundtrip['verified'],tenant_roundtrip
     browser.eval("""(()=>{
       const a=window.__variantTestOriginal;
       window.zaviCloudRestoreInfo=a.restore;
@@ -78,4 +102,4 @@ with Session() as browser:
       window.ZaviWarehouseV1.list=a.list;
       window.ZaviWarehouseV1.afterRender=a.afterRender;
     })()""")
-    print('PASS: real colour warehouse bridge, signed-in owner scope, atomic snapshot commit, duplicate/overdraw rejection, durable offline balance')
+    print('PASS: real colour warehouse bridge, signed-in owner scope, atomic snapshot commit, duplicate/overdraw rejection, durable offline balance, tenant-isolated cloud payload round-trip')
