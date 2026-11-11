@@ -127,9 +127,15 @@ with Session() as browser:
                       'dashboard theme updates to '+mode)
         theme=browser.eval("""(()=>{
             const e=document.querySelector('#content .z66d-summary');
+            const sheet=document.getElementById('z66OwnerDashboardCss');
             return {color:getComputedStyle(e).color,
                background:getComputedStyle(e).backgroundColor,
-               visible:e.getBoundingClientRect().height>50};
+               visible:e.getBoundingClientRect().height>50,
+               link:sheet?.href, linkLoaded:!!sheet?.sheet,
+               sheetRules:sheet?.sheet?.cssRules?.length??-1,
+               sheetDisabled:sheet?.disabled,rootClass:document.getElementById('content').className,
+               rootVar:getComputedStyle(document.getElementById('content')).getPropertyValue('--z66d-paper'),
+               requests:performance.getEntriesByType('resource').filter(x=>x.name.includes('zavi-owner-dashboard')).map(x=>({name:x.name,transferSize:x.transferSize,decodedBodySize:x.decodedBodySize}))};
         })()""")
         assert theme['visible'] and theme['background'] not in ('rgba(0, 0, 0, 0)','transparent'),theme
     browser.eval("window.ZaviThemeV29.set('dark')")
