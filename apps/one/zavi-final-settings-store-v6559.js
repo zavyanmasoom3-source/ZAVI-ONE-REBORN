@@ -79,8 +79,115 @@ function translateHub(hub){
    summary.children[1].textContent=description;
   }
  }
+ updateFeatureLanguage(hub);
  if(input)search(hub,input.value);
 }
+
+/* Keep the original form nodes: never clone forms, listeners, values or permissions.
+   A compact disclosure wraps each native setting, including rare and legacy actions. */
+const featureLabels={
+ profile:['پروفایل و عکس من','زما پروفایل او عکس','My profile & photo'],
+ shop:['معلومات و لوگوی فروشگاه','د دوکان معلومات او لوګو','Store details & logo'],
+ rename:['تغییر نام فروشگاه','د دوکان نوم بدلول','Rename store'],
+ modules:['زبان و نمایش بخش‌ها','ژبه او د برخو ښودنه','Language & visible modules'],
+ font:['فونت نوشته‌ها','د لیکنو فونټ','Text fonts'],
+ theme:['حالت‌های روشن، تاریک و شیشه‌ای','روښانه، تیاره او ښیښه‌یي بڼې','Light, dark & glass modes'],
+ design:['رنگ و چیدمان','رنګ او جوړښت','Colours & layout'],
+ pin:['قفل و رمز خصوصی','قفل او پټ رمز','App lock & PIN'],
+ invoice:['قالب فاکتور و رسید','د بل او رسید بڼه','Invoice & receipt template'],
+ accounts:['صندوق و حساب‌های پول','صندوق او د پیسو حسابونه','Cashbox & money accounts'],
+ health:['بررسی سلامت حسابداری','د حسابدارۍ روغتیا','Accounting integrity check'],
+ backup:['گرفتن و بازیابی پشتیبان','بیک اپ او بېرته راګرځول','Backup & restore'],
+ reset:['پاک‌کردن اطلاعات (حساس)','د معلوماتو پاکول (حساس)','Erase data (sensitive)'],
+ cloud:['حساب ابری و ورود','کلاوډ حساب او ننوتل','Cloud account & sign-in'],
+ devices:['دستگاه‌ها و همگام‌سازی','وسایل او همغږي','Devices & sync'],
+ support:['پشتیبانی و تمدید','ملاتړ او تمدید','Support & renewal'],
+ business:['نوع تجارت و امکانات','د کاروبار ډول او امکانات','Business type & tools'],
+ care:['بررسی و راهنمای سیستم','د سیستم کتنه او مرسته','System health & help']
+};
+const languageIndex=()=>locale()==='en'?2:locale()==='ps'?1:0;
+function featureId(el){
+ const key=String(el.id||'')+' '+String(el.className||'');
+ if(/z76-profile-card|z70-store-card/.test(key))return 'profile';
+ if(el.querySelector('#shopForm'))return 'shop';
+ if(el.querySelector('#zaviRenameShopForm'))return 'rename';
+ if(el.querySelector('#zaviSettingsLanguage'))return 'modules';
+ if(el.querySelector('#z6515FontChoice'))return 'font';
+ if(el.querySelector('#z637DesignForm'))return 'design';
+ if(/zavi-theme-settings|zavi-theme-controls/.test(key))return 'theme';
+ if(el.querySelector('#zawiChangePin'))return 'pin';
+ if(el.querySelector('#zaviIntegrityCheckV636'))return 'health';
+ if(el.querySelector('#importFile'))return 'backup';
+ if(el.querySelector('[data-action="reset"]')||el.textContent.includes('پاک‌کردن همه اطلاعات'))return 'reset';
+ if(el.querySelector('.accounts-grid'))return 'accounts';
+ if(el.querySelector('#zaviInvoiceStudio')||/z6527|invoiceStudio|invoice-design/i.test(key))return 'invoice';
+ if(/z652DevicePanel|zavi-devices|zavi-device/.test(key))return 'devices';
+ if(/z20CloudPanel|z20-panel|cloud-panel/i.test(key))return 'cloud';
+ if(/z6524-launch|z6524Care/i.test(key))return 'care';
+ if(/z72-trial-card|support|subscription/.test(key))return 'support';
+ if(el.querySelector('#z644ApplySmartBusiness')||/z642-smart|zavi-business/i.test(key))return 'business';
+ return '';
+}
+function featureName(el,identifier){
+ if(identifier&&featureLabels[identifier])return featureLabels[identifier][languageIndex()];
+ const head=el.querySelector('h3,h2,h4')?.textContent||el.getAttribute('aria-label')||'';
+ const title=String(head).replace(/^[\s\p{Extended_Pictographic}✦★✓✒️🎨]+/gu,'').replace(/\s+/g,' ').trim();
+ return title.slice(0,68)||(locale()==='en'?'Additional settings':locale()==='ps'?'نور تنظیمات':'تنظیمات بیشتر');
+}
+function compactLargeLists(el){
+ for(const [selector,labels] of [
+  ['.zavi-module-grid',['بخش‌های قابل نمایش','ښودل کېدونکې برخې','Visible sections']],
+  ['.z20-grid',['امکانات تکمیلی','نورې ځانګړنې','Additional features']]
+ ]){
+  const grid=el.querySelector(selector);
+  if(!grid||grid.closest('.zavi-settings-extra'))continue;
+  const prev=grid.previousElementSibling;
+  const heading=prev?.tagName==='H4'?prev:null;
+  const wrapper=document.createElement('details');
+  wrapper.className='zavi-settings-extra';
+  const summary=document.createElement('summary');summary.textContent=labels[languageIndex()];
+  wrapper.append(summary);
+  (heading||grid).before(wrapper);
+  if(heading)wrapper.append(heading);
+  wrapper.append(grid);
+ }
+}
+function asFeature(el){
+ if(el.matches('.zavi-settings-feature'))return el;
+ const id=featureId(el),category=group(el);
+ compactLargeLists(el);
+ const wrapper=document.createElement('details');
+ wrapper.className='zavi-settings-feature';wrapper.dataset.zaviSettingsGroup=category;
+ wrapper.dataset.feature=id;
+ const summary=document.createElement('summary');summary.className='zavi-settings-feature-name';
+ summary.textContent=featureName(el,id);
+ const contents=document.createElement('div');contents.className='zavi-settings-feature-body';
+ el.before(wrapper);wrapper.append(summary,contents);contents.append(el);
+ return wrapper;
+}
+function updateFeatureLanguage(hub){
+ for(const d of hub.querySelectorAll('.zavi-settings-feature')){
+  const node=d.querySelector(':scope > summary'),card=d.querySelector('.zavi-settings-feature-body > *');
+  if(node&&card)node.textContent=featureName(card,d.dataset.feature);
+ }
+ for(const d of hub.querySelectorAll('.zavi-settings-extra')){
+  const titles=d.querySelector('.zavi-module-grid')
+   ?['بخش‌های قابل نمایش','ښودل کېدونکې برخې','Visible sections']
+   :['امکانات تکمیلی','نورې ځانګړنې','Additional features'];
+  const summary=d.querySelector(':scope > summary');if(summary)summary.textContent=titles[languageIndex()];
+ }
+}
+function unwrapOldGroups(root){
+ // Legacy competing re-groupers could have fired before this module mounted.
+ // Move ONLY existing DOM nodes, not HTML strings; original handlers survive.
+ for(const old of [...root.querySelectorAll(':scope > .zavi-settings-6546-group,:scope > #z76-settings-groups')]){
+  const cards=[...old.querySelectorAll('section.settings-card,div.settings-card,section.z6524-launch,#z74-workspace')];
+  for(const card of cards)root.append(card);
+  old.remove();
+ }
+ root.querySelectorAll(':scope > .zavi-settings-6546-intro').forEach(n=>n.remove());
+}
+
 function counts(hub){
  hub.querySelectorAll('.zavi-clean-settings-group').forEach(d=>{
   const n=d.querySelector('.zavi-clean-settings-stack')?.children.length||0;
@@ -90,6 +197,7 @@ function counts(hub){
 }
 function enhance(){
  const root=document.getElementById('content');if(!root)return;
+ unwrapOldGroups(root);
  let hub=root.querySelector(':scope > .zavi-clean-settings-hub');
  if(!hub){
   const candidate=[...root.children].filter(el=>el.matches?.(eligible));
@@ -106,6 +214,11 @@ function enhance(){
    summary.children[0].textContent=title;summary.children[1].textContent=sub;d.append(summary);
    const body=document.createElement('div');body.className='zavi-clean-settings-stack';d.append(body);list.append(d);
   }
+  // Keep only one major section open; searching may expose several matching groups.
+  for(const d of hub.querySelectorAll('.zavi-clean-settings-group'))d.addEventListener('toggle',()=>{
+   if(!d.open||hub.dataset.searching==='true')return;
+   hub.querySelectorAll('.zavi-clean-settings-group').forEach(other=>{if(other!==d)other.open=false});
+  });
   // All categories are collapsed on entry to match the approved settings index.
   hub.querySelector('input').addEventListener('input',e=>search(hub,e.target.value));
  }
@@ -114,8 +227,9 @@ function enhance(){
  const candidates=[...root.children].filter(el=>el!==hub&&el.matches?.(eligible));
  for(const el of candidates){
   shorten(el);
-  const id=group(el);
-  list.querySelector('[data-group="'+id+'"] .zavi-clean-settings-stack').append(el);
+  const wrapped=asFeature(el);
+  const id=group(wrapped);
+  list.querySelector('[data-group="'+id+'"] .zavi-clean-settings-stack').append(wrapped);
  }
  // Reconcile widgets injected later by legacy enhancement scripts, without cloning handlers.
  for(const el of [...hub.querySelectorAll('.zavi-clean-settings-stack > *')]){
@@ -131,9 +245,10 @@ function search(hub,query){
  const lang=D[locale()],q=query.trim().toLowerCase();let total=0;
  for(const d of hub.querySelectorAll('.zavi-clean-settings-group')){
   let count=0;const cards=d.querySelectorAll(':scope > .zavi-clean-settings-stack > *');
-  cards.forEach(card=>{const ok=!q||String(card.textContent||'').toLowerCase().includes(q);card.hidden=!ok;if(ok)count++});
+  cards.forEach(card=>{const ok=!q||String(card.textContent||'').toLowerCase().includes(q);card.hidden=!ok;if(ok){count++;if(q&&card.tagName==='DETAILS')card.open=true}});
   d.hidden=count===0;if(q&&count)d.open=true;total+=count;
  }
+ hub.dataset.searching=q?'true':'false';
  hub.querySelector('.zavi-clean-search-help').textContent=q?(total+' '+(total?lang.found:lang.none)):lang.help;
 }
 function ready(){
