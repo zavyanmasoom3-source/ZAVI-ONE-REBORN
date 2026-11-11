@@ -234,6 +234,23 @@ function enhance(){
   const id=group(wrapped);
   list.querySelector('[data-group="'+id+'"] .zavi-clean-settings-stack').append(wrapped);
  }
+ // The original settings renderer and later enhancement scripts still append
+ // large legacy headings and info banners OUTSIDE the seven compact groups.
+ // They are the cause of the double settings screen reported on the real APK.
+ // Move ALL meaningful direct settings children inside the seven groups.
+ // Native elements keep their original listeners, values, permissions and IDs.
+ for(const el of [...root.children]){
+  if(el===hub||el.matches('script,style,template'))continue;
+  if(el.matches('.page-head')&&!el.querySelector('button,a,input,select,textarea,[tabindex]')){
+   el.dataset.zaviLegacyHeading='true';el.hidden=true;continue;
+  }
+  if(el.matches('[role="dialog"],.modal,.shade,.toast,#drawerShade'))continue;
+  if(!el.textContent?.trim()&&!el.querySelector('input,select,textarea,button,a,img'))continue;
+  shorten(el);
+  const wrapped=asFeature(el);
+  const id=group(wrapped);
+  list.querySelector('[data-group="'+id+'"] .zavi-clean-settings-stack').append(wrapped);
+ }
  // Reconcile widgets injected later by legacy enhancement scripts, without cloning handlers.
  for(const el of [...hub.querySelectorAll('.zavi-clean-settings-stack > *')]){
   const id=group(el);
