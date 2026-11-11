@@ -136,6 +136,9 @@
     updated_at:new Date().toISOString(),data};
   save(draftKey(),draft);
   save('zavi_v638_business_type_'+uid+'_'+ws,String(data.business_type||'general'));
+  if(!allowTypeChange&&$('type').value!==data.business_type){
+   $('type').value=data.business_type;renderFeatures();renderContextV638();
+  }
   return data;
  }
  async function upsert(table,record){const existing=await request(table);return existing.length?request(table,'PATCH',record):request(table,'POST',{workspace_id:ws,...record})}
