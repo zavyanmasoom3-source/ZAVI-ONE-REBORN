@@ -10,8 +10,9 @@ const schema={
  supermarket:[F('barcode','بارکد یا کود کالا'),S('unit','واحد فروش',['عدد','کیلوگرام','گرام','لیتر','بسته','کارتن']),F('batch','شماره بچ'),D('expiry','تاریخ انقضا'),F('supplier','عرضه‌کننده')],
  pharmacy:[F('batch','شماره بچ دوا'),D('expiry','تاریخ انقضا'),F('manufacturer','تولیدکننده'),F('strength','دوز/قدرت دوا'),S('unit','واحد فروش',['قرص','بسته','بوتل','آمپول','عدد']),F('supplier','عرضه‌کننده')],
  laboratory:[F('testCode','کود خدمت'),F('service','نام آزمایش یا خدمت'),F('sampleCode','کود نمونه بدون مشخصات مریض'),D('due','زمان آماده‌سازی'),F('staffCode','کود مسئول')],
- gold:[S('metal','نوع فلز',['طلا','نقره','پلاتین']),S('karat','عیار',['10','14','18','21','22','24']),N('grossGrams','وزن ناخالص (گرام)'),N('stoneGrams','وزن سنگ (گرام)'),N('wasteGrams','کسر/ضایعات (گرام)'),N('labor','اجرت ساخت'),N('rate24','نرخ گرام عیار ۲۴'),F('hallmark','نشان/شماره تصدیق')],
- mobile:[F('brand','برند'),F('model','مدل موبایل'),F('imei','IMEI (۱۵ رقم)'),F('serial','سریال دستگاه/لوازم'),S('condition','وضعیت',['نو','دست دوم','ترمیم‌شده']),D('warranty','پایان ضمانت'),F('memory','حافظه/رنگ')],
+ gold:[S('jewelryKind','نوع زیور',['لاکت طلا','سیت (ست) طلا','انگشتر','دستبند','گردنبند','گوشواره','چوری','زنجیر','سکه و شمش','سایر']),S('locketType','نوع لاکت',['با زنجیر','بدون زنجیر','قلبی','اسم‌دار','نگین‌دار','سفارشی']),F('setPieces','اجزای سیت'),S('metal','نوع فلز',['طلا','نقره','پلاتین']),S('karat','عیار',['10','14','18','21','22','24']),N('grossGrams','وزن ناخالص (گرام)'),N('stoneGrams','وزن سنگ (گرام)'),N('wasteGrams','کسر/ضایعات (گرام)'),N('labor','اجرت ساخت'),N('rate24','نرخ گرام عیار ۲۴'),F('hallmark','نشان/شماره تصدیق')],
+ mobile:[F('brand','برند'),F('model','مدل موبایل'),T('colorVariants','رنگ‌ها و تعداد مستقل','variants'),F('imei','IMEI (۱۵ رقم)'),F('serial','سریال دستگاه/لوازم'),S('condition','وضعیت',['نو','دست دوم','ترمیم‌شده']),D('warranty','پایان ضمانت'),F('memory','حافظه/رنگ')],
+ accessories:[S('accessoryType','نوع لوازم',['پوش و قاب موبایل','گلس محافظ','چارجر و آداپتور','کیبل شارژ','پاوربانک','هدفون و ایرپاد','محافظ لنز','لوازم آیپد','سایر']),F('brand','برند موبایل'),F('model','مدل سازگار'),F('material','نوع پوش / جنس'),T('colorVariants','رنگ‌ها و تعداد مستقل','variants'),F('warranty','گارانتی')],
  wholesale:[F('orderNo','شماره سفارش'),S('unit','واحد عمده',['کارتن','بسته','کیسه','عدد','کیلوگرام']),N('minOrder','حداقل سفارش'),N('unitsPerCarton','تعداد در کارتن'),F('tier','نوع قیمت عمده'),D('delivery','زمان تحویل')],
  distribution:[F('route','مسیر توزیع'),F('agent','نماینده/راننده'),F('orderRef','شماره سفارش'),D('delivery','تاریخ تحویل'),S('deliveryStatus','وضعیت',['آماده‌سازی','در مسیر','تحویل شد','برگشت خورد'])],
  clothing:[F('model','کود مدل'),F('color','رنگ'),S('size','سایز',['XS','S','M','L','XL','XXL','3XL','سفارشی']),F('fabric','نوع پارچه'),F('brand','برند')],
@@ -36,13 +37,39 @@ function normalize(t,data={},other={}){
  const type=typeOf(t),v={},provided=data&&typeof data==='object'?data:{};
  for(const f of fields(type)){
   let value=String(provided[f.key]??'').trim();if(!value)continue;
-  if(f.kind==='number'){
+  if(f.kind==='variants'){
+   let rows;try{rows=JSON.parse(value)}catch(_){throw Error('رنگ‌های محصول قابل خواندن نیستند.')}
+   if(!Array.isArray(rows)||rows.length>20)throw Error('حداکثر ۲۰ رنگ در یک محصول مجاز است.');
+   const used=new Set(),codes=new Set();
+   rows=rows.map(row=>{
+    const color=String(row?.color||'').trim(),barcode=String(row?.barcode||'').trim();
+    const qty=Number(textNum(row?.qty??''));
+    if(!color||color.length>60||!Number.isFinite(qty)||qty<0||
+       qty>1e9||Math.round(qty*1000)/1000!==qty)
+      throw Error('نام رنگ یا تعداد رنگ معتبر نیست.');
+    const normalized=color.toLocaleLowerCase();
+    if(used.has(normalized))throw Error('رنگ تکراری است: '+color);
+    used.add(normalized);
+    if(barcode&&(barcode.length>70||!/^[-a-zA-Z0-9_.]+$/.test(barcode)))
+      throw Error('بارکد رنگ نامعتبر است.');
+    if(barcode&&codes.has(barcode.toLocaleLowerCase()))
+      throw Error('بارکد رنگ تکراری است.');
+    if(barcode)codes.add(barcode.toLocaleLowerCase());
+    return {color,qty,barcode};
+   });
+   value=JSON.stringify(rows);
+  }else if(f.kind==='number'){
    const n=Number(textNum(value));if(!Number.isFinite(n)||n<0||n>1e11)throw Error(f.label+' باید عدد معتبر و غیرمنفی باشد.');value=String(n);
   }else if(f.kind==='date'){
    if(!/^\d{4}-\d{2}-\d{2}$/.test(value)||new Date(value+'T00:00:00Z').toISOString().slice(0,10)!==value)throw Error('تاریخ '+f.label+' نامعتبر است.');
   }else if(f.kind==='select'){if(!f.options.includes(value))throw Error('انتخاب '+f.label+' نامعتبر است.');}
   else if(value.length>140)throw Error(f.label+' طولانی است.');
   v[f.key]=value;
+ }
+ if(type==='gold'){
+  if(v.jewelryKind==='سیت (ست) طلا'&&!String(v.setPieces||'').trim())
+   throw Error('برای سیت طلا حداقل یک جزء مشخص کنید.');
+  if(v.setPieces&&v.setPieces.length>140)throw Error('فهرست اجزای سیت بیش از حد طولانی است.');
  }
  if(type==='gold'&&v.grossGrams){const gross=Number(v.grossGrams),stone=Number(v.stoneGrams||0),waste=Number(v.wasteGrams||0);if(!gross||stone+waste>=gross)throw Error('در زرگری، وزن سنگ و ضایعات باید کمتر از وزن ناخالص باشند.');}
  if(type==='exchange'){if(v.sourceCurrency&&!/^[A-Z]{3}$/.test(v.sourceCurrency.toUpperCase()))throw Error('کد ارز پرداختی سه حرف انگلیسی باشد.');if(v.targetCurrency&&!/^[A-Z]{3}$/.test(v.targetCurrency.toUpperCase()))throw Error('کد ارز دریافتی سه حرف انگلیسی باشد.');if(v.sourceCurrency&&v.targetCurrency&&v.sourceCurrency.toUpperCase()===v.targetCurrency.toUpperCase())throw Error('دو ارز متفاوت انتخاب کنید.');if(v.rate!==undefined&&Number(v.rate)<=0)throw Error('نرخ تبدیل باید مثبت باشد.');if(v.sourceAmount!==undefined&&Number(v.sourceAmount)<=0)throw Error('مبلغ ارز پرداختی باید مثبت باشد.');if(v.sourceAmount!==undefined&&v.rate!==undefined&&Number(v.fee||0)>Number(v.sourceAmount)*Number(v.rate))throw Error('کارمزد بیشتر از مبلغ تبدیل است.');}
@@ -55,17 +82,23 @@ function render(type,previous=null,{expanded=false,forOrder=false}={}){
  if(!fs.length)return '';
  let body=fs.map(f=>{
  const v=String(data[f.key]??'');let control;
- if(f.kind==='select')control=`<select data-z629-key="${escape(f.key)}"><option value="">انتخاب کنید</option>${f.options.map(o=>`<option value="${escape(o)}" ${v===o?'selected':''}>${escape(o)}</option>`).join('')}</select>`;
+ if(f.kind==='variants')control='<input type="hidden" data-z629-key="'+escape(f.key)+'" value="'+escape(v)+'"><div class="z66-color-editor" data-z66-color-editor="1" data-z66-existing="'+(v?'1':'0')+'"></div>';
+ else if(f.kind==='select')control=`<select data-z629-key="${escape(f.key)}"><option value="">انتخاب کنید</option>${f.options.map(o=>`<option value="${escape(o)}" ${v===o?'selected':''}>${escape(o)}</option>`).join('')}</select>`;
  else control=`<input data-z629-key="${escape(f.key)}" type="${f.kind==='number'?'number':f.kind==='date'?'date':'text'}" ${f.kind==='number'?'min="0" step="any"':''} ${['sourceCurrency','targetCurrency'].includes(f.key)?'list="z6530Currencies"':''} maxlength="140" value="${escape(v)}" placeholder="${['sourceCurrency','targetCurrency'].includes(f.key)?'USD / AFN':'اختیاری'}">`;
  return `<label class="z629-field"><span>${escape(f.label)}</span>${control}</label>`;
  }).join('');
  const note=t==='gold'?'وزن، عیار و اجرت برای این سند نگهداری می‌شوند؛ مبلغ فاکتور را پس از بررسی خودتان وارد کنید.':t==='mobile'?'برای موبایل IMEI و برای لوازم جانبی سریال یا مدل را وارد کنید.':t==='exchange'?'نرخ و کارمزد را دقیق بررسی کنید. این مشخصات پیش‌نمایش‌اند و به‌تنهایی پول را بین صندوق‌های ارزی منتقل نمی‌کنند.':t==='contractor'?'متره، مرحله قرارداد و پیش‌پرداخت را با رسید واقعی تطبیق دهید. این فورم به‌تنهایی صندوق را تغییر نمی‌دهد.':'مشخصات مرتبط در همین محصول یا ردیف فاکتور محفوظ می‌مانند.';
  return `<details class="z629-industry" data-z629-type="${t}" ${expanded?'open':''}><summary>✦ مشخصات مخصوص ${escape(label(t))} <small>${forOrder?'در این ردیف':'در گدام'}</small></summary><div class="z629-fields">${body}</div>${t==='exchange'?'<datalist id="z6530Currencies"><option value="AFN"><option value="USD"><option value="EUR"><option value="PKR"><option value="GBP"><option value="AED"><option value="SAR"><option value="CNY"><option value="IRR"><option value="INR"></datalist>':''}<p class="z629-hint">${escape(note)}</p></details>`;
 }
-const labels={general:'تجارت عمومی',supermarket:'سوپرمارکت',pharmacy:'دواخانه',laboratory:'لابراتوار',gold:'زرگری',mobile:'موبایل',wholesale:'عمده‌فروشی',distribution:'توزیع',clothing:'پوشاک',footwear:'کفش',bookstore:'کتاب‌فروشی',cosmetics:'آرایشی',electronics:'وسایل برقی',furniture:'مبلمان',hardware:'ابزارفروشی', construction:'مصالح ساختمانی',exchange:'صرافی و تبدیل ارز',contractor:'شرکت ساختمانی و پروژه‌ها',services:'خدمات',company:'شرکت تجارتی'};
+const labels={accessories:'لوازم موبایل و پوش‌فروشی',general:'تجارت عمومی',supermarket:'سوپرمارکت',pharmacy:'دواخانه',laboratory:'لابراتوار',gold:'زرگری',mobile:'موبایل',wholesale:'عمده‌فروشی',distribution:'توزیع',clothing:'پوشاک',footwear:'کفش',bookstore:'کتاب‌فروشی',cosmetics:'آرایشی',electronics:'وسایل برقی',furniture:'مبلمان',hardware:'ابزارفروشی', construction:'مصالح ساختمانی',exchange:'صرافی و تبدیل ارز',contractor:'شرکت ساختمانی و پروژه‌ها',services:'خدمات',company:'شرکت تجارتی'};
 function label(t){return labels[typeOf(t)]}
 function collect(container,type){if(!container)return normalize(type,{});const values={};for(const el of container.querySelectorAll('[data-z629-key]'))values[el.dataset.z629Key]=el.value;return normalize(type,values)}
 function fill(container,type,details){if(!container)return;const saved=details?.type===type?details.values||{}:{};for(const el of container.querySelectorAll('[data-z629-key]'))el.value=String(saved[el.dataset.z629Key]??'')}
-function display(details,limit=8){const t=typeOf(details?.type),val=details?.values||{};return fields(t).filter(f=>val[f.key]!==undefined&&String(val[f.key]).trim()!=='').slice(0,limit).map(f=>[f.label,String(val[f.key])]);}
+function display(details,limit=8){const t=typeOf(details?.type),val=details?.values||{};
+ return fields(t).filter(f=>val[f.key]!==undefined&&String(val[f.key]).trim()!=='').slice(0,limit).map(f=>{
+  if(f.kind==='variants'){let a=[];try{a=JSON.parse(val[f.key])}catch(_){}
+   return [f.label,Array.isArray(a)?a.map(r=>r.color+' ('+r.qty+')').join('، '):'—'];}
+  return [f.label,String(val[f.key])];
+ });}
 return Object.freeze({schema,types:schemaKeys,fields,normalize,render,collect,fill,display,label,typeOf});
 });
