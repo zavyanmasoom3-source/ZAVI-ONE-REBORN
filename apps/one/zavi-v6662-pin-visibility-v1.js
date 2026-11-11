@@ -68,6 +68,24 @@ function setupApprovedLogin(){
  const row=gate?.querySelector('.zawi-pin-field');
  if(!card||!row||gate.classList.contains('zavi66-approved-login'))return;
  gate.classList.add('zavi66-approved-login');
+ // Adjust only the CSS viewport value, never auth/session data.
+ let syncQueued=false;
+ const syncVisibleHeight=()=>{
+  if(syncQueued)return;
+  syncQueued=true;
+  requestAnimationFrame(()=>{
+   syncQueued=false;
+   const h=window.visualViewport?.height||window.innerHeight;
+   if(Number.isFinite(h)&&h>0)gate.style.setProperty('--z66-visible-height',Math.round(h)+'px');
+  });
+ };
+ window.visualViewport?.addEventListener('resize',syncVisibleHeight,{passive:true});
+ window.addEventListener('resize',syncVisibleHeight,{passive:true});
+ window.addEventListener('pageshow',syncVisibleHeight);
+ document.addEventListener('visibilitychange',syncVisibleHeight);
+ gate.addEventListener('focusin',syncVisibleHeight);
+ gate.addEventListener('focusout',syncVisibleHeight);
+ syncVisibleHeight();
  // Preserve a solid theme-aware card even when old legacy gradient CSS is !important.
  // Only this entry card is touched; all other original V66.62 cards stay unchanged.
  card.style.setProperty('background-color','var(--z66-card)','important');
@@ -77,6 +95,12 @@ function setupApprovedLogin(){
  style.id='zavi66ApprovedLoginCss';
  style.textContent=LOGIN_CSS;
  document.head.append(style);
+ // Separate approved mobile skin; loaded after the original dynamic CSS.
+ if(!document.getElementById('z66ApprovedEntryCss')){
+  const linked=document.createElement('link');linked.rel='stylesheet';
+  linked.id='z66ApprovedEntryCss';linked.href='./zavi-approved-entry-v6662.css?v=20261112-1';
+  document.head.append(linked);
+ }
  const picker=gate.querySelector('.zavi-auth-language');
  if(picker&&picker!==card.firstElementChild)card.insertBefore(picker,card.firstElementChild);
  // Preserve native PIN and recovery actions; new controls affect appearance only.
