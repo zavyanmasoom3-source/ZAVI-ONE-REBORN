@@ -210,7 +210,9 @@
       else pay.append(n);
     }
     // The real paid input remains in the original form; presets only set it.
-    const paid=form.elements.namedItem('paid');
+    // During DOM reorganization, nodes are momentarily detached from <form>.
+    // Resolve from the live payment section, not form.elements before attachment.
+    const paid=pay.querySelector('[name="paid"]');
     const modes=document.createElement('div');
     modes.className='z66-sale-paymodes';modes.setAttribute('role','group');
     modes.setAttribute('aria-label','نوع پرداخت');
