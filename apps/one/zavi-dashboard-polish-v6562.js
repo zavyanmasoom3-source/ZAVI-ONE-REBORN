@@ -81,3 +81,15 @@ function start(){
 }
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",start,{once:true});else start();
 })();
+
+/* Owner-approved 66.62 dashboard module is loaded after the authentic original
+ * dashboard. The native accounting render/submit/print functions remain intact. */
+(()=>{
+ 'use strict';
+ if(document.querySelector('script[data-z66-owner-dashboard]'))return;
+ const script=document.createElement('script');
+ script.src='./zavi-owner-dashboard-v6662.js?v=1';
+ script.dataset.z66OwnerDashboard='1';
+ script.async=false;
+ (document.head||document.documentElement).append(script);
+})();
