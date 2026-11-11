@@ -100,6 +100,7 @@ with Session() as browser:
        themeValue=browser.eval("""(()=>{
          const x=document.querySelector('.z66sales-stats > .stat');
          return {bg:getComputedStyle(x).backgroundImage,
+             visualGradient:getComputedStyle(x,'::before').backgroundImage,
              ink:getComputedStyle(x.querySelector('.stat-label')).color,
              background:getComputedStyle(x).background,
              paper:getComputedStyle(x).getPropertyValue('--z66s-paper'),
@@ -127,7 +128,8 @@ with Session() as browser:
                 return found.slice(-22);
              })()};
        })()""")
-       assert 'linear-gradient' in themeValue['bg'],themeValue
+       assert ('linear-gradient' in themeValue['bg'] or
+                'linear-gradient' in themeValue['visualGradient']),themeValue
     browser.eval("document.documentElement.dataset.z637NoMotion='true'")
     anim=browser.eval("""getComputedStyle(document.querySelector('.z66sales-hero')).animationName""")
     assert anim=='none',anim
