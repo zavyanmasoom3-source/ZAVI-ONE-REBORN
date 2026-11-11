@@ -1750,6 +1750,56 @@ function commit(fn){if(window.zaviCloudCanEdit&&!window.zaviCloudCanEdit()){toas
  next.audit=Array.isArray(next.audit)?next.audit:[];
  next.audit.push({id:newId('a'),at:new Date().toISOString(),action,actor_uid:currentUser,workspace_id:currentWorkspace,counts:additions,source:'zavi-one-v64.4'});
  if(!save(next))return false;render();return true}
+// V66.62: colour-aware warehouse moves are regular offline-first ledger
+// transactions in the SAME workspace snapshot as invoices and stock edits.
+// Never forward a colour move to the legacy product-only warehouse RPC.
+window.zaviVariantWarehouseCatalog=()=>{
+ if(window.zaviCloudRestoreInfo?.()?.role!=='owner')return [];
+ const api=window.ZaviVariantInventory6662;
+ return db.products.map(p=>{
+  const colours=api.rows(p),tracked=api.tracked(p),allocated=!!p.variantLedger?.warehouseLedger;
+  return {id:p.id,name:p.name,colours:colours.map(x=>({key:x.key,color:x.color,barcode:x.barcode})),
+   variant:colours.length>0||tracked,allocated};
+ });
+};
+window.zaviVariantWarehouseRead=()=>{
+ const api=window.ZaviVariantInventory6662;
+ if(window.zaviCloudRestoreInfo?.()?.role!=='owner')return [];
+ const output=[];
+ for(const p of db.products)if(p.variantLedger?.warehouseLedger){
+  const rows=api.warehouseBalances(p,db.tx);
+  output.push(...rows.map(x=>({...x,productId:p.id,productName:p.name})));
+ }
+ return output;
+};
+window.zaviVariantWarehousePost=(input)=>{
+ const info=window.zaviCloudRestoreInfo?.();
+ if(info?.role!=='owner'||!info.workspace||window.zaviCloudCanEdit?.()===false)
+  throw Error('انتقال گدام فقط برای مالک مجاز است.');
+ const p=db.products.find(x=>x.id===input.productId);
+ if(!p||!p.variantLedger?.warehouseLedger)
+  throw Error('موجودی رنگ‌ها ابتدا باید به گدام اختصاص داده شود.');
+ const catalog=new Set((window.ZaviWarehouseV1?.list?.()||[]).filter(w=>w.is_active).map(w=>w.id));
+ for(const a of p.variantLedger.warehouseLedger.initial)catalog.add(a.warehouseId);
+ if(!catalog.has(input.fromWarehouseId)||!catalog.has(input.toWarehouseId))
+  throw Error('گدام مبدأ یا مقصد در این فروشگاه فعال نیست.');
+ const quantity=String(input.qty||'');
+ const engine=window.ZaviVariantInventory6662;
+ if(!engine.balances(p,db.tx).some(x=>x.key===engine.key(input.variantKey)))
+  throw Error('رنگ انتخاب‌شده در این محصول وجود ندارد.');
+ const id=String(input.id||'');
+ const success=commit(n=>{
+  const obj=n.products.find(x=>x.id===p.id);
+  const entry=engine.moveWarehouse(obj,n.tx,{
+   id,fromWarehouseId:input.fromWarehouseId,toWarehouseId:input.toWarehouseId,
+   variantKey:input.variantKey,qty:quantity,date:nowISO()
+  });
+  entry.code=nextCode(n);
+  entry.note=String(input.reference||'').slice(0,150);
+ });
+ if(!success)throw Error('انتقال در حافظه ثبت نشد؛ اطلاعات تغییر نکرد.');
+ return true;
+};
 function currencyLocked(){return db.tx.length>0||db.products.length>0||db.contacts.length>0||db.accounts.some(a=>num(a.opening)!==0)}
 const PRODUCT_CATS=['عمومی','مواد خوراکی','پوشاک','لوازم برقی','لوازم منزل','لوازم صحی','خدمات','سایر'];const EXPENSE_CATS=['کرایه دوکان','معاش کارمند','برق و انترنت','حمل‌ونقل','بسته‌بندی','مصارف عمومی','سایر مصارف'];
 const ZAVI_MODULES=[['dashboard','داشبورد'],['sales','فروش'],['purchases','خرید'],['products','گدام'],['waste','ضایعات (ثبت دستی)'],['contacts','مشتریان'],['debtors','حساب قرضداران'],['creditors','قرض‌های ما'],['money','دریافت و پرداخت'],['hawala','حواله'],['expenses','مصارف'],['reports','راپورها'],['journal','روزنامچه'],['repairs','تعمیرات (اختیاری)']];
