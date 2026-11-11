@@ -194,3 +194,18 @@ html[data-zavi-theme="glass"]{
  #content .zavi-clean-settings-group>summary::before,
  #content .zavi-settings-feature>summary::after{transition:none!important}
 }
+
+/* Approved mobile settings uses only the assistant icon: do not cover inputs
+   with the legacy floating mic. The voice command engine and toggle remain. */
+body.zavi-settings-clean-active #z197-dashboard-mic,
+body.zavi-settings-clean-active #z196-launch,
+body.zavi-settings-clean-active #z605-launch,
+body.zavi-settings-clean-active.zavi-show-voice #z605-launch{
+  display:none!important;
+}
+body.zavi-settings-clean-active #z637AiButton,
+body.zavi-settings-clean-active .z637-ai-button{
+  width:44px!important;height:44px!important;min-width:44px!important;
+  min-height:44px!important;bottom:calc(78px + env(safe-area-inset-bottom,0px))!important;
+  inset-inline-end:auto;inset-inline-start:10px;
+}
