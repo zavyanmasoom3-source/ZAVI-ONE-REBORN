@@ -77,7 +77,8 @@
   electronics:['sales','purchases','products','barcode'],mobile:['sales','purchases','products','barcode'],
   furniture:['sales','purchases','products','orders'],hardware:['sales','purchases','products','barcode'],
   construction:['sales','purchases','products','multi_warehouse'],exchange:['contacts','banking','reports'],contractor:['sales','purchases','orders','reports','multi_warehouse'],services:['services','orders','contacts'],
-  company:['sales','purchases','products','banking','reports']
+  company:['sales','purchases','products','banking','reports'],
+  accessories:['sales','purchases','products','barcode','multi_warehouse','reports']
 };
  function featureSearch(){const q=String($('z645FeatureSearch')?.value||'').trim().toLocaleLowerCase();document.querySelectorAll('#features .switch').forEach(el=>{el.hidden=!!q&&!el.textContent.toLocaleLowerCase().includes(q)})}
  function renderFeatures(){
@@ -108,7 +109,35 @@
  function snapshot(){return {...formData(),batches:batchRows.filter(x=>!x._pending),services:serviceRows.filter(x=>!x._pending)}}
  function getCached(){const snap=read(snapshotKey())||read(oldSnapshotKey());return snap?.owner_uid===uid&&snap?.workspace_id===ws?snap:null}
  function getDraft(){const draft=read(draftKey())||read(oldDraftKey());return draft?.owner_uid===uid&&draft?.workspace_id===ws&&draft.pending?draft:null}
- async function stage(){await authorized();const data=snapshot();const draft={owner_uid:uid,workspace_id:ws,pending:true,updated_at:new Date().toISOString(),data};save(draftKey(),draft);save('zavi_v638_business_type_'+uid+'_'+ws,String(data.business_type||'general'));return data}
+ // Only an explicit, owner-confirmed profile Save can change the stored trade.
+ // Saving suggested modules never silently changes the trade, name or currency.
+ function committedType(){
+  const type=String(getDraft()?.data?.business_type||getCached()?.data?.business_type||
+    localStorage.getItem('zavi_v638_business_type_'+uid+'_'+ws)||'general');
+  return type;
+ }
+ async function stage(allowTypeChange){
+  await authorized();
+  const previous=getDraft()?.data||getCached()?.data||snapshot();
+  const entered=snapshot();
+  const before=committedType(),chosen=entered.business_type;
+  if(allowTypeChange&&chosen!==before){
+   const label=$('type').selectedOptions?.[0]?.textContent||chosen;
+   const warning='نوع کسب‌وکار از «'+before+'» به «'+label+'» تغییر کند؟\\n'
+      +'دسته‌بندی‌ها و فیلدهای پیشنهادی عوض می‌شوند، اما محصولات و فاکتورهای قبلی حذف نمی‌شوند.\\n'
+      +'تغییر فقط با تأیید و ذخیرهٔ مالک انجام می‌شود.';
+   if(!window.confirm(warning)){ $('type').value=before;renderFeatures();renderContextV638();
+     throw Error('تغییر نوع کسب‌وکار لغو شد.');}
+  }
+  const data=allowTypeChange?entered:{...previous,features:entered.features,business_type:before};
+  // Never write a new type on the feature-only save path.
+  if(!allowTypeChange)data.business_type=before;
+  const draft={owner_uid:uid,workspace_id:ws,pending:true,
+    updated_at:new Date().toISOString(),data};
+  save(draftKey(),draft);
+  save('zavi_v638_business_type_'+uid+'_'+ws,String(data.business_type||'general'));
+  return data;
+ }
  async function upsert(table,record){const existing=await request(table);return existing.length?request(table,'PATCH',record):request(table,'POST',{workspace_id:ws,...record})}
  async function flushProfile(){
   const draft=getDraft();if(!draft)return;
@@ -162,7 +191,9 @@
    }
   }catch(e){msg('مدیریت عمومی: '+(e?.message||e),true)}finally{busy=false}
  }
- async function saveSettings(){try{await stage();msg('✅ تنظیمات در دستگاه محفوظ شد.');if(online())await load()}catch(e){msg('ذخیره تنظیمات ناموفق بود: '+(e?.message||e),true)}}
+ async function saveSettings(allowTypeChange){try{await stage(allowTypeChange);
+   msg('✅ تنظیمات در دستگاه محفوظ شد.');if(online())await load()
+  }catch(e){msg('ذخیره تنظیمات ناموفق بود: '+(e?.message||e),true)}}
  $('z645FeatureSearch')?.addEventListener('input',featureSearch);
  $('z645Recommended')?.addEventListener('click',()=>{
   if(!owner()){msg('فقط مالک می‌تواند امکانات را تغییر دهد.',true);return}
@@ -174,7 +205,8 @@
   const saved=getCached()?.data||{};current={...(saved.features||{})};renderFeatures();msg('انتخاب‌ها به آخرین تنظیمات تأییدشده برگشتند.');
  });
  $('type').onchange=()=>{renderFeatures();renderContextV638()};$('z638AllModules').onchange=renderContextV638;$('reload').onclick=load;
- $('saveProfile').onclick=saveSettings;$('saveFeatures').onclick=saveSettings;
+ $('saveProfile').onclick=()=>saveSettings(true);
+ $('saveFeatures').onclick=()=>saveSettings(false);
  $('saveBatch').onclick=async()=>{try{
   const product_ref=$('product').value.trim(),batch_number=$('batch').value.trim(),expires_on=$('expiry').value;
   if(!product_ref||!batch_number||!expires_on)throw Error('کد محصول، شماره بچ و تاریخ انقضا ضروری است.');
