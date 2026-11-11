@@ -5,6 +5,7 @@ records, Supabase data, credentials or production workspaces are touched.
 """
 from chrome_cdp import Session
 import json
+import time
 from pathlib import Path
 
 EXPECTED={'store','look','cloud','security','invoice','subscription','advanced'}
@@ -71,6 +72,22 @@ with Session() as browser:
     assert not layout['leakedLegacy'],layout
     assert layout['visibleTopLevel']==7,layout
     assert layout['scrollWidth']<=layout['hubWidth']+5,layout
+    # The old 3-theme widget used to attach itself AFTER the settings hub,
+    # showing a large extra card despite all seven folders being collapsed.
+    browser.until("""(()=>{
+      const look=document.querySelector('#content .zavi-clean-settings-group[data-group="look"]');
+      const picker=document.getElementById('zavi-theme-controls');
+      return !!picker && look?.contains(picker);
+    })()""",'native 3-theme picker moved to compact appearance section')
+    theme_location=browser.eval("""(()=>{
+      const picker=document.getElementById('zavi-theme-controls');
+      return {insideLook:!!picker?.closest('[data-group="look"]'),
+        directUnderHub:picker?.parentElement?.classList.contains('zavi-clean-settings-hub'),
+        duplicates:document.querySelectorAll('#zavi-theme-controls').length,
+        choices:picker?.querySelectorAll('[data-zavi-theme-choice]').length};
+    })()""")
+    assert theme_location['insideLook'] and not theme_location['directUnderHub'],theme_location
+    assert theme_location['duplicates']==1 and theme_location['choices']==3,theme_location
 
 
     display=browser.eval("""(()=>{
@@ -159,6 +176,11 @@ with Session() as browser:
     })()""")
     browser.until("""document.querySelectorAll('#content .zavi-clean-settings-group[open]').length===0""",
       'seven closed settings cards for visual snapshot')
+    # Never accept splash-screen captures as proof of the real settings layout.
+    # The original V66.62 intro can start 130ms AFTER unlock.
+    time.sleep(.28)
+    browser.until("""!document.querySelector('.z6512-splash,.z6513-splash')""",
+      'original V66.62 intro has fully disappeared before visual QA',12)
     Path('qa-settings').mkdir(exist_ok=True)
     Path('qa-settings/approved-66.62-settings-dark.png').write_bytes(browser.screenshot())
     browser.command('Emulation.setDeviceMetricsOverride',{'width':360,'height':780,
