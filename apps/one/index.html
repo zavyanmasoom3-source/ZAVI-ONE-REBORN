@@ -1740,7 +1740,7 @@ function save(next){
  if(window.zaviCloudAfterSave)window.zaviCloudAfterSave(next);
  return true;
 }
-function commit(fn){if(window.zaviCloudCanEdit&&!window.zaviCloudCanEdit()){toast(window.zaviAccessDiagnostic?.()||'اجازه ثبت معامله وجود ندارد.');return false}const next=JSON.parse(JSON.stringify(db));try{fn(next)}catch(e){toast(e.message||'خطا در ثبت اطلاعات');return false}
+function commit(fn){if(window.zaviCloudCanEdit&&!window.zaviCloudCanEdit()){toast(window.zaviAccessDiagnostic?.()||'اجازه ثبت معامله وجود ندارد.');return false}const next=JSON.parse(JSON.stringify(db));try{fn(next);window.ZaviVariantInventory6662?.verifyWorkspace(next)}catch(e){toast(e.message||'خطا در ثبت اطلاعات');return false}
  // This is a LOCAL activity history, not a tamper-proof central audit ledger.
  // The event is included in the same atomic workspace snapshot as the change.
  const additions={products:(next.products?.length||0)-(db.products?.length||0),contacts:(next.contacts?.length||0)-(db.contacts?.length||0),transactions:(next.tx?.length||0)-(db.tx?.length||0)};
