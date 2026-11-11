@@ -8,6 +8,7 @@ const dict={
  en:{start:'Scan barcode',close:'Close camera',ready:'Point the camera at the barcode.',unavailable:'Camera scanning unavailable; enter the barcode manually.',secure:'Camera requires HTTPS or an installed app.',denied:'Camera permission denied; enter the code manually.',retry:'Camera stopped. Please try again.'}
 };
 const ids=new Set(['zaviBarcodeScan','zaviWarehouseScan','fld_sku']);
+const isProductColourId=id=>/^z66-colour-barcode-[1-9][0-9]{0,2}$/.test(String(id||''));
 const messages=()=>{const l=(document.documentElement.lang||'fa-AF').toLowerCase();return dict[l.startsWith('en')?'en':l.startsWith('ps')?'ps':'fa']};
 function notify(value){if(typeof window.toast==='function')window.toast(value);else window.alert(value)}
 let state=null,serial=0,frame=0;
@@ -30,7 +31,10 @@ function deliver(value,token){
  stop();input.value=clean;
  input.dispatchEvent(new Event('input',{bubbles:true}));
  input.dispatchEvent(new Event('change',{bubbles:true}));
- if(id!=='fld_sku')input.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true,cancelable:true}));
+ // Colour barcodes must NEVER simulate Enter: it can submit the actual product
+ // form before the user finishes the remaining colour or payment details.
+ if(id!=='fld_sku'&&!isProductColourId(id))
+   input.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true,cancelable:true}));
  input.focus({preventScroll:true});
 }
 function panel(s){
@@ -67,8 +71,10 @@ async function loop(token){
  if(state===s&&s.detector)frame=requestAnimationFrame(()=>loop(token));
 }
 async function start(id='zaviBarcodeScan'){
- if(!ids.has(id))return;
+ if(!ids.has(id)&&!isProductColourId(id))return;
  const input=document.getElementById(id);if(!input){notify(messages().unavailable);return}
+ if(isProductColourId(id)&&!input.matches(
+   '#dialogForm.z66-product-editor .z66-variant-row input[data-z66-barcode]'))return;
  stop();
  if(!window.isSecureContext){notify(messages().secure);return}
  if(!navigator.mediaDevices?.getUserMedia){notify(messages().unavailable);return}
