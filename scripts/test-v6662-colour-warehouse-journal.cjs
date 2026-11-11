@@ -51,4 +51,18 @@ const reloaded=JSON.parse(JSON.stringify(snapshot));
 assert.deepEqual(V.warehouseBalances(reloaded.products[0],reloaded.tx),
  V.warehouseBalances(p,tx),'offline JSON reload must preserve all balances and moves');
 assert.equal(V.verifyWorkspace(reloaded),true);
+// A later receipt must never hide a negative stock period in the journal.
+const replayProduct={id:'qa-replay',openingQty:2,industryDetails:{type:'accessories',values:{
+ colorVariants:JSON.stringify([{color:'سیاه',qty:2,barcode:'REPLAY-BLACK'}])}}};
+const replay=[];
+V.begin(replayProduct,V.rows(replayProduct),2,replay);
+V.allocateWarehouse(replayProduct,replay,A);
+replay.push({id:'invalid-sale-before-receipt',type:'sale',
+ items:[{productId:'qa-replay',variantKey:V.key('سیاه'),warehouseId:B,qty:1}]});
+replay.push({id:'receipt-after-invalid-sale',type:'purchase',
+ items:[{productId:'qa-replay',variantKey:V.key('سیاه'),warehouseId:B,qty:1}]});
+assert.throws(()=>V.warehouseBalances(replayProduct,replay),/پیش از موجودی کافی/);
+assert.throws(()=>V.verifyWorkspace({products:[replayProduct],tx:replay}),/پیش از موجودی کافی/);
+const totalReplay=[];
+V.begin({...replayProduct,id:'qa-replay-2',variantLedger:undefined},V.rows(replayProduct),2,totalReplay);
 console.log('PASS: original 66.62 colour warehouse transfer, sale, purchase, return/void, no overdraw, idempotence, offline replay');
