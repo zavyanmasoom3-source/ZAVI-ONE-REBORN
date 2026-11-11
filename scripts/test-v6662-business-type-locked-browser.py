@@ -65,7 +65,9 @@ with Session() as browser:
     assert cancelled['approvalVisible'] and cancelled['unchecked'],cancelled
     accepted=browser.eval("""(async()=>{
        const sel=document.getElementById('type');
-       sel.value='accessories';sel.dispatchEvent(new Event('change',{bubbles:true}));
+       // The owner's choice is still selected after the first confirmation prompt.
+       // Re-dispatching "change" here would deliberately invalidate approval.
+       if(sel.value!=='accessories')throw Error('Trade preview unexpectedly changed');
        const checkbox=document.getElementById('z6662ConfirmTrade');
        if(!checkbox)throw Error('Owner confirmation checkbox is required');
        checkbox.checked=true;
