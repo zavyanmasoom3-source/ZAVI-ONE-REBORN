@@ -9,7 +9,7 @@ on:
       - 'scripts/render-qa-screens.py'
       - 'scripts/test-pdf-59-route-coverage.py'
       - 'scripts/test-login-design-browser.py'
-      - 'scripts/test-compact-workflow-browser.py'
+      - 'scripts/test-v6662-sale-onepage-browser.py'
       - 'scripts/test-phase2-recovery-contract-browser.py'
       - 'scripts/test-phase2-display-sizes-browser.py'
       - 'scripts/test-phase3-offline-status-browser.py'
@@ -50,8 +50,8 @@ jobs:
         run: python3 scripts/test-pdf-59-route-coverage.py
       - name: Check ONE and ADMIN login controls across three themes and language labels
         run: python3 scripts/test-login-design-browser.py
-      - name: Verify owner-approved one-page sale and native purchase, price and barcode logic
-        run: python3 scripts/test-compact-workflow-browser.py
+      - name: Verify approved one-page sale, typed unit price, barcode repeat and safe submission
+        run: python3 scripts/test-v6662-sale-onepage-browser.py
       - name: Verify full private PIN recovery with isolated fake owner approval
         run: python3 scripts/test-phase2-recovery-contract-browser.py
       - name: Verify independent text/interface/icon sliders and persistence
@@ -78,7 +78,7 @@ jobs:
             qa-phase2-recovery/
             qa-design-contrast/
             qa-unified-reference/
-            qa-compact-workflow/
+            qa-v6662-sale/
             qa-admin-compact/
             qa-owner-apk-style/
           retention-days: 7
