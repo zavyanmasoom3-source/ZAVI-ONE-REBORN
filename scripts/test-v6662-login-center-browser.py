@@ -16,6 +16,44 @@ with Session() as browser:
       && document.getElementById('zawiPrivateGate')?.classList.contains('zavi66-approved-login')
       && !!document.getElementById('zavi66PinHint')""",
       'V66.62 PIN login appears with approved theme')
+    # The approved neon theme is functional, not just a painted mock.
+    neon=browser.eval("""(()=>{
+       const g=document.getElementById('zawiPrivateGate');
+       const c=g.querySelector('.zawi-auth-card');
+       const controls=[...g.querySelectorAll('.z66neon-theme')];
+       return {
+          brand:g.querySelector('.z66neon-brand')?.textContent?.replace(/\s+/g,' ').trim(),
+          themes:controls.map(x=>({mode:x.dataset.z66Theme,
+             accessible:!!x.getAttribute('aria-label'),type:x.type})),
+          gradient:getComputedStyle(c).backgroundImage,
+          logo:g.querySelector('.zawi-lock-emblem img')?.getAttribute('src'),
+          originalPIN:!!g.querySelector('#zawiPinOne[pattern]'),
+          recovery:!!g.querySelector('#zawiForgotPinBtn')
+       };
+    })()""")
+    assert neon['brand']=='ZAVI ONE',neon
+    assert {x['mode'] for x in neon['themes']}=={'light','dark'},neon
+    assert all(x['accessible'] and x['type']=='button' for x in neon['themes']),neon
+    assert 'linear-gradient' in neon['gradient'],neon
+    assert neon['logo']=='./zavi-one-original-logo.png' and neon['originalPIN'] and neon['recovery'],neon
+    browser.eval("document.querySelector('.z66neon-theme[data-z66-theme=light]').click()")
+    browser.until("document.documentElement.dataset.zaviTheme==='light'",
+                  'native light theme toggled through new login control')
+    assert browser.eval("""document.querySelector(
+         '.z66neon-theme[data-z66-theme=light]').getAttribute('aria-pressed')""")=='true'
+    browser.eval("document.querySelector('.z66neon-theme[data-z66-theme=dark]').click()")
+    browser.until("document.documentElement.dataset.zaviTheme==='dark'",
+                  'native dark theme toggled through new login control')
+    assert browser.eval("""document.querySelector(
+         '.z66neon-theme[data-z66-theme=dark]').getAttribute('aria-pressed')""")=='true'
+    browser.eval("document.documentElement.dataset.z637NoMotion='true'")
+    motion=browser.eval("""(()=>{
+       const c=document.querySelector('#zawiPrivateGate .zawi-auth-card');
+       return {card:getComputedStyle(c).animationName,
+         glow:getComputedStyle(c.querySelector('.zawi-lock-emblem')).animationName};
+    })()""")
+    assert motion['card']=='none' and motion['glow']=='none',motion
+    browser.eval("document.documentElement.removeAttribute('data-z637-no-motion')")
     sizes=[(320,568),(360,640),(393,852),(430,932),(320,460),(720,400)]
     tested=[]
     for width,height in sizes:
