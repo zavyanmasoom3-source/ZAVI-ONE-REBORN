@@ -34,8 +34,7 @@ with Session() as browser:
          overlays:document.querySelectorAll('#overlay').length,
          scripts:[...document.querySelectorAll('script[src]')].filter(x=>x.src.includes('product-adaptive')).map(x=>x.src)};
     })()"""),flush=True)
-      browser.until("""!!document.querySelector('#dialogForm.z66-product-editor[data-z66-product-trade="accessories"]
-        .z66-color-editor[data-z66-color-editor="1"]')""",
+      browser.until("""!!document.querySelector('#dialogForm.z66-product-editor[data-z66-product-trade="accessories"] .z66-color-editor[data-z66-color-editor="1"]')""",
         'real accessories product form enhanced with native variants')
     except Exception:
       debug=browser.eval("""(()=>{
@@ -129,8 +128,7 @@ with Session() as browser:
       window.zaviActiveIndustry=()=> 'gold';
       openEntity('product');
     })()""")
-    browser.until("""!!document.querySelector('#dialogForm.z66-product-editor[data-z66-product-trade="gold"]
-      [data-z629-key="jewelryKind"]')""",
+    browser.until("""!!document.querySelector('#dialogForm.z66-product-editor[data-z66-product-trade="gold"] [data-z629-key="jewelryKind"]')""",
       'genuine gold catalogue: locket and jewellery set')
     gold=browser.eval("""(()=>{
       const f=document.getElementById('dialogForm'),c=f.elements.namedItem('category');
