@@ -3294,9 +3294,13 @@ function openOrder(kind,defaultContactId='',chinaDefault=false){
   if(variantEngine.rows(p).length&&!variantEngine.tracked(p)){
    toast('ابتدا موجودی رنگ‌های این محصول را توسط مالک تطبیق کنید.');return;
   }
+  // An exact colour barcode owns an invoice row. Never coalesce a white
+  // scan into an existing black row just because the product ID is the same.
+  const scannedKey=normalizeName(code);
   let row=[...box.querySelectorAll('.order-line')].find(r=>
    r.dataset.scanProductId===p.id&&(!variantEngine.tracked(p)||
-    (matchedColour&&r.querySelector('[data-field="variantKey"]')?.value===matchedColour.key)));
+    (matchedColour&&r.dataset.scanVariantCode===scannedKey&&
+     r.querySelector('[data-field="variantKey"]')?.value===matchedColour.key)));
   if(row){
    const qty=row.querySelector('[data-field="qty"]');
    qty.value=String(qtyRound(num(qty.value)+1));
@@ -3307,6 +3311,7 @@ function openOrder(kind,defaultContactId='',chinaDefault=false){
    row=[...box.querySelectorAll('.order-line')].find(r=>!r.querySelector('[data-field="productName"]').value.trim());
    if(!row){addLine();row=box.querySelector('.order-line:last-child');}
    row.dataset.scanProductId=p.id;
+   if(matchedColour)row.dataset.scanVariantCode=scannedKey;
    row.querySelector('[data-field="productName"]').value=p.name;
    row.querySelector('[data-field="productSku"]').value=p.sku;
    const price=row.querySelector('[data-field="price"]');
