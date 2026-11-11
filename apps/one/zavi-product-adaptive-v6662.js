@@ -130,6 +130,7 @@ function enhance(form){
    '<button type="button" data-z66-add-color>+ '+esc(tr('افزودن رنگ','رنګ زیاتول','Add colour'))+'</button></div>'+
    '<div class="z66-variant-rows"></div><p class="z66-variant-note">'+esc(tr('تعداد و بارکد هر رنگ ثبت می‌شود؛ موجودی حسابداری هنوز برای کل محصول محاسبه می‌شود.','د هر رنګ شمېر ثبتېږي؛ حسابداري موجودي لا هم د ټول توکي لپاره ده.','Colour quantities are recorded, but accounting stock remains product-level.'))+'</p>';
    const list=editor.querySelector('.z66-variant-rows');let rowNo=0;
+   const isEditing=/ویرایش|edit/i.test(title);let variantsTouched=false;
    function row(data={}){
     if(list.children.length>=20)return status('حداکثر ۲۰ رنگ برای هر محصول مجاز است.');
     const ix=++rowNo,box=document.createElement('div');box.className='z66-variant-row';
@@ -139,8 +140,8 @@ function enhance(form){
      '<label>'+esc(tr('بارکد این رنگ','د دې رنګ بارکوډ','Colour barcode'))+'<input id="'+id+'" data-z66-barcode dir="ltr" maxlength="70" value="'+esc(data.barcode||'')+'"></label>'+
      '<button type="button" class="z66-variant-camera" data-zavi-camera-open="'+id+'">▣ '+esc(tr('اسکن دوربین','کمره سکین','Scan'))+'</button>'+
      '<button type="button" class="z66-variant-delete">'+esc(tr('حذف رنگ','رنګ لرې کول','Remove'))+'</button>';
-    box.querySelector('.z66-variant-delete').onclick=()=>{box.remove();sync()};
-    box.addEventListener('input',sync);list.append(box);sync();
+    box.querySelector('.z66-variant-delete').onclick=()=>{variantsTouched=true;box.remove();sync()};
+    box.addEventListener('input',()=>{variantsTouched=true;sync()});list.append(box);sync();
    }
    const data=document.createElement('datalist');data.id='z66Colours';
    ['سیاه','سفید','شفاف','آبی','سرخ','سبز','صورتی','طلایی','بنفش','نقره‌ای'].forEach(v=>data.append(new Option('',v)));
@@ -153,11 +154,12 @@ function enhance(form){
    function sync(){
     const entries=extract().filter(x=>x.color||x.barcode||x.qty);
     hidden.value=JSON.stringify(entries);
-    if(entries.length&&!entries.some(x=>!x.color||!Number.isFinite(Number(x.qty))||Number(x.qty)<0))
+    if((!isEditing||variantsTouched)&&entries.length&&
+       !entries.some(x=>!x.color||!Number.isFinite(Number(x.qty))||Number(x.qty)<0))
       opening.value=String(entries.reduce((a,x)=>a+Number(x.qty),0));
    }
    oldVariants.forEach(row);
-   editor.querySelector('[data-z66-add-color]').onclick=()=>row({color:'',qty:'0',barcode:''});
+   editor.querySelector('[data-z66-add-color]').onclick=()=>{variantsTouched=true;row({color:'',qty:'0',barcode:''})};
    form.addEventListener('submit',e=>{
     const all=extract(),activeRows=all.filter(x=>x.color||x.barcode||Number(x.qty)!==0);
     if(!all.length)return;
@@ -175,7 +177,7 @@ function enhance(form){
      const sum=all.reduce((a,x)=>a+Number(x.qty),0);
      if(sum<=0)throw Error('مجموع تعداد رنگ‌ها باید مثبت باشد.');
      // Keep the native product stock_adjust accounting path authoritative.
-     opening.value=String(sum);
+     if(!isEditing||variantsTouched)opening.value=String(sum);
      hidden.value=JSON.stringify(all);
      const manually=String(extras.value||'').split(/[,;\n]+/).map(x=>x.trim())
        .filter(x=>x&&!priorBarcodes.has(x));
