@@ -52,7 +52,7 @@ with Session() as browser:
           industry:f?.querySelector('.z629-industry')?.dataset?.z629Type,
           editor:!!f?.querySelector('.z66-color-editor'),
           category:!!f?.querySelector('[name=category]'),
-          errors:window.__z66QaErrors||null
+          errors:window.ZaviProductAdaptiveError||null
         }
       })()""")
       print('DEBUG accessory mount:',debug,flush=True)
