@@ -15,6 +15,20 @@ with Session() as browser:
     browser.until("""!!document.querySelector('#content.z66d-root .z66d-chart-grid') &&
        document.querySelectorAll('#content .z66d-action').length===8""",
        'approved compact dashboard and quick actions are mounted')
+    stylesheet=browser.eval("""(()=>{
+      const e=document.querySelector('#z66OwnerDashboardCss');
+      const root=document.querySelector('#content');
+      const card=root?.querySelector('.z66d-summary');
+      return {link:!!e,url:e?.href,loaded:!!e?.sheet,
+        ruleCount:e?.sheet?.cssRules?.length||0,
+        rootClass:root?.className,
+        cardStyle:card?{background:getComputedStyle(card).backgroundColor,
+          display:getComputedStyle(card).display}:null};
+    })()""")
+    print('DASHBOARD_CSS_DIAGNOSTIC='+json.dumps(stylesheet,ensure_ascii=False),flush=True)
+    browser.until("""!!document.getElementById('z66OwnerDashboardCss')?.sheet &&
+      document.getElementById('z66OwnerDashboardCss').sheet.cssRules.length>50""",
+      'owner dashboard stylesheet loads and includes more than 50 rules')
     basics=browser.eval("""(()=>{
       const root=document.getElementById('content');
       const guide=root.querySelector('#z649DashboardExtras,.z643-workflow,.z642-smart,.z638-business-ribbon,.z639-focus-card');
