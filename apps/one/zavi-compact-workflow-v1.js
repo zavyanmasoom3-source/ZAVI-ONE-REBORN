@@ -247,7 +247,10 @@
           const discount=form.elements.namedItem('discount')?.value||'0';
           const value=decimal.roundMoney(Math.max(0,subtotal-decimal.roundMoney(discount)));
           paid.value=String(value);
-        }catch(_){return}
+        }catch(error){
+          modes.dataset.z66PaymentCalcError=String(error?.message||error);
+          return;
+        }
       }
       paid.dispatchEvent(new Event('input',{bubbles:true}));
     }
