@@ -110,3 +110,127 @@
  outline:3px solid #5aabff;outline-offset:2px;
 }
 html[dir="ltr"] #dialogForm .zavi-reference-continue{direction:ltr}
+
+
+/* ZAVI ONE 66.62 OWNER-APPROVED SINGLE-PAGE SALE ONLY.
+   All inputs are the original live accounting controls (no duplicate posting). */
+#dialogForm[data-zavi-sale-onepage="true"]{
+ --z66s-bg:#132958;--z66s-field:#1b376d;--z66s-edge:#4b75bc;
+ --z66s-text:#f6faff;--z66s-muted:#c6d9f6;--z66s-accent:#56dff3;
+ --z66s-secondary:#1a417d;--z66s-error:#ffbfc7}
+html[data-zavi-theme="light"] #dialogForm[data-zavi-sale-onepage="true"],
+html[data-zavi-appearance="light"] #dialogForm[data-zavi-sale-onepage="true"]{
+ --z66s-bg:#f4f8ff;--z66s-field:#fff;--z66s-edge:#b5cee9;
+ --z66s-text:#173858;--z66s-muted:#465f80;--z66s-accent:#076f9e;
+ --z66s-secondary:#e4effb;--z66s-error:#b51f39}
+html[data-zavi-theme="glass"] #dialogForm[data-zavi-sale-onepage="true"],
+html[data-zavi-appearance="glass"] #dialogForm[data-zavi-sale-onepage="true"]{
+ --z66s-bg:#183b74;--z66s-field:#23538d;--z66s-edge:#79a7d8;
+ --z66s-text:#fff;--z66s-muted:#daebff;--z66s-accent:#85e9ff;
+ --z66s-secondary:#245b93;--z66s-error:#ffcad5}
+#dialogForm[data-zavi-sale-onepage="true"] .modal-body{overflow-x:hidden!important}
+#dialogForm .z66-sale-single{display:grid;gap:9px;margin:8px 0 14px;min-width:0}
+#dialogForm .z66-sale-single .z66-sale-section{
+ min-width:0;padding:12px;border:1px solid var(--z66s-edge);
+ border-radius:14px;background:var(--z66s-bg);color:var(--z66s-text);
+ display:grid;gap:9px;box-shadow:none}
+#dialogForm .z66-sale-single h3{margin:0;color:var(--z66s-text)!important;
+ font:750 14px/1.45 var(--zds-font-family,Vazirmatn,Tahoma,Arial,sans-serif)}
+#dialogForm .z66-sale-single :is(.field label,.form-section-title){
+ display:block;color:var(--z66s-text)!important;line-height:1.55;font-size:12px}
+#dialogForm .z66-sale-single .field{min-width:0;margin:0}
+#dialogForm .z66-sale-single .form-grid{display:grid;grid-template-columns:minmax(0,1fr);
+ gap:9px!important;margin:0!important}
+#dialogForm .z66-sale-single :is(input:not([type="hidden"]),select,textarea){
+ max-width:100%;min-width:0;box-sizing:border-box;min-height:43px;padding:8px 10px;
+ background:var(--z66s-field)!important;color:var(--z66s-text)!important;
+ border:1px solid var(--z66s-edge)!important;border-radius:10px!important;
+ font-size:14px;line-height:1.5}
+#dialogForm .z66-sale-single :is(input,select,button,summary):focus-visible{
+ outline:3px solid #5fdbf6!important;outline-offset:2px!important}
+#dialogForm .z66-sale-single :is(input,textarea)::placeholder{color:var(--z66s-muted)!important;opacity:1}
+#dialogForm .z66-sale-single .zavi-barcode-box{
+ width:100%;padding:0!important;margin:0!important;background:transparent!important;
+ border:none!important;color:var(--z66s-text);min-width:0}
+#dialogForm .z66-sale-single .zavi-barcode-actions{
+ display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:7px!important;align-items:stretch}
+#dialogForm .z66-sale-single .zavi-barcode-actions #zaviBarcodeScan{
+ grid-column:1/-1;width:100%!important}
+#dialogForm .z66-sale-single .zavi-barcode-actions :is(button,[data-zavi-camera-open]){
+ min-height:43px!important;max-width:100%;font-size:12px!important;line-height:1.4;
+ white-space:normal;padding:7px!important;overflow-wrap:anywhere}
+#dialogForm .z66-sale-single #z650ManualProduct{
+ grid-column:1/-1;justify-self:stretch;min-height:37px!important}
+#dialogForm .z66-sale-single :is(#zaviBarcodeInvoicePreview,.z641-invoice-preview){
+ font-size:11px!important;line-height:1.55!important;padding:7px 9px!important;
+ margin:0!important;color:var(--z66s-muted)!important;
+ background:var(--z66s-secondary)!important;border:1px solid var(--z66s-edge)!important}
+#dialogForm .z66-sale-single .zawi-order-heading{display:none!important}
+#dialogForm .z66-sale-single #orderItems{display:grid;gap:8px!important;min-width:0}
+#dialogForm .z66-sale-single #orderItems .order-line{
+ padding:9px!important;min-width:0;border-radius:11px!important;
+ background:var(--z66s-secondary)!important;border:1px solid var(--z66s-edge)!important}
+#dialogForm .z66-sale-single .order-line .order-row{
+ display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 39px!important;
+ gap:7px!important;align-items:end!important}
+#dialogForm .z66-sale-single .order-line .z66-sale-input{
+ display:grid;gap:5px;min-width:0;color:var(--z66s-text);
+ font:650 11px/1.4 var(--zds-font-family,Vazirmatn,Tahoma,Arial,sans-serif)}
+#dialogForm .z66-sale-single .order-line .z66-sale-item-name{grid-column:1/-1}
+#dialogForm .z66-sale-single .order-line .z66-sale-input input{width:100%!important;min-height:42px!important}
+#dialogForm .z66-sale-single .order-line .remove-line{
+ grid-column:3;align-self:end;height:42px!important;width:38px!important;
+ border-radius:10px!important}
+#dialogForm .z66-sale-single .order-line :is(.line-status,details){
+ font-size:11px;line-height:1.5;color:var(--z66s-muted)!important}
+#dialogForm .z66-sale-single #addLine{
+ width:100%;min-height:43px!important;border-radius:11px;
+ border:1px solid var(--z66s-accent)!important;color:var(--z66s-text)!important;
+ background:var(--z66s-secondary)!important;font-size:13px!important}
+#dialogForm .z66-sale-single .totals{
+ border:1px solid var(--z66s-edge)!important;border-radius:11px;
+ background:var(--z66s-secondary)!important;padding:10px!important;
+ display:grid!important;gap:7px!important;margin:0!important;
+ color:var(--z66s-text)!important}
+#dialogForm .z66-sale-single .totals > div{
+ display:flex;justify-content:space-between;align-items:center;
+ gap:9px;min-width:0;font-size:13px!important;color:var(--z66s-text)!important}
+#dialogForm .z66-sale-single .totals b{color:var(--z66s-accent)!important}
+#dialogForm .z66-sale-single .z66-sale-paymodes{
+ display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+#dialogForm .z66-sale-single .z66-sale-paymode{
+ min-height:40px;min-width:0;background:var(--z66s-secondary);
+ border:1px solid var(--z66s-edge);border-radius:10px;
+ color:var(--z66s-text);font:700 12px/1.45 inherit;cursor:pointer}
+#dialogForm .z66-sale-single .z66-sale-paymode[aria-pressed="true"]{
+ color:#fff!important;background:linear-gradient(105deg,#195ad2,#12a9c8)!important;
+ border-color:#48d2ee!important}
+#dialogForm .z66-sale-single .z66-sale-payhint{
+ font-size:11px;color:var(--z66s-muted)!important;margin:0;line-height:1.5}
+#dialogForm .z66-sale-single .z66-sale-advanced{
+ margin-top:2px;border-top:1px solid var(--z66s-edge);padding-top:8px;
+ color:var(--z66s-text)}
+#dialogForm .z66-sale-single .z66-sale-advanced > summary,
+#dialogForm .z66-sale-single .z66-sale-help > summary{
+ cursor:pointer;min-height:38px;color:var(--z66s-text)!important;
+ font-size:12px;font-weight:750;line-height:1.6}
+#dialogForm .z66-sale-single .z66-sale-advanced[open]{
+ display:grid;gap:8px}
+#dialogForm .z66-sale-single .z66-sale-help{font-size:11px;color:var(--z66s-muted)}
+#dialogForm .z66-sale-single .tiny-note{
+ margin:0!important;font-size:11px!important;line-height:1.5!important;
+ color:var(--z66s-muted)!important}
+#dialogForm[data-zavi-sale-onepage="true"] .zds-field-error{
+ color:var(--z66s-error)!important;font-size:11px;line-height:1.45}
+#dialogForm[data-zavi-sale-onepage="true"] .modal-foot{
+ position:sticky;bottom:0;z-index:5;padding-block:9px;
+ background:var(--z66s-bg)!important;border-top:1px solid var(--z66s-edge)}
+@media(max-width:390px){
+ #dialogForm .z66-sale-single .z66-sale-section{padding:9px}
+ #dialogForm .z66-sale-single .zavi-barcode-actions{gap:5px!important}
+ #dialogForm .z66-sale-single .zavi-barcode-actions button{font-size:11px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ #dialogForm .z66-sale-single *{transition:none!important;animation:none!important}
+}
