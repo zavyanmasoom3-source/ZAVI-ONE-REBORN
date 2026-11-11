@@ -218,7 +218,11 @@ function enhance(form){
 }
 function init(){
  const overlay=document.getElementById('overlay');if(!overlay)return;
- const apply=()=>{const form=overlay.querySelector('#dialogForm');if(form)enhance(form)};
+ const apply=()=>{const form=overlay.querySelector('#dialogForm');
+  if(form)try{enhance(form);window.ZaviProductAdaptiveError=''}
+  catch(err){window.ZaviProductAdaptiveError=String(err?.message||err);
+    console.warn('ZAVI adaptive product form:',window.ZaviProductAdaptiveError)}
+ };
  new MutationObserver(apply).observe(overlay,{childList:true});
  apply();
 }
