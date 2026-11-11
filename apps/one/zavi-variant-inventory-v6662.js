@@ -49,6 +49,7 @@
    const row=m.get(k);
    if(!row)throw Error('سند به رنگ حذف‌شده یا ناشناس اشاره می‌کند: '+k);
    row.scaled+=sign*units(String(quantity));
+   if(row.scaled<0)throw Error('در تاریخچهٔ این رنگ، فروش یا برداشت پیش از موجودی کافی ثبت شده است.');
   }
   for(const t of tx.slice(ledger.startIndex)){
    if(t.voided)continue;
@@ -119,7 +120,9 @@
    if(!colours.has(k)||!/^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i.test(w))
     throw Error('گدام یا رنگ در سند معتبر نیست.');
    const tag=k+'|'+w,prior=pair.get(tag)||{variantKey:k,warehouseId:w,color:colours.get(k).color,barcode:colours.get(k).barcode,scaled:0};
-   prior.scaled+=sign*units(String(quantity));pair.set(tag,prior);
+   prior.scaled+=sign*units(String(quantity));
+   if(prior.scaled<0)throw Error('برداشت رنگ از گدام پیش از موجودی کافی ثبت شده است.');
+   pair.set(tag,prior);
   }
   for(const row of wl.initial||[])change(row.variantKey,row.warehouseId,row.qty,1);
   for(const t of tx.slice(wl.startIndex)){
