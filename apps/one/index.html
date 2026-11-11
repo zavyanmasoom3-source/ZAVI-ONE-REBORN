@@ -1652,7 +1652,7 @@ window.zaviTenantIsBound=()=>KEY!==ZAVI_UNBOUND_KEY;
 const AF_MONTHS=['حمل','ثور','جوزا','سرطان','اسد','سنبله','میزان','عقرب','قوس','جدی','دلو','حوت'];
 const afFormatter=new Intl.DateTimeFormat('en-US-u-ca-persian',{timeZone:'UTC',year:'numeric',month:'2-digit',day:'2-digit'});
 const toLatin=x=>String(x??'').replace(/[۰-۹]/g,c=>String('۰۱۲۳۴۵۶۷۸۹'.indexOf(c))).replace(/[٠-٩]/g,c=>String('٠١٢٣٤٥٦٧٨٩'.indexOf(c)));
-const faDigits=x=>String(x).replace(/[0-9]/g,d=>'۰۱۲۳۴۵۶۷۸۹'[Number(d)]);
+const faDigits=x=>toLatin(x); // Approved: English digits in every language, including documents.
 const afParts=d=>{const p=afFormatter.formatToParts(new Date(`${d}T12:00:00Z`));let o={};for(const x of p)if(['year','month','day'].includes(x.type))o[x.type]=Number(toLatin(x.value));return o};
 const localISO=(d=new Date())=>{const p=new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Kabul',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(d);let o={};for(const x of p)if(['year','month','day'].includes(x.type))o[x.type]=toLatin(x.value);return `${o.year}-${o.month}-${o.day}`};
 const nowISO=()=>localISO();
@@ -2123,7 +2123,23 @@ function zaviGregorianMonthRange(startISO,endISO,lang){
  return a===b?a:a+'–'+b;
 }
 // Chart filters are display-only; ledger dates remain ISO/Gregorian in storage.
-let zaviChartCalendarMode='solar';
+let zaviChartCalendarMode=(()=>{
+ try{return localStorage.getItem('zavi_calendar_display_preference_v19')==='gregorian'?'gregorian':'solar'}catch(_){return 'solar'}
+})();
+let zaviChartMonth=null;
+// Read-only chart and invoice period. Stored transaction dates remain immutable ISO strings.
+function zaviDashboardSelectedSpan(){
+ const today=nowISO();
+ const isGregorian=zaviChartCalendarMode==='gregorian';
+ if(isGregorian){
+  const now=new Date(today+'T12:00:00Z');
+  const yy=zaviChartGregorianYear??now.getUTCFullYear();
+  const mm=zaviChartMonth??now.getUTCMonth()+1;
+  return zaviGregorianYearMonths(yy)[mm-1];
+ }
+ const current=afParts(today);
+ return afMonthSpan(zaviSolarYear(),zaviChartMonth??current.month);
+}
 let zaviChartGregorianYear=null;
 const GREG_ABBR={
  en:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
@@ -2168,7 +2184,7 @@ function dashboardChart(){
  const aria=tr('نمودار فروش ماهوار','د میاشتني پلور ګراف','Monthly sales chart');
  const caption=isGregorian?tr('فروش ماهوار · میلادی','میاشتنی پلور · میلادي','Monthly sales · Gregorian'):
                            tr('فروش ماهوار · هجری شمسی','میاشتنی پلور · لمریز','Monthly sales · Solar Hijri');
- const yearText=y=>lang==='en'?String(y):faDigits(y);
+ const yearText=y=>String(y);
  return `<div class="z47-chart-header z27-chart-header">
    <span class="solar-chart-caption">${escapeHtml(caption)}</span>
    <div class="z27-chart-filters">
@@ -2177,6 +2193,8 @@ function dashboardChart(){
       <option value="solar" ${!isGregorian?'selected':''}>${tr('هجری شمسی','لمریز هجري','Solar Hijri')}</option>
       <option value="gregorian" ${isGregorian?'selected':''}>${tr('میلادی','میلادي','Gregorian')}</option>
      </select></label>
+    <label class="z47-chart-year-label z66d-month-picker" for="zaviChartMonth">${tr('ماه','میاشت','Month')}
+     <select id="zaviChartMonth" aria-label="${tr('انتخاب ماه','میاشت وټاکئ','Select month')}">${months.map(m=>`<option value="${m.month}" ${m.month===(zaviChartMonth??(isGregorian?new Date(nowISO()+'T12:00:00Z').getUTCMonth()+1:afParts(nowISO()).month))?'selected':''}>${escapeHtml(isGregorian?(lang==='en'?['January','February','March','April','May','June','July','August','September','October','November','December'][m.month-1]:['جنوری','فبروری','مارچ','اپریل','می','جون','جولای','آگست','سپتمبر','اکتوبر','نوامبر','دسمبر'][m.month-1]):afMonthName(m.month,lang))}</option>`).join('')}</select></label>
     <label class="z47-chart-year-label" for="zaviChartYear">${tr('سال','کال','Year')}
      <select id="zaviChartYear" aria-label="${tr('انتخاب سال','کال وټاکئ','Select year')}">${options.map(y=>`<option value="${y}" ${y===year?'selected':''}>${yearText(y)}</option>`).join('')}</select></label>
    </div></div>
@@ -2483,7 +2501,8 @@ function zaviTransactionDonutV6539(){
    {type:'customer_payment',title:text('دریافت پول','پیسې ترلاسه کول','Receipts'),color:'#f5b65d'},
    {type:'supplier_payment',title:text('پرداخت پول','پیسې ورکول','Payments'),color:'#a991ff'}
   ];
-  const txs=Array.isArray(db?.tx)?db.tx.filter(x=>x&&!x.voided):[];
+  const span=zaviDashboardSelectedSpan();
+  const txs=Array.isArray(db?.tx)?db.tx.filter(x=>x&&!x.voided&&typeof x.date==='string'&&x.date.slice(0,10)>=span.start&&x.date.slice(0,10)<=span.end):[];
   const counts=types.map(t=>txs.filter(x=>x.type===t.type).length);
   const used=counts.reduce((a,b)=>a+b,0);
   const other=Math.max(0,txs.length-used);
@@ -2518,7 +2537,7 @@ function zaviUsdRateDashboardCard(){
  const valid=Number.isFinite(rate)&&rate>0;
  const current=valid?'<strong dir="ltr" class="zavi-usd-rate-value">1 USD = '+fmt(money(rate))+' '+escapeHtml(cur)+'</strong>':'<strong class="zavi-usd-rate-missing">'+empty+'</strong>';
  const dateObject=db.usdRateUpdatedAt?new Date(db.usdRateUpdatedAt):null;
- const date=dateObject&&!Number.isNaN(dateObject.getTime())?dateObject.toLocaleDateString(en?'en-GB':ps?'ps-AF':'fa-AF'):unknown;
+ const date=dateObject&&!Number.isNaN(dateObject.getTime())?(window.ZaviDualDate?.formatBoth?.(dateObject)||new Intl.DateTimeFormat('en-GB-u-nu-latn',{day:'numeric',month:'short',year:'numeric',timeZone:'Asia/Kabul'}).format(dateObject)):unknown;
  const canEdit=!window.zaviCloudCanEdit||window.zaviCloudCanEdit();
  const edit=usdBase
   ?'<p class="zavi-usd-fixed">'+fixed+'</p>'
@@ -3830,7 +3849,7 @@ setInterval(()=>{
  if(nextStamp!==zaviChartCivilYearStamp){zaviChartCivilYearStamp=nextStamp;
    if(document.getElementById('zaviChartYear'))render();}
 },60000);
-let zaviSearchDebounceTimer;document.addEventListener('input',e=>{if(e.target.id==='searchInput'){clearTimeout(zaviSearchDebounceTimer);const value=e.target.value;zaviSearchDebounceTimer=setTimeout(()=>updateSearch(value),140)}});document.addEventListener('change',e=>{if(e.target.id==='zaviChartCalendar'){zaviChartCalendarMode=e.target.value==='gregorian'?'gregorian':'solar';render();return;}if(e.target.id==='zaviChartYear'){const y=Number(e.target.value);if(zaviChartCalendarMode==='gregorian'){if(zaviGregorianYears().includes(y)){zaviChartGregorianYear=y;render();}}else if(dashboardSelectableYears().includes(y)){zaviChartYear=y;render();}return;}if(e.target.id==='afReportMonth'){const val=e.target.value;if(val){const [year,month]=val.split('/').map(Number);const span=afMonthSpan(year,month);periodFrom=span.start;periodTo=span.end;}else{periodFrom='';periodTo='';}render();return;}if(e.target.id==='importFile')importBackup(e.target.files?.[0]);if(e.target.id==='productCsvImport')importProductsCSV(e.target.files?.[0]);if(e.target.id==='contactTab'){selectedContactTab=e.target.value;render()}if(e.target.id==='stockCurrency'){stockDisplayCurrency=e.target.value;render()}if(e.target.id==='fromDate'||e.target.id==='toDate'){let iso;try{iso=readDate(e.target.value,true)}catch(err){toast(err.message);return}if(e.target.id==='fromDate')periodFrom=iso;else periodTo=iso;render()}});
+let zaviSearchDebounceTimer;document.addEventListener('input',e=>{if(e.target.id==='searchInput'){clearTimeout(zaviSearchDebounceTimer);const value=e.target.value;zaviSearchDebounceTimer=setTimeout(()=>updateSearch(value),140)}});document.addEventListener('change',e=>{if(e.target.id==='zaviChartCalendar'){zaviChartCalendarMode=e.target.value==='gregorian'?'gregorian':'solar';zaviChartMonth=null;window.ZaviDualDate?.setPreferred?.(zaviChartCalendarMode);render();return;}if(e.target.id==='zaviChartMonth'){const month=Number(e.target.value);if(Number.isInteger(month)&&month>=1&&month<=12){zaviChartMonth=month;render();}return;}if(e.target.id==='zaviChartYear'){const y=Number(e.target.value);if(zaviChartCalendarMode==='gregorian'){if(zaviGregorianYears().includes(y)){zaviChartGregorianYear=y;render();}}else if(dashboardSelectableYears().includes(y)){zaviChartYear=y;render();}return;}if(e.target.id==='afReportMonth'){const val=e.target.value;if(val){const [year,month]=val.split('/').map(Number);const span=afMonthSpan(year,month);periodFrom=span.start;periodTo=span.end;}else{periodFrom='';periodTo='';}render();return;}if(e.target.id==='importFile')importBackup(e.target.files?.[0]);if(e.target.id==='productCsvImport')importProductsCSV(e.target.files?.[0]);if(e.target.id==='contactTab'){selectedContactTab=e.target.value;render()}if(e.target.id==='stockCurrency'){stockDisplayCurrency=e.target.value;render()}if(e.target.id==='fromDate'||e.target.id==='toDate'){let iso;try{iso=readDate(e.target.value,true)}catch(err){toast(err.message);return}if(e.target.id==='fromDate')periodFrom=iso;else periodTo=iso;render()}});
 document.addEventListener('submit',async e=>{if(e.target.id==='usdRateDashboardForm'){e.preventDefault();const value=num(e.target.elements.usdRate.value);if(!Number.isFinite(value)||value<=0)return toast('نرخ دالر باید بزرگ‌تر از صفر باشد.');if(commit(n=>{n.usdRate=value;n.usdRateUpdatedAt=new Date().toISOString()})){toast('نرخ امروز دالر در داشبورد ذخیره شد.')}return}if(e.target.id==='zaviRenameShopForm'){e.preventDefault();
  const newName=String(e.target.elements.renameShopName.value||'').trim();
  if(newName.length<2||newName.length>65)return toast('نام فروشگاه باید بین ۲ تا ۶۵ حرف باشد.');
