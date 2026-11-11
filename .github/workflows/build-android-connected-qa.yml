@@ -11,6 +11,17 @@ on:
       - 'apps/one/zavi-v6662-pin-visibility-v1.js'
       - 'scripts/test-v6662-login-center-browser.py'
       - 'scripts/test-v6662-owner-dashboard-browser.py'
+      - 'apps/one/index.html'
+      - 'apps/one/pin-recovery.js'
+      - 'apps/one/zavi-approved-entry-v6662.css'
+      - 'apps/one/zavi-dual-calendar-v22.js'
+      - 'apps/admin/zavi-dual-calendar-v22.js'
+      - 'apps/one/zavi-display-digits-v645.js'
+      - 'apps/admin/zavi-display-digits-v645.js'
+      - 'apps/one/invoice.html'
+      - 'apps/one/receipt-ui.js'
+      - 'apps/admin/receipt-ui.js'
+      - 'scripts/test-v6662-dual-calendar-invoice-numerals-browser.py'
       - 'apps/one/zavi-owner-dashboard-v6662.js'
       - 'apps/one/zavi-owner-dashboard-v6662.css'
       - 'apps/one/zavi-dashboard-polish-v6562.js'
@@ -73,6 +84,7 @@ jobs:
           python3 scripts/test-v6662-neon-recovery-browser.py
           python3 scripts/test-v6662-approved-three-section-finish-browser.py
           python3 scripts/test-v6662-owner-dashboard-browser.py
+          python3 scripts/test-v6662-dual-calendar-invoice-numerals-browser.py
           python3 scripts/test-v6662-approved-settings-browser.py
           python3 scripts/test-stage6-financial-theme-browser.py
       - uses: actions/setup-java@v4
