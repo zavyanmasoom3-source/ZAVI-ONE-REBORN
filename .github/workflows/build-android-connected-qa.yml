@@ -332,5 +332,5 @@ jobs:
             --prerelease --target "$GITHUB_SHA" \
             --title "ZAVI ONE 66.62 design + approved sale — CONNECTED TEST ONLY — run ${GITHUB_RUN_NUMBER}" \
             --notes-file release-notes.txt -R "$GITHUB_REPOSITORY"
-          gh release view "$tag" --json url,assets \
+          gh release view "$tag" -R "$GITHUB_REPOSITORY" --json url,assets \
             --jq '{release: .url, assets: [.assets[] | {name:.name,url:.url}]}'
