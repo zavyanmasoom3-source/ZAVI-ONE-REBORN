@@ -284,3 +284,132 @@ html.zx-lite #content.z66d-root *::before{animation:none!important;transition:no
 @media print{
  #content.z66d-root *,#content.z66d-root *::before{animation:none!important;box-shadow:none!important}
 }
+
+
+/* V66.62 approved premium finance charts + real invoice card — read-only. */
+#content.z66d-root .z66d-chart-grid{
+ grid-template-columns:1fr!important;gap:12px!important;
+}
+#content.z66d-root .z66d-chart-grid>.card{
+ padding:12px!important;border-radius:16px!important;
+ background:var(--z66d-inner)!important;
+ box-shadow:0 4px 16px #06265718!important;
+}
+#content.z66d-root .z66d-chart-grid .panel-head h3{
+ font-size:14px!important;font-weight:850!important;
+}
+#content.z66d-root .z66d-chart-grid .z6539-donut-content{
+ display:grid!important;grid-template-columns:170px minmax(0,1fr)!important;
+ align-items:center!important;gap:14px!important;padding:12px 8px!important;
+}
+#content.z66d-root .z66d-chart-grid .z6539-donut{
+ width:164px!important;height:164px!important;min-width:164px!important;
+ border:0!important;box-shadow:0 9px 22px #091e4a28;
+}
+#content.z66d-root .z66d-chart-grid .z6539-donut-inner{
+ width:120px!important;height:120px!important;font-size:20px!important;
+}
+#content.z66d-root .z66d-chart-grid .z6539-donut-legend{
+ width:100%!important;min-width:0!important;display:grid!important;gap:6px!important;
+}
+#content.z66d-root .z66d-chart-grid .z6539-legend-row{
+ display:flex!important;justify-content:space-between!important;
+ gap:7px!important;align-items:center!important;min-width:0!important;
+ font-size:11px!important;line-height:1.6!important;
+}
+#content.z66d-root .z66d-chart-grid .z47-chart-header .z27-chart-filters{
+ display:flex!important;flex-wrap:wrap!important;gap:6px!important;
+}
+#content.z66d-root .z66d-chart-grid .z47-chart-header select{
+ max-width:100%!important;min-width:0!important;
+ min-height:38px!important;font-size:12px!important;
+ border-radius:10px!important;
+}
+#content.z66d-root .z66d-chart-grid .bar-chart{min-height:160px!important}
+#content.z66d-root .z66d-invoices{
+ border:1px solid var(--z66d-edge)!important;border-radius:17px!important;
+ box-shadow:0 7px 24px #081d511c!important;
+}
+#content.z66d-root .z66d-invoice-subtitle{
+ margin:0!important;font-size:11px!important;line-height:1.5!important;
+ color:var(--z66d-muted)!important;
+}
+#content.z66d-root .z66d-invoice-tabs{
+ display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important;
+}
+#content.z66d-root .z66d-invoice-tab{
+ background:var(--z66d-inner)!important;color:var(--z66d-ink)!important;
+ border:1px solid var(--z66d-edge)!important;border-radius:11px!important;
+ min-height:42px!important;padding:8px 6px!important;
+ font:750 12px/1.4 inherit!important;cursor:pointer;
+ transition:background .17s ease,transform .17s ease;
+}
+#content.z66d-root .z66d-invoice-tab[aria-pressed=true]{
+ color:#fff!important;border-color:#80d7f5!important;
+ background:linear-gradient(120deg,#1a67d4,#159cbf)!important;
+ box-shadow:0 5px 12px #0f81c238!important;
+}
+#content.z66d-root .z66d-invoice-search{
+ width:100%!important;max-width:100%!important;min-height:42px!important;
+ border:1px solid var(--z66d-edge)!important;border-radius:11px!important;
+ color:var(--z66d-ink)!important;background:var(--z66d-inner)!important;
+ padding:9px 12px!important;font-size:13px!important;
+ box-sizing:border-box!important;
+}
+#content.z66d-root .z66d-invoice-list{display:grid!important;gap:9px!important}
+#content.z66d-root .z66d-invoice-entry{
+ display:grid!important;gap:5px!important;text-align:start!important;
+ background:var(--z66d-inner)!important;color:var(--z66d-ink)!important;
+ border:1px solid var(--z66d-edge)!important;border-radius:13px!important;
+ padding:12px!important;min-width:0!important;width:100%!important;
+ cursor:pointer;transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;
+}
+#content.z66d-root .z66d-invoice-entry:active{
+ transform:scale(.99);border-color:#5ccfec!important;
+}
+#content.z66d-root .z66d-invoice-head{
+ display:flex!important;justify-content:space-between!important;
+ align-items:center!important;gap:10px!important;min-width:0!important;
+}
+#content.z66d-root .z66d-invoice-number{font-size:14px!important;letter-spacing:.02em}
+#content.z66d-root .z66d-invoice-view{color:var(--z66d-accent)!important;font-size:11px!important}
+#content.z66d-root .z66d-invoice-partner,
+#content.z66d-root .z66d-invoice-date{
+ color:var(--z66d-muted)!important;font-size:11px!important;line-height:1.6!important;
+ overflow-wrap:anywhere!important;
+}
+#content.z66d-root .z66d-invoice-amount{
+ color:var(--z66d-ink)!important;font-size:15px!important;
+ direction:ltr!important;unicode-bidi:isolate!important;text-align:start!important;
+}
+#content.z66d-root .z66d-invoice-empty{
+ text-align:center!important;padding:20px 8px!important;margin:0!important;
+ font-size:12px!important;color:var(--z66d-muted)!important;
+ border:1px dashed var(--z66d-edge)!important;border-radius:13px!important;
+}
+#content.z66d-root .z66d-invoice-all{
+ width:100%!important;min-height:40px!important;background:transparent!important;
+ color:var(--z66d-accent)!important;border:1px solid var(--z66d-edge)!important;
+ border-radius:10px!important;font:750 12px/1.4 inherit!important;
+ cursor:pointer;
+}
+#content.z66d-root :is(.z66d-invoice-entry,.z66d-invoice-tab,.z66d-invoice-all,.z66d-invoice-search):focus-visible{
+ outline:2px solid #3cd8f8!important;outline-offset:2px!important;
+}
+@media(max-width:450px){
+ #content.z66d-root .z66d-chart-grid .z6539-donut-content{
+  grid-template-columns:1fr!important;justify-items:center!important;gap:11px!important;
+ }
+ #content.z66d-root .z66d-chart-grid .z6539-donut-legend{
+  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important;
+ }
+ #content.z66d-root .z66d-chart-grid .z6539-legend-row{font-size:10px!important;flex-wrap:wrap!important}
+ #content.z66d-root .z66d-invoice-entry{padding:10px!important}
+}
+@media(min-width:800px){
+ #content.z66d-root .z66d-chart-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ #content.z66d-root .z66d-chart-grid .z6539-donut-content{grid-template-columns:1fr!important}
+}
+@media(prefers-reduced-motion:reduce){
+ #content.z66d-root .z66d-invoices *,#content.z66d-root .z66d-chart-grid *{transition:none!important}
+}
