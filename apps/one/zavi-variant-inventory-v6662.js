@@ -92,6 +92,83 @@
   const ledger=p.variantLedger,known=new Set(ledger.initial.map(x=>x.key));
   for(const x of requested)if(!known.has(x.key)){ledger.initial.push({key:x.key,color:x.color,barcode:x.barcode,qty:0});known.add(x.key)}
  }
+
+ function allocateWarehouse(p,tx,warehouseId){
+  if(!tracked(p))throw Error('دفتر رنگ‌های محصول فعال نشده است.');
+  if(p.variantLedger.warehouseLedger)throw Error('تقسیم موجودی در گدام قبلاً فعال شده است.');
+  if(!/^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i.test(String(warehouseId||'')))
+   throw Error('گدام معتبر انتخاب کنید.');
+  const current=balances(p,tx);
+  p.variantLedger.warehouseLedger={
+   version:1,startIndex:tx.length,previousTxId:tx.length?tx[tx.length-1].id:null,
+   initial:current.map(x=>({variantKey:x.key,warehouseId,qty:x.qty}))
+  };
+  return p.variantLedger.warehouseLedger;
+ }
+ function warehouseBalances(p,tx){
+  if(!tracked(p)||p.variantLedger.warehouseLedger?.version!==1)
+   throw Error('تقسیم موجودی رنگ‌ها میان گدام‌ها هنوز فعال نشده است.');
+  const wl=p.variantLedger.warehouseLedger;
+  if(!Number.isSafeInteger(wl.startIndex)||wl.startIndex<0||wl.startIndex>tx.length||
+   (wl.startIndex>0&&tx[wl.startIndex-1]?.id!==wl.previousTxId))
+   throw Error('سابقهٔ ابتدایی گدام‌ها تغییر کرده است.');
+  const colours=new Map(balances(p,tx).map(x=>[x.key,x]));
+  const pair=new Map();
+  function change(variantKey,warehouseId,quantity,sign){
+   const k=key(variantKey),w=String(warehouseId||'');
+   if(!colours.has(k)||!/^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i.test(w))
+    throw Error('گدام یا رنگ در سند معتبر نیست.');
+   const tag=k+'|'+w,prior=pair.get(tag)||{variantKey:k,warehouseId:w,color:colours.get(k).color,barcode:colours.get(k).barcode,scaled:0};
+   prior.scaled+=sign*units(String(quantity));pair.set(tag,prior);
+  }
+  for(const row of wl.initial||[])change(row.variantKey,row.warehouseId,row.qty,1);
+  for(const t of tx.slice(wl.startIndex)){
+   if(t.voided)continue;
+   const sign=({purchase:1,sale:-1,sale_return:1,purchase_return:-1})[t.type];
+   if(sign){
+    for(const line of t.items||[])if(line.productId===p.id){
+     if(!line.variantKey||!line.warehouseId)
+      throw Error('فاکتور پس از فعال‌سازی گدام بدون رنگ یا گدام ثبت شده است: '+t.id);
+     change(line.variantKey,line.warehouseId,line.qty,sign);
+    }
+   }else if(t.type==='stock_adjust'&&t.productId===p.id){
+    if(!t.variantKey||!t.warehouseId)
+     throw Error('اصلاح موجودی بدون گدام یا رنگ ثبت شده است.');
+    const delta=Number(t.delta);if(!Number.isFinite(delta))
+     throw Error('تعداد اصلاح گدام معتبر نیست.');
+    change(t.variantKey,t.warehouseId,String(Math.abs(delta)),Math.sign(delta));
+   }else if(t.type==='warehouse_transfer'&&t.productId===p.id){
+    if(!t.variantKey||!t.fromWarehouseId||!t.toWarehouseId||
+       t.fromWarehouseId===t.toWarehouseId)throw Error('انتقال گدام نامعتبر است.');
+    change(t.variantKey,t.fromWarehouseId,t.qty,-1);
+    change(t.variantKey,t.toWarehouseId,t.qty,1);
+   }
+  }
+  const result=[...pair.values()].map(x=>({variantKey:x.variantKey,warehouseId:x.warehouseId,
+   color:x.color,barcode:x.barcode,qty:decimal(x.scaled)}));
+  if(result.some(x=>x.qty<0))throw Error('موجودی رنگ در یکی از گدام‌ها منفی شده است.');
+  for(const [variantKey,color] of colours){
+   const sum=result.filter(x=>x.variantKey===variantKey)
+    .reduce((total,x)=>total+units(String(x.qty)),0);
+   if(sum!==units(String(color.qty)))
+    throw Error('موجودی رنگ «'+color.color+'» میان گدام‌ها با موجودی حسابداری برابر نیست.');
+  }
+  return result;
+ }
+ function moveWarehouse(p,tx,{id,fromWarehouseId,toWarehouseId,variantKey,qty,date}){
+  if(!p?.variantLedger?.warehouseLedger)throw Error('ابتدا موجودی رنگ‌ها را به گدام اختصاص دهید.');
+  if(!id||tx.some(t=>t.id===id))throw Error('کد انتقال تکراری است.');
+  if(fromWarehouseId===toWarehouseId)throw Error('گدام مبدأ و مقصد باید متفاوت باشند.');
+  const amount=units(String(qty));if(amount<=0)throw Error('مقدار انتقال باید مثبت باشد.');
+  const origin=warehouseBalances(p,tx).find(r=>r.variantKey===key(variantKey)&&r.warehouseId===fromWarehouseId);
+  if(!origin||units(String(origin.qty))<amount)
+   throw Error('موجودی این رنگ در گدام مبدأ کافی نیست.');
+  const entry={id,type:'warehouse_transfer',date,created:new Date().toISOString(),
+   productId:p.id,variantKey:key(variantKey),fromWarehouseId,toWarehouseId,qty:decimal(amount)};
+  tx.push(entry);
+  warehouseBalances(p,tx);
+  return entry;
+ }
  function verifyWorkspace(state){
   const catalog=new Map((state.products||[]).filter(tracked).map(p=>[p.id,p]));
   if(!catalog.size)return true;
@@ -114,8 +191,11 @@
     totals.set(t.productId,totals.get(t.productId)+Math.round(amount*1000));
    }
   }
-  for(const [id,p] of catalog)verify(p,state.tx||[],decimal(totals.get(id)));
+  for(const [id,p] of catalog){
+   verify(p,state.tx||[],decimal(totals.get(id)));
+   if(p.variantLedger.warehouseLedger)warehouseBalances(p,state.tx||[]);
+  }
   return true;
  }
- return Object.freeze({rows,units,key,tracked,begin,balances,verify,changes,addNewColours,verifyWorkspace});
+ return Object.freeze({rows,units,key,tracked,begin,balances,verify,changes,addNewColours,verifyWorkspace,allocateWarehouse,warehouseBalances,moveWarehouse});
 });
