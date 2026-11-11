@@ -11,6 +11,7 @@ on:
       - 'apps/one/zavi-unified20.js'
       - 'apps/one/v25-business.html'
       - 'scripts/test-v6662-21-trade-product-schema.cjs'
+      - 'scripts/test-v6662-owner-business-type-lock.cjs'
       - 'scripts/test-v6662-adaptive-products-browser.py'
       - 'scripts/test-v6662-business-type-locked-browser.py'
       - '.github/workflows/adaptive-product-qa.yml'
@@ -26,6 +27,8 @@ jobs:
         run: node scripts/test-v6662-21-trade-product-schema.cjs
       - name: Test explicit owner confirmation and stable business type offline
         run: python3 scripts/test-v6662-business-type-locked-browser.py
+      - name: Verify actual owner trade-save guard and no automatic type switching
+        run: node scripts/test-v6662-owner-business-type-lock.cjs
       - name: Test original native product modal in throwaway Chrome
         run: python3 scripts/test-v6662-adaptive-products-browser.py
       - uses: actions/upload-artifact@v4
