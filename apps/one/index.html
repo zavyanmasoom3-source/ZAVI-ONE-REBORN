@@ -2827,7 +2827,7 @@ function openEntity(kind,id,creditorMode=false){if(kind==='product'||kind==='edi
  ${field('name','نام محصول *',p.name||'','text','required maxlength="140" placeholder="نام محصول را بنویسید"')}
  ${field('sku','کود / مدل محصول',p.sku||'','text','maxlength="70" placeholder="کود محصول (اختیاری)"')}<div class="field full zavi-barcode-box"><div class="zavi-barcode-actions"><button type="button" class="btn subtle" data-zavi-camera-open="fld_sku">📷 گرفتن بارکد با دوربین برای محصول</button><small class="field-hint">برای USB یا Bluetooth، مکان‌نما را روی فیلد «کود / مدل» قرار دهید و اسکن کنید. بارکد تکراری هنگام ذخیره رد می‌شود.</small></div></div>
 
- <div class="field full"><label for="zaviExtraBarcodes">بارکدهای اضافی (هر کود در یک خط)</label><textarea name="barcodes" id="zaviExtraBarcodes" rows="3" maxlength="1200" placeholder="بارکد دوم، سوم و ...">${escapeHtml(Array.isArray(p.barcodes)?p.barcodes.join('\n'):'')}</textarea><small class="field-hint">بارکدهای اضافی هم در فروش و خرید شناسایی می‌شوند. بارکد محصول خودش دوباره ثبت نمی‌شود.</small></div>
+ <div class="field full"><label for="zaviExtraBarcodes">بارکدهای اضافی (هر کود در یک خط)</label><textarea name="barcodes" id="zaviExtraBarcodes" rows="3" maxlength="1800" placeholder="بارکد دوم، سوم و ...">${escapeHtml(Array.isArray(p.barcodes)?p.barcodes.join('\n'):'')}</textarea><small class="field-hint">بارکدهای اضافی هم در فروش و خرید شناسایی می‌شوند. بارکد محصول خودش دوباره ثبت نمی‌شود.</small></div>
  <div class="field full"><div id="zaviBarcodeProductNotice" class="z641-product-match" role="status" aria-live="polite"></div></div>
  <div class="field"><label>دسته‌بندی محصول</label><input name="category" list="zawiCategoryOptions" maxlength="100" placeholder="دسته‌بندی (اختیاری)" value="${escapeHtml(p.category||'')}">${catData}</div>
  ${field('salePrice','قیمت فروش هر واحد',p.salePrice??0,'number','min="0" step="any" required')}
@@ -2854,7 +2854,7 @@ function openEntity(kind,id,creditorMode=false){if(kind==='product'||kind==='edi
   const box=document.getElementById('zaviBarcodeProductNotice');if(!box)return checked;
   box.replaceChildren();box.className='z641-product-match';
   const title=document.createElement('strong');const message=document.createElement('span');
-  if(checked.invalid||checked.tooMany){box.classList.add('error');title.textContent='بارکد نامعتبر است';message.textContent='حداکثر ۱۶ بارکد اضافی با طول ۷۰ حرف وارد کنید.';}
+  if(checked.invalid||checked.tooMany){box.classList.add('error');title.textContent='بارکد نامعتبر است';message.textContent='حداکثر ۲۰ بارکد اضافی با طول ۷۰ حرف وارد کنید.';}
   else if(checked.owners.length){
    const match=checked.owners[0],owner=match.product;
    box.classList.add('existing');title.textContent='این بارکد قبلاً ثبت شده است';
@@ -2885,7 +2885,7 @@ function openEntity(kind,id,creditorMode=false){if(kind==='product'||kind==='edi
  document.getElementById('dialogForm').onsubmit=e=>{e.preventDefault();const f=e.target.elements;
   if(productImageBusy)return toast('لطفاً تا آماده‌شدن عکس صبر کنید.');const name=f.name.value.trim(),sku=f.sku.value.trim(),category=f.category.value.trim()||'سایر محصولها';
   const inspected=window.ZaviBarcodeV641.inspect(db.products,sku,zaviFormCodes(),edit?id:null);
-  if(inspected.invalid||inspected.tooMany)return toast('حداکثر ۱۶ بارکد معتبر با طول ۷۰ حرف وارد کنید.');
+  if(inspected.invalid||inspected.tooMany)return toast('حداکثر ۲۰ بارکد معتبر با طول ۷۰ حرف وارد کنید.');
   if(inspected.owners.length){
    const hit=inspected.owners[0];refreshProductBarcodeNotice();
    (window.ZaviBarcodeV641.code(sku)===hit.code?f.sku:f.barcodes).focus();return toast('کود «'+hit.code+'» برای محصول «'+String(hit.product.name||'موجود')+'» است. دکمه «ویرایش همین محصول» را بزنید.');
