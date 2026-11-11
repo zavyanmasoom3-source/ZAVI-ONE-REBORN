@@ -237,3 +237,19 @@ html body #content.z66sales-root .stat-grid.z66sales-stats > .card.stat{
  background-color:var(--z66s-paper)!important;
  background-image:linear-gradient(145deg,var(--z66s-paper),var(--z66s-field))!important;
 }
+
+
+/* Restore-grade backgrounds sometimes apply an inline !important solid color;
+   an independent decorative layer guarantees the owner-approved visual style
+   without changing the native monetary content or element identity. */
+html body #content.z66sales-root .stat-grid.z66sales-stats > .card.stat{
+ position:relative!important;isolation:isolate!important;overflow:hidden!important;
+}
+html body #content.z66sales-root .stat-grid.z66sales-stats > .card.stat::before{
+ content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+ border-radius:inherit;
+ background-image:linear-gradient(145deg,var(--z66s-paper),var(--z66s-field))!important;
+}
+html body #content.z66sales-root .stat-grid.z66sales-stats > .card.stat > *{
+ position:relative;z-index:1;
+}
