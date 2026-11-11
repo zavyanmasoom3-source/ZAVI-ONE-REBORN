@@ -125,6 +125,9 @@ with Session() as browser:
         browser.eval('window.ZaviThemeV29.set(%s)'%json.dumps(mode))
         browser.until("document.documentElement.dataset.zaviTheme===%s"%json.dumps(mode),
                       'dashboard theme updates to '+mode)
+        browser.until("""!!document.querySelector('#content.z66d-root .z66d-summary') &&
+          document.querySelector('#content .z66d-summary').getBoundingClientRect().height>50""",
+          'visible dashboard summary mounted after theme '+mode)
         theme=browser.eval("""(()=>{
             const e=document.querySelector('#content .z66d-summary');
             const sheet=document.getElementById('z66OwnerDashboardCss');
