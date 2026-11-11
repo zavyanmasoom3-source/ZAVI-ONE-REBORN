@@ -17,6 +17,7 @@ on:
       - 'scripts/stage-original-v6662-model.py'
       - 'apps/one/zavi-final-settings-store-v6559.js'
       - 'apps/one/zavi-approved-settings-v6662.css'
+      - 'apps/one/zavi-three-theme-v6627.js'
       - 'apps/one/zavi-final-settings-common-v1.css'
       - 'apps/one/zavi-assistant-visibility-v6619.js'
       - 'apps/one/zavi-store-v6576-settings-profile.js'
@@ -171,21 +172,26 @@ jobs:
           gradle=Path('android-build/app/build.gradle')
           gradle_text=gradle.read_text(encoding='utf-8')
           substitutions={
-            "applicationIdSuffix '.offlinepreview'":"applicationIdSuffix '.connectedpreview'",
+            "applicationIdSuffix '.offlinepreview'":("applicationIdSuffix '.approvedsettingspreview'" if '${{ matrix.app }}'=='one' else "applicationIdSuffix '.connectedpreview'"),
             "versionNameSuffix '-OFFLINE-PREVIEW-NOT-RELEASE'":"versionNameSuffix '-CONNECTED-TEST-NOT-RELEASE'",
             "ZAVI ADMIN OFFLINE PREVIEW":"ZAVI ADMIN CONNECTED TEST",
-            "ZAVI ONE OFFLINE PREVIEW":"ZAVI ONE CONNECTED TEST",
+            "ZAVI ONE OFFLINE PREVIEW":"ZAVI 66.62 SETTINGS QA",
           }
           for original,new in substitutions.items():
               assert gradle_text.count(original)==1, 'Unexpected preview Gradle structure: '+original
               gradle_text=gradle_text.replace(original,new)
+          if '${{ matrix.app }}'=='one':
+              old="versionName ((admin ? '1.4.69-reborn.qa' : '66.78-reborn.qa') + '.' + ciBuildNumber)"
+              new="versionName ((admin ? '1.4.69-reborn.qa' : '66.62-settings.qa') + '.' + ciBuildNumber)"
+              assert old in gradle_text,'Preview versionName structure unexpectedly changed'
+              gradle_text=gradle_text.replace(old,new)
           gradle.write_text(gradle_text,encoding='utf-8')
           print('PASS: original CSS preserved; connected staging uses only the public Supabase key')
           print('NOTICE: this separately installed QA APK can contact the real server. Use TEST accounts only.')
           PY
           if [[ "${{ matrix.app }}" == "one" ]]; then
-            version="66.78-reborn.qa.$GITHUB_RUN_NUMBER-CONNECTED-TEST-NOT-RELEASE"
-            package="com.zavione.one.connectedpreview"
+            version="66.62-settings.qa.$GITHUB_RUN_NUMBER-CONNECTED-TEST-NOT-RELEASE"
+            package="com.zavione.one.approvedsettingspreview"
           else
             version="1.4.69-reborn.qa.$GITHUB_RUN_NUMBER-CONNECTED-TEST-NOT-RELEASE"
             package="com.zavione.one.admin.connectedpreview"
@@ -269,7 +275,7 @@ jobs:
           package=$(sed -n '1p' <<< "$badging")
           echo "$package"
           if [[ "${{ matrix.app }}" == one ]]; then
-            grep -F "name='com.zavione.one.connectedpreview'" <<< "$package"
+            grep -F "name='com.zavione.one.approvedsettingspreview'" <<< "$package"
           else
             grep -F "name='com.zavione.one.admin.connectedpreview'" <<< "$package"
           fi
@@ -294,6 +300,9 @@ jobs:
             assert 'assets/zavi-build-info.json' in z.namelist()
             assert 'assets/zavi-approved-settings-v6662.css' in z.namelist(), 'Approved seven-section settings CSS was not packaged'
             assert 'assets/zavi-final-settings-store-v6559.js' in z.namelist(), 'Settings grouping JS not packaged'
+            assert 'assets/zavi-three-theme-v6627.js' in z.namelist(), 'Three-mode control JS not packaged'
+            native=z.read('assets/zavi-three-theme-v6627.js').decode('utf-8')
+            assert 'zavi-clean-settings-group[data-group="look"]' in native, 'Fix for extra theme panel is missing'
             approved=z.read('assets/zavi-final-settings-store-v6559.js').decode('utf-8')
             assert 'ZaviUnifiedSettingsApproved' in approved and 'ابر و دستگاه‌ها' in approved, 'Old settings grouping was packaged'
           assert 60000000 <= p.stat().st_size <= 85000000,('Not a full-original-model APK',p.stat().st_size)
@@ -353,7 +362,8 @@ jobs:
               assert info['commit']==sha,(app,'wrong commit')
               assert info['run']==run,(app,'wrong run')
               assert info['kind']=='CONNECTED-TEST-NOT-RELEASE',(app,'wrong build kind')
-              assert info['package']==f'com.zavione.one{".admin" if app=="admin" else ""}.connectedpreview',info
+              assert info['package']==('com.zavione.one.admin.connectedpreview' if app=='admin'
+                else 'com.zavione.one.approvedsettingspreview'),info
               assert info['server']=='live-public-key',(app,'not connected')
               assert info['signing']=='ephemeral-connected-test',(app,'unexpected signing')
               target=Path('direct-apks')/('ZAVI_ONE_ADMIN_CONNECTED_TEST.apk' if app=='admin' else 'ZAVI_ONE_V6662_FULL_OFFLINE_CONNECTED_TEST.apk')
@@ -366,7 +376,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          tag="zavi-v6662-approved-settings-full-model-test-20261111-run${GITHUB_RUN_NUMBER}"
+          tag="zavi-v6662-approved-settings-corrected-full-model-test-20261111-run${GITHUB_RUN_NUMBER}"
           cat > release-notes.txt <<'NOTES'
           THESE ARE NOT PRODUCTION APKs.
           Owner-uploaded ZAVI ONE 66.62 original appearance is retained outside the approved sale form.
@@ -387,7 +397,7 @@ jobs:
           NOTES
           gh release create "$tag" direct-apks/*.apk \
             --prerelease --target "$GITHUB_SHA" \
-            --title "ZAVI ONE 66.62 FULL ORIGINAL MODEL + approved clean settings — TEST ONLY — run ${GITHUB_RUN_NUMBER}" \
+            --title "ZAVI ONE 66.62 ORIGINAL MODEL + VERIFIED seven-section settings — TEST ONLY — run ${GITHUB_RUN_NUMBER}" \
             --notes-file release-notes.txt -R "$GITHUB_REPOSITORY"
           gh release view "$tag" -R "$GITHUB_REPOSITORY" --json url,assets \
             --jq '{release: .url, assets: [.assets[] | {name:.name,url:.url}]}'
