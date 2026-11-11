@@ -108,7 +108,24 @@ with Session() as browser:
              cssLoaded:!!document.getElementById('z66SalesCss')?.sheet,
              cssRules:document.getElementById('z66SalesCss')?.sheet?.cssRules.length,
              selectorMatches:!!document.querySelector('#content.z66sales-root .z66sales-stats > .stat'),
-             classes:x.className};
+             classes:x.className,
+             inline:x.getAttribute('style'),
+             cssSheets:[...document.styleSheets].filter(z=>!!z.href&&z.href.includes('sales-management')).map(z=>z.href),
+             matchedCss:(()=>{
+                const found=[];
+                for(const sh of document.styleSheets)try{
+                   for(const r of sh.cssRules||[]){
+                     if(r.selectorText&&r.style&&r.style.cssText.match(/background/i)){
+                       try{if(x.matches(r.selectorText))found.push({
+                         sel:r.selectorText.slice(0,260),
+                         val:r.style.cssText.slice(0,230),
+                         href:(sh.href||'inline').slice(-100)
+                       })}catch(_){}
+                     }
+                   }
+                }catch(_){}
+                return found.slice(-22);
+             })()};
        })()""")
        assert 'linear-gradient' in themeValue['bg'],themeValue
     browser.eval("document.documentElement.dataset.z637NoMotion='true'")
