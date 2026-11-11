@@ -39,7 +39,6 @@ function drawStock(box){
  var area=box.querySelector('.zv-wh-stock');if(!area)return;area.replaceChildren();
  area.appendChild(element('h4','',tr('موجودی هر گدام (ثبت‌شده در سرور)','د هر ګدام موجودي (په سرور کې ثبت شوې)','Inventory by warehouse (server records)')));
  if(stockNote)area.appendChild(element('p','zv-wh-note',stockNote));
- if(!rows.length)return;
  var activeIds=new Set(rows.map(function(w){return w.id}));
  var listed=stockRows.filter(function(r){return activeIds.has(r.warehouse_id)});
  if(!listed.length&&!stockNote)area.appendChild(element('p','zv-wh-note',tr('هنوز حرکت موجودی در دیتابیس ثبت نشده است.','تر اوسه د موجودۍ حرکت نه دی ثبت شوی.','No stock movements recorded in the database.')));
@@ -75,6 +74,22 @@ function drawHistory(box){
  var area=box.querySelector('.zv-wh-history');if(!area)return;area.replaceChildren();
  area.appendChild(element('h4','',tr('تاریخچه ورود، خروج و انتقال','د راتګ، وتلو او لېږد تاریخچه','Movement history')));
  if(historyNote)area.appendChild(element('p','zv-wh-note',historyNote));
+ try{
+  const nativeMoves=window.zaviVariantWarehouseHistory?.()||[];
+  if(nativeMoves.length){
+   area.appendChild(element('h4','',tr('انتقال رنگ‌ها در دفتر فاکتورها','د رسیدونو په دفتر کې د رنګونو لېږد','Colour transfers in accounting journal')));
+   const byWarehouse=new Map(rows.map(w=>[w.id,w.name]));
+   for(const move of nativeMoves.slice(-30).reverse()){
+    const entry=element('div','zv-wh-stock-row');
+    entry.appendChild(element('strong','',move.productName+' · '+move.variantKey));
+    entry.appendChild(element('span','',
+     (byWarehouse.get(move.fromWarehouseId)||move.fromWarehouseId.slice(0,8))+
+      ' → '+(byWarehouse.get(move.toWarehouseId)||move.toWarehouseId.slice(0,8))));
+    entry.appendChild(element('b','',String(move.qty)));
+    area.appendChild(entry);
+   }
+  }
+ }catch(error){area.appendChild(element('p','zv-wh-note',String(error.message||'')))}
  if(!historyRows.length){if(!historyNote)area.appendChild(element('p','zv-wh-note',tr('تا حال حرکت موجودی ثبت نشده است.','تر اوسه د موجودۍ حرکت نشته.','No stock movements recorded yet.')));return}
  const byId=new Map(rows.map(w=>[w.id,w.name]));
  for(const item of historyRows){
@@ -146,7 +161,7 @@ async function refresh(box){
    }catch(historyError){if(ticket!==requestNo||!box.isConnected||activeWorkspace!==c.id)return;historyRows=[];historyNote=tr('تاریخچه دریافت نشد: ','تاریخچه ترلاسه نه شوه: ','History unavailable: ')+historyError.message;}
   if(ticket!==requestNo||!box.isConnected||activeWorkspace!==c.id)return;
   drawStock(box);drawHistory(box);message(box,stockNote?tr('گدام‌ها دریافت شدند؛ وضعیت موجودی را بررسی کنید.','ګدامونه ترلاسه شول؛ د موجودۍ حالت وګورئ.','Warehouses loaded; check stock status.'):tr('از دیتابیس دریافت شد.','له ډیټابېس څخه ترلاسه شول.','Loaded from database.'))
- }catch(e){if(ticket!==requestNo||!box.isConnected)return;rows=[];stockRows=[];historyRows=[];stockNote=tr('موجودی قابل تأیید نیست.','موجودي نه ده تایید شوې.','Stock cannot be verified.');historyNote='';draw(box);drawStock(box);drawHistory(box);window.ZaviWarehouseTransfersV1?.mount(box,[]);message(box,e.message)}
+ }catch(e){if(ticket!==requestNo||!box.isConnected)return;rows=cachedCatalog();stockRows=[];historyRows=[];stockNote=tr('موجودی قابل تأیید نیست.','موجودي نه ده تایید شوې.','Stock cannot be verified.');historyNote='';draw(box);drawStock(box);drawHistory(box);window.ZaviWarehouseTransfersV1?.mount(box,rows);message(box,e.message)}
 }
 async function mutate(box,path,method,data){
  if(busy||!box)return false;busy=true;box.querySelectorAll('input,button').forEach(function(x){x.disabled=true});
