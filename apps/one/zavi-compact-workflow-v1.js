@@ -220,6 +220,10 @@
       button.dataset.z66SaleLabel='mode-'+key;
       button.setAttribute('aria-pressed',String(key==='partial'));
       button.textContent=label;
+      // Bind directly: native invoice click delegates may stop bubbling.
+      button.addEventListener('click',event=>{
+        event.preventDefault();setPayment(key);
+      });
       modes.append(button);
     }
     const total=pay.querySelector('.totals');
@@ -232,6 +236,7 @@
     body.append(layout);
     form.dataset.zaviSaleOnepage='true';
     function setPayment(mode){
+      modes.dataset.z66LastPaymentMode=mode;
       const buttons=[...modes.querySelectorAll('[data-z66-payment]')];
       for(const b of buttons)b.setAttribute('aria-pressed',String(b.dataset.z66Payment===mode));
       if(!paid||mode==='partial')return;
@@ -246,6 +251,7 @@
           })));
           const discount=form.elements.namedItem('discount')?.value||'0';
           const value=decimal.roundMoney(Math.max(0,subtotal-decimal.roundMoney(discount)));
+          modes.dataset.z66CashCalculated=String(value);
           paid.value=String(value);
         }catch(error){
           modes.dataset.z66PaymentCalcError=String(error?.message||error);
@@ -254,10 +260,6 @@
       }
       paid.dispatchEvent(new Event('input',{bubbles:true}));
     }
-    modes.addEventListener('click',event=>{
-      const b=event.target.closest('[data-z66-payment]');
-      if(b)setPayment(b.dataset.z66Payment);
-    });
     const scan=barcode.querySelector('#zaviBarcodeScan');
     const rows=goods.querySelector('#orderItems');
     // Original scanner focuses an existing match; additionally increment qty
