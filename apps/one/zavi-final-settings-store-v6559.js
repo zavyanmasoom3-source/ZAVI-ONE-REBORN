@@ -197,6 +197,9 @@ function counts(hub){
 }
 function enhance(){
  const root=document.getElementById('content');if(!root)return;
+ const settings=typeof page==='string'?page==='settings':!!root.querySelector('#shopForm');
+ document.body.classList.toggle('zavi-settings-clean-active',settings);
+ if(!settings)return;
  unwrapOldGroups(root);
  let hub=root.querySelector(':scope > .zavi-clean-settings-hub');
  if(!hub){
