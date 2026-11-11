@@ -274,6 +274,11 @@
         if(!Array.isArray(catalog)||typeof lookup!=='function')return;
         const found=lookup(catalog,scan.value.trim());
         if(found.length!==1)return;
+        // The native V66.62 colour scanner must own the barcode event. This
+        // legacy quick-sale shortcut matches only by product ID and would
+        // incorrectly increment a black row when a white barcode is scanned.
+        const variant=window.ZaviVariantInventory6662;
+        if(variant&&(variant.tracked(found[0])||variant.rows(found[0]).length))return;
         const row=[...rows.querySelectorAll('.order-line')]
           .find(r=>r.dataset.scanProductId===found[0].id);
         if(!row)return;
