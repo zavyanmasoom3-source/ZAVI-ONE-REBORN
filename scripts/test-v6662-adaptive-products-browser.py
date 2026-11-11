@@ -22,7 +22,19 @@ with Session() as browser:
        return {before:db.products.length,txBefore:db.tx.length};
     })()""")
     try:
-      browser.until("""!!document.querySelector('#dialogForm.z66-product-editor[data-z66-product-trade="accessories"]
+      print('ADAPTIVE DEBUG',browser.eval("""(()=>{
+      const f=document.getElementById('dialogForm');
+      const c=f?.querySelector('.z629-industry');
+      return {modal:!!f,title:document.querySelector('.modal-head h3')?.textContent,
+         class:f?.className,dataset:f?.dataset.z66ProductTrade,
+         presentFields:!!f?.elements?.namedItem('openingQty')&&!!f?.elements?.namedItem('category'),
+         category:window.zaviActiveIndustry?.(),industry:typeof zaviBusinessTypeV638==='function'?zaviBusinessTypeV638():null,
+         countCategories:window.ZaviProductCategories6662?.profiles?.length,
+         schema:c?.dataset.z629Type,colour:!!c?.querySelector('.z66-color-editor'),
+         overlays:document.querySelectorAll('#overlay').length,
+         scripts:[...document.querySelectorAll('script[src]')].filter(x=>x.src.includes('product-adaptive')).map(x=>x.src)};
+    })()"""),flush=True)
+    browser.until("""!!document.querySelector('#dialogForm.z66-product-editor[data-z66-product-trade="accessories"]
         .z66-color-editor[data-z66-color-editor="1"]')""",
         'real accessories product form enhanced with native variants')
     except Exception:
