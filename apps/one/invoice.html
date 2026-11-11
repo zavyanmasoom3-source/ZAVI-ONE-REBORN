@@ -7,6 +7,13 @@
 @page{size:A5 portrait;margin:0}@media print{html,body{background:white;padding:0;margin:0}.tools{display:none}.paper{box-shadow:none;width:148mm;min-height:210mm;page-break-after:avoid;zoom:.83}input,textarea{color:#14344a!important}}
 @media(max-width:620px){body{padding:0;overflow-x:auto}.paper{zoom:.78}.tools{margin:8px}}
 @media print{html,body{width:148mm!important;height:210mm!important;position:relative!important;overflow:hidden!important;direction:rtl!important}.paper{position:absolute!important;top:0!important;right:0!important;margin:0!important;width:217.6mm!important;min-height:0!important;max-height:none!important;transform:scale(.68)!important;transform-origin:top right!important;zoom:1!important;box-shadow:none!important}}
+/* Approved V66.62: real dual-calendar invoice preview also visible in print/PDF. */
+.zavi-invoice-dual-date{display:block;width:100%;max-width:100%;padding:4px 3px 2px;
+ color:#244f77;font-size:9px;font-weight:650;line-height:1.6;white-space:normal;
+ overflow-wrap:anywhere;flex-basis:100%}
+.inputline:has(.zavi-invoice-dual-date){flex-wrap:wrap}
+.zavi-invoice-dual-date span{display:inline-block;margin-inline-end:8px}
+@media print{.zavi-invoice-dual-date{color:#163b5d!important;font-size:9px!important}}
 /* ZAVI ONE V45 printable invoice: same navy/blue visual system */
 body{background:#f2f6fc!important;color:#203a5e}
 main,.paper,.invoice{box-shadow:0 14px 44px #1d38541a}
@@ -24,15 +31,71 @@ button{border-radius:11px}
 
 
 
-</head><body data-zavi-utility="invoice"><div class="tools"><label style="display:flex;align-items:center;gap:6px;color:#cdeeff">🌐 <select id="zaviInvoiceLanguage" aria-label="Language"><option value="fa-AF">دری</option><option value="ps-AF">پښتو</option><option value="en">English</option></select></label><button type="button" onclick="if(window.opener){window.close()}else{location.href='./index.html'}">✕ بستن فاکتور</button><button onclick="if(window.zaviInvoiceCanWrite?.()||new URLSearchParams(location.search).has('id'))window.print();else alert('مجوز معتبر برای چاپ فاکتور جدید لازم است.')">چاپ یا دانلود PDF</button><button onclick="saveForm()">ذخیره در سیستم</button><button onclick="downloadInvoicePdf()">دانلود فاکتور در موبایل / لپ‌تاپ (PDF)</button></div><main class="paper"><header class="masthead"><div class="doc">فاکتور فروش<small>SALES INVOICE</small></div><div class="brand"><div><b id="zaviInvoiceMerchantTitle">نام تجارت</b><small>فاکتور فروشگاه</small></div></div></header><div class="stripe"></div><div class="two"><div class="section"><div class="title">مشخصات تجارت</div><div class="inputline"><span>نام تجارت:</span><input name="shop" placeholder="نام تجارت یا شرکت شما"></div><div class="inputline"><span>شماره تماس:</span><input name="shop_phone"></div><div class="inputline"><span>آدرس:</span><input name="address"></div></div><div class="section"><div class="title">مشخصات فاکتور</div><div class="inputline"><span>شماره:</span><input name="invoice" value="INV-0001"></div><div class="inputline"><span>تاریخ:</span><input name="date" placeholder="۱۴۰۵/۰۷/۱۷"></div><div class="inputline"><span>واحد پول:</span><input name="currency" value="AFN"></div></div></div><div class="section"><div class="grid"><div class="inputline"><span>اسم مشتری:</span><input name="customer" placeholder="اختیاری برای فروش نقدی"></div><div class="inputline"><span>شماره تماس:</span><input name="phone"></div></div></div><table class="table"><thead><tr><th style="width:7%">نمبر</th><th style="width:43%">نام کالا</th><th style="width:12%">تعداد</th><th style="width:18%">فی واحد</th><th style="width:20%">مبلغ</th></tr></thead><tbody id="rows"></tbody></table><div class="bottom"><div class="notes"><b class="tiny">یادداشت / توضیحات:</b><textarea name="note" placeholder="یادداشت اختیاری..."></textarea></div><div class="summary"><div class="sumrow"><span>جمع فاکتور</span><input id="total" readonly></div><div class="sumrow"><span>تخفیف</span><input name="discount" class="calc" type="number" value="0" min="0"></div><div class="sumrow"><span>پرداخت نقدی</span><input name="paid" class="calc" type="number" value="0" min="0"></div><div class="sumrow"><span>باقیداری</span><input id="balance" readonly></div></div></div><div class="signs"><div>امضای مشتری: __________________</div><div>امضای فروشنده: __________________</div></div><div class="zavi-invoice-qr"><div id="zaviInvoiceQR" aria-label="Invoice QR"></div><small>QR: معلومات خلاصه فاکتور · برای بررسی رسمی سند اعتبار نیست</small></div></main><script>
-// تاریخ فاکتور به هجری شمسی؛ زمان براساس کابل تعیین می‌شود.
-const currentAfInvoiceDate=()=>{
- const parts=new Intl.DateTimeFormat('en-US-u-ca-persian',{timeZone:'Asia/Kabul',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
- const obj={};for(const part of parts)if(['year','month','day'].includes(part.type))obj[part.type]=part.value;
- const fmt=v=>String(v).replace(/[0-9]/g,d=>'۰۱۲۳۴۵۶۷۸۹'[+d]);
- return fmt(`${obj.year}/${obj.month}/${obj.day}`);
+</head><body data-zavi-utility="invoice"><div class="tools"><label style="display:flex;align-items:center;gap:6px;color:#cdeeff">🌐 <select id="zaviInvoiceLanguage" aria-label="Language"><option value="fa-AF">دری</option><option value="ps-AF">پښتو</option><option value="en">English</option></select></label><button type="button" onclick="if(window.opener){window.close()}else{location.href='./index.html'}">✕ بستن فاکتور</button><button onclick="if(window.zaviInvoiceCanWrite?.()||new URLSearchParams(location.search).has('id'))window.print();else alert('مجوز معتبر برای چاپ فاکتور جدید لازم است.')">چاپ یا دانلود PDF</button><button onclick="saveForm()">ذخیره در سیستم</button><button onclick="downloadInvoicePdf()">دانلود فاکتور در موبایل / لپ‌تاپ (PDF)</button></div><main class="paper"><header class="masthead"><div class="doc">فاکتور فروش<small>SALES INVOICE</small></div><div class="brand"><div><b id="zaviInvoiceMerchantTitle">نام تجارت</b><small>فاکتور فروشگاه</small></div></div></header><div class="stripe"></div><div class="two"><div class="section"><div class="title">مشخصات تجارت</div><div class="inputline"><span>نام تجارت:</span><input name="shop" placeholder="نام تجارت یا شرکت شما"></div><div class="inputline"><span>شماره تماس:</span><input name="shop_phone"></div><div class="inputline"><span>آدرس:</span><input name="address"></div></div><div class="section"><div class="title">مشخصات فاکتور</div><div class="inputline"><span>شماره:</span><input name="invoice" placeholder="ZW-..."></div><div class="inputline"><span>تاریخ:</span><input name="date" placeholder="YYYY/MM/DD یا YYYY-MM-DD" aria-describedby="zaviInvoiceDualDate"><small id="zaviInvoiceDualDate" class="zavi-invoice-dual-date" role="status" aria-live="polite"></small></div><div class="inputline"><span>واحد پول:</span><input name="currency" value="AFN"></div></div></div><div class="section"><div class="grid"><div class="inputline"><span>اسم مشتری:</span><input name="customer" placeholder="اختیاری برای فروش نقدی"></div><div class="inputline"><span>شماره تماس:</span><input name="phone"></div></div></div><table class="table"><thead><tr><th style="width:7%">نمبر</th><th style="width:43%">نام کالا</th><th style="width:12%">تعداد</th><th style="width:18%">فی واحد</th><th style="width:20%">مبلغ</th></tr></thead><tbody id="rows"></tbody></table><div class="bottom"><div class="notes"><b class="tiny">یادداشت / توضیحات:</b><textarea name="note" placeholder="یادداشت اختیاری..."></textarea></div><div class="summary"><div class="sumrow"><span>جمع فاکتور</span><input id="total" readonly></div><div class="sumrow"><span>تخفیف</span><input name="discount" class="calc" type="number" value="0" min="0"></div><div class="sumrow"><span>پرداخت نقدی</span><input name="paid" class="calc" type="number" value="0" min="0"></div><div class="sumrow"><span>باقیداری</span><input id="balance" readonly></div></div></div><div class="signs"><div>امضای مشتری: __________________</div><div>امضای فروشنده: __________________</div></div><div class="zavi-invoice-qr"><div id="zaviInvoiceQR" aria-label="Invoice QR"></div><small>QR: معلومات خلاصه فاکتور · برای بررسی رسمی سند اعتبار نیست</small></div></main><script>
+// Display-only Afghan Solar Hijri + Gregorian dates, always using ASCII digits.
+const zaviInvoiceLatin=v=>String(v||'').replace(/[۰-۹٠-٩]/g,ch=>{
+ const c=ch.charCodeAt(0);return String(c>=1776?c-1776:c-1632);
+});
+const ZAVI_INVOICE_ZONE='Asia/Kabul';
+const zaviInvoiceDateParts=(date,solar)=>{
+ const intl=new Intl.DateTimeFormat(solar?'en-US-u-ca-persian-nu-latn':'en-US-u-nu-latn',{
+  timeZone:ZAVI_INVOICE_ZONE,year:'numeric',month:'numeric',day:'numeric'
+ });
+ const out={};
+ for(const p of intl.formatToParts(date))if(['year','month','day'].includes(p.type))out[p.type]=Number(p.value);
+ return out;
 };
-document.querySelector('input[name="date"]').value=currentAfInvoiceDate();
+const zaviInvoiceISO=()=>{const d=zaviInvoiceDateParts(new Date(),false);
+ return String(d.year).padStart(4,'0')+'-'+String(d.month).padStart(2,'0')+'-'+String(d.day).padStart(2,'0');
+};
+function zaviInvoiceSolarToDate(y,m,d){
+ if(y<1250||y>1600||m<1||m>12||d<1||d>31)return null;
+ let first=null;
+ for(let k=-6;k<=6;k++){
+  const trial=new Date(Date.UTC(y+621,2,20+k,12)),p=zaviInvoiceDateParts(trial,true);
+  if(p.year===y&&p.month===1&&p.day===1){first=trial;break;}
+ }
+ if(!first)return null;
+ const shift=(m<=6?(m-1)*31:186+(m-7)*30)+d-1;
+ const date=new Date(first.getTime()+shift*86400000),p=zaviInvoiceDateParts(date,true);
+ return p.year===y&&p.month===m&&p.day===d?date:null;
+}
+function zaviInvoiceParsedDate(raw){
+ const text=zaviInvoiceLatin(raw).trim();
+ const m=/^(\d{4})[\/-](\d{1,2})[\/-](\d{1,2})$/.exec(text);
+ if(!m)return null;
+ const y=Number(m[1]),month=Number(m[2]),day=Number(m[3]);
+ if(y<1700)return zaviInvoiceSolarToDate(y,month,day);
+ const candidate=new Date(Date.UTC(y,month-1,day,12));
+ return candidate.getUTCFullYear()===y&&candidate.getUTCMonth()===month-1&&candidate.getUTCDate()===day?candidate:null;
+}
+function zaviInvoicePreferredDate(){
+ const today=new Date(),sol=zaviInvoiceDateParts(today,true);
+ let preferred='solar';
+ try{preferred=localStorage.getItem('zavi_calendar_display_preference_v19')==='gregorian'?'gregorian':'solar'}catch(_){}
+ return preferred==='gregorian'?zaviInvoiceISO():
+  String(sol.year)+'/'+String(sol.month).padStart(2,'0')+'/'+String(sol.day).padStart(2,'0');
+}
+function zaviInvoiceUpdateDualDate(){
+ const input=document.querySelector('input[name="date"]'),preview=document.getElementById('zaviInvoiceDualDate');
+ if(!input||!preview)return;
+ const date=zaviInvoiceParsedDate(input.value);
+ const txt=document.documentElement.lang||'fa-AF';
+ if(!date){preview.textContent=txt==='en'?'Invalid date · use YYYY/MM/DD or YYYY-MM-DD':'تاریخ معتبر نیست · YYYY/MM/DD یا YYYY-MM-DD';
+  input.setAttribute('aria-invalid','true');return;}
+ input.removeAttribute('aria-invalid');
+ const sol=zaviInvoiceDateParts(date,true),greg=zaviInvoiceDateParts(date,false);
+ const solar=sol.year+'/'+String(sol.month).padStart(2,'0')+'/'+String(sol.day).padStart(2,'0');
+ const civil=greg.year+'-'+String(greg.month).padStart(2,'0')+'-'+String(greg.day).padStart(2,'0');
+ preview.textContent=(txt==='en'?'Solar Hijri':txt==='ps-AF'?'لمریز هجري':'هجری شمسی')+': '+solar+
+  '  ·  '+(txt==='en'?'Gregorian':txt==='ps-AF'?'میلادي':'میلادی')+': '+civil;
+}
+document.querySelector('input[name="date"]').value=zaviInvoicePreferredDate();
+document.querySelector('input[name="date"]').addEventListener('input',zaviInvoiceUpdateDualDate);
+document.querySelector('input[name="date"]').addEventListener('change',zaviInvoiceUpdateDualDate);
+document.addEventListener('zavi:language-changed',zaviInvoiceUpdateDualDate);
+window.addEventListener('beforeprint',zaviInvoiceUpdateDualDate);
+zaviInvoiceUpdateDualDate();
 const body=document.getElementById('rows');for(let i=1;i<=15;i++){let row=document.createElement('tr');row.innerHTML=`<td class="number">${i}</td><td><input name="product_${i}" aria-label="نام کالا"></td><td><input type="number" class="qty" value="" min="0"></td><td><input type="number" class="unit" value="" min="0"></td><td><input class="amount" readonly></td>`;body.append(row)}
 function calc(){let sum=0;document.querySelectorAll('#rows tr').forEach(tr=>{const q=Number(tr.querySelector('.qty').value)||0,price=Number(tr.querySelector('.unit').value)||0,a=Math.round(q*price*100)/100;tr.querySelector('.amount').value=a?a.toLocaleString('en-US'):'';sum+=a});const dis=Number(document.querySelector('[name=discount]').value)||0,paid=Number(document.querySelector('[name=paid]').value)||0;document.getElementById('total').value=sum.toLocaleString('en-US');document.getElementById('balance').value=(sum-dis-paid).toLocaleString('en-US')}
 document.addEventListener('input',calc);function collectInvoiceData(){return [...document.querySelectorAll('input,textarea')].map(x=>[x.name||x.id,x.value])}
@@ -78,6 +141,7 @@ async function saveForm(){
  if(!window.zaviInvoiceCanWrite?.()){alert('برای ذخیره فاکتور جدید، مجوز معتبر آنلاین یا آفلاین لازم است.');return}
  const data=collectInvoiceData();
  try{
+   if(!zaviInvoiceParsedDate(document.querySelector('input[name="date"]').value))throw Error('تاریخ فاکتور معتبر نیست.');
    const authorized=await verifyInvoicePin();if(!authorized)return;
    const ctx=invoiceTenantContext(),key=ctx.key,db=JSON.parse(localStorage.getItem(key)||'null');
    if(!db||!Array.isArray(db.tx)||!Array.isArray(db.products))throw new Error('ابتدا برنامه اصلی ZAVI ONE را از همین آدرس باز کرده و رمز ورود را تنظیم کنید.');
@@ -95,5 +159,5 @@ async function saveForm(){
  }catch(e){alert('ذخیره در سیستم ممکن نشد: '+(e.message||e))}
 }
 function downloadInvoicePdf(){if(!window.zaviInvoiceCanWrite?.()&&!new URLSearchParams(location.search).has('id'))return alert('مجوز معتبر برای فاکتور جدید لازم است.');alert('در پنجره چاپ، گزینه «Save as PDF / ذخیره PDF» را انتخاب کنید؛ در آیفون گزینه اشتراک‌گذاری و سپس Save to Files را بزنید.');window.print()}
-async function restoreFromArchive(){const id=new URLSearchParams(location.search).get('id');if(!id)return;try{if(!await verifyInvoicePin())return;const db=JSON.parse(localStorage.getItem(invoiceTenantContext().key)||'null');const rec=db?.manualInvoices?.find(x=>x.id===id);if(!rec)return alert('فاکتور در بایگانی پیدا نشد.');const els=[...document.querySelectorAll('input,textarea')];(rec.data||[]).forEach(([k,v],i)=>{if(els[i]&&!els[i].readOnly)els[i].value=v});calc()}catch(e){alert('بازکردن فاکتور انجام نشد: '+(e.message||e))}}calc();restoreFromArchive();
+async function restoreFromArchive(){const id=new URLSearchParams(location.search).get('id');if(!id)return;try{if(!await verifyInvoicePin())return;const db=JSON.parse(localStorage.getItem(invoiceTenantContext().key)||'null');const rec=db?.manualInvoices?.find(x=>x.id===id);if(!rec)return alert('فاکتور در بایگانی پیدا نشد.');const els=[...document.querySelectorAll('input,textarea')];(rec.data||[]).forEach(([k,v],i)=>{if(els[i]&&!els[i].readOnly)els[i].value=v});calc();zaviInvoiceUpdateDualDate()}catch(e){alert('بازکردن فاکتور انجام نشد: '+(e.message||e))}}calc();restoreFromArchive();
 </script><script src="./cloud-config.js"></script><script src="./invoice-license.js?v=38"></script><script src="./invoice-qr-v18.js?v=18"></script><script src="./zavi-theme-v29.js?v=29.0" defer></script><script src="./zavi-localization-finish-v33.js?v=33.1" defer></script><script src="./zavi-locale-signature-v35.js?v=35.0" defer></script><script>(function(){function update(){var x=document.querySelector('input[name="shop"]');var b=document.getElementById("zaviInvoiceMerchantTitle");if(b)b.textContent=(x&&x.value.trim())||"نام تجارت";}document.addEventListener("input",function(e){if(e.target.matches('input[name="shop"]'))update()});document.addEventListener("change",update);window.addEventListener("load",update);setTimeout(update,200);})();</script></body><script src="./zavi-residual-i18n-v32.js?v=32.0" defer></script></html>
