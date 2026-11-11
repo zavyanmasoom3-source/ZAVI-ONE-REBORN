@@ -25,11 +25,11 @@ except subprocess.CalledProcessError:
     subprocess.run(['git','fetch','--no-tags','--depth=1','origin',BASE],
         cwd=root,capture_output=True,check=True)
     baseline=git_show()
-b=baseline.index('\\n'+marker)
+b=baseline.index('\n'+marker)
 reference=baseline[:b]+baseline[baseline.index('</body>',b):]
 assert hashlib.sha256(reference.encode('utf-8')).hexdigest()==p['original_html_sha256'],'Pinned original 66.62 baseline changed'
 def static_html(html):
-    return re.sub(r'<script\\b[^>]*>[\\s\\S]*?</script>', '', html,flags=re.I)
+    return re.sub(r'<script\b[^>]*>[\s\S]*?</script>', '', html,flags=re.I)
 assert static_html(original)==static_html(reference),'Original 66.62 static markup/CSS was modified'
 css=[re.search(r'href=["\x27]([^"\x27]+)',x).group(1) for x in re.findall(r'<link\b[^>]*rel=["\x27]stylesheet["\x27][^>]*>',original,re.I)
      if re.search(r'href=["\x27]([^"\x27]+)',x)]
