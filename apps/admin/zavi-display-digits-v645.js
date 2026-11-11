@@ -32,8 +32,25 @@
  }
  function flush(){scheduledFrame=false;const queue=[...scheduled];scheduled.clear();for(const node of queue)normalize(node)}
  function queue(node){if(scheduled.size>500){scheduled.clear();scheduled.add(document.body)}else scheduled.add(node);if(!scheduledFrame){scheduledFrame=true;requestAnimationFrame(flush)}}
+ function englishNumericField(el){
+  return !!el?.matches?.('input[type="number"],input[type="tel"],input[inputmode="numeric"],input[inputmode="decimal"]');
+ }
+ // Only *new user input* is constrained: never rewrite stored ledger balances,
+ // account IDs, PIN hashes, phone numbers or data loaded from older backups.
+ function blockNonLatinNumericInput(){
+  document.addEventListener('beforeinput',event=>{
+   if(!englishNumericField(event.target)||event.isComposing||!event.data)return;
+   if(HAS_DIGIT.test(event.data))event.preventDefault();
+  },true);
+  document.addEventListener('paste',event=>{
+   if(!englishNumericField(event.target))return;
+   const content=event.clipboardData?.getData('text')||'';
+   if(HAS_DIGIT.test(content))event.preventDefault();
+  },true);
+ }
  function start(){
   if(!document.body)return;
+  blockNonLatinNumericInput();
   queue(document.body);
   const observer=new MutationObserver(records=>{
    for(const r of records){if(r.type==='characterData')queue(r.target);else for(const n of r.addedNodes)queue(n)}
