@@ -11,16 +11,25 @@ function language(){const x=window.ZaviLocaleV22?.get?.()||window.ZaviAdminLangu
 function date(value,lang=language()){
  if(!value)return translations[lang].none;
  const d=new Date(value);if(!Number.isFinite(d.getTime()))return translations[lang].none;
- const calendar=localStorage.getItem('zavi_calendar_display_preference_v19')||'both';
- const f=new Intl.DateTimeFormat('en-US-u-ca-persian',{timeZone:'Asia/Kabul',year:'numeric',month:'numeric',day:'numeric'}).formatToParts(d);
- const parts={};for(const x of f){if(['year','month','day'].includes(x.type))parts[x.type]=Number(x.value)}
- const afghan={en:['Hamal','Sawr','Jawza','Saratan','Asad','Sonbola','Mizan','Aqrab','Qaws','Jadi','Dalwa','Hoot'],
- 'fa-AF':['حمل','ثور','جوزا','سرطان','اسد','سنبله','میزان','عقرب','قوس','جدی','دلو','حوت'],
- 'ps-AF':['وری','غویی','غبرګولی','چنګاښ','زمری','وږی','تله','لړم','لیندۍ','مرغومی','سلواغه','کب']};
- const digits=t=>lang==='en'?String(t):String(t).replace(/[0-9]/g,x=>'۰۱۲۳۴۵۶۷۸۹'[x]);
- const solar=digits(parts.day)+' '+afghan[lang][parts.month-1]+' '+digits(parts.year);
- const greg=new Intl.DateTimeFormat(lang==='en'?'en-GB':lang==='ps-AF'?'ps-AF':'fa-AF',{day:'numeric',month:'long',year:'numeric',timeZone:'Asia/Kabul'}).format(d);
- return calendar==='gregorian'?greg:calendar==='solar'?solar:solar+' / '+greg;
+ const partsFor=cal=>{
+  const out={};
+  const fmt=new Intl.DateTimeFormat(cal==='solar'?'en-US-u-ca-persian-nu-latn':'en-US-u-nu-latn',
+   {timeZone:'Asia/Kabul',year:'numeric',month:'numeric',day:'numeric'});
+  for(const x of fmt.formatToParts(d))if(['year','month','day'].includes(x.type))out[x.type]=+x.value;
+  return out;
+ };
+ const s=partsFor('solar'),g=partsFor('gregorian');
+ const solarNames={en:['Hamal','Sawr','Jawza','Saratan','Asad','Sonbola','Mizan','Aqrab','Qaws','Jadi','Dalwa','Hoot'],
+  'fa-AF':['حمل','ثور','جوزا','سرطان','اسد','سنبله','میزان','عقرب','قوس','جدی','دلو','حوت'],
+  'ps-AF':['وری','غویی','غبرګولی','چنګاښ','زمری','وږی','تله','لړم','لیندۍ','مرغومی','سلواغه','کب']};
+ const gregNames={en:['January','February','March','April','May','June','July','August','September','October','November','December'],
+  'fa-AF':['جنوری','فبروری','مارچ','اپریل','می','جون','جولای','آگست','سپتمبر','اکتوبر','نوامبر','دسمبر'],
+  'ps-AF':['جنوري','فبروري','مارچ','اپرېل','مې','جون','جولای','اګست','سپتمبر','اکتوبر','نومبر','دسمبر']};
+ const solar=String(s.day)+' '+solarNames[lang][s.month-1]+' '+String(s.year);
+ const greg=String(g.day)+' '+gregNames[lang][g.month-1]+' '+String(g.year);
+ let preferred='solar';try{preferred=localStorage.getItem('zavi_calendar_display_preference_v19')==='gregorian'?'gregorian':'solar'}catch(_){}
+ // The preferred calendar changes order only. Both dates are always printed.
+ return preferred==='gregorian'?greg+' / '+solar:solar+' / '+greg;
 }
 const money=r=>Number(r.paid_amount||0).toLocaleString('en-US',{maximumFractionDigits:2})+' '+String(r.currency||'AFN');
 const method=(r,t)=>({cash:t.cash,hawala:t.hawala,bank:t.bank,other:t.other})[r.payment_method]||r.payment_method||t.none;
