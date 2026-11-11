@@ -59,8 +59,11 @@ function getInvoiceEntries(){
   .sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));
 }
 function addInvoiceCard(root){
- if(root.querySelector(':scope > .z66d-invoices'))return;
+ const existing=root.querySelector(':scope > .z66d-invoices');
+ if(existing?.dataset.z66Locale===lang())return;
+ if(existing)existing.remove();
  const t=INV_LABELS[lang()],section=node('section','z66d-section z66d-invoices');
+ section.dataset.z66Locale=lang();
  section.dataset.z66DashSection='invoices';section.append(node('h3','z66d-heading',t.title));
  section.append(node('p','z66d-invoice-subtitle',t.desc));
  const tabs=node('div','z66d-invoice-tabs');
