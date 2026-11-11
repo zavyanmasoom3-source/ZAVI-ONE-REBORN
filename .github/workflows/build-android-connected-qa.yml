@@ -8,6 +8,7 @@ on:
       - 'apps/one/zavi-compact-workflow-v1.js'
       - 'apps/one/zavi-compact-workflow-v1.css'
       - 'scripts/test-v6662-sale-onepage-browser.py'
+      - 'scripts/stage-original-v6662-model.py'
 
 permissions:
   contents: write
@@ -182,6 +183,21 @@ jobs:
           cp "apps/${{ matrix.app }}/icon-192.png" android-build/app/src/main/res/drawable-nodpi/zavi_launcher_image.png
           printf '%s\n' '<resources><style name="ZaviTheme" parent="android:style/Theme.Material.Light.NoActionBar"><item name="android:windowLightStatusBar">false</item></style></resources>' > android-build/app/src/main/res/values/styles.xml
           printf '%s\n' '<?xml version="1.0" encoding="utf-8"?><paths xmlns:android="http://schemas.android.com/apk/res/android"><cache-path name="camera" path="."/></paths>' > android-build/app/src/main/res/xml/zavi_camera_paths.xml
+      - name: Include authentic 62 MB original V66.62 offline voice model in ONE only
+        if: matrix.app == 'one'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/original-v6662"
+          gh release download zavi-v6662-one-debug-qa \
+            -R zavyanmasoom3-source/Zavione \
+            -p ZAVI_one_V6662_DEBUG_QA.apk -D "$RUNNER_TEMP/original-v6662"
+          python3 scripts/stage-original-v6662-model.py \
+            "$RUNNER_TEMP/original-v6662/ZAVI_one_V6662_DEBUG_QA.apk" \
+            android-build/app/src/main/assets
+          rm -f "$RUNNER_TEMP/original-v6662/ZAVI_one_V6662_DEBUG_QA.apk"
       - name: Validate WebView source
         run: |
           if [[ "${{ matrix.app }}" == "one" ]]; then
@@ -249,6 +265,22 @@ jobs:
           fi
           unzip -p "$apk" assets/zavi-build-info.json | grep -F '"kind":"CONNECTED-TEST-NOT-RELEASE"'
           test -s "$apk"
+          if [[ "${{ matrix.app }}" == one ]]; then
+            python3 - "$apk" <<'PY'
+          from zipfile import ZipFile
+          from pathlib import Path
+          import sys
+          p=Path(sys.argv[1])
+          with ZipFile(p) as z:
+            info=z.getinfo('assets/models/ggml-base-q5_1.bin')
+            assert info.file_size==59707625,('Original 66.62 offline model is missing',info.file_size)
+            assert 'assets/zavi-compact-workflow-v1.js' in z.namelist()
+            assert 'assets/zavi-compact-workflow-v1.css' in z.namelist()
+            assert 'assets/zavi-build-info.json' in z.namelist()
+          assert 60000000 <= p.stat().st_size <= 85000000,('Not a full-original-model APK',p.stat().st_size)
+          print('PASS: complete full-sized original 66.62 model and approved sale UI in signed APK:',p.stat().st_size,'bytes')
+          PY
+          fi
           mkdir -p connected-test-output
           cp "$apk" "connected-test-output/ZAVI_${{ matrix.app }}_CONNECTED-TEST-NOT-RELEASE.apk"
           (cd connected-test-output && sha256sum *.apk > SHA256SUMS.txt)
@@ -305,7 +337,7 @@ jobs:
               assert info['package']==f'com.zavione.one{".admin" if app=="admin" else ""}.connectedpreview',info
               assert info['server']=='live-public-key',(app,'not connected')
               assert info['signing']=='ephemeral-connected-test',(app,'unexpected signing')
-              target=Path('direct-apks')/('ZAVI_ONE_ADMIN_CONNECTED_TEST.apk' if app=='admin' else 'ZAVI_ONE_CONNECTED_TEST.apk')
+              target=Path('direct-apks')/('ZAVI_ONE_ADMIN_CONNECTED_TEST.apk' if app=='admin' else 'ZAVI_ONE_V6662_FULL_OFFLINE_CONNECTED_TEST.apk')
               target.write_bytes(p.read_bytes())
               print('PASS: verified connected test APK',app,'bytes:',p.stat().st_size)
           PY
@@ -315,12 +347,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          tag="zavi-v6662-approved-sale-connected-test-20261111-run${GITHUB_RUN_NUMBER}"
+          tag="zavi-v6662-full-original-model-sale-test-20261111-run${GITHUB_RUN_NUMBER}"
           cat > release-notes.txt <<'NOTES'
           THESE ARE NOT PRODUCTION APKs.
           Owner-uploaded ZAVI ONE 66.62 original appearance is retained outside the approved sale form.
           Sale is compact one-page, with original live accounting inputs, barcode and editable price.
           Repeated barcode adds one quantity in the existing product row.
+          ONE APK packages the authentic full 59,707,625-byte ggml offline model extracted from the SHA-256-pinned original 62,226,180-byte V66.62 APK.
+          Native voice transcription operation on a physical Android handset is NOT certified.
           Exact GitHub dev SHA is embedded in both APKs, built with a separate ephemeral test key.
           Connected to the existing live Supabase project using PUBLIC publishable key only.
           CAUTION: Do not log in using an active business account. Test ONLY using a disposable account.
@@ -330,7 +364,7 @@ jobs:
           NOTES
           gh release create "$tag" direct-apks/*.apk \
             --prerelease --target "$GITHUB_SHA" \
-            --title "ZAVI ONE 66.62 design + approved sale — CONNECTED TEST ONLY — run ${GITHUB_RUN_NUMBER}" \
+            --title "ZAVI ONE 66.62 FULL ORIGINAL OFFLINE MODEL + approved sale — TEST ONLY — run ${GITHUB_RUN_NUMBER}" \
             --notes-file release-notes.txt -R "$GITHUB_REPOSITORY"
           gh release view "$tag" -R "$GITHUB_REPOSITORY" --json url,assets \
             --jq '{release: .url, assets: [.assets[] | {name:.name,url:.url}]}'
