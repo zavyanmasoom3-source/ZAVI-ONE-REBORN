@@ -94,7 +94,15 @@ with Session() as browser:
       f.querySelector('[data-z66-payment="partial"]').click();
       return {choices:buttons.length,full,zero,
         partial:f.querySelector('[data-z66-payment="partial"]').getAttribute('aria-pressed')==='true',
-        sameJournal:db.tx.length===start};
+        sameJournal:db.tx.length===start,
+        calcError:f.querySelector('.z66-sale-paymodes')?.dataset.z66PaymentCalcError,
+        totalText:f.querySelector('#sumTotal')?.textContent,
+        linePrices:[...f.querySelectorAll('#orderItems .order-line')].map(r=>({
+           price:r.querySelector('[data-field="price"]')?.value,
+           qty:r.querySelector('[data-field="qty"]')?.value
+        })),
+        paidField:!!f.elements.namedItem('paid'),
+        decimal:typeof window.ZaviDecimal};
     })()""")
     assert modes['choices']==3 and modes['full']>0 and modes['zero']==0,modes
     assert modes['partial'] and modes['sameJournal'],modes
