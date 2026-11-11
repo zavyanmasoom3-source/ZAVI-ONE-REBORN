@@ -143,7 +143,9 @@ function setupApprovedLogin(){
  document.addEventListener('zavi:language-change',schedule);
  document.addEventListener('zavi:language-changed',schedule);
  document.addEventListener('zavi-v24-pin-reset-success',schedule);
- new MutationObserver(schedule).observe(document.documentElement,{
+ // Native locale updates its text before the next animation frame; align RTL/LTR
+ // in the same mutation microtask so password and language never disagree.
+ new MutationObserver(()=>{renderApprovedLogin();updateThemeControls()}).observe(document.documentElement,{
   attributes:true,attributeFilter:['lang','dir','class']});
  const monitored=['zawiGateHelp','zawiPinLabel','zawiPinSubmit','zawiForgotPinBtn'];
  const watcher=new MutationObserver(schedule);
