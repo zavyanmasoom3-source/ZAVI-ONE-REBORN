@@ -5,7 +5,7 @@ const months={fa:['حمل','ثور','جوزا','سرطان','اسد','سنبله
 const gregorianMonths={fa:['جنوری','فبروری','مارچ','اپریل','می','جون','جولای','آگست','سپتمبر','اکتوبر','نومبر','دسمبر'],ps:['جنوري','فبروري','مارچ','اپرېل','مې','جون','جولای','اګست','سپتمبر','اکتوبر','نومبر','دسمبر']};
 const lang=()=>(window.ZaviLocaleV22||window.ZaviLocaleV22)?.get?.()||'fa-AF';
 const t=(fa,ps,en)=>lang()==='en'?en:lang()==='ps-AF'?ps:fa;
-const fmtDigits=s=>lang()==='en'?String(s):String(s).replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[+d]);
+const fmtDigits=s=>String(s).replace(/[۰-۹٠-٩]/g,d=>{const c=d.charCodeAt(0);return String(c>=1776?c-1776:c-1632)});
 function pieces(d,calendar){if(d==null||d===''||d===false||d===0||d==='0')return null;const dt=d instanceof Date?d:new Date(d);if(!Number.isFinite(dt.getTime())||dt.getTime()===0)return null;
  const parts=new Intl.DateTimeFormat('en-US-u-nu-latn'+(calendar==='solar'?'-ca-persian':''),{year:'numeric',month:'numeric',day:'numeric',timeZone:ZONE}).formatToParts(dt);
  const out={};for(const p of parts)if(['year','month','day'].includes(p.type))out[p.type]=+p.value.replace(/[^0-9]/g,'');return out.year&&out.month&&out.day?out:null}
@@ -33,8 +33,11 @@ function paint(){if(!document.body)return;let el=document.getElementById('zaviDa
  dateInputPreview();
 }
 let timeout;function schedule(){if(timeout)return;timeout=setTimeout(()=>{timeout=null;paint()},160)}
-function bothText(value){const s=renderDate(value,'solar'),g=renderDate(value,'gregorian');return s==='—'||g==='—'?'—':`${s} · ${g}`}
-function bothHTML(value){const s=renderDate(value,'solar'),g=renderDate(value,'gregorian');if(s==='—'||g==='—')return '—';return `<span class="zavi-dual-inline" data-no-translate><span><small>${t('هجری شمسی:','لمریز هجري:','Solar Hijri:')}</small> ${s}</span><span aria-hidden="true">·</span><span><small>${t('میلادی:','میلادي:','Gregorian:')}</small> ${g}</span></span>`}
+function preferred(){try{return localStorage.getItem(KEY)==='gregorian'?'gregorian':'solar'}catch(_){return 'solar'}}
+function setPreferred(v){const next=v==='gregorian'?'gregorian':'solar';try{localStorage.setItem(KEY,next)}catch(_){}
+document.dispatchEvent(new CustomEvent('zavi:calendar-changed',{detail:{calendar:next}}));schedule();return next}
+function bothText(value){const s=renderDate(value,'solar'),g=renderDate(value,'gregorian');return s==='—'||g==='—'?'—':preferred()==='gregorian'?g+' · '+s:s+' · '+g}
+function bothHTML(value){const s=renderDate(value,'solar'),g=renderDate(value,'gregorian');if(s==='—'||g==='—')return '—';const parts=[['solar',t('هجری شمسی:','لمریز هجري:','Solar Hijri:'),s],['gregorian',t('میلادی:','ميلادي:','Gregorian:'),g]];if(preferred()==='gregorian')parts.reverse();return '<span class="zavi-dual-inline" data-no-translate>'+parts.map(x=>'<span><small>'+x[1]+'</small> '+x[2]+'</span>').join('<span aria-hidden="true">·</span>')+'</span>'}
 function solarInputToDate(raw){
  const text=String(raw||'').replace(/[۰-۹٠-٩]/g,c=>{const fa='۰۱۲۳۴۵۶۷۸۹'.indexOf(c);return String(fa>=0?fa:'٠١٢٣٤٥٦٧٨٩'.indexOf(c))}).trim();
  const m=/^(\d{4})[\/-](\d{1,2})[\/-](\d{1,2})$/.exec(text);
@@ -55,7 +58,7 @@ function dateInputPreview(){for(const input of document.querySelectorAll('input[
  if(box.textContent!==translated)box.textContent=translated;
  }}
 
-window.ZaviDualDate={format:renderDate,formatBoth:bothText,formatHTML:bothHTML,mode,refresh:schedule,formatParts:pieces,timezone:ZONE};
+window.ZaviDualDate={format:renderDate,formatBoth:bothText,formatHTML:bothHTML,mode,preferred,setPreferred,refresh:schedule,formatParts:pieces,timezone:ZONE};
 document.addEventListener('change',e=>{if(e.target?.matches?.('input[type=date],input[name=date],#fromDate,#toDate'))schedule()},true);
 document.addEventListener('input',e=>{if(e.target?.matches?.('input[type=date],input[name=date],#fromDate,#toDate'))schedule()},true);
 document.addEventListener('zavi:language-changed',schedule);
