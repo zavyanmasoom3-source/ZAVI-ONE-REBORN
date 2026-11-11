@@ -16,6 +16,7 @@ on:
       - 'scripts/test-v6662-variant-stock-ledger.cjs'
       - 'scripts/test-v6662-owner-business-type-lock.cjs'
       - 'scripts/test-v6662-adaptive-products-browser.py'
+      - 'scripts/test-v6662-variant-native-transactions-browser.py'
       - 'scripts/test-v6662-business-type-locked-browser.py'
       - '.github/workflows/adaptive-product-qa.yml'
   workflow_dispatch:
@@ -36,6 +37,8 @@ jobs:
         run: node scripts/test-v6662-owner-business-type-lock.cjs
       - name: Test original native product modal in throwaway Chrome
         run: python3 scripts/test-v6662-adaptive-products-browser.py
+      - name: Test real native colour sale purchase void and offline persistence
+        run: python3 scripts/test-v6662-variant-native-transactions-browser.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:
