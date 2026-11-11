@@ -53,7 +53,20 @@
  const icons={general:'📊',supermarket:'🛒',pharmacy:'💊',laboratory:'🧪',gold:'💍',mobile:'📱',accessories:'📱',wholesale:'📦',distribution:'🚚',clothing:'👕',footwear:'👟',bookstore:'📚',cosmetics:'🧴',electronics:'⚡',furniture:'🪑',hardware:'🔧',construction:'🏗️',exchange:'💱',contractor:'👷',services:'🛠️',company:'🏢'};
  const t=()=>msg[language()];
  const safe=id=>byId[id]?id:'general';
- const current=()=>{try{return safe(window.zaviActiveIndustry?.())}catch(e){return 'general'}};
+ function normalizeStoredTrade(){
+  try{
+   const uid=window.zaviCloudGetAuthSession?.()?.user?.id,
+     wid=window.zaviCloudRestoreInfo?.()?.workspace;
+   if(!uid||!wid)return;
+   const key='zavi_v638_business_type_'+uid+'_'+wid,
+     saved=localStorage.getItem(key);
+   if(!saved||!saved.startsWith('"'))return;
+   const parsed=JSON.parse(saved);
+   // Repair legacy JSON quoting only. Never choose a different business.
+   if(byId[parsed])localStorage.setItem(key,parsed);
+  }catch(_){/* do not rewrite corrupted preferences automatically */}
+ }
+ const current=()=>{normalizeStoredTrade();try{return safe(window.zaviActiveIndustry?.())}catch(e){return 'general'}};
  const name=(p)=>p.name?.[language()]||p.name?.fa||p.id;
  const el=(tag,cls,txt)=>{const x=document.createElement(tag);if(cls)x.className=cls;if(txt!==undefined)x.textContent=String(txt);return x};
  const go=id=>{location.assign('./v25-business.html?zavi_select='+encodeURIComponent(safe(id)))};
@@ -185,6 +198,9 @@
   ['zavi-business-updated','zavi-cloud-workspace-selected','zavi-cloud-session-changed'].forEach(ev=>window.addEventListener(ev,sync));
   sync();
  }
+ ['zavi-cloud-session-changed','zavi-cloud-workspace-selected'].forEach(
+  event=>window.addEventListener(event,normalizeStoredTrade));
+ normalizeStoredTrade();
  window.ZAVIUnified20=Object.freeze({profiles:types.slice(),current,openPicker:open});
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',run,{once:true});else run();
 })();
