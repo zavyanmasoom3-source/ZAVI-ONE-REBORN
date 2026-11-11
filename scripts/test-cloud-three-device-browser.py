@@ -271,27 +271,33 @@ with ExitStack() as stack:
 
     # Case 3: product deleted while another device edits it. No LWW for
     # financial or inventory records: conflict must be flagged, not overwritten.
-    a.command('Page.reload',{'ignoreCache':True})
-    until(lambda:info(a).get('revision')==server_state['workspace']['revision'],
-          'device a refreshed')
+    # A conflicting device from Case 1 has an unsent local invoice:
+    # reloading it as a clean device must not silently discard that invoice.
+    winner=b if conflict_device is a else a
+    until(lambda:info(winner).get('pending') is False and
+          info(winner).get('conflict') is False,
+          'first-case acknowledged winner',35)
+    winner.command('Page.reload',{'ignoreCache':True})
+    until(lambda:info(winner).get('revision')==server_state['workspace']['revision'],
+          'clean device refreshed')
     c.command('Page.reload',{'ignoreCache':True})
     until(lambda:info(c).get('revision')==server_state['workspace']['revision'],
           'device c refreshed')
-    mutate(a,"n.products=n.products.filter(p=>p.id!=='p1');")
+    mutate(winner,"n.products=n.products.filter(p=>p.id!=='p1');")
     mutate(c,"n.products.find(p=>p.id==='p1').salePrice=55;")
     until(lambda:not any(p['id']=='p1' for p in server_state['workspace']['payload']['products'])
       or any(p['salePrice']==55 for p in server_state['workspace']['payload']['products']),
       'delete or edit reached server')
-    until(lambda:info(a).get('conflict') or info(c).get('conflict'),
+    until(lambda:info(winner).get('conflict') or info(c).get('conflict'),
           'delete/edit conflict',35)
-    losing=c if info(c).get('conflict') else a
+    losing=c if info(c).get('conflict') else winner
     assert losing.eval("db.products.some(p=>p.id==='p1')") in (True,False)
     print('PASS: delete-vs-edit conflict preserved on losing device (manual resolution required)')
 
     # Case 4: device clock differs wildly. A revision guard, not client time,
     # governs whether the server permits a write. Check at least one valid
     # post-refresh edit under a future-biased local timestamp.
-    safe=a if not info(a).get('conflict') else c
+    safe=c if losing is winner else winner
     safe.command('Page.reload',{'ignoreCache':True})
     until(lambda:info(safe).get('revision')==server_state['workspace']['revision'],
           'device clock-skew fixture reloaded')
