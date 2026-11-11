@@ -122,12 +122,31 @@
   const entered=snapshot();
   const before=committedType(),chosen=entered.business_type;
   if(allowTypeChange&&chosen!==before){
-   const label=$('type').selectedOptions?.[0]?.textContent||chosen;
-   const warning='نوع کسب‌وکار از «'+before+'» به «'+label+'» تغییر کند؟\\n'
-      +'دسته‌بندی‌ها و فیلدهای پیشنهادی عوض می‌شوند، اما محصولات و فاکتورهای قبلی حذف نمی‌شوند.\\n'
-      +'تغییر فقط با تأیید و ذخیرهٔ مالک انجام می‌شود.';
-   if(!window.confirm(warning)){ $('type').value=before;renderFeatures();renderContextV638();
-     throw Error('تغییر نوع کسب‌وکار لغو شد.');}
+   // Native window.confirm is unreliable in Android WebView.
+   // The store owner must visibly tick this in-page confirmation
+   // before Save can stage a change; language/theme/sync cannot do it.
+   let area=$('z6662TradeApproval');
+   if(!area){
+    area=document.createElement('label');
+    area.id='z6662TradeApproval';
+    area.className='z6662-trade-approval';
+    area.style.cssText='display:flex;align-items:flex-start;gap:10px;padding:12px;margin:12px 0;border:1px solid #62afd3;border-radius:12px;background:rgba(32,134,192,.10);font-size:13px;line-height:1.7';
+    const input=document.createElement('input');input.type='checkbox';
+    input.id='z6662ConfirmTrade';input.style.cssText='width:20px;height:20px;flex:0 0 20px;margin-top:2px;accent-color:#168bc2';
+    const span=document.createElement('span');span.id='z6662TradeApprovalText';
+    area.append(input,span);$('saveProfile').before(area);
+   }
+   const selected=$('type').selectedOptions?.[0]?.textContent||chosen;
+   const key=before+'>'+chosen;
+   if(area.dataset.change!==key){
+    area.dataset.change=key;$('z6662ConfirmTrade').checked=false;
+   }
+   $('z6662TradeApprovalText').textContent='تأیید می‌کنم که نوع کسب‌وکار به «'+selected+
+      '» تغییر کند. فاکتورها و محصولات قبلی محفوظ می‌مانند.';
+   area.hidden=false;
+   if(!$('z6662ConfirmTrade').checked)
+    throw Error('برای تغییر کسب‌وکار، تیک تأیید را بزنید و دوباره «ذخیره تنظیمات تجارت» را انتخاب کنید.');
+   area.hidden=true;$('z6662ConfirmTrade').checked=false;
   }
   const data=allowTypeChange?entered:{...previous,features:entered.features,business_type:before};
   // Never write a new type on the feature-only save path.
@@ -210,7 +229,7 @@
  $('z645ResetDraft')?.addEventListener('click',()=>{
   const saved=getCached()?.data||{};current={...(saved.features||{})};renderFeatures();msg('انتخاب‌ها به آخرین تنظیمات تأییدشده برگشتند.');
  });
- $('type').onchange=()=>{renderFeatures();renderContextV638()};$('z638AllModules').onchange=renderContextV638;$('reload').onclick=load;
+ $('type').onchange=()=>{const approval=$('z6662TradeApproval');if(approval){approval.hidden=true;const check=$('z6662ConfirmTrade');if(check)check.checked=false;approval.dataset.change='';}renderFeatures();renderContextV638()};$('z638AllModules').onchange=renderContextV638;$('reload').onclick=load;
  $('saveProfile').onclick=()=>saveSettings(true);
  $('saveFeatures').onclick=()=>saveSettings(false);
  $('saveBatch').onclick=async()=>{try{
