@@ -1,0 +1,111 @@
+/* V66.62 adaptive real product editor; applies only to native product modal. */
+#dialogForm.z66-product-editor .modal-body,
+#dialogForm.z66-product-editor{min-width:0!important;max-width:100%;box-sizing:border-box}
+#dialogForm.z66-product-editor .z66-category-tools{
+ margin:9px 0 0;display:grid;gap:9px;min-width:0;
+}
+#dialogForm.z66-product-editor .z66-category-tools>small{
+ font-size:11px;line-height:1.6;opacity:.85;
+}
+#dialogForm.z66-product-editor .z66-category-chipset{
+ display:flex;gap:6px;flex-wrap:wrap;min-width:0;
+}
+#dialogForm.z66-product-editor .z66-category-chipset button{
+ cursor:pointer;background:var(--zavi-surface,#123a63);
+ border:1px solid var(--zavi-border,#549cd0);
+ color:var(--zavi-text,#eaf8ff);padding:7px 9px;
+ border-radius:9px;font-size:11px;line-height:1.5;min-height:34px;
+}
+#dialogForm.z66-product-editor .z66-category-add{
+ display:flex;gap:8px;min-width:0;align-items:stretch;
+}
+#dialogForm.z66-product-editor .z66-category-add input{
+ min-width:0;flex:1 1 140px;border-radius:10px;max-width:100%;
+ min-height:41px;font-size:13px;
+}
+#dialogForm.z66-product-editor .z66-category-add button{
+ border:1px solid #59c7e8;background:linear-gradient(110deg,#1674bb,#168cb5);
+ color:white;border-radius:10px;padding:7px 11px;min-height:41px;font-size:12px;font-weight:800;
+}
+#dialogForm.z66-product-editor .z66-product-status{
+ background:rgba(18,112,164,.10);border-left:3px solid #35badd;
+ font-size:12px;line-height:1.6;padding:7px 10px;border-radius:7px;
+}
+#dialogForm.z66-product-editor .z66-product-status:empty{display:none}
+#dialogForm.z66-product-editor .z66-color-editor{
+ display:grid;gap:10px;margin:0;min-width:0;
+}
+#dialogForm.z66-product-editor .z66-variant-head{
+ display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:7px;
+}
+#dialogForm.z66-product-editor .z66-variant-head b{font-size:13px}
+#dialogForm.z66-product-editor .z66-variant-head button{
+ border:1px solid #47cce7;background:#0c66b6;color:#fff;
+ min-height:39px;padding:7px 11px;border-radius:10px;font-size:12px;font-weight:800;
+}
+#dialogForm.z66-product-editor .z66-variant-rows{
+ display:grid;gap:9px;min-width:0;
+}
+#dialogForm.z66-product-editor .z66-variant-row{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;
+ padding:10px;min-width:0;box-sizing:border-box;
+ border-radius:12px;border:1px solid var(--zavi-border,#5d8db8);
+ background:rgba(44,133,202,.08);
+}
+#dialogForm.z66-product-editor .z66-variant-row>label{
+ display:grid;gap:4px;min-width:0;font-size:12px;font-weight:700;line-height:1.5;
+}
+#dialogForm.z66-product-editor .z66-variant-row input{
+ width:100%;max-width:100%;min-width:0;box-sizing:border-box;
+ min-height:42px;border-radius:9px;padding:7px 9px;
+ color:var(--zavi-text,inherit);background:var(--zavi-surface,transparent);
+ border:1px solid var(--zavi-border,#6392c0);
+ font-size:13px;
+}
+#dialogForm.z66-product-editor .z66-variant-row>label:nth-child(3){
+ grid-column:1/-1;
+}
+#dialogForm.z66-product-editor :is(.z66-variant-camera,.z66-variant-delete){
+ min-height:40px;border-radius:9px;padding:8px;font-size:12px;line-height:1.4;font-weight:750;
+}
+#dialogForm.z66-product-editor .z66-variant-camera{
+ color:#eaf9ff;background:#176fb9;border:1px solid #51c5ec;
+}
+#dialogForm.z66-product-editor .z66-variant-delete{
+ color:var(--zavi-text,inherit);background:transparent;
+ border:1px solid var(--zavi-border,#6491b8);
+}
+#dialogForm.z66-product-editor .z66-variant-note{
+ font-size:11px;line-height:1.6;opacity:.84;padding:4px 0;margin:0;
+}
+#dialogForm.z66-product-editor .z66-set-pieces{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:7px;margin-top:5px;
+}
+#dialogForm.z66-product-editor .z66-set-pieces label{
+ display:flex;gap:5px;align-items:center;padding:8px;
+ border-radius:9px;border:1px solid var(--zavi-border,#5089bd);
+ background:rgba(48,133,188,.08);font-size:12px;
+}
+#dialogForm.z66-product-editor .z66-set-pieces input{
+ width:17px;height:17px;accent-color:#12a4ca;
+}
+#dialogForm.z66-product-editor .z66-photo-camera{
+ display:inline-flex;align-items:center;justify-content:center;
+ min-height:39px;padding:8px 10px;border-radius:10px;
+ border:1px solid #44c6e6;font-size:12px;margin:5px 4px;
+}
+#dialogForm.z66-product-editor :is(button,input,select):focus-visible{
+ outline:3px solid #42d6ed;outline-offset:2px;
+}
+@media(max-width:390px){
+ #dialogForm.z66-product-editor .z66-category-add{flex-wrap:wrap}
+ #dialogForm.z66-product-editor .z66-category-add button{width:100%}
+ #dialogForm.z66-product-editor .z66-variant-row{padding:8px;gap:6px}
+}
+@media(prefers-reduced-motion:reduce){
+ #dialogForm.z66-product-editor *{animation:none!important;transition:none!important}
+}
+html[data-z637-no-motion="true"] #dialogForm.z66-product-editor *{
+ animation:none!important;transition:none!important
+}
