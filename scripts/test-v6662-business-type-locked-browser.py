@@ -38,37 +38,37 @@ with Session() as browser:
     first=browser.eval("""(async()=>{
        const sel=document.getElementById('type');
        sel.value='accessories';sel.dispatchEvent(new Event('change',{bubbles:true}));
-       let confirms=0;
-       window.confirm=()=>{confirms++;return false};
        document.getElementById('saveFeatures').click();
        await new Promise(r=>setTimeout(r,100));
        const key='zavi_v638_business_type_qa-no-real-owner_qa-no-cloud-workspace';
        const draft=JSON.parse(localStorage.getItem(
          'zavi_v47_business_draft_qa-no-real-owner_qa-no-cloud-workspace')||'null');
        return {stored:localStorage.getItem(key),select:sel.value,
-         draft:draft?.data?.business_type,confirms,
+         draft:draft?.data?.business_type,
          error:document.getElementById('status')?.textContent};
     })()""")
     assert first['stored']=='gold' and first['select']=='gold',first
-    assert first['draft']=='gold' and first['confirms']==0,first
+    assert first['draft']=='gold',first
     cancelled=browser.eval("""(async()=>{
        const sel=document.getElementById('type');
        sel.value='accessories';sel.dispatchEvent(new Event('change',{bubbles:true}));
-       let confirms=0;
-       window.confirm=()=>{confirms++;return false};
        document.getElementById('saveProfile').click();
        await new Promise(r=>setTimeout(r,100));
+       const approval=document.getElementById('z6662TradeApproval');
+       const check=document.getElementById('z6662ConfirmTrade');
        return {stored:localStorage.getItem(
          'zavi_v638_business_type_qa-no-real-owner_qa-no-cloud-workspace'),
-         select:sel.value,confirms};
+         select:sel.value,approvalVisible:approval?.hidden===false,
+         unchecked:check?.checked===false};
     })()""")
-    assert cancelled['stored']=='gold' and cancelled['select']=='gold',cancelled
-    assert cancelled['confirms']==1,cancelled
+    assert cancelled['stored']=='gold' and cancelled['select']=='accessories',cancelled
+    assert cancelled['approvalVisible'] and cancelled['unchecked'],cancelled
     accepted=browser.eval("""(async()=>{
        const sel=document.getElementById('type');
        sel.value='accessories';sel.dispatchEvent(new Event('change',{bubbles:true}));
-       let confirms=0;
-       window.confirm=()=>{confirms++;return true};
+       const checkbox=document.getElementById('z6662ConfirmTrade');
+       if(!checkbox)throw Error('Owner confirmation checkbox is required');
+       checkbox.checked=true;
        document.getElementById('saveProfile').click();
        await new Promise(r=>setTimeout(r,100));
        const draft=JSON.parse(localStorage.getItem(
@@ -76,10 +76,10 @@ with Session() as browser:
        return {stored:localStorage.getItem(
          'zavi_v638_business_type_qa-no-real-owner_qa-no-cloud-workspace'),
          pending:draft?.pending,kind:draft?.data?.business_type,
-         confirms};
+         confirmationCleared:document.getElementById('z6662ConfirmTrade')?.checked===false};
     })()""")
     assert accepted['stored']=='accessories' and accepted['pending'] is True,accepted
-    assert accepted['kind']=='accessories' and accepted['confirms']==1,accepted
+    assert accepted['kind']=='accessories' and accepted['confirmationCleared'],accepted
     print('PASS: feature Save never changes business type even after selector preview')
-    print('PASS: cancelling explicit change preserves previous trade')
+    print('PASS: unconfirmed owner change cannot modify saved trade')
     print('PASS: owner-confirmed Save stages new type offline only (no server write)')
