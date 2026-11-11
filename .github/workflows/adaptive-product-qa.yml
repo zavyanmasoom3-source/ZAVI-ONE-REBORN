@@ -12,6 +12,7 @@ on:
       - 'apps/one/v25-business.html'
       - 'scripts/test-v6662-21-trade-product-schema.cjs'
       - 'scripts/test-v6662-adaptive-products-browser.py'
+      - 'scripts/test-v6662-business-type-locked-browser.py'
       - '.github/workflows/adaptive-product-qa.yml'
   workflow_dispatch:
 permissions:
@@ -23,6 +24,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Check 21-trade schema, gold jewellery, colours and barcodes
         run: node scripts/test-v6662-21-trade-product-schema.cjs
+      - name: Test explicit owner confirmation and stable business type offline
+        run: python3 scripts/test-v6662-business-type-locked-browser.py
       - name: Test original native product modal in throwaway Chrome
         run: python3 scripts/test-v6662-adaptive-products-browser.py
       - uses: actions/upload-artifact@v4
