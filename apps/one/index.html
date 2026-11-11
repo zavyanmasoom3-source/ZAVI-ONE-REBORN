@@ -1906,7 +1906,7 @@ function totals(){if(z649TotalsDB===db&&z649TotalsResult)return z649TotalsResult
  let cb=Object.values(cashBalances()).reduce((s,n)=>s+n,0),co=contactBalances(),r=Object.values(co).reduce((o,c)=>{o.rec+=c.receivable;o.pay+=c.payable;return o},{rec:0,pay:0});
  const result={cash:money(cb),receivable:money(r.rec+repairList().filter(x=>x.status==='delivered').reduce((a,x)=>a+repairRemain(x),0)),payable:money(r.pay)};
  z649TotalsDB=db;z649TotalsResult=result;return result}
-const TR={supplier_debt:['بدهی ثبت‌شده','amber'],creditor_loan:['قرض گرفته‌شده','amber'],sale:['فروش','green'],purchase:['خرید','blue'],sale_return:['برگشت فروش','amber'],purchase_return:['برگشت خرید','amber'],customer_payment:['دریافت از مشتری','green'],supplier_payment:['پرداخت به عرضه‌کننده','red'],expense:['مصرف','red'],transfer:['انتقال پول','blue'],capital_in:['افزایش سرمایه مالک','green'],owner_draw:['برداشت سرمایه مالک','red'],stock_adjust:['اصلاح موجودی','amber'],customer_loan:['قرض نقدی به مشتری','amber']};
+const TR={supplier_debt:['بدهی ثبت‌شده','amber'],creditor_loan:['قرض گرفته‌شده','amber'],sale:['فروش','green'],purchase:['خرید','blue'],sale_return:['برگشت فروش','amber'],purchase_return:['برگشت خرید','amber'],customer_payment:['دریافت از مشتری','green'],supplier_payment:['پرداخت به عرضه‌کننده','red'],expense:['مصرف','red'],transfer:['انتقال پول','blue'],capital_in:['افزایش سرمایه مالک','green'],owner_draw:['برداشت سرمایه مالک','red'],stock_adjust:['اصلاح موجودی','amber'],warehouse_transfer:['انتقال گدام','blue'],customer_loan:['قرض نقدی به مشتری','amber']};
 
 // V63.7: read-only, minimally aggregated tenant snapshot for local assistant.
 // Never expose raw transactions, contact names, credentials, or any cross-tenant record.
