@@ -19,6 +19,7 @@ on:
       - 'scripts/test-v6662-adaptive-products-browser.py'
       - 'scripts/test-v6662-variant-native-transactions-browser.py'
       - 'scripts/test-v6662-variant-warehouse-native-browser.py'
+      - 'scripts/test-v6662-colour-barcode-sales-browser.py'
       - 'scripts/test-v6662-warehouse-ui-transactions-browser.py'
       - 'scripts/test-v6662-business-type-locked-browser.py'
       - '.github/workflows/adaptive-product-qa.yml'
@@ -46,6 +47,8 @@ jobs:
         run: python3 scripts/test-v6662-variant-native-transactions-browser.py
       - name: Test native owner colour warehouse posting and durable snapshot
         run: python3 scripts/test-v6662-variant-warehouse-native-browser.py
+      - name: Test real scanned colour barcodes, repeated scans and inventory decrement
+        run: python3 scripts/test-v6662-colour-barcode-sales-browser.py
       - name: Test real transfer form with warehouse-specific sale and purchase
         run: python3 scripts/test-v6662-warehouse-ui-transactions-browser.py
       - uses: actions/upload-artifact@v4
