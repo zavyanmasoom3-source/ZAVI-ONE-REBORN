@@ -34,7 +34,7 @@ with Session() as browser:
          overlays:document.querySelectorAll('#overlay').length,
          scripts:[...document.querySelectorAll('script[src]')].filter(x=>x.src.includes('product-adaptive')).map(x=>x.src)};
     })()"""),flush=True)
-    browser.until("""!!document.querySelector('#dialogForm.z66-product-editor[data-z66-product-trade="accessories"]
+      browser.until("""!!document.querySelector('#dialogForm.z66-product-editor[data-z66-product-trade="accessories"]
         .z66-color-editor[data-z66-color-editor="1"]')""",
         'real accessories product form enhanced with native variants')
     except Exception:
