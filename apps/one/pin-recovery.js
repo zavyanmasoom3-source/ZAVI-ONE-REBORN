@@ -6,6 +6,7 @@ const $=id=>document.getElementById(id);
 let ownSession=null,authUser=null,workspaces=[],chosen='',requestId='',busy=false,visible=false,returnFocus=null;
 // Approved V66.62 recovery-only UI. Server verification and PIN reset stay unchanged.
 let recoveryStep=1,resetApproved=false;
+let recoveryViewportCleanup=()=>{};
 const css=`
 /* Approved V66.62 recovery-only four-stage modal; all other UI is unchanged. */
 #z24Recovery{position:fixed;inset:0;z-index:2147483000;display:grid;place-items:center;
@@ -264,6 +265,32 @@ html.zx-lite #z24Recovery .z24-pbox::before{
  #z24Recovery .z66rec-shield{width:60px;height:60px;border-radius:19px}
  #z24Recovery .z66rec-shield svg{width:38px;height:38px}
 }
+
+/* Approved premium recovery: centered, keyboard-safe, unobstructed controls. */
+#z24Recovery{width:100%!important;max-width:100%!important;
+ height:var(--z24-visible-height,100dvh)!important;max-height:var(--z24-visible-height,100dvh)!important;
+ overflow-x:hidden!important;overflow-y:auto!important;place-items:safe center!important;
+ padding:calc(12px + env(safe-area-inset-top,0px)) max(12px,env(safe-area-inset-right,0px))
+ calc(12px + env(safe-area-inset-bottom,0px)) max(12px,env(safe-area-inset-left,0px))!important}
+#z24Recovery .z24-pbox{width:100%!important;max-width:356px!important;min-width:0!important;
+ box-sizing:border-box!important;margin:auto!important;
+ max-height:calc(var(--z24-visible-height,100dvh) - 24px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))!important;
+ overflow-x:hidden!important;overflow-y:auto!important;
+ padding:clamp(12px,3.5vw,17px)!important;border-radius:22px!important}
+#z24Recovery .z24-progress{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+#z24Recovery .z24-progress :is(span,small,b){min-width:0!important;overflow-wrap:anywhere!important}
+#z24Recovery .z24-support{display:flex!important;flex-direction:column!important;align-items:center!important;
+ gap:7px!important;margin:12px 0 3px!important}
+#z24Recovery .z24-support [dir="ltr"]{direction:ltr!important;unicode-bidi:isolate;
+ font:800 16px/1.5 system-ui,Arial,sans-serif;letter-spacing:.04em}
+#z24Recovery .z24-copy-support{min-height:36px!important;padding:7px 12px!important;
+ color:#fff!important;background:linear-gradient(110deg,#1d70b0,#1686ad)!important;
+ border:1px solid #69dbec!important;border-radius:10px!important;
+ font-size:12px!important;font-weight:700!important;cursor:pointer;transition:transform .17s ease}
+#z24Recovery .z24-copy-support:active{transform:scale(.97)}
+@media(max-height:590px){#z24Recovery .z24-pbox{padding:10px!important}
+ #z24Recovery .z66rec-shield{width:49px!important;height:49px!important}}
+@media(prefers-reduced-motion:reduce){#z24Recovery .z24-copy-support{transition:none!important;transform:none!important}}
 `;
 
 const recoveryLabels={
@@ -277,7 +304,7 @@ const recoveryLabels={
   storeHint:'دکان مربوط به حساب خود را انتخاب کنید.',
   requestHint:'درخواست شما برای تأیید به مدیریت ارسال می‌شود.',
   pinHint:'مدیریت تأیید کرده است. برای ساخت رمز جدید در همین دستگاه ادامه دهید.',
-  support:'بازیابی به اینترنت نیاز دارد؛ معلومات حسابداری پاک نمی‌شود.',
+  support:'بازیابی به اینترنت نیاز دارد؛ معلومات حسابداری پاک نمی‌شود.',copySupport:'کاپی شماره',copiedSupport:'شماره کاپی شد',
   initial:'برای شروع، حساب آنلاین خود را تأیید کنید.',select:'انتخاب دکان'
  },
  'ps-AF':{
@@ -290,7 +317,7 @@ const recoveryLabels={
   storeHint:'د خپل حساب دوکان وټاکئ.',
   requestHint:'ستاسو غوښتنه د تایید لپاره مدیریت ته لېږل کېږي.',
   pinHint:'مدیریت تایید کړی. د همدې وسیلې نوی رمز جوړولو ته دوام ورکړئ.',
-  support:'بیا رغونه انټرنېټ ته اړتیا لري؛ د حسابدارۍ معلومات نه پاکېږي.',
+  support:'بیا رغونه انټرنېټ ته اړتیا لري؛ د حسابدارۍ معلومات نه پاکېږي.',copySupport:'شمېره کاپي کړئ',copiedSupport:'شمېره کاپي شوه',
   initial:'لومړی خپل انلاین حساب تایید کړئ.',select:'دوکان وټاکئ'
  },
  'en':{
@@ -303,7 +330,7 @@ const recoveryLabels={
   storeHint:'Select the store associated with your account.',
   requestHint:'Your request is sent to management for approval.',
   pinHint:'Management approved. Continue to create a new PIN on this device.',
-  support:'Internet is required; accounting records are not deleted.',
+  support:'Internet is required; accounting records are not deleted.',copySupport:'Copy number',copiedSupport:'Copied',
   initial:'Verify your online account to get started.',select:'Select store'
  }
 };
@@ -460,10 +487,10 @@ function makeShell(){
      <p id="z24RecoveryIntro" data-z24-label="intro">حساب خود را در چند مرحله بازیابی کنید.</p>
    </header>
    <nav class="z24-progress" aria-label="Recovery progress">
-     <span data-z24-step="1"><b>۱</b><small data-z24-label="stepAccount">حساب</small></span>
-     <span data-z24-step="2"><b>۲</b><small data-z24-label="stepStore">دکان</small></span>
-     <span data-z24-step="3"><b>۳</b><small data-z24-label="stepRequest">درخواست</small></span>
-     <span data-z24-step="4"><b>۴</b><small data-z24-label="stepPin">رمز جدید</small></span>
+     <span data-z24-step="1"><b>1</b><small data-z24-label="stepAccount">حساب</small></span>
+     <span data-z24-step="2"><b>2</b><small data-z24-label="stepStore">دکان</small></span>
+     <span data-z24-step="3"><b>3</b><small data-z24-label="stepRequest">درخواست</small></span>
+     <span data-z24-step="4"><b>4</b><small data-z24-label="stepPin">رمز جدید</small></span>
    </nav>
    <section class="z24-stage" data-z24-panel="1" id="z24LoginFields">
      <label class="z24-pfield"><span data-z24-label="email">ایمیل حساب آنلاین</span>
@@ -496,7 +523,7 @@ function makeShell(){
    </section>
    <p class="z24-pstatus" id="z24RecoveryStatus" role="status" aria-live="polite" aria-atomic="true" data-z24-notice="initial">برای شروع، حساب آنلاین خود را تأیید کنید.</p>
    <p class="z24-support"><span data-z24-label="support">بازیابی به اینترنت نیاز دارد؛ معلومات حسابداری پاک نمی‌شود.</span>
-      <span dir="ltr">0764713434</span></p>
+      <span dir="ltr">0764713434</span><button type="button" class="z24-copy-support" id="z24CopySupport" data-z24-label="copySupport">کاپی شماره</button></p>
    <button type="button" class="z24-pbtn alt" id="z24Cancel" data-z24-label="cancel">بازگشت به ورود</button>
  </div>`;
  // Move the existing native cancel action to the header, not a fake back button.
@@ -504,6 +531,24 @@ function makeShell(){
  const cancel=div.querySelector('#z24Cancel');
  if(cancel)div.querySelector('.z24-ph')?.prepend(cancel);
  document.body.appendChild(div);
+ // Follow the visible mobile viewport without changing server/PIN state.
+ const updateViewport=()=>{
+  const h=window.visualViewport?.height||window.innerHeight;
+  if(Number.isFinite(h)&&h>0)div.style.setProperty('--z24-visible-height',Math.round(h)+'px');
+ };
+ window.visualViewport?.addEventListener('resize',updateViewport,{passive:true});
+ window.addEventListener('resize',updateViewport,{passive:true});
+ window.addEventListener('pageshow',updateViewport);
+ document.addEventListener('visibilitychange',updateViewport);
+ div.addEventListener('focusin',updateViewport);
+ div.addEventListener('focusout',updateViewport);
+ recoveryViewportCleanup=()=>{
+  window.visualViewport?.removeEventListener('resize',updateViewport);
+  window.removeEventListener('resize',updateViewport);
+  window.removeEventListener('pageshow',updateViewport);
+  document.removeEventListener('visibilitychange',updateViewport);
+ };
+ updateViewport();
  div.addEventListener('click',handle);
  div.addEventListener('keydown',recoveryKeydown);
  $('z24Workspace').addEventListener('change',()=>{
@@ -516,7 +561,7 @@ function makeShell(){
  paintRecovery();
  updateRecoveryView();
 }
-function close(){visible=false;recoveryStep=1;resetApproved=false;$('z24Recovery')?.remove();ownSession=null;authUser=null;workspaces=[];chosen='';requestId='';const target=returnFocus;returnFocus=null;if(target?.isConnected)target.focus();}
+function close(){recoveryViewportCleanup();recoveryViewportCleanup=()=>{};visible=false;recoveryStep=1;resetApproved=false;$('z24Recovery')?.remove();ownSession=null;authUser=null;workspaces=[];chosen='';requestId='';const target=returnFocus;returnFocus=null;if(target?.isConnected)target.focus();}
 async function login(){const email=$('z24Email').value.trim(),password=$('z24Password').value;if(!email||!password)throw Error(recoveryNoticeText('noEmail'));const r=await api('/auth/v1/token?grant_type=password',{auth:false,body:{email,password}});if(!r?.access_token||!r?.user?.id)throw Error(recoveryNoticeText('badLogin'));ownSession=r;authUser=r.user;$('z24Password').value='';await fetchWorkspaces()}
 async function fetchWorkspaces(){const s=selectedUser();if(!s?.id||!selectedToken())throw Error(recoveryNoticeText('needOnline'));const result=await api('/rest/v1/zavi_workspaces?select=id,name,owner_uid&owner_uid=eq.'+encodeURIComponent(s.id),{method:'GET'});if(!Array.isArray(result))throw Error('لیست دوکان‌ها دریافت نشد.');workspaces=result;const select=$('z24Workspace');select.innerHTML='<option value="">'+esc(recoveryNoticeText('selectOption'))+'</option>'+result.map(r=>`<option value="${esc(r.id)}">${esc(r.name)}</option>`).join('');if(!result.length)throw Error(recoveryNoticeText('noStores'));const old=window.zaviCloudRestoreInfo?.()?.workspace;if(result.some(r=>r.id===old))select.value=old;else if(result.length===1)select.value=result[0].id;select.dispatchEvent(new Event('change'));notice('onlineLogin');setRecoveryStep(2);}
 async function ask(){if(!chosen)throw Error(recoveryNoticeText('choose'));if(!confirm(recoveryNoticeText('continueAsk')))return;const id=await rpc('zavi_pin_reset_request',{p_workspace_id:chosen});if(typeof id!=='string'||!id)throw Error('شناسه درخواست از سرور دریافت نشد.');requestId=id;localStorage.setItem('zavi_v24_pin_request_'+chosen,id);$('z24Check').disabled=false;$('z24Finish').disabled=false;notice('asked');updateRecoveryView()}
@@ -528,6 +573,24 @@ async function handle(e){
  const b=e.target.closest('button');if(!b||busy||!b.closest('#z24Recovery'))return;
  const id=b.id;
  if(id==='z24Cancel'){close();return}
+ if(id==='z24CopySupport'){
+  e.preventDefault();const number='0764713434';let ok=false;
+  try{if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(number);ok=true}}catch(_){}
+  if(!ok){
+   const field=document.createElement('textarea');field.value=number;
+   field.setAttribute('readonly','');field.style.cssText='position:fixed;top:0;opacity:0';
+   document.body.append(field);field.select();
+   try{ok=document.execCommand('copy')}catch(_){}
+   field.remove();
+  }
+  if(ok){
+   const l=String(document.documentElement.lang||'fa-AF');
+   const dict=recoveryLabels[l]||recoveryLabels['fa-AF'];
+   b.textContent=dict.copiedSupport;
+   setTimeout(()=>{if(b.isConnected)b.textContent=dict.copySupport},1300);
+  }else state('Copy unavailable: '+number,true);
+  return;
+ }
  if(b.hasAttribute('data-z24-back')){
    setRecoveryStep(b.dataset.z24Back);return;
  }
