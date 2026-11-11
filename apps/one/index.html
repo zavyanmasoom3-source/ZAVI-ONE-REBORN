@@ -3007,6 +3007,18 @@ function openOrder(kind,defaultContactId='',chinaDefault=false){
  const orderDialog=document.querySelector('#overlay .modal');
  if(orderDialog)orderDialog.classList.add('z645-order-dialog');
  const form=document.getElementById('dialogForm'),f=form.elements,box=document.getElementById('orderItems');let count=0;
+ const variantEngine=window.ZaviVariantInventory6662;
+ function syncOrderVariant(row,p){
+  const field=row.querySelector('[data-field="variantKey"]'),wrap=field?.closest('[data-variant-wrap]');
+  if(!field||!wrap)return;
+  if(!p||!variantEngine.tracked(p)){field.replaceChildren();field.value='';wrap.hidden=true;row.dataset.variantFor='';return;}
+  const entries=variantEngine.verify(p,db.tx,stockOf(p.id));
+  if(row.dataset.variantFor!==p.id){
+   field.innerHTML='<option value="">انتخاب رنگ *</option>'+entries.map(x=>'<option value="'+escapeHtml(x.key)+'">'+escapeHtml(x.color)+' · '+fmtQty(x.qty)+'</option>').join('');
+   row.dataset.variantFor=p.id;
+  }
+  wrap.hidden=false;
+ }
  function updateMatchStatus(row){
   const nameInput=row.querySelector('[data-field="productName"]');
   let name=nameInput.value.trim();
@@ -3018,8 +3030,9 @@ function openOrder(kind,defaultContactId='',chinaDefault=false){
    row.querySelector('[data-field="productSku"]').value=knownByCode.sku||'';
   }
   const p=findNamedProduct(name,row.querySelector('[data-field="productSku"]').value),v=row.querySelector('.line-status');
-  if(!name){delete row.dataset.scanProductId;delete row.dataset.autoPriceProduct;v.textContent='اسم محصول را بنویسید';v.classList.remove('fresh');return}
+  if(!name){syncOrderVariant(row,null);delete row.dataset.scanProductId;delete row.dataset.autoPriceProduct;v.textContent='اسم محصول را بنویسید';v.classList.remove('fresh');return}
   if(p){
+   try{syncOrderVariant(row,p)}catch(error){v.textContent=error.message;v.classList.add('fresh');return;}
    if(row.dataset.z629MatchedId!==p.id){window.ZaviIndustryForms6529.fill(row.querySelector('.z629-industry'),orderIndustry,p.industryDetails);row.dataset.z629MatchedId=p.id;}
    v.textContent=`در گدام: ${fmtQty(stockOf(p.id))} عدد · ${p.sku||'بدون کود'}`;v.classList.remove('fresh');
    const unit=row.querySelector('[data-field="price"]');
@@ -3034,7 +3047,7 @@ function openOrder(kind,defaultContactId='',chinaDefault=false){
     row.querySelector('[data-field="salePrice"]').value=String(p.salePrice||0);
    }
   }
-  else {if(row.dataset.z629MatchedId){window.ZaviIndustryForms6529.fill(row.querySelector('.z629-industry'),orderIndustry,null);delete row.dataset.z629MatchedId;}delete row.dataset.scanProductId;delete row.dataset.autoPriceProduct;const price=row.querySelector('[data-field="price"]');if(price.dataset.zaviAutoPrice==='true'){price.value='0';price.dataset.zaviAutoPrice='false'}v.textContent=isPurchase?'محصولی جدید — با ثبت فاکتور وارد گدام می‌شود':'این محصول در گدام یافت نشد؛ نخست خرید آن را ثبت کنید.';v.classList.toggle('fresh',isPurchase)}
+  else {syncOrderVariant(row,null);if(row.dataset.z629MatchedId){window.ZaviIndustryForms6529.fill(row.querySelector('.z629-industry'),orderIndustry,null);delete row.dataset.z629MatchedId;}delete row.dataset.scanProductId;delete row.dataset.autoPriceProduct;const price=row.querySelector('[data-field="price"]');if(price.dataset.zaviAutoPrice==='true'){price.value='0';price.dataset.zaviAutoPrice='false'}v.textContent=isPurchase?'محصولی جدید — با ثبت فاکتور وارد گدام می‌شود':'این محصول در گدام یافت نشد؛ نخست خرید آن را ثبت کنید.';v.classList.toggle('fresh',isPurchase)}
  }
  function addLine(){let idx=count++;
   box.insertAdjacentHTML('beforeend',`<div class="order-line" data-line="${idx}"><div class="order-row">
@@ -3043,6 +3056,8 @@ function openOrder(kind,defaultContactId='',chinaDefault=false){
     <input data-field="price" type="number" min="0" step="any" value="0" aria-label="قیمت هر واحد" required>
     <button class="remove-line" type="button" aria-label="حذف ردیف">${icon('close')}</button></div>
     <div class="line-status">اسم محصول را بنویسید</div>
+    <div data-variant-wrap hidden class="z66-invoice-colour"><label>رنگ محصول
+     <select data-field="variantKey" aria-label="رنگ محصول" autocomplete="off"></select></label></div>
     ${isPurchase?`<details><summary>کود، دسته‌بندی و قیمت فروش محصولی جدید (اختیاری)</summary>
     <div class="extras-grid"><div><label>کود / مدل</label><input data-field="productSku" maxlength="70" placeholder="مثلاً A16"></div>
     <div><label>دسته‌بندی</label><input data-field="category" list="zawiInvoiceCategories" maxlength="100" value="" placeholder="دسته‌بندی (اختیاری)"></div>
@@ -3154,6 +3169,7 @@ function openOrder(kind,defaultContactId='',chinaDefault=false){
    category:isPurchase?(row.querySelector('[data-field="category"]').value.trim()||'سایر محصولها'):'',
    salePrice:isPurchase?window.ZaviDecimal.roundMoney(row.querySelector('[data-field="salePrice"]').value||'0'):0,
    qty:qtyRound(num(row.querySelector('[data-field="qty"]').value)),price:window.ZaviDecimal.roundMoney(row.querySelector('[data-field="price"]').value||'0'),
+   variantKey:row.querySelector('[data-field="variantKey"]')?.value||'',
    industryDetails:window.ZaviIndustryForms6529.collect(row.querySelector('.z629-industry'),orderIndustry)
   }));
   if(!enteredRows.length||enteredRows.some(l=>!l.name||l.name.length>140||l.qty<=0||l.price<0||l.salePrice<0||!Number.isFinite(l.qty)))throw Error('نام محصول، تعداد و قیمت هر ردیف را درست وارد کنید.');
@@ -3168,6 +3184,27 @@ function openOrder(kind,defaultContactId='',chinaDefault=false){
   const unit=isPurchase?f.originalCurrency.value:db.currency,rate=isPurchase&&unit!==db.currency?num(f.exchangeRate.value):1;
   if(rate<=0||!Number.isFinite(rate))throw Error('نرخ تبدیل معتبر وارد کنید.');
   const discount=money(disOriginal*rate),paid=money(paidOriginal*rate);
+  // Validate every colour-affecting invoice, including returns and incoming purchases.
+  // A pre-existing colour list without an activated opening snapshot is NOT safe to sell.
+  const variantUsage={};
+  for(const l of enteredRows){
+   const p=findNamedProduct(l.name,l.sku);
+   if(!p)continue;
+   if(variantEngine.rows(p).length&&!variantEngine.tracked(p))
+    throw Error('موجودی رنگ‌های «'+p.name+'» ابتدا باید توسط مالک در فرم محصول تطبیق شود.');
+   if(variantEngine.tracked(p)){
+    const available=variantEngine.verify(p,db.tx,stockOf(p.id));
+    if(!l.variantKey||!available.some(x=>x.key===l.variantKey))
+     throw Error('رنگ «'+p.name+'» را در ردیف فاکتور انتخاب کنید.');
+    if(kind==='sale'||kind==='purchase_return'){
+     const k=p.id+'|'+l.variantKey;
+     variantUsage[k]=(variantUsage[k]||0)+l.qty;
+     const current=available.find(x=>x.key===l.variantKey);
+     if(variantUsage[k]>current.qty+.00001)
+      throw Error('موجودی رنگ «'+current.color+'» کافی نیست؛ موجود: '+fmtQty(current.qty));
+    }
+   }
+  }
   // Prior to saving, confirm selling stock is sufficient by product, including repeated rows.
   if(kind==='sale'||kind==='purchase_return'){
    const usage={};for(const l of enteredRows){const p=findNamedProduct(l.name,l.sku);if(!p)throw Error(`محصولی «${l.name}» در گدام نیست. نخست آن را در بخش خرید ثبت کنید.`);usage[p.id]=(usage[p.id]||0)+l.qty}
@@ -3198,7 +3235,7 @@ function openOrder(kind,defaultContactId='',chinaDefault=false){
     }
     const c=kind==='purchase'?money(l.price*rate*(grossOriginal?totalOriginal/grossOriginal:1)):(priorCosts[p.id]??0);
     if(kind==='purchase')p.purchasePrice=money(c);
-    return {productId:p.id,productName:p.name,qty:l.qty,price:money(l.price*rate),cost:c,industryDetails:l.industryDetails,...(isPurchase?{priceOriginal:l.price}:{})};
+    return {productId:p.id,productName:p.name,qty:l.qty,variantKey:l.variantKey||undefined,price:money(l.price*rate),cost:c,industryDetails:l.industryDetails,...(isPurchase?{priceOriginal:l.price}:{})};
    });
    let payload={id:newId('t'),code:nextCode(n),type:kind,date,created:new Date().toISOString(),contactId,customerName:name,customerPhone:phone,accountId:f.accountId.value,discount,paid,note:f.note.value.trim(),items:lines};
    if(isPurchase)Object.assign(payload,{purchaseOrigin:f.purchaseOrigin.value,originalCurrency:unit,exchangeRate:rate,originalAmount:totalOriginal,originalPaid:paidOriginal,originalDiscount:disOriginal,shipping:money(shippingOriginal*rate),shippingOriginal});
