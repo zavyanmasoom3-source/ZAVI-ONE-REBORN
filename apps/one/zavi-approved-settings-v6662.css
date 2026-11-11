@@ -1,0 +1,196 @@
+/* ZAVI ONE V66.62 — approved compact settings, appearance only.
+ * Original financial forms, native buttons, server permissions remain untouched.
+ * No global colors/typography change outside the ONE settings hub.
+ */
+:root{
+  --z66s-surface:#102a51;--z66s-inner:#122d55;--z66s-raised:#163968;
+  --z66s-line:#537dbc;--z66s-text:#f6faff;--z66s-muted:#cfdef4;
+  --z66s-accent:#21c5ef;--z66s-glow:rgba(29,180,241,.15);
+}
+html[data-zavi-theme="light"]{
+  --z66s-surface:#fff;--z66s-inner:#f2f7fd;--z66s-raised:#e9f3ff;
+  --z66s-line:#9bb8d7;--z66s-text:#123052;--z66s-muted:#405b78;
+  --z66s-accent:#1169ae;--z66s-glow:rgba(20,112,195,.09);
+}
+html[data-zavi-theme="glass"]{
+  --z66s-surface:rgba(19,45,79,.92);--z66s-inner:rgba(21,54,91,.83);--z66s-raised:rgba(31,83,137,.72);
+  --z66s-line:#7fa7cf;--z66s-text:#fff;--z66s-muted:#e1ebfa;
+  --z66s-accent:#38deed;--z66s-glow:rgba(44,210,231,.17);
+}
+#content .zavi-clean-settings-hub{
+  box-sizing:border-box;width:100%;max-width:860px;margin:0 auto 90px;
+  padding:0 0 max(28px,env(safe-area-inset-bottom,0px));
+  color:var(--z66s-text)!important;direction:inherit
+}
+#content .zavi-clean-settings-title{margin:1px 0 12px;padding:4px 1px;gap:3px;display:flex;align-items:baseline}
+#content .zavi-clean-settings-title strong{font-size:clamp(19px,3vw,24px);font-weight:850;color:var(--z66s-text)!important}
+#content .zavi-clean-settings-title span{font-size:12px;line-height:1.5;color:var(--z66s-muted)!important}
+#content .zavi-clean-search-label{font-size:12px;font-weight:750;color:var(--z66s-text)!important;margin-bottom:6px}
+#content #zaviCleanSettingsSearch{
+  min-height:44px;display:block;width:100%;border-radius:13px!important;
+  padding:10px 14px!important;background:var(--z66s-surface)!important;
+  border:1px solid var(--z66s-line)!important;color:var(--z66s-text)!important;
+  box-shadow:0 1px 7px var(--z66s-glow);font-size:14px
+}
+#content #zaviCleanSettingsSearch::placeholder{color:var(--z66s-muted)!important;opacity:1}
+#content .zavi-clean-search-help{font-size:11px!important;color:var(--z66s-muted)!important;margin:6px 0 13px!important;line-height:1.5!important}
+#content .zavi-clean-settings-groups{gap:9px;display:grid;grid-template-columns:minmax(0,1fr)}
+#content .zavi-clean-settings-group{
+  min-width:0;max-width:100%;border:1px solid var(--z66s-line)!important;
+  border-radius:14px;background:var(--z66s-surface)!important;
+  box-shadow:0 2px 13px var(--z66s-glow);overflow:clip;
+}
+#content .zavi-clean-settings-group[hidden],#content .zavi-settings-feature[hidden]{display:none!important}
+#content .zavi-clean-settings-group>summary{
+  min-height:60px;cursor:pointer;position:relative;list-style:none;
+  display:grid;grid-template-columns:36px minmax(0,1fr) 15px;
+  grid-template-rows:auto auto;align-items:center;column-gap:10px;row-gap:2px;
+  padding:9px 13px!important;background:var(--z66s-surface)!important;
+  color:var(--z66s-text)!important;
+}
+#content .zavi-clean-settings-group>summary::-webkit-details-marker{display:none}
+#content .zavi-clean-settings-group>summary>span:first-child{
+  grid-column:2;grid-row:1;min-width:0;font-size:14px!important;
+  color:var(--z66s-text)!important;font-weight:800;line-height:1.5;
+}
+#content .zavi-clean-settings-group>summary>small{
+  grid-column:2;grid-row:2;min-width:0;font-size:11px!important;
+  color:var(--z66s-muted)!important;line-height:1.5;
+}
+#content .zavi-clean-settings-group>summary>.zavi-clean-count{display:none!important}
+#content .zavi-clean-settings-group>summary::after{
+  grid-column:1;grid-row:1/span 2;content:'⚙';display:grid;place-items:center;
+  width:33px;height:33px;background:var(--z66s-raised);border-radius:10px;
+  color:var(--z66s-text);font-size:18px;line-height:1;
+}
+#content .zavi-clean-settings-group[data-group="store"]>summary::after{content:'🏬'}
+#content .zavi-clean-settings-group[data-group="look"]>summary::after{content:'🎨'}
+#content .zavi-clean-settings-group[data-group="cloud"]>summary::after{content:'☁'}
+#content .zavi-clean-settings-group[data-group="security"]>summary::after{content:'🔒'}
+#content .zavi-clean-settings-group[data-group="invoice"]>summary::after{content:'🧾'}
+#content .zavi-clean-settings-group[data-group="subscription"]>summary::after{content:'💬'}
+#content .zavi-clean-settings-group[data-group="advanced"]>summary::after{content:'⚙'}
+#content .zavi-clean-settings-group>summary::before{
+  content:'⌄';grid-column:3;grid-row:1/span 2;position:static;
+  display:inline;inset:auto;font-size:21px;line-height:1;
+  transform-origin:center;transition:transform .16s ease;color:var(--z66s-accent)
+}
+#content .zavi-clean-settings-group[open]>summary::before{transform:rotate(180deg)}
+#content .zavi-clean-settings-group[open]>summary{
+  background:var(--z66s-raised)!important;
+  border-bottom:1px solid var(--z66s-line)!important
+}
+#content .zavi-clean-settings-stack{
+  min-width:0;padding:9px!important;display:grid;gap:7px;
+  background:var(--z66s-inner)!important;
+}
+#content .zavi-settings-feature{
+  min-width:0;box-sizing:border-box;border:1px solid var(--z66s-line);
+  border-radius:11px;overflow:clip;background:var(--z66s-surface);
+}
+#content .zavi-settings-feature[open]{border-color:var(--z66s-accent)}
+#content .zavi-settings-feature>summary{
+  cursor:pointer;display:flex;align-items:center;justify-content:space-between;
+  gap:12px;min-height:44px;padding:10px 12px;
+  color:var(--z66s-text)!important;font-size:13px;font-weight:750;
+  line-height:1.5;list-style:none;
+}
+#content .zavi-settings-feature>summary::-webkit-details-marker{display:none}
+#content .zavi-settings-feature>summary::after{
+  content:'⌄';color:var(--z66s-accent);font-size:19px;flex-shrink:0;transition:transform .16s
+}
+#content .zavi-settings-feature[open]>summary::after{transform:rotate(180deg)}
+#content .zavi-settings-feature-body{
+  box-sizing:border-box;padding:9px;min-width:0;border-top:1px solid var(--z66s-line);
+  color:var(--z66s-text)!important;
+}
+#content .zavi-settings-feature-body>.settings-card,
+#content .zavi-settings-feature-body>.z20-panel,
+#content .zavi-settings-feature-body>.z70-store-card,
+#content .zavi-settings-feature-body>.z72-trial-card,
+#content .zavi-settings-feature-body>.zui-preferences,
+#content .zavi-settings-feature-body>.z6524-launch{
+  min-width:0!important;max-width:100%!important;width:100%!important;
+  margin:0!important;padding:12px!important;box-sizing:border-box;
+  border-radius:10px!important;border:1px solid var(--z66s-line)!important;
+  background:var(--z66s-inner)!important;color:var(--z66s-text)!important;
+  box-shadow:none!important;
+}
+#content .zavi-settings-feature-body :is(h2,h3,h4){
+  margin:0 0 8px!important;font-size:clamp(13px,2.3vw,16px)!important;
+  line-height:1.5!important;color:var(--z66s-text)!important;overflow-wrap:anywhere;
+}
+#content .zavi-settings-feature-body :is(p,.tiny-note,.form-helper,.field-hint,small){
+  font-size:12px!important;line-height:1.8!important;color:var(--z66s-muted)!important;
+  overflow-wrap:anywhere;
+}
+#content .zavi-settings-feature-body :is(label,input,textarea,select){
+  max-width:100%;box-sizing:border-box;min-width:0;
+}
+#content .zavi-settings-feature-body :is(input,select,textarea){
+  color:var(--z66s-text)!important;background:var(--z66s-surface)!important;
+  border:1px solid var(--z66s-line)!important;
+}
+#content .zavi-settings-feature-body :is(input,textarea)::placeholder{
+  color:var(--z66s-muted)!important;opacity:.85
+}
+#content .zavi-settings-feature-body input[type="checkbox"],
+#content .zavi-settings-feature-body input[type="radio"],
+#content .zavi-settings-feature-body input[type="range"],
+#content .zavi-settings-feature-body input[type="file"]{
+  accent-color:var(--z66s-accent);background:transparent!important;
+}
+#content .zavi-settings-feature-body :is(button,.btn){min-height:35px;max-width:100%;overflow-wrap:anywhere}
+#content .zavi-settings-feature-body .form-grid{min-width:0;max-width:100%}
+#content .zavi-settings-feature-body .zavi-module-grid,
+#content .zavi-settings-feature-body .z20-grid{
+  display:grid!important;grid-template-columns:repeat(auto-fit,minmax(min(100%,155px),1fr))!important;
+  gap:7px!important;
+}
+#content .zavi-settings-feature-body :is(.zavi-switch,.z20-toggle){
+  min-width:0;display:flex;align-items:center;justify-content:space-between;
+  gap:10px;padding:9px;border-radius:9px;border:1px solid var(--z66s-line);
+  background:var(--z66s-raised);color:var(--z66s-text)!important;
+  font-size:12px;line-height:1.5;
+}
+#content .zavi-settings-feature-body :is(.zavi-switch,.z20-toggle) input{
+  flex-shrink:0;min-width:17px;width:18px;height:18px;margin:0;
+}
+#content .zavi-settings-extra{
+  margin:8px 0 0;border:1px solid var(--z66s-line);border-radius:10px;
+  padding:0;min-width:0;background:var(--z66s-surface);
+}
+#content .zavi-settings-extra>summary{
+  min-height:43px;display:flex;align-items:center;justify-content:space-between;
+  gap:10px;padding:10px 12px;font-size:13px;font-weight:700;cursor:pointer;
+  color:var(--z66s-text);list-style:none
+}
+#content .zavi-settings-extra>summary::after{content:'⌄';color:var(--z66s-accent)}
+#content .zavi-settings-extra[open]>summary::after{content:'⌃'}
+#content .zavi-settings-extra>h4,
+#content .zavi-settings-extra>.zavi-module-grid,
+#content .zavi-settings-extra>.z20-grid{margin:0 10px 10px!important}
+#content .zavi-settings-feature-body :is(.notice,.small-info,.account-box){
+  color:var(--z66s-text)!important;overflow-wrap:anywhere;
+}
+#content .zavi-clean-settings-hub :is(summary,button,input,select,textarea):focus-visible{
+  outline:3px solid var(--z66s-accent)!important;outline-offset:2px
+}
+#content .zavi-settings-feature-body .action-group{
+  display:flex;flex-wrap:wrap;gap:8px;min-width:0
+}
+#content .zavi-settings-feature-body .action-group>*{max-width:100%}
+@media(max-width:620px){
+  #content .zavi-clean-settings-hub{margin-bottom:96px}
+  #content .zavi-clean-settings-title{display:flex}
+  #content .zavi-clean-settings-group>summary{padding:9px 10px!important;min-height:56px;column-gap:8px}
+  #content .zavi-clean-settings-group>summary>span:first-child{font-size:13.5px!important}
+  #content .zavi-clean-settings-group>summary>small{font-size:10.5px!important}
+  #content .zavi-clean-settings-stack{padding:7px!important}
+  #content .zavi-settings-feature-body{padding:7px}
+  #content .zavi-settings-feature-body .form-grid{grid-template-columns:minmax(0,1fr)!important}
+}
+@media(prefers-reduced-motion:reduce){
+ #content .zavi-clean-settings-group>summary::before,
+ #content .zavi-settings-feature>summary::after{transition:none!important}
+}
