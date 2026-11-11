@@ -186,7 +186,10 @@
    try{
     await flushProfile();await flushQueue();
     const [p,f,b,s]=await Promise.all([request('zavi_v25_business_profiles'),request('zavi_v25_feature_settings'),request('zavi_v25_pharmacy_batches'),request('zavi_v25_services')]);
-    const data={business_type:p[0]?.business_type||'general',display_name:p[0]?.display_name||'',locale:p[0]?.locale||'fa-AF',currency_code:p[0]?.currency_code||'AFN',features:f[0]?.features||{},batches:b,services:s};
+    const storedType=getCached()?.data?.business_type||
+       localStorage.getItem('zavi_v638_business_type_'+uid+'_'+ws)||'general';
+    // A missing cloud profile must not silently reset the owner's last saved trade.
+    const data={business_type:p[0]?.business_type||storedType,display_name:p[0]?.display_name||'',locale:p[0]?.locale||'fa-AF',currency_code:p[0]?.currency_code||'AFN',features:f[0]?.features||{},batches:b,services:s};
     save(snapshotKey(),{owner_uid:uid,workspace_id:ws,data});save('zavi_v638_business_type_'+uid+'_'+ws,String(data.business_type||'general'));restore(data);
     msg(pendingOps().length?'چند مورد هنوز در صف ارسال است.':'✅ تنظیمات آماده است.');
    }catch(e){
