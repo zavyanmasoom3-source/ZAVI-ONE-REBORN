@@ -52,7 +52,14 @@
  function products(){
   try{
    const dbLocal=typeof db!=='undefined'?db:root?.zaviWarehouseData;
-   return Array.isArray(dbLocal?.products)?dbLocal.products.filter(p=>p&&typeof p.id==='string'&&p.id.length<=160).map(p=>({id:p.id,name:String(p.name||p.id).slice(0,100)})):[];
+   const variants=root?.zaviVariantWarehouseCatalog?.()||[];
+   return Array.isArray(dbLocal?.products)?dbLocal.products
+    .filter(p=>p&&typeof p.id==='string'&&p.id.length<=160)
+    .map(p=>{
+     const record=variants.find(x=>x.id===p.id);
+     return {id:p.id,name:String(p.name||p.id).slice(0,100),
+      variant:!!record?.variant,allocated:!!record?.allocated,colours:record?.colours||[]};
+    }):[];
   }catch{return []}
  }
  const el=(tag,klass,t)=>{const n=root.document.createElement(tag);if(klass)n.className=klass;if(t!==undefined)n.textContent=t;return n};
@@ -76,12 +83,29 @@
    return;
   }
   const active=Array.isArray(warehouses)?warehouses.filter(w=>w.is_active&&w.workspace_id===id.workspace):[];
-  const items=products();
-  if(active.length<2||!items.length){host.appendChild(el('p','zv-wh-note',t.need));return}
+  const all=products(),items=all.filter(x=>!x.variant||x.allocated);
+  if(active.length<2||!items.length){
+   host.appendChild(el('p','zv-wh-note',t.need));
+   if(all.some(x=>x.variant&&!x.allocated))
+    host.appendChild(el('p','zv-wh-note','برای انتقال رنگ، نخست موجودی هر رنگ را در فرم محصول به گدام اختصاص دهید.'));
+   return;
+  }
   const form=el('form','zv-wh-transfer-form');form.setAttribute('data-zv-transfer-form','');
   const wh=active.map(w=>({value:w.id,label:w.name+' · '+w.code}));
   const p=items.map(x=>({value:x.id,label:x.name}));
   form.append(selectField(t.source,'from',wh),selectField(t.dest,'to',wh),selectField(t.product,'product',p));
+  const variantLabel=selectField('رنگ این محصول','variant',[]);
+  variantLabel.setAttribute('data-zv-colour-selector','');
+  form.append(variantLabel);
+  const colourSelect=variantLabel.querySelector('select');
+  function updateColour(){
+   const chosen=items.find(x=>x.id===form.elements.product.value);
+   colourSelect.replaceChildren();variantLabel.hidden=!chosen?.variant;
+   if(chosen?.variant)for(const colour of chosen.colours){
+    const option=el('option','',colour.color);option.value=colour.key;colourSelect.append(option);
+   }
+  }
+  form.elements.product.addEventListener('change',updateColour);updateColour();
   const qty=el('input','');qty.name='quantity';qty.setAttribute('inputmode','decimal');qty.required=true;qty.setAttribute('aria-label',t.qty);qty.placeholder='0.0000';
   const qtyLabel=el('label','',t.qty);qtyLabel.appendChild(qty);
   const reference=el('input','');reference.name='reference';reference.maxLength=150;reference.setAttribute('aria-label',t.reference);
@@ -152,6 +176,18 @@
     const sources=[...box.querySelectorAll('.zv-wh-row [data-wh-toggle]')].map(n=>n.dataset.whToggle);
     const from=f.elements.from.value,to=f.elements.to.value,product=f.elements.product.value;
     if(!sources.includes(from)||!sources.includes(to)||!products().some(p=>p.id===product)||from===to)throw Error('INVALID_TRANSFER');
+    const chosen=products().find(p=>p.id===product);
+    if(chosen?.variant){
+     if(!chosen.allocated)throw Error('ابتدا موجودی رنگ‌ها را به گدام اختصاص دهید.');
+     const color=f.elements.variant.value;
+     if(!chosen.colours.some(x=>x.key===color))throw Error('رنگ معتبر انتخاب کنید.');
+     if(typeof root.zaviVariantWarehousePost!=='function')throw Error('دفتر رنگ‌ها در دستگاه آماده نیست.');
+     root.zaviVariantWarehousePost({id:root.crypto.randomUUID(),productId:product,
+      variantKey:color,fromWarehouseId:from,toWarehouseId:to,
+      qty:f.elements.quantity.value,reference:f.elements.reference.value.trim()});
+     status(box.querySelector('.zv-wh-transfer'),'انتقال رنگ در دفتر حسابداری ثبت شد؛ همگام‌سازی ابری از صف اصلی انجام می‌شود.');
+     return;
+    }
     const item=operation({id:root.crypto.randomUUID(),workspace_id:id.workspace,from_warehouse_id:from,to_warehouse_id:to,product_ref:product,p_quantity:f.elements.quantity.value,reference:f.elements.reference.value.trim().slice(0,150)});
     persist(id,item);void submit(box,item,id);
    }catch(e){status(box.querySelector('.zv-wh-transfer'),L().invalid+' '+String(e.message||''))}
