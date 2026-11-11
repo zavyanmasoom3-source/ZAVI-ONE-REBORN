@@ -20,6 +20,7 @@ on:
       - 'scripts/test-v6662-21-trade-product-schema.cjs'
       - 'scripts/test-phase2-recovery-contract-browser.py'
       - 'scripts/test-v6662-neon-recovery-browser.py'
+      - 'scripts/test-v6662-approved-three-section-finish-browser.py'
       - 'scripts/test-phase2-display-sizes-browser.py'
       - 'scripts/test-phase3-offline-status-browser.py'
       - 'scripts/test-shared-design-browser.py'
@@ -77,6 +78,8 @@ jobs:
         run: python3 scripts/test-phase2-recovery-contract-browser.py
       - name: Verify owner-approved neon recovery on phones, themes, languages and native cancel
         run: python3 scripts/test-v6662-neon-recovery-browser.py
+      - name: Verify final approved calendar, dashboard invoices and ASCII print/browser UI
+        run: python3 scripts/test-v6662-approved-three-section-finish-browser.py
       - name: Verify independent text/interface/icon sliders and persistence
         run: python3 scripts/test-phase2-display-sizes-browser.py
       - name: Validate owner-scoped offline status and instant locale switching
@@ -102,6 +105,7 @@ jobs:
             qa-v6662-dashboard/
             qa-phase2-recovery/
             qa-v6662-neon-auth/
+            qa-v6662-three-section-finish/
             qa-design-contrast/
             qa-unified-reference/
             qa-v6662-sale/
