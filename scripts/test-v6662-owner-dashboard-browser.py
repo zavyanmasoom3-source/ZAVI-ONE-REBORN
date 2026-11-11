@@ -49,6 +49,13 @@ with Session() as browser:
     assert len(basics['stats'])>=3 and len(basics['accounts'])==2,basics
     assert all(basics[k] for k in ('allDocs','monthly','rate','inventory','recent','journaling','customer')),basics
     before=basics['transactionLength']
+    # The real app correctly refuses new sales in an empty shop. Add a
+    # disposable in-memory test product (no persistent write, no real sale).
+    browser.eval("""(()=>{
+      db.products.push({id:'dashboard-qa-only',name:'Dashboard QA ONLY',
+        sku:'DASH-QA-ONLY',category:'QA',salePrice:5,purchasePrice:3,
+        openingQty:3,reorder:1});
+    })()""")
     # Actually touch the native new-sale action: no synthetic invoice is posted.
     browser.eval("""document.querySelector('#content [data-z66-dash-action="sale"]').click()""")
     browser.until("""!!document.querySelector('#dialogForm #orderItems')""",
