@@ -1,0 +1,67 @@
+/* V66.62 approved login — viewport-safe, premium graphic refinement.
+   CSS affects the native locked PIN gate only; no business state changes. */
+html.zawi-locked :is(.app,.mobile-bottom,#overlay,#toast){
+ visibility:hidden!important;pointer-events:none!important;
+}
+#zawiPrivateGate.zavi66-approved-login{
+ box-sizing:border-box!important;
+ width:100%!important;
+ height:var(--z66-visible-height,100dvh)!important;
+ max-height:var(--z66-visible-height,100dvh)!important;
+ padding:calc(12px + env(safe-area-inset-top,0px))
+  max(12px,env(safe-area-inset-right,0px))
+  calc(12px + env(safe-area-inset-bottom,0px))
+  max(12px,env(safe-area-inset-left,0px))!important;
+ overflow-x:hidden!important;overflow-y:auto!important;
+ overscroll-behavior:contain!important;
+ align-items:center!important;justify-content:safe center!important;
+ -webkit-overflow-scrolling:touch;
+}
+#zawiPrivateGate.zavi66-approved-login>.zawi-auth-card{
+ flex:none!important;box-sizing:border-box!important;
+ width:100%!important;max-width:356px!important;min-width:0!important;
+ max-height:calc(var(--z66-visible-height,100dvh) - 24px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))!important;
+ margin:auto!important;padding:clamp(13px,3.6vw,19px)!important;
+ overflow-y:auto!important;overflow-x:hidden!important;
+ border:1px solid #64d9ee9c!important;border-radius:22px!important;
+ box-shadow:0 0 0 1px #5fbeff28 inset,0 16px 45px #0005,0 0 25px #176adc18!important;
+}
+#zawiPrivateGate.zavi66-approved-login .zavi-auth-language{
+ width:100%!important;min-width:0!important;
+ display:flex!important;flex-wrap:wrap!important;
+ justify-content:space-between!important;align-items:center!important;gap:7px!important;
+}
+#zawiPrivateGate.zavi66-approved-login :is(#zawiPinForm,.zawi-pin-field,#zawiGateTitle,#zawiGateHelp){
+ max-width:100%!important;min-width:0!important;overflow-wrap:break-word!important;
+}
+#zawiPrivateGate.zavi66-approved-login #zawiPinSubmit{
+ transition:filter .18s ease,box-shadow .18s ease!important;
+ box-shadow:0 9px 21px #126abb34!important;
+}
+#zawiPrivateGate.zavi66-approved-login #zawiPinSubmit:active{filter:brightness(.92)!important}
+#zawiPrivateGate.zavi66-approved-login :is(button,input,select):focus-visible{
+ outline:2px solid #53dcfb!important;outline-offset:2px!important;
+}
+@media(prefers-reduced-motion:no-preference){
+ #zawiPrivateGate.zavi66-approved-login>.zawi-auth-card{
+  animation:z66EntryApproved .38s cubic-bezier(.2,.9,.25,1) both!important;
+ }
+ @keyframes z66EntryApproved{
+  from{opacity:.75;transform:translateY(8px) scale(.985)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+ }
+}
+@media(max-width:380px),(max-height:560px){
+ #zawiPrivateGate.zavi66-approved-login>.zawi-auth-card{
+  padding:12px!important;border-radius:17px!important;
+ }
+ #zawiPrivateGate.zavi66-approved-login .zawi-lock-emblem{
+  width:46px!important;height:46px!important;
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ #zawiPrivateGate.zavi66-approved-login>.zawi-auth-card{
+  animation:none!important;transform:none!important;
+ }
+ #zawiPrivateGate.zavi66-approved-login #zawiPinSubmit{transition:none!important}
+}
