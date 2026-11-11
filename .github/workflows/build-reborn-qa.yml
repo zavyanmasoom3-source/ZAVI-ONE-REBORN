@@ -9,6 +9,22 @@ on:
     branches: [dev]
     paths:
       - '.github/workflows/build-reborn-qa.yml'
+      # Every real app/shared/native source update needs a fresh QA APK.
+      # Otherwise Actions may only expose stale, previous-commit packages.
+      - 'apps/one/**'
+      - 'apps/admin/**'
+      - 'packages/shared/**'
+      - 'android-build/**'
+      - 'gradle/**'
+      - 'gradlew'
+      - 'gradlew.bat'
+      - 'build.gradle'
+      - 'settings.gradle'
+      - 'gradle.properties'
+      - 'scripts/prepare-v6662-native-webview.py'
+      - 'scripts/stamp-qa-version.py'
+      - 'scripts/prepare-ci-signing.py'
+      - 'signing/certificates.json'
 
 permissions:
   contents: read
@@ -157,6 +173,13 @@ jobs:
           p.write_text(s,encoding='utf-8')
           print('staged shared modules:', list((Path('android-build/app/src/main/assets/packages/shared')).rglob('*'))[:20])
           PY
+          # Match the original 66.62 native WebView preparation already
+          # verified by the Stage 6 R8 gate. Touch staged assets ONLY.
+          # This removes a duplicate recovery script and replaces network
+          # fonts with the packaged local font; app source/design stays locked.
+          if [[ "${{ matrix.app }}" == "one" ]]; then
+            python3 scripts/prepare-v6662-native-webview.py android-build/app/src/main/assets/index.html
+          fi
           if [[ "${{ matrix.app }}" == "one" ]]; then
             version="66.78-reborn.qa.$GITHUB_RUN_NUMBER"
             package="com.zavione.one.rebornqa"
