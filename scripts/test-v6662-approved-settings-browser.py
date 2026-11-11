@@ -16,6 +16,9 @@ with Session() as browser:
     browser.until("""!!document.querySelector('#content > .zavi-clean-settings-hub') &&
       document.querySelectorAll('#content .zavi-clean-settings-group').length===7""",
       'approved seven native settings groups mounted')
+    browser.until("""!!document.querySelector('#content #zavi-assistant-settings') &&
+      document.querySelectorAll('#content #zavi-assistant-settings input[type="checkbox"]').length===2""",
+      'real independent assistant visibility controls survive collapsed settings')
     data=browser.eval("""(()=>{
       const hub=document.querySelector('#content > .zavi-clean-settings-hub');
       const groups=[...hub.querySelectorAll('.zavi-clean-settings-group')];
@@ -31,7 +34,10 @@ with Session() as browser:
           [...(s.cssRules||[])].some(r=>String(r.href||'').includes('zavi-approved-settings-v6662.css'))),
         features:hub.querySelectorAll('.zavi-settings-feature').length,
         moduleGrid:!!hub.querySelector('.zavi-settings-extra .zavi-module-grid'),
-        optionsGrid:!!hub.querySelector('.zavi-settings-extra .z20-grid')
+        optionsGrid:!!hub.querySelector('.zavi-settings-extra .z20-grid'),
+        assistantToggles:hub.querySelectorAll('#zavi-assistant-settings input[type="checkbox"]').length,
+        microphoneHidden:![...document.querySelectorAll('#z605-launch,#z197-dashboard-mic,#z196-launch')]
+          .some(x=>getComputedStyle(x).display!=='none')
       };
     })()"""%json.dumps(REQUIRED))
     assert data['ready'] and data['css'],data
@@ -42,6 +48,7 @@ with Session() as browser:
     assert data['legacyPriority']==0 and data['legacyProfile']==0,data
     assert data['nativeBulk']==1 and data['features']>=14,data
     assert data['moduleGrid'] and data['optionsGrid'],data
+    assert data['assistantToggles']==2 and data['microphoneHidden'],data
 
     display=browser.eval("""(()=>{
       const hub=document.querySelector('#content .zavi-clean-settings-hub');
