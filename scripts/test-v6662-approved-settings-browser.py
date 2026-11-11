@@ -5,6 +5,7 @@ records, Supabase data, credentials or production workspaces are touched.
 """
 from chrome_cdp import Session
 import json
+from pathlib import Path
 
 EXPECTED={'store','look','cloud','security','invoice','subscription','advanced'}
 REQUIRED=['shopForm','zaviRenameShopForm','zawiChangePin','zaviSettingsLanguage',
@@ -49,6 +50,26 @@ with Session() as browser:
     assert data['nativeBulk']==1 and data['features']>=14,data
     assert data['moduleGrid'] and data['optionsGrid'],data
     assert data['assistantToggles']==2 and data['microphoneHidden'],data
+    # Screenshot-based evidence revealed that older settings page headings,
+    # support boxes and long warnings stayed visible *below* the new hub.
+    # The UI is not accepted if ANY other visible settings block remains.
+    layout=browser.eval("""(()=>{
+      const root=document.querySelector('#content'),hub=root.querySelector(':scope > .zavi-clean-settings-hub');
+      const outside=[...root.children].filter(x=>x!==hub && x.getBoundingClientRect().height>5 &&
+        getComputedStyle(x).display!=='none' && getComputedStyle(x).visibility!=='hidden');
+      const visible=outside.map(x=>({tag:x.tagName,cls:String(x.className).slice(0,90),
+        id:x.id,text:(x.textContent||'').trim().slice(0,100)}));
+      return {outside:visible,hubTop:hub.getBoundingClientRect().top,
+        hubWidth:hub.clientWidth,scrollWidth:hub.scrollWidth,
+        oldHeader:getComputedStyle(root.querySelector(':scope > .page-head')).display,
+        visibleTopLevel:[...hub.querySelectorAll('.zavi-clean-settings-group')].length};
+    })()""")
+    print('ZAVI_APPROVED_SETTINGS_VISIBLE_ROOT='+json.dumps(layout,ensure_ascii=False),flush=True)
+    assert not layout['outside'],layout
+    assert layout['oldHeader']=='none',layout
+    assert layout['visibleTopLevel']==7,layout
+    assert layout['scrollWidth']<=layout['hubWidth']+5,layout
+
 
     display=browser.eval("""(()=>{
       const hub=document.querySelector('#content .zavi-clean-settings-hub');
@@ -126,4 +147,20 @@ with Session() as browser:
           document.querySelectorAll('#zaviRenameShopForm').length===1};
     })()""")
     assert compact['noDuplicateForms'] and compact['scroll']<=compact['width']+5,compact
+    # Persist actual device-sized render for human visual inspection, not only DOM counts.
+    browser.eval("""(()=>{
+      document.documentElement.lang='fa-AF';
+      window.ZaviThemeV29?.set('dark');
+      const search=document.getElementById('zaviCleanSettingsSearch');
+      if(search){search.value='';search.dispatchEvent(new Event('input',{bubbles:true}));}
+      document.querySelectorAll('#content .zavi-clean-settings-group').forEach(el=>el.open=false);
+    })()""")
+    browser.until("""document.querySelectorAll('#content .zavi-clean-settings-group[open]').length===0""",
+      'seven closed settings cards for visual snapshot')
+    Path('qa-settings').mkdir(exist_ok=True)
+    Path('qa-settings/approved-66.62-settings-dark.png').write_bytes(browser.screenshot())
+    browser.command('Emulation.setDeviceMetricsOverride',{'width':360,'height':780,
+      'deviceScaleFactor':1,'mobile':True,'screenWidth':360,'screenHeight':780})
+    Path('qa-settings/approved-66.62-settings-small-mobile.png').write_bytes(browser.screenshot())
+    print('PASS: zero duplicate root cards; exact seven approved settings visible on mobile')
     print('PASS: seven clean settings groups, original cloud/security/finance controls, native form state, 3 locales, 3 themes, offline ready')
