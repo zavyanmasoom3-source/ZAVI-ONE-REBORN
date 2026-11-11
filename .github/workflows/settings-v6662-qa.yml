@@ -8,6 +8,7 @@ on:
       - 'apps/one/zavi-settings-priority-v6546.js'
       - 'apps/one/zavi-store-v6576-settings-profile.js'
       - 'apps/one/zavi-approved-settings-v6662.css'
+      - 'apps/one/zavi-three-theme-v6627.js'
       - 'apps/one/zavi-final-settings-common-v1.css'
       - 'apps/one/index.html'
       - 'apps/one/sw.js'
@@ -26,6 +27,7 @@ jobs:
       - name: Parse original native settings scripts, including new grouped hub
         run: |
           node --check apps/one/zavi-final-settings-store-v6559.js
+          node --check apps/one/zavi-three-theme-v6627.js
           node --check apps/one/zavi-settings-priority-v6546.js
           node --check apps/one/zavi-store-v6576-settings-profile.js
           python3 scripts/check-inline-javascript-syntax.py
