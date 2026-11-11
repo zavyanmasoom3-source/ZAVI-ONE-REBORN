@@ -1,0 +1,35 @@
+name: V66.62 owner-approved compact settings QA
+
+on:
+  push:
+    branches: [dev]
+    paths:
+      - 'apps/one/zavi-final-settings-store-v6559.js'
+      - 'apps/one/zavi-settings-priority-v6546.js'
+      - 'apps/one/zavi-store-v6576-settings-profile.js'
+      - 'apps/one/zavi-approved-settings-v6662.css'
+      - 'apps/one/zavi-final-settings-common-v1.css'
+      - 'apps/one/index.html'
+      - 'apps/one/sw.js'
+      - 'scripts/test-v6662-approved-settings-browser.py'
+      - '.github/workflows/settings-v6662-qa.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  approved-settings:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Parse original native settings scripts, including new grouped hub
+        run: |
+          node --check apps/one/zavi-final-settings-store-v6559.js
+          node --check apps/one/zavi-settings-priority-v6546.js
+          node --check apps/one/zavi-store-v6576-settings-profile.js
+          python3 scripts/check-inline-javascript-syntax.py
+      - name: Verify every offline shell asset remains present
+        run: python3 scripts/check-offline-shell-assets.py
+      - name: Test actual approved seven-section settings and preserve all real native controls
+        run: python3 scripts/test-v6662-approved-settings-browser.py
