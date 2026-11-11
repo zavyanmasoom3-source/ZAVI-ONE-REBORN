@@ -2822,6 +2822,14 @@ function openEntity(kind,id,creditorMode=false){if(kind==='product'||kind==='edi
   }
  let pendingProductImage=zaviSafeProductImage(p.imageData),productImageBusy=false;
  const productIndustry=zaviBusinessTypeV638();
+ const knownWarehouses=(window.ZaviWarehouseV1?.list?.()||[]).filter(w=>w.is_active&&w.id&&w.name);
+ const warehouseIds=new Map(knownWarehouses.map(w=>[w.id,w.name]));
+ for(const v of p.variantLedger?.warehouseLedger?.initial||[])
+  if(!warehouseIds.has(v.warehouseId))warehouseIds.set(v.warehouseId,'گدام ذخیره‌شده · '+v.warehouseId.slice(0,8));
+ const warehouseChoices=[...warehouseIds].map(([id,name])=>[id,name]);
+ const variantWarehouseMarkup=warehouseChoices.length&&(['mobile','accessories'].includes(productIndustry)||variantEngine.tracked(p))?
+  selectField('variantWarehouseId','گدام برای موجودی و اصلاح رنگ‌ها',[['','انتخاب گدام'],...warehouseChoices]):
+  '';
  const catData=`<datalist id="zawiCategoryOptions">${[...PRODUCT_CATS,'سایر'].map(x=>`<option value="${escapeHtml(x)}"></option>`).join('')}</datalist>`;
  const body=`<div class="form-grid">
  ${field('name','نام محصول *',p.name||'','text','required maxlength="140" placeholder="نام محصول را بنویسید"')}
@@ -2835,6 +2843,8 @@ function openEntity(kind,id,creditorMode=false){if(kind==='product'||kind==='edi
   ${selectField('productPriceCurrency','واحد پول قیمت‌های واردشده',[[db.currency,'پول اصلی ('+db.currency+')'],...(db.currency==='USD'?[]:[['USD','دالر امریکایی (USD)']])],db.currency)}
   <div class="field full"><div class="small-info">اگر قیمت را به دالر می‌نویسید، نخست نرخ دالر را در داشبورد ثبت کنید. بعد قیمت فروش و قیمت خرید را هر دو به دالر وارد کنید؛ هنگام ذخیره، معادل حسابداری به پول اصلی ثبت می‌شود.</div></div>
  ${window.ZaviIndustryForms6529.render(productIndustry,productVariantDetails,{expanded:!!p.industryDetails})}
+ ${variantWarehouseMarkup}
+ ${variantWarehouseMarkup?'<small class="field-hint">موجودی رنگ‌ها در گدام انتخابی نگهداری می‌شود و انتقال میان گدام‌ها سابقه مستقل دارد.</small>':''}
  ${field('openingQty',edit?'تعداد فعلی در گدام *':'تعداد محصول در آغاز *',edit?actualQty:0,'number','min="0" step="0.001" required')}
  ${field('reorder','هشدار در موجودی کمتر یا مساوی',p.reorder??5,'number','min="0" step="0.001" required')}
  <div class="field full"><label>عکس محصول (اختیاری)</label><div class="zavi-photo-preview" id="zaviProductPhotoPreview">${zaviPhotoMarkup({name:p.name,imageData:pendingProductImage})}<div><label class="btn subtle" style="cursor:pointer">انتخاب عکس<input id="zaviProductPhotoInput" type="file" accept="image/jpeg,image/png,image/webp" hidden></label> <button class="btn tiny" type="button" id="zaviProductPhotoClear">حذف عکس</button><div class="tiny-note">عکس کوچک و فشرده ذخیره می‌شود. برای نگهداری تعداد زیاد عکس، پشتیبان JSON بگیرید.</div></div></div></div>
@@ -2897,6 +2907,12 @@ function openEntity(kind,id,creditorMode=false){if(kind==='product'||kind==='edi
   let industryDetails;try{industryDetails=window.ZaviIndustryForms6529.collect(productForm.querySelector('.z629-industry'),productIndustry)}catch(e){return toast(e.message)}
    let variantRows;try{variantRows=variantEngine.rows({industryDetails})}catch(e){return toast(e.message)}
    if(edit&&variantEngine.tracked(p)&&!variantRows.length)return toast('رنگ‌های دارای دفتر موجودی را نمی‌توان حذف کرد.');
+   const selectedWarehouse=String(f.variantWarehouseId?.value||'').trim();
+   const existingWarehouse=!!p.variantLedger?.warehouseLedger;
+   if(variantRows.length&&!existingWarehouse&&knownWarehouses.length&&!selectedWarehouse)
+    return toast('برای موجودی رنگ‌ها گدام را انتخاب کنید.');
+   if(selectedWarehouse&&!warehouseIds.has(selectedWarehouse))
+    return toast('گدام انتخابی در فهرست معتبر نیست.');
    if(edit&&!variantEngine.tracked(p)&&variantRows.length&&qtyRound(num(f.openingQty.value))!==actualQty)
     return toast('برای آغاز دفتر مستقل رنگ‌ها، مجموع رنگ‌ها باید برابر موجودی فعلی باشد. اصلاح موجودی را جدا ثبت کنید.');
   if([salePrice,purchasePrice,qty,reorder].some(x=>!Number.isFinite(x)||x<0))return toast('تعداد و قیمت‌ها نمی‌توانند منفی باشند.');
@@ -2910,18 +2926,26 @@ function openEntity(kind,id,creditorMode=false){if(kind==='product'||kind==='edi
    Object.assign(obj,{name,sku,barcodes,category,salePrice,purchasePrice,reorder,imageData:pendingProductImage,industryDetails});
    if(!edit){
     obj.openingQty=qty;obj.openingCost=purchasePrice;
-    if(variantRows.length)variantEngine.begin(obj,variantRows,qty,n.tx);
+    if(variantRows.length){
+     variantEngine.begin(obj,variantRows,qty,n.tx);
+     if(selectedWarehouse)variantEngine.allocateWarehouse(obj,n.tx,selectedWarehouse);
+    }
     n.products.push(obj);
    }else if(variantEngine.tracked(obj)){
     const adjustments=variantEngine.changes(obj,n.tx,actualQty,variantRows);
+    if(!obj.variantLedger.warehouseLedger&&selectedWarehouse)
+     variantEngine.allocateWarehouse(obj,n.tx,selectedWarehouse);
+    if(obj.variantLedger.warehouseLedger&&adjustments.length&&!selectedWarehouse)
+     throw Error('برای تغییر تعداد رنگ‌ها، گدام اصلاح را انتخاب کنید.');
     variantEngine.addNewColours(obj,variantRows);
     for(const change of adjustments)n.tx.push({id:newId('t'),code:nextCode(n),type:'stock_adjust',
      date:nowISO(),created:new Date().toISOString(),productId:id,variantKey:change.variantKey,
-     delta:change.delta,cost:change.delta>0?(purchasePrice||unitCost(id)):unitCost(id),
+     delta:change.delta,...(obj.variantLedger.warehouseLedger?{warehouseId:selectedWarehouse}:{}),cost:change.delta>0?(purchasePrice||unitCost(id)):unitCost(id),
      note:'اصلاح موجودی رنگ از فرم محصول'});
     variantEngine.verify(obj,n.tx,qty);
    }else if(variantRows.length){
     variantEngine.begin(obj,variantRows,actualQty,n.tx);
+    if(selectedWarehouse)variantEngine.allocateWarehouse(obj,n.tx,selectedWarehouse);
    }else{
     const diff=qtyRound(qty-actualQty);
     if(Math.abs(diff)>.00001)n.tx.push({id:newId('t'),code:nextCode(n),type:'stock_adjust',
