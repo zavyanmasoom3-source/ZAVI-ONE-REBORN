@@ -209,3 +209,14 @@ body.zavi-settings-clean-active .z637-ai-button{
   min-height:44px!important;bottom:calc(78px + env(safe-area-inset-bottom,0px))!important;
   inset-inline-end:auto;inset-inline-start:10px;
 }
+
+/* The old renderer still emits a second full-size page header.
+   Keep its DOM node for legacy integrations, but never show it beside the
+   seven owner-approved settings sections. */
+body.zavi-settings-clean-active #content > .page-head,
+body.zavi-settings-clean-active #content > [data-zavi-legacy-heading="true"]{
+ display:none!important;
+}
+body.zavi-settings-clean-active #content > .zavi-clean-settings-hub{
+ display:block!important;overflow:visible;isolation:isolate;
+}
