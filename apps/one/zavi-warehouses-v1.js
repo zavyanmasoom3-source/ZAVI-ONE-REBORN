@@ -51,7 +51,25 @@ function drawStock(box){
   var value=element('b','',String(r.quantity));
   if(Number(r.quantity)<0)value.classList.add('zv-wh-negative');
   entry.appendChild(value);area.appendChild(entry)
- })
+ });
+ try{
+  const variantStock=window.zaviVariantWarehouseRead?.()||[];
+  if(variantStock.length){
+   area.appendChild(element('h4','',tr('موجودی رنگ‌ها از دفتر فاکتورها','د رسیدونو له دفتره د رنګونو موجودي','Colour stock from invoice ledger')));
+   area.appendChild(element('p','zv-wh-note',tr(
+    'از فاکتورهای فروش، خرید و انتقال محاسبه شده؛ تأیید همگام‌سازی ابری جداگانه است.',
+    'د خرڅلاو، پېر او لېږد له سندونو محاسبه شوی؛ د کلاوډ همغږي جلا تاییدېږي.',
+    'Derived from native sales, purchases and transfers; cloud sync is verified separately.')));
+   for(const item of variantStock){
+    const bin=rows.find(w=>w.id===item.warehouseId);
+    const entry=element('div','zv-wh-stock-row');
+    entry.appendChild(element('strong','',bin?.name||item.warehouseId.slice(0,8)));
+    entry.appendChild(element('span','',item.productName+' · '+item.color));
+    entry.appendChild(element('b','',String(item.qty)));
+    area.appendChild(entry);
+   }
+  }
+ }catch(error){area.appendChild(element('p','zv-wh-note','موجودی رنگ‌ها قابل تأیید نیست: '+String(error.message||'')))}
 }
 function drawHistory(box){
  var area=box.querySelector('.zv-wh-history');if(!area)return;area.replaceChildren();
