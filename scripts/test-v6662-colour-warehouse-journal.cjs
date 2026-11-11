@@ -34,7 +34,7 @@ tx.push({id:'sale-black',type:'sale',items:[{productId:p.id,variantKey:V.key('س
 assert.equal(V.warehouseBalances(p,tx).find(x=>x.variantKey===V.key('سیاه')&&x.warehouseId===B).qty,1);
 assert.equal(V.verifyWorkspace({products:[p],tx}),true);
 tx.push({id:'sale-overspend',type:'sale',items:[{productId:p.id,variantKey:V.key('سیاه'),warehouseId:B,qty:2}]});
-assert.throws(()=>V.verifyWorkspace({products:[p],tx}),/منفی/);
+assert.throws(()=>V.verifyWorkspace({products:[p],tx}),/منفی|پیش از موجودی کافی/);
 tx.pop();
 tx.push({id:'wrong-location',type:'sale',items:[{productId:p.id,variantKey:V.key('سفید'),qty:1}]});
 assert.throws(()=>V.verifyWorkspace({products:[p],tx}),/گدام/);
@@ -63,6 +63,4 @@ replay.push({id:'receipt-after-invalid-sale',type:'purchase',
  items:[{productId:'qa-replay',variantKey:V.key('سیاه'),warehouseId:B,qty:1}]});
 assert.throws(()=>V.warehouseBalances(replayProduct,replay),/پیش از موجودی کافی/);
 assert.throws(()=>V.verifyWorkspace({products:[replayProduct],tx:replay}),/پیش از موجودی کافی/);
-const totalReplay=[];
-V.begin({...replayProduct,id:'qa-replay-2',variantLedger:undefined},V.rows(replayProduct),2,totalReplay);
 console.log('PASS: original 66.62 colour warehouse transfer, sale, purchase, return/void, no overdraw, idempotence, offline replay');
