@@ -87,13 +87,17 @@ function zaviInvoiceUpdateDualDate(){
  const sol=zaviInvoiceDateParts(date,true),greg=zaviInvoiceDateParts(date,false);
  const solar=sol.year+'/'+String(sol.month).padStart(2,'0')+'/'+String(sol.day).padStart(2,'0');
  const civil=greg.year+'-'+String(greg.month).padStart(2,'0')+'-'+String(greg.day).padStart(2,'0');
- preview.textContent=(txt==='en'?'Solar Hijri':txt==='ps-AF'?'لمریز هجري':'هجری شمسی')+': '+solar+
-  '  ·  '+(txt==='en'?'Gregorian':txt==='ps-AF'?'میلادي':'میلادی')+': '+civil;
+ const solarLabel=(txt==='en'?'Solar Hijri':txt==='ps-AF'?'لمریز هجري':'هجری شمسی')+': '+solar;
+ const gregLabel=(txt==='en'?'Gregorian':txt==='ps-AF'?'میلادي':'میلادی')+': '+civil;
+ let primary='solar';
+ try{primary=localStorage.getItem('zavi_calendar_display_preference_v19')==='gregorian'?'gregorian':'solar'}catch(_){}
+ preview.textContent=primary==='gregorian'?gregLabel+'  ·  '+solarLabel:solarLabel+'  ·  '+gregLabel;
 }
 document.querySelector('input[name="date"]').value=zaviInvoicePreferredDate();
 document.querySelector('input[name="date"]').addEventListener('input',zaviInvoiceUpdateDualDate);
 document.querySelector('input[name="date"]').addEventListener('change',zaviInvoiceUpdateDualDate);
 document.addEventListener('zavi:language-changed',zaviInvoiceUpdateDualDate);
+document.addEventListener('zavi:calendar-changed',zaviInvoiceUpdateDualDate);
 window.addEventListener('beforeprint',zaviInvoiceUpdateDualDate);
 zaviInvoiceUpdateDualDate();
 const body=document.getElementById('rows');for(let i=1;i<=15;i++){let row=document.createElement('tr');row.innerHTML=`<td class="number">${i}</td><td><input name="product_${i}" aria-label="نام کالا"></td><td><input type="number" class="qty" value="" min="0"></td><td><input type="number" class="unit" value="" min="0"></td><td><input class="amount" readonly></td>`;body.append(row)}
