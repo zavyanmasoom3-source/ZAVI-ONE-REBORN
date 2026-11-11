@@ -24,7 +24,7 @@ assert.deepEqual(JSON.parse(cover.values.colorVariants).map(x=>x.qty),[5,3]);
 assert.match(forms.render('accessories',cover,{expanded:true}),/z66-color-editor/);
 assert.match(forms.display(cover).map(x=>x.join(' ')).join(' '),/سیاه \(5\)/);
 assert.throws(()=>forms.normalize('accessories',{colorVariants:'[{"color":"سیاه","qty":5},{"color":"سیاه","qty":2}]'}),/تکراری/);
-assert.throws(()=>forms.normalize('accessories',{colorVariants:'[{"color":"سفید","qty":-1}]'}),/نامعتبر/);
+assert.throws(()=>forms.normalize('accessories',{colorVariants:'[{"color":"سفید","qty":-1}]'}),/معتبر نیست/);
 assert.throws(()=>forms.normalize('accessories',{colorVariants:'[{"color":"سفید","qty":1,"barcode":"A"},{"color":"سیاه","qty":2,"barcode":"A"}]'}),/تکراری/);
 const phone=forms.normalize('mobile',{brand:'Apple',colorVariants:original});
 assert.equal(phone.type,'mobile');
