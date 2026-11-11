@@ -26,6 +26,14 @@
   });
  }
  function settingsTarget(){
+  // The approved seven-section settings page has an explicit appearance
+  // section. Never append the native theme picker after the whole hub: that
+  // created a second long settings card below the seven approved sections.
+  var approved=document.querySelector(
+   '#content > .zavi-clean-settings-hub .zavi-clean-settings-group[data-group="look"] > .zavi-clean-settings-stack'
+  );
+  if(approved && document.body.classList.contains('zavi-settings-clean-active'))
+   return approved;
   var candidates=[
    '#settingsPanel','#settingsView','#page-settings','.settings-panel','.settings-view',
    '[data-page="settings"]','[data-screen="settings"]',
