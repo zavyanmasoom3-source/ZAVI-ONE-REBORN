@@ -1,0 +1,14 @@
+/* Approved small A5 date caption; visible in print and PDF export. */
+.z66-manual-two-dates{
+ display:block;max-width:100%;margin:4px 0 6px;padding:5px 8px;
+ border:1px solid #bfdae9;border-radius:7px;background:#f1f8ff;
+ color:#163c65;font:600 10px/1.5 Tahoma,Arial,sans-serif;
+ overflow-wrap:anywhere;unicode-bidi:plaintext;
+}
+@media print{
+ .z66-manual-two-dates{
+  background:#fff!important;border-color:#bfd1dd!important;
+  color:#153650!important;break-inside:avoid!important;
+ }
+}
+@media(max-width:620px){.z66-manual-two-dates{font-size:9px}}
