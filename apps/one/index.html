@@ -1772,6 +1772,13 @@ window.zaviVariantWarehouseRead=()=>{
  }
  return output;
 };
+window.zaviVariantWarehouseHistory=()=>{
+ if(window.zaviCloudRestoreInfo?.()?.role!=='owner')return [];
+ return db.tx.filter(t=>t.type==='warehouse_transfer'&&!t.voided)
+  .map(t=>({id:t.id,fromWarehouseId:t.fromWarehouseId,toWarehouseId:t.toWarehouseId,
+   productName:db.products.find(p=>p.id===t.productId)?.name||t.productId,
+   variantKey:t.variantKey,qty:t.qty,date:t.date,note:t.note||''}));
+};
 window.zaviVariantWarehousePost=(input)=>{
  const info=window.zaviCloudRestoreInfo?.();
  if(info?.role!=='owner'||!info.workspace||window.zaviCloudCanEdit?.()===false)
