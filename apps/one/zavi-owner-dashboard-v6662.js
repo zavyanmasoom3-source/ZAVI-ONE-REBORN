@@ -46,6 +46,12 @@ function paint(){
  const root=document.getElementById(CONTENT);
  if(!root)return;
  const hero=root.querySelector(':scope > .welcome');
+ // Later cosmetic observers may run after original .stat-grid is moved into
+ // the summary section. Restore the scoped theme class, never strip it.
+ if(hero?.dataset.z66DashDone==='1'&&root.querySelector(':scope > .z66d-summary')){
+   root.classList.add('z66d-root');
+   return;
+ }
  const stats=root.querySelector(':scope > .stat-grid');
  if(!hero||!stats){
    root.classList.remove('z66d-root');
