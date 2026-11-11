@@ -18,6 +18,9 @@ with Session() as browser:
        '#z24Recovery .z66rec-shield svg') &&
        !!document.querySelector('#z24Recovery .z66rec-brand')""",
        'approved recovery graphics appear with real recovery controls')
+    # Let the one-time card entrance finish before measuring geometry.
+    browser.until("""!document.getAnimations().some(a=>a.animationName==='z66rec-pop' && a.playState==='running')""",
+                  'recovery entrance animation settles',seconds=8)
     layout=browser.eval("""(()=>{
       const root=document.getElementById('z24Recovery');
       const card=root.querySelector('.z24-pbox');
@@ -68,7 +71,10 @@ with Session() as browser:
         })()""")
         assert geom['card']['width']>=min(width-28,282),geom
         assert geom['card']['left']>=6 and geom['card']['right']<=width-6,geom
-        assert abs(geom['card']['left']-(width-geom['card']['right']))<1.5,geom
+        # Desktop Chromium reserves an RTL scrollbar gutter at the left;
+        # center within the overlay's actual content viewport (same WebView rule).
+        assert abs((geom['card']['left']-geom['overlay']['left'])-
+                   (geom['overlay']['right']-geom['card']['right']))<1.5,geom
         assert geom['card']['top']>=-1 and geom['card']['bottom']<=height+1,geom
         assert geom['cardScroll']<=geom['cardClient']+2,geom
         assert geom['scroll']<=geom['client']+2,geom
