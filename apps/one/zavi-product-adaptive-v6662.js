@@ -128,7 +128,7 @@ function enhance(form){
    // barcodes textarea only at validation/submit; they retain a single source.
    editor.innerHTML='<div class="z66-variant-head"><b>'+esc(tr('رنگ‌ها و تعداد هر رنگ','رنګونه او د هر رنګ شمېر','Colours and quantities'))+'</b>'+
    '<button type="button" data-z66-add-color>+ '+esc(tr('افزودن رنگ','رنګ زیاتول','Add colour'))+'</button></div>'+
-   '<div class="z66-variant-rows"></div><p class="z66-variant-note">'+esc(tr('تعداد و بارکد هر رنگ ثبت می‌شود؛ موجودی حسابداری هنوز برای کل محصول محاسبه می‌شود.','د هر رنګ شمېر ثبتېږي؛ حسابداري موجودي لا هم د ټول توکي لپاره ده.','Colour quantities are recorded, but accounting stock remains product-level.'))+'</p>';
+   '<div class="z66-variant-rows"></div><p class="z66-variant-note">'+esc(tr('موجودی هر رنگ از دفتر فاکتورها محاسبه می‌شود؛ برای تفکیک گدام، گدام را انتخاب کنید.','د هر رنګ موجودي د رسیدونو له دفتره حسابېږي؛ د ګدام لپاره ګدام وټاکئ.','Colour stock follows the invoice journal; select a warehouse to track each bin.'))+'</p>';
    const list=editor.querySelector('.z66-variant-rows');let rowNo=0;
    const isEditing=/ویرایش|edit/i.test(title);let variantsTouched=false;
    function row(data={}){
