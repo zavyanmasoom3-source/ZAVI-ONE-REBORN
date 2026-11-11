@@ -155,6 +155,158 @@
     layout.querySelectorAll('[role="tab"]')[2].addEventListener('click',refreshHistory);
     if(originalHeader && main.firstElementChild!==originalHeader)main.prepend(originalHeader);
   }
+
+  /* Approved 66.62 sale: single continuous page. Move ORIGINAL live controls only.
+     Purchase retains three tabs. No extra accounting or hidden submit handler. */
+  function enhanceSaleSinglePage(body,form,heading,general,products,payment){
+    const layout=document.createElement('div');
+    layout.className='z66-sale-single';
+    layout.dataset.zaviSaleOnepage='66.62';
+    const section=(key,label)=>{
+      const node=document.createElement('section');
+      node.className='z66-sale-section z66-sale-'+key;
+      const title=document.createElement('h3');
+      title.dataset.z66SaleLabel=key;
+      title.textContent=label;
+      node.append(title);layout.append(node);return node;
+    };
+    const customer=section('customer','مشتری و تاریخ');
+    const barcode=section('barcode','فروش با بارکد');
+    const goods=section('products','محصولات فاکتور');
+    const pay=section('payment','پرداخت');
+    const advanced=document.createElement('details');
+    advanced.className='z66-sale-advanced';
+    const summary=document.createElement('summary');
+    summary.dataset.z66SaleLabel='more';
+    summary.textContent='گزینه‌های بیشتر';
+    advanced.append(summary);
+    for(const n of general)customer.append(n);
+    const barcodeBox=products.find(n=>n.matches?.('.zavi-barcode-box'));
+    if(barcodeBox){
+      barcode.append(barcodeBox);
+      const hint=barcodeBox.querySelector('details.z645-barcode-help');
+      if(hint)hint.open=false;
+    }
+    for(const n of products){
+      if(n===barcodeBox)continue;
+      if(n.matches?.('.z629-line-note,.zawi-inline-tip')){
+        const help=document.createElement('details');
+        help.className='z66-sale-help';
+        const t=document.createElement('summary');
+        t.textContent='راهنمای محصول';
+        help.append(t,n);
+        advanced.append(help);
+      }else goods.append(n);
+    }
+    const extra=payment.find(n=>n.classList?.contains('zavi-flow-payment-fields'));
+    if(extra)for(const field of [...extra.children])advanced.append(field);
+    const note=body.querySelector('[name="note"]');
+    const noteField=note?.closest('.field');
+    if(noteField)advanced.append(noteField);
+    for(const n of payment){
+      if(n===extra)continue;
+      if(n.matches?.('.tiny-note'))advanced.append(n);
+      else if(n.classList?.contains('form-grid')&&!n.children.length)continue;
+      else pay.append(n);
+    }
+    // The real paid input remains in the original form; presets only set it.
+    const paid=form.elements.namedItem('paid');
+    const modes=document.createElement('div');
+    modes.className='z66-sale-paymodes';modes.setAttribute('role','group');
+    modes.setAttribute('aria-label','نوع پرداخت');
+    for(const [key,label] of [['cash','نقدی'],['credit','قرضی'],['partial','قسطی']]){
+      const button=document.createElement('button');button.type='button';
+      button.className='z66-sale-paymode';button.dataset.z66Payment=key;
+      button.dataset.z66SaleLabel='mode-'+key;
+      button.setAttribute('aria-pressed',String(key==='partial'));
+      button.textContent=label;
+      modes.append(button);
+    }
+    const total=pay.querySelector('.totals');
+    if(total)total.after(modes);else pay.prepend(modes);
+    const methodNote=document.createElement('p');methodNote.className='z66-sale-payhint';
+    methodNote.dataset.z66SaleLabel='payhint';
+    methodNote.textContent='مبلغ دریافتی و باقی‌مانده در فاکتور ثبت می‌شود.';
+    modes.after(methodNote);
+    pay.append(advanced);
+    body.append(layout);
+    form.dataset.zaviSaleOnepage='true';
+    function setPayment(mode){
+      const buttons=[...modes.querySelectorAll('[data-z66-payment]')];
+      for(const b of buttons)b.setAttribute('aria-pressed',String(b.dataset.z66Payment===mode));
+      if(!paid||mode==='partial')return;
+      if(mode==='credit')paid.value='0';
+      else{
+        const lines=[...goods.querySelectorAll('#orderItems .order-line')];
+        try{
+          const decimal=window.ZaviDecimal;
+          const subtotal=decimal.sumLineTotals(lines.map(r=>({
+            qty:r.querySelector('[data-field="qty"]').value||'0',
+            price:r.querySelector('[data-field="price"]').value||'0'
+          })));
+          const discount=form.elements.namedItem('discount')?.value||'0';
+          const value=decimal.roundMoney(Math.max(0,subtotal-decimal.roundMoney(discount)));
+          paid.value=String(value);
+        }catch(_){return}
+      }
+      paid.dispatchEvent(new Event('input',{bubbles:true}));
+    }
+    modes.addEventListener('click',event=>{
+      const b=event.target.closest('[data-z66-payment]');
+      if(b)setPayment(b.dataset.z66Payment);
+    });
+    const scan=barcode.querySelector('#zaviBarcodeScan');
+    const rows=goods.querySelector('#orderItems');
+    // Original scanner focuses an existing match; additionally increment qty
+    // on a repeated exact barcode. Unknown/ambiguous codes use native errors.
+    if(scan&&rows){
+      scan.addEventListener('keydown',event=>{
+        if(event.key!=='Enter'||!String(scan.value||'').trim())return;
+        const catalog=typeof db!=='undefined'?db.products:null;
+        const lookup=window.ZaviBarcodeV641?.lookup;
+        if(!Array.isArray(catalog)||typeof lookup!=='function')return;
+        const found=lookup(catalog,scan.value.trim());
+        if(found.length!==1)return;
+        const row=[...rows.querySelectorAll('.order-line')]
+          .find(r=>r.dataset.scanProductId===found[0].id);
+        if(!row)return;
+        const qty=row.querySelector('[data-field="qty"]');
+        if(!qty)return;
+        const value=Number(qty.value);
+        if(!Number.isFinite(value)||value<=0)return;
+        event.preventDefault();event.stopImmediatePropagation();
+        qty.value=String(value+1);
+        qty.dispatchEvent(new Event('input',{bubbles:true}));
+        scan.value='';scan.dispatchEvent(new Event('input',{bubbles:true}));
+        qty.focus();
+      },true);
+    }
+    // Native product-row nodes are never cloned. Their edit handlers and
+    // per-business fields remain attached to the original #orderItems.
+    const observeRows=()=>{
+      if(!rows)return;
+      for(const r of rows.querySelectorAll('.order-row')){
+        if(r.dataset.z66Labeled)return;
+        for(const [field,key] of [
+          ['productName','item-name'],['qty','qty'],['price','unit-price']]){
+          const input=r.querySelector('[data-field="'+field+'"]');
+          if(!input||input.closest('.z66-sale-input'))continue;
+          const wrapper=document.createElement('label');
+          wrapper.className='z66-sale-input z66-sale-'+key;
+          const caption=document.createElement('span');
+          caption.dataset.z66SaleLabel=key;
+          caption.textContent=key==='item-name'?'نام محصول':key==='qty'?'تعداد':'فی واحد';
+          input.before(wrapper);wrapper.append(caption,input);
+        }
+        r.dataset.z66Labeled='true';
+      }
+    };
+    observeRows();
+    if(rows)new MutationObserver(observeRows).observe(rows,{childList:true});
+    // Keep the original native submit and all price/stock/permission checks.
+    return layout;
+  }
+
   function enhanceOrderForm(){
     const form=document.getElementById('dialogForm');
     if(!form||form.dataset.zaviFlowDone)return;
@@ -182,16 +334,14 @@
       if(field)extraPayment.append(field);
     }
     if(extraPayment.childElementCount)payment.unshift(extraPayment);
-    if(isPurchase)createTabs(body,'order', [general,products,payment],
+    if(isPurchase)createTabs(body,'order',[general,products,payment],
       ['specs','products','payment']);
-    else createTabs(body,'order',[general,products,payment],
-      ['customer','products','payment']);
+    else enhanceSaleSinglePage(body,form,heading,general,products,payment);
     if(heading && body.firstElementChild!==heading)body.prepend(heading);
-    if(!body.querySelector('[data-zavi-flow="order"]'))return;
     const flow=body.querySelector('[data-zavi-flow="order"]');
-    // Reference sale wizard: customer -> products -> payment.
-    // The actual inputs, validations, and original submit remain in place.
-    [...flow.querySelectorAll(':scope > .zavi-flow-panel')].slice(0,2).forEach((pane,index)=>{
+    if(!flow&&!body.querySelector('[data-zavi-sale-onepage]'))return;
+    // Purchases retain the existing three-step flow. Sales are ONE page.
+    if(flow)[...flow.querySelectorAll(':scope > .zavi-flow-panel')].slice(0,2).forEach((pane,index)=>{
       const next=document.createElement('button');
       next.type='button';next.className='zavi-reference-continue';
       next.dataset.zaviReferenceNext=String(index+1);
@@ -211,8 +361,10 @@
     function fail(field,message){
       const panel=field.closest('.zavi-flow-panel');
       const flow=body.querySelector('[data-zavi-flow="order"]');
-      const idx=[...flow.querySelectorAll('.zavi-flow-panel')].indexOf(panel);
-      if(idx>=0)flow.zaviActivate(idx);
+      if(flow){const idx=[...flow.querySelectorAll('.zavi-flow-panel')].indexOf(panel);
+        if(idx>=0)flow.zaviActivate(idx);}
+      const details=field.closest('details');
+      if(details)details.open=true;
       window.ZaviDesignSystemV1?.setFieldError(field,message);
       field.focus({preventScroll:true});
       field.scrollIntoView({block:'nearest',behavior:'auto'});
@@ -247,6 +399,24 @@
     },true);
   }
   function refreshLabels(){
+    const saleLabels={
+      fa:{customer:'مشتری و تاریخ',barcode:'فروش با بارکد',products:'محصولات فاکتور',payment:'پرداخت',
+        more:'گزینه‌های بیشتر', 'mode-cash':'نقدی','mode-credit':'قرضی','mode-partial':'قسطی',
+        payhint:'پرداخت نقدی، قرضی یا قسمتی؛ فقط مبلغ واقعی دریافتی ثبت می‌شود.',
+        'item-name':'نام محصول',qty:'تعداد','unit-price':'فی واحد'},
+      ps:{customer:'پېرودونکی او نېټه',barcode:'د بارکوډ پلور',products:'د بل توکي',payment:'تادیه',
+        more:'نور انتخابونه','mode-cash':'نغدې','mode-credit':'پور','mode-partial':'قسطونه',
+        payhint:'یوازې رښتیا ترلاسه شوې پیسې ثبتېږي.',
+        'item-name':'د توکي نوم',qty:'شمېر','unit-price':'د یوه بیه'},
+      en:{customer:'Customer & date',barcode:'Barcode sale',products:'Invoice items',payment:'Payment',
+        more:'More options','mode-cash':'Cash','mode-credit':'Credit','mode-partial':'Partial',
+        payhint:'Only actual money received is recorded; remainder is tracked.',
+        'item-name':'Product',qty:'Quantity','unit-price':'Unit price'}
+    }[lang()];
+    document.querySelectorAll('[data-z66-sale-label]').forEach(el=>{
+      const key=el.dataset.z66SaleLabel;
+      if(saleLabels[key]&&el.textContent!==saleLabels[key])el.textContent=saleLabels[key];
+    });
     document.querySelectorAll('[data-zavi-flow-label]').forEach(el=>{
       el.textContent=tr(el.dataset.zaviFlowLabel);
     document.querySelectorAll('[data-zavi-reference-next]').forEach(b=>{
