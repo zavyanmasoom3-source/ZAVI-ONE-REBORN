@@ -2515,9 +2515,9 @@ function zaviTransactionDonutV6539(){
   const gradient=n?`conic-gradient(${stops.join(',')})`:'conic-gradient(#547396 0% 100%)';
   const label=text('توزیع اسناد فروشگاه','د پلورنځي د سندونو وېش','Business records distribution');
   const description=text('بر اساس تعداد سندهای ثبت‌شده؛ اسناد باطل حساب نمی‌شوند.','د ثبت شویو سندونو شمېر؛ لغوه سندونه نه شمېرل کېږي.','Based on recorded documents; voided records are excluded.');
-  return `<section class="card z6539-donut-card" aria-label="${label}"><div class="panel-head"><h3>${label}</h3><span class="pill blue">${n?fmtQty(n):'۰'} ${text('سند','سندونه','records')}</span></div>
+  return `<section class="card z6539-donut-card" aria-label="${label}"><div class="panel-head"><h3>${label}</h3><span class="pill blue">${n?fmtQty(n):'0'} ${text('سند','سندونه','records')}</span></div>
     <div class="z6539-donut-content"><div class="z6539-donut" role="img" aria-label="${label}: ${n}" style="background:${gradient}"><div class="z6539-donut-inner"><strong>${fmtQty(n)}</strong><small>${text('سند','سندونه','records')}</small></div></div>
-     <div class="z6539-donut-legend">${all.map(x=>`<div class="z6539-legend-row"><span class="z6539-legend-dot" style="background:${x.color}"></span><span>${escapeHtml(x.title)}</span><b>${fmtQty(x.count)}</b></div>`).join('')}${!n?`<div class="muted">${text('هنوز معامله‌ای ثبت نشده است.','تر اوسه معامله نشته.','No transactions recorded yet.')}</div>`:''}</div></div>
+     <div class="z6539-donut-legend">${all.map(x=>`<div class="z6539-legend-row"><span class="z6539-legend-dot" style="background:${x.color}"></span><span>${escapeHtml(x.title)}</span><b>${fmtQty(x.count)} · ${n?Math.round(100*x.count/n):0}%</b></div>`).join('')}${!n?`<div class="muted">${text('هنوز معامله‌ای ثبت نشده است.','تر اوسه معامله نشته.','No transactions recorded yet.')}</div>`:''}</div></div>
    <p class="tiny-note">${description}</p></section>`;
 }
 function zaviUsdRateDashboardCard(){
