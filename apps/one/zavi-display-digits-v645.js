@@ -22,7 +22,8 @@
   if(node.matches('input')&&node.hasAttribute('placeholder')){
    const v=node.getAttribute('placeholder'),next=english(v);if(v!==next)node.setAttribute('placeholder',next);
   }
-  if(node.matches('script,style,textarea,input,select,option'))return;
+  // Option labels are user-visible; underlying option values remain unchanged.
+  if(node.matches('script,style,textarea,input'))return;
   const walker=document.createTreeWalker(node,NodeFilter.SHOW_TEXT);
   let t,n=0;while((t=walker.nextNode())&&n++<16000){
    if(!skip(t.parentElement)&&HAS_DIGIT.test(t.nodeValue||'')){
@@ -48,10 +49,26 @@
    if(HAS_DIGIT.test(content))event.preventDefault();
   },true);
  }
+ function normalizeEditableNumber(event){
+  const target=event.target;
+  if(!target?.matches?.('input,textarea')||target.disabled||target.readOnly)return;
+  // Never rewrite account passwords or PINs behind the user's back.
+  if(target.matches('[type="password"],[type="hidden"],[data-keep-original-digits]'))return;
+  if(!HAS_DIGIT.test(target.value||''))return;
+  const current=target.value,next=english(current);
+  if(next===current)return;
+  let pos=null,stop=null;
+  try{pos=target.selectionStart;stop=target.selectionEnd}catch(_){}
+  target.value=next;
+  if(pos!==null&&stop!==null)try{target.setSelectionRange(pos,stop)}catch(_){}
+ }
  function start(){
   if(!document.body)return;
   blockNonLatinNumericInput();
   queue(document.body);
+  // User-visible editable numerals become ASCII on input; no stored history is migrated.
+  document.addEventListener('input',normalizeEditableNumber,true);
+  window.addEventListener('beforeprint',()=>normalize(document.body));
   const observer=new MutationObserver(records=>{
    for(const r of records){if(r.type==='characterData')queue(r.target);else for(const n of r.addedNodes)queue(n)}
   });
