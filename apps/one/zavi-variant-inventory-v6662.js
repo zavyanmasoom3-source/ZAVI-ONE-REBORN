@@ -92,5 +92,30 @@
   const ledger=p.variantLedger,known=new Set(ledger.initial.map(x=>x.key));
   for(const x of requested)if(!known.has(x.key)){ledger.initial.push({key:x.key,color:x.color,barcode:x.barcode,qty:0});known.add(x.key)}
  }
- return Object.freeze({rows,units,key,tracked,begin,balances,verify,changes,addNewColours});
+ function verifyWorkspace(state){
+  const catalog=new Map((state.products||[]).filter(tracked).map(p=>[p.id,p]));
+  if(!catalog.size)return true;
+  const totals=new Map([...catalog].map(([id,p])=>[id,units(String(p.openingQty||0))]));
+  const seen=new Set();
+  for(const t of state.tx||[]){
+   if(seen.has(t.id))throw Error('سند تکراری در دفتر حسابداری پیدا شد: '+t.id);
+   seen.add(t.id);
+   if(t.voided)continue;
+   const sign=({purchase:1,sale:-1,sale_return:1,purchase_return:-1})[t.type];
+   if(sign)for(const line of t.items||[]){
+    if(catalog.has(line.productId))totals.set(line.productId,totals.get(line.productId)+
+      sign*units(String(line.qty)));
+   }
+   else if(t.type==='stock_adjust'&&catalog.has(t.productId)){
+    const amount=Number(t.delta);
+    if(!Number.isFinite(amount)||!Number.isInteger(Math.round(amount*1000))||
+       Math.abs(amount*1000-Math.round(amount*1000))>0.000001)
+      throw Error('سند اصلاح مقدار نامعتبر دارد.');
+    totals.set(t.productId,totals.get(t.productId)+Math.round(amount*1000));
+   }
+  }
+  for(const [id,p] of catalog)verify(p,state.tx||[],decimal(totals.get(id)));
+  return true;
+ }
+ return Object.freeze({rows,units,key,tracked,begin,balances,verify,changes,addNewColours,verifyWorkspace});
 });
