@@ -15,6 +15,12 @@ on:
       - 'apps/one/zavi-owner-dashboard-v6662.css'
       - 'apps/one/zavi-dashboard-polish-v6562.js'
       - 'scripts/stage-original-v6662-model.py'
+      - 'apps/one/zavi-final-settings-store-v6559.js'
+      - 'apps/one/zavi-approved-settings-v6662.css'
+      - 'apps/one/zavi-final-settings-common-v1.css'
+      - 'apps/one/zavi-assistant-visibility-v6619.js'
+      - 'apps/one/zavi-store-v6576-settings-profile.js'
+      - 'scripts/test-v6662-approved-settings-browser.py'
 
 permissions:
   contents: write
@@ -53,6 +59,7 @@ jobs:
           python3 scripts/test-v6662-sale-onepage-browser.py
           python3 scripts/test-v6662-login-center-browser.py
           python3 scripts/test-v6662-owner-dashboard-browser.py
+          python3 scripts/test-v6662-approved-settings-browser.py
           python3 scripts/test-stage6-financial-theme-browser.py
       - uses: actions/setup-java@v4
         with:
@@ -285,6 +292,10 @@ jobs:
             assert 'assets/zavi-compact-workflow-v1.js' in z.namelist()
             assert 'assets/zavi-compact-workflow-v1.css' in z.namelist()
             assert 'assets/zavi-build-info.json' in z.namelist()
+            assert 'assets/zavi-approved-settings-v6662.css' in z.namelist(), 'Approved seven-section settings CSS was not packaged'
+            assert 'assets/zavi-final-settings-store-v6559.js' in z.namelist(), 'Settings grouping JS not packaged'
+            approved=z.read('assets/zavi-final-settings-store-v6559.js').decode('utf-8')
+            assert 'ZaviUnifiedSettingsApproved' in approved and 'ابر و دستگاه‌ها' in approved, 'Old settings grouping was packaged'
           assert 60000000 <= p.stat().st_size <= 85000000,('Not a full-original-model APK',p.stat().st_size)
           print('PASS: complete full-sized original 66.62 model and approved sale UI in signed APK:',p.stat().st_size,'bytes')
           PY
@@ -355,13 +366,15 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          tag="zavi-v6662-approved-dashboard-full-model-test-20261111-run${GITHUB_RUN_NUMBER}"
+          tag="zavi-v6662-approved-settings-full-model-test-20261111-run${GITHUB_RUN_NUMBER}"
           cat > release-notes.txt <<'NOTES'
           THESE ARE NOT PRODUCTION APKs.
           Owner-uploaded ZAVI ONE 66.62 original appearance is retained outside the approved sale form.
           Sale is compact one-page, with original live accounting inputs, barcode and editable price.
           PIN login is centered with symmetric margins and safe scrolling at small Android viewport sizes.
           Dashboard has all approved real finance panels, compact live action buttons, no trade guide and accessible motion.
+          NEW: owner-approved seven-section compact settings, original forms preserved, native profile and account actions, Dari/Pashto/English, clear light/dark/glass contrast.
+          Exact approved-settings browser QA runs before building; the new settings stylesheet and grouping JavaScript are verified inside the compiled 62MB APK.
           Repeated barcode adds one quantity in the existing product row.
           ONE APK packages the authentic full 59,707,625-byte ggml offline model extracted from the SHA-256-pinned original 62,226,180-byte V66.62 APK.
           Native voice transcription operation on a physical Android handset is NOT certified.
@@ -374,7 +387,7 @@ jobs:
           NOTES
           gh release create "$tag" direct-apks/*.apk \
             --prerelease --target "$GITHUB_SHA" \
-            --title "ZAVI ONE 66.62 FULL ORIGINAL MODEL + approved compact dashboard — TEST ONLY — run ${GITHUB_RUN_NUMBER}" \
+            --title "ZAVI ONE 66.62 FULL ORIGINAL MODEL + approved clean settings — TEST ONLY — run ${GITHUB_RUN_NUMBER}" \
             --notes-file release-notes.txt -R "$GITHUB_REPOSITORY"
           gh release view "$tag" -R "$GITHUB_REPOSITORY" --json url,assets \
             --jq '{release: .url, assets: [.assets[] | {name:.name,url:.url}]}'
