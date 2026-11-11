@@ -245,7 +245,7 @@ function search(hub,query){
  const lang=D[locale()],q=query.trim().toLowerCase();let total=0;
  for(const d of hub.querySelectorAll('.zavi-clean-settings-group')){
   let count=0;const cards=d.querySelectorAll(':scope > .zavi-clean-settings-stack > *');
-  cards.forEach(card=>{const ok=!q||String(card.textContent||'').toLowerCase().includes(q);card.hidden=!ok;if(ok){count++;if(q&&card.tagName==='DETAILS')card.open=true}});
+  cards.forEach(card=>{const hay=(String(card.textContent||'')+' '+String(card.dataset.feature||'')+' '+String(card.querySelector('[id]')?.id||'')).toLowerCase();const ok=!q||hay.includes(q);card.hidden=!ok;if(ok){count++;if(q&&card.tagName==='DETAILS')card.open=true}});
   d.hidden=count===0;if(q&&count)d.open=true;total+=count;
  }
  hub.dataset.searching=q?'true':'false';
