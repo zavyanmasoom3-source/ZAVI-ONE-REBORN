@@ -8,6 +8,8 @@ on:
       - 'apps/one/zavi-compact-workflow-v1.js'
       - 'apps/one/zavi-compact-workflow-v1.css'
       - 'scripts/test-v6662-sale-onepage-browser.py'
+      - 'apps/one/zavi-v6662-pin-visibility-v1.js'
+      - 'scripts/test-v6662-login-center-browser.py'
       - 'scripts/stage-original-v6662-model.py'
 
 permissions:
@@ -45,6 +47,7 @@ jobs:
         if: matrix.app == 'one'
         run: |
           python3 scripts/test-v6662-sale-onepage-browser.py
+          python3 scripts/test-v6662-login-center-browser.py
           python3 scripts/test-stage6-financial-theme-browser.py
       - uses: actions/setup-java@v4
         with:
@@ -347,11 +350,12 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          tag="zavi-v6662-full-original-model-sale-test-20261111-run${GITHUB_RUN_NUMBER}"
+          tag="zavi-v6662-full-original-model-login-centered-test-20261111-run${GITHUB_RUN_NUMBER}"
           cat > release-notes.txt <<'NOTES'
           THESE ARE NOT PRODUCTION APKs.
           Owner-uploaded ZAVI ONE 66.62 original appearance is retained outside the approved sale form.
           Sale is compact one-page, with original live accounting inputs, barcode and editable price.
+          PIN login is centered with symmetric margins and safe scrolling at small Android viewport sizes.
           Repeated barcode adds one quantity in the existing product row.
           ONE APK packages the authentic full 59,707,625-byte ggml offline model extracted from the SHA-256-pinned original 62,226,180-byte V66.62 APK.
           Native voice transcription operation on a physical Android handset is NOT certified.
@@ -364,7 +368,7 @@ jobs:
           NOTES
           gh release create "$tag" direct-apks/*.apk \
             --prerelease --target "$GITHUB_SHA" \
-            --title "ZAVI ONE 66.62 FULL ORIGINAL OFFLINE MODEL + approved sale — TEST ONLY — run ${GITHUB_RUN_NUMBER}" \
+            --title "ZAVI ONE 66.62 FULL ORIGINAL MODEL + centered PIN + approved sale — TEST ONLY — run ${GITHUB_RUN_NUMBER}" \
             --notes-file release-notes.txt -R "$GITHUB_REPOSITORY"
           gh release view "$tag" -R "$GITHUB_REPOSITORY" --json url,assets \
             --jq '{release: .url, assets: [.assets[] | {name:.name,url:.url}]}'
