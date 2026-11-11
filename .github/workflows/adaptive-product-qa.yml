@@ -4,6 +4,8 @@ on:
     branches: [dev]
     paths:
       - 'apps/one/zavi-product-adaptive-v6662.js'
+      - 'apps/one/zavi-variant-inventory-v6662.js'
+      - 'apps/one/index.html'
       - 'apps/one/zavi-product-adaptive-v6662.css'
       - 'apps/one/zavi-industry-forms-v6529.js'
       - 'apps/one/zavi-camera-scan-v635.js'
@@ -11,6 +13,7 @@ on:
       - 'apps/one/zavi-unified20.js'
       - 'apps/one/v25-business.html'
       - 'scripts/test-v6662-21-trade-product-schema.cjs'
+      - 'scripts/test-v6662-variant-stock-ledger.cjs'
       - 'scripts/test-v6662-owner-business-type-lock.cjs'
       - 'scripts/test-v6662-adaptive-products-browser.py'
       - 'scripts/test-v6662-business-type-locked-browser.py'
@@ -25,6 +28,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Check 21-trade schema, gold jewellery, colours and barcodes
         run: node scripts/test-v6662-21-trade-product-schema.cjs
+      - name: Test colour ledger arithmetic and migration safety (offline)
+        run: node scripts/test-v6662-variant-stock-ledger.cjs
       - name: Test explicit owner confirmation and stable business type offline
         run: python3 scripts/test-v6662-business-type-locked-browser.py
       - name: Verify actual owner trade-save guard and no automatic type switching
