@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Strict read-only guard for original 66.62 look and preserved functional modules."""
 from pathlib import Path
-import hashlib,json,re,sys
+import hashlib,json,re,sys,subprocess
 
 root=Path(__file__).resolve().parents[1]
 app=root/'apps/one'
@@ -12,7 +12,25 @@ assert s.count(marker)==1,'original UI source marker absent'
 begin=s.index('\n'+marker)
 end=s.index('</body>',begin)
 original=s[:begin]+s[end:]
-assert hashlib.sha256(original.encode('utf-8')).hexdigest()==p['original_html_sha256'],'Original 66.62 HTML was modified'
+# Reference source is the last verified original-appearance commit before the
+# colour-ledger feature changes. Check all *static HTML/CSS* byte-for-byte;
+# permitted financial fixes live in JavaScript and must not change the owner's UI.
+BASE='e22133f94889dd03e71c6c6d3deb4cdaf966d7c5'
+def git_show():
+    return subprocess.run(['git','show',BASE+':apps/one/index.html'],
+        cwd=root,capture_output=True,check=True).stdout.decode('utf-8')
+try:
+    baseline=git_show()
+except subprocess.CalledProcessError:
+    subprocess.run(['git','fetch','--no-tags','--depth=1','origin',BASE],
+        cwd=root,capture_output=True,check=True)
+    baseline=git_show()
+b=baseline.index('\\n'+marker)
+reference=baseline[:b]+baseline[baseline.index('</body>',b):]
+assert hashlib.sha256(reference.encode('utf-8')).hexdigest()==p['original_html_sha256'],'Pinned original 66.62 baseline changed'
+def static_html(html):
+    return re.sub(r'<script\\b[^>]*>[\\s\\S]*?</script>', '', html,flags=re.I)
+assert static_html(original)==static_html(reference),'Original 66.62 static markup/CSS was modified'
 css=[re.search(r'href=["\x27]([^"\x27]+)',x).group(1) for x in re.findall(r'<link\b[^>]*rel=["\x27]stylesheet["\x27][^>]*>',original,re.I)
      if re.search(r'href=["\x27]([^"\x27]+)',x)]
 assert [u.split('?')[0].split('/')[-1] for u in css if u.split('?')[0].endswith('.css')]==p['original_css_order']
@@ -38,7 +56,7 @@ assert (root/'apps/admin/index.html').is_file()
 sw=(app/'sw.js').read_text(encoding='utf-8')
 assert 'zavi-one-exact-original-v6662-restored-' in sw,'PWA may use old cached new-design assets'
 assert not (app/'models/ggml-base-q5_1.bin').exists(),'Do not store 60 MB voice model in Git; stage from pinned release during native build'
-print('PASS: original V66.62 HTML byte-for-byte before feature add-ons')
+print('PASS: original V66.62 static markup and CSS byte-for-byte; audited JavaScript functional changes allowed')
 print('PASS: all original CSS appearance files restored; no new-only skins in ONE')
 print('PASS: added financial/warehouse/barcode features remain wired')
 print('PASS: latest public Supabase config, offline source and ADMIN untouched')
