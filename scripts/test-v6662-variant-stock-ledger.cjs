@@ -23,7 +23,7 @@ assert.deepEqual(change,[{variantKey:V.key('سیاه'),delta:-2}]);
 history.push({id:'adj1',type:'stock_adjust',productId:'p1',variantKey:change[0].variantKey,delta:-2});
 assert.deepEqual(V.verify(product,history,18).map(x=>x.qty),[6,12]);
 history.push({id:'sale2',type:'sale',items:[{productId:'p1',variantKey:V.key('سیاه'),qty:7}]});
-assert.throws(()=>V.verify(product,history,11),/منفی/);
+assert.throws(()=>V.verify(product,history,11),/منفی|پیش از موجودی کافی/);
 history.at(-1).voided=true;
 assert.deepEqual(V.verify(product,history,18).map(x=>x.qty),[6,12]);
 history.push({id:'unassigned1',type:'purchase',items:[{productId:'p1',qty:1}]});
