@@ -1,16 +1,42 @@
 /* ZAVI ONE: one canonical settings hub. Moves live nodes; keeps original handlers and forms. */
 (()=>{'use strict';
-const order=['account','store','look','security','cloud','invoice','subscription','advanced'];
+// The ONE and only owner-approved settings regrouping engine.
+window.ZaviUnifiedSettingsApproved=true;
+const order=['store','look','cloud','security','invoice','subscription','advanced'];
 const D={
-fa:{title:'تنظیمات',desc:'بخش مورد نیاز را باز کنید.',search:'جستجوی تنظیمات',placeholder:'نام تنظیم را بنویسید',help:'گزینهٔ مورد نیاز را انتخاب کنید.',none:'موردی پیدا نشد.',found:'گزینه پیدا شد',groups:[['account','حساب و پروفایل','مشخصات شخصی'],['store','فروشگاه و کسب‌وکار','نام، ارز و نوع تجارت'],['look','ظاهر و زبان','روشن، تیره، شیشه‌ای و اندازه‌ها'],['security','امنیت و دسترسی','قفل، رمز و صلاحیت‌ها'],['cloud','ابر و دستگاه‌ها','همگام‌سازی و دستگاه‌ها'],['invoice','حسابداری و فاکتورها','صندوق، چاپ و رسید'],['subscription','اشتراک و پشتیبانی','تمدید و ارتباط'],['advanced','پیشرفته و پشتیبان‌گیری','ابزارهای تکمیلی']]},
-en:{title:'Settings',desc:'Open the section you need.',search:'Search settings',placeholder:'Search an option',help:'Choose a settings section.',none:'No matching option.',found:'matching settings',groups:[['account','Account & profile','Personal details'],['store','Store & business','Name, currency and type'],['look','Appearance & language','Light, dark, glass and sizes'],['security','Security & access','Lock, credentials and roles'],['cloud','Cloud & devices','Sync and devices'],['invoice','Accounting & invoices','Cash, printing and receipts'],['subscription','Subscription & support','Renewal and help'],['advanced','Advanced & backups','Additional tools']]},
-ps:{title:'تنظیمات',desc:'اړینه برخه پرانیزئ.',search:'تنظیمات ولټوئ',placeholder:'د انتخاب نوم ولیکئ',help:'اړینه برخه وټاکئ.',none:'څه ونه موندل شول.',found:'انتخابونه وموندل شول',groups:[['account','حساب او پېژندپاڼه','شخصي معلومات'],['store','دوکان او کاروبار','نوم، پیسې او ډول'],['look','بڼه او ژبه','روښانه، تیاره، ښیښه‌یي او اندازې'],['security','امنیت او لاسرسی','قفل، رمز او اجازې'],['cloud','کلاوډ او وسایل','همغږي او وسایل'],['invoice','حسابداري او بلونه','صندوق، چاپ او رسیدونه'],['subscription','ګډون او ملاتړ','تمدید او مرسته'],['advanced','پرمختللي او بیک اپ','نور وسایل']]}
+fa:{title:'تنظیمات',desc:'تنظیمات فروشگاه در یک جای مرتب',search:'جستجو در تنظیمات',placeholder:'نام تنظیم را بنویسید...',help:'یک بخش را باز کنید.',none:'موردی یافت نشد.',found:'تنظیم پیدا شد',groups:[
+ ['store','فروشگاه و کسب‌وکار','پروفایل، نام و نوع تجارت'],
+ ['look','ظاهر، زبان و اندازه‌ها','دری، پشتو، انگلیسی و سه حالت'],
+ ['cloud','ابر و دستگاه‌ها','حساب ابری، آفلاین، دستگاه‌ها'],
+ ['security','امنیت و همکاران','PIN، اثر انگشت و مجوزها'],
+ ['invoice','حسابداری و فاکتورها','حساب‌ها، ارز، چاپ و رسید'],
+ ['subscription','اشتراک و پشتیبانی','اعتبار، تمدید و واتساپ'],
+ ['advanced','پیشرفته و نگهداری','پشتیبان، سلامت و ابزارها']]},
+ps:{title:'تنظیمات',desc:'د دوکان تنظیمات په یوه منظم ځای کې',search:'تنظیمات ولټوئ',placeholder:'د تنظیم نوم ولیکئ...',help:'یوه برخه پرانیزئ.',none:'څه ونه موندل شول.',found:'تنظیم وموندل شو',groups:[
+ ['store','دوکان او کاروبار','پروفایل، نوم او د کاروبار ډول'],
+ ['look','بڼه، ژبه او اندازې','دري، پښتو، انګلیسي او درې حالتونه'],
+ ['cloud','کلاوډ او وسایل','کلاوډ، آفلاین او وسایل'],
+ ['security','امنیت او همکاران','PIN، ګوتې نښه او اجازې'],
+ ['invoice','حسابداري او بلونه','حسابونه، اسعار، چاپ او رسیدونه'],
+ ['subscription','ګډون او ملاتړ','اعتبار، تمدید او واټساپ'],
+ ['advanced','پرمختللي او ساتنه','بیک اپ، روغتیا او وسایل']]},
+en:{title:'Settings',desc:'Everything for your shop, neatly organized',search:'Search settings',placeholder:'Find a setting...',help:'Open a section to begin.',none:'No matching settings.',found:'matching settings',groups:[
+ ['store','Store & business','Profile, shop name and business type'],
+ ['look','Appearance, language & sizes','Dari, Pashto, English and three themes'],
+ ['cloud','Cloud & devices','Cloud account, offline and devices'],
+ ['security','Security & colleagues','PIN, biometrics and permissions'],
+ ['invoice','Accounting & invoices','Accounts, currencies, printing'],
+ ['subscription','Subscription & support','Validity, renewal and WhatsApp'],
+ ['advanced','Advanced & maintenance','Backup, integrity and tools']]}
 };
+const icons={store:'🏬',look:'🎨',cloud:'☁',security:'🔒',invoice:'🧾',subscription:'💬',advanced:'⚙'};
+
 function locale(){const v=(document.documentElement.lang||document.querySelector('#zaviTopLanguage')?.value||'fa-AF').toLowerCase();return v.startsWith('en')?'en':v.startsWith('ps')?'ps':'fa'}
 function group(el){
  const s=String(el.querySelector('h1,h2,h3,h4')?.textContent||el.getAttribute('aria-label')||'').trim().toLowerCase();
  const key=String(el.id||'')+' '+String(el.className||'');
- if(/profile|avatar|پروفایل|پېژندپاڼه/i.test(s+' '+key))return 'account';
+ if(el.dataset.zaviSettingsGroup)return el.dataset.zaviSettingsGroup;
+ if(/profile|avatar|پروفایل|پېژندپاڼه/i.test(s+' '+key))return 'store';
  if(/z20CloudPanel|z652DevicePanel|device|sync/i.test(key)||/دستگاه|همگام|کلاوډ|cloud|device|offline/i.test(s))return 'cloud';
  if(/اشتراک|پشتیبانی|تمدید|trial|subscription|renew|support|ګډون/i.test(s+' '+key))return 'subscription';
  if(/رمز|امنیت|قفل|دسترسی|همکار|اثر انگشت|security|pin|permission|staff|biometric/i.test(s+' '+key))return 'security';
@@ -19,7 +45,7 @@ function group(el){
  if(/دکان|فروشگاه|نوع تجارت|تجارت عمومی|کسب‌وکار|quick start|shop|business|store/i.test(s+' '+key))return 'store';
  return 'advanced';
 }
-const eligible='section.settings-card,section.z20-panel,#z652DevicePanel,.z70-store-card,.z72-trial-card,.z72-ai-entry,.zui-preferences,.zavi-date-settings,.z643-workflow,.z6524-launch';
+const eligible='section.settings-card,div.settings-card,section.z20-panel,#z652DevicePanel,#z20CloudPanel,#z76-profile-card,#z74-workspace,#zavi-theme-controls,.z70-store-card,.z72-trial-card,.z72-ai-entry,.zui-preferences,.zavi-date-settings,.z643-workflow,.z6524-launch';
 function removeBulkActions(root){
  root.querySelectorAll('#zaviEnableAllFeatures,.zavi-enable-all').forEach(x=>x.remove());
  root.querySelectorAll('button,a').forEach(x=>{const t=x.textContent.replace(/\s+/g,' ').trim();if(/^(همه بخش‌ها|همه بخش ها|نمایش همه بخش‌ها|روشن‌کردن تمام بخش‌ها و امکانات)$/u.test(t))x.remove()});
@@ -97,7 +123,7 @@ function enhance(){
   const target=list.querySelector('[data-group="'+id+'"] .zavi-clean-settings-stack');
   if(target&&el.parentElement!==target)target.append(el);
  }
- if(candidates.length)removeBulkActions(hub);
+ // Do not remove any native action: every settings control remains mounted and operational.
  counts(hub);
  translateHub(hub);
 }
