@@ -138,7 +138,8 @@ function paint(){
  if(sub)sub.hidden=true;
  // Existing solar date stays authoritative; Gregorian only adds a small second date.
  const date=hero.querySelector('.zv-today');
- if(date&&!date.querySelector('.z66d-greg-date')){
+ // Native fmtDate already renders BOTH calendars; don't show Gregorian twice.
+ if(date&&!date.querySelector('.z66d-greg-date')&&!date.textContent.includes(' · ')){
    const d=node('small','z66d-greg-date');
    const dateNow=new Date();
    d.textContent=' · '+new Intl.DateTimeFormat(lang()==='en'?'en-GB':'en-GB',
