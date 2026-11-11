@@ -15,6 +15,7 @@ on:
       - 'apps/one/zavi-owner-dashboard-v6662.css'
       - 'scripts/test-v6662-sale-onepage-browser.py'
       - 'scripts/test-v6662-purchase-onepage-browser.py'
+      - 'scripts/test-v6662-owner-sales-management-browser.py'
       - 'scripts/test-phase2-recovery-contract-browser.py'
       - 'scripts/test-v6662-neon-recovery-browser.py'
       - 'scripts/test-phase2-display-sizes-browser.py'
@@ -60,6 +61,8 @@ jobs:
         run: python3 scripts/test-v6662-login-center-browser.py
       - name: Verify approved dashboard with actual account values, all visible sections and mobile animations
         run: python3 scripts/test-v6662-owner-dashboard-browser.py
+      - name: Verify approved sales manager with native archives, search, returns and multi-theme layout
+        run: python3 scripts/test-v6662-owner-sales-management-browser.py
       - name: Verify approved compact purchase invoice, real FX/discount, barcode and payment controls
         run: python3 scripts/test-v6662-purchase-onepage-browser.py
       - name: Verify approved one-page sale, typed unit price, barcode repeat and safe submission
@@ -97,6 +100,7 @@ jobs:
             qa-unified-reference/
             qa-v6662-sale/
             qa-v6662-purchase/
+            qa-v6662-sales-management/
             qa-admin-compact/
             qa-owner-apk-style/
           retention-days: 7
