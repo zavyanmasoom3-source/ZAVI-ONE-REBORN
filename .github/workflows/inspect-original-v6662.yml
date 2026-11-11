@@ -1,0 +1,54 @@
+name: Inspect original 66.62 full APK payload (read only)
+on:
+  push:
+    branches: [dev]
+    paths:
+      - '.github/workflows/inspect-original-v6662.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch authentic original 66.62 APK
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/v6662"
+          gh release download zavi-v6662-one-debug-qa -R zavyanmasoom3-source/Zavione \
+            -p ZAVI_one_V6662_DEBUG_QA.apk -D "$RUNNER_TEMP/v6662"
+          test "$(stat -c %s "$RUNNER_TEMP/v6662/ZAVI_one_V6662_DEBUG_QA.apk")" -eq 62226180
+      - name: Inspect content, paths and offline model; never unpack customer data
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from zipfile import ZipFile
+          from collections import Counter
+          from pathlib import Path
+          import hashlib
+          p=Path.home()/'none'
+          p=next(Path('/home/runner/work/_temp').glob('v6662/ZAVI_one_V6662_DEBUG_QA.apk'),None)
+          if p is None:
+              import os
+              p=Path(os.environ['RUNNER_TEMP'])/'v6662/ZAVI_one_V6662_DEBUG_QA.apk'
+          print('APK ORIGINAL SHA256',hashlib.sha256(p.read_bytes()).hexdigest())
+          with ZipFile(p) as z:
+              names=z.namelist()
+              entries=sorted((i for i in z.infolist() if not i.is_dir()),key=lambda i:i.file_size,reverse=True)
+              print('ZIP paths:',len(names),'biggest entries:')
+              for i in entries[:45]:
+                  print('SIZE',i.file_size,'COMP',i.compress_size,'PATH',i.filename)
+              print('SECTION BY UNCOMPRESSED BYTES')
+              counter=Counter()
+              for i in entries:counter[i.filename.split('/')[0]]+=i.file_size
+              print(counter)
+              print('ORIGINAL PROJECT FILES')
+              for item in ('assets/index.html','assets/zavi-compact-workflow-v1.js','assets/zavi-compact-workflow-v1.css','assets/sw.js'):
+                  print(item,'PRESENT' if item in names else 'NOT PRESENT')
+              print('APK ENTRY LIST',','.join(x for x in names if x.endswith('.bin') or x.endswith('.wasm')))
+              assert p.stat().st_size==62226180
+          PY
