@@ -29,9 +29,19 @@ with Session() as browser:
                   "original sale scanner input ready")
     result=browser.eval("""(()=>{
       const field=document.getElementById('zaviBarcodeScan');
-      const scan=code=>{field.value=code;
+      const trace=[];
+      const scan=code=>{
+        const matched=ZaviVariantInventory6662.rows(db.products.find(x=>x.id==='qa-barcode-colour-one'))
+          .find(x=>x.barcode===code)?.key||'not-found';
+        field.value=code;
         field.dispatchEvent(new Event('input',{bubbles:true}));
         field.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true,cancelable:true}));
+        trace.push({code,matched,tracked:ZaviVariantInventory6662.tracked(
+            db.products.find(x=>x.id==='qa-barcode-colour-one')),
+          rows:[...document.querySelectorAll('#orderItems .order-line')].map(row=>({
+            product:row.querySelector('[data-field="productName"]')?.value,
+            variant:row.querySelector('[data-field="variantKey"]')?.value,
+            qty:row.querySelector('[data-field="qty"]')?.value}))});
       };
       scan('QA-SCAN-BLACK');
       scan('QA-SCAN-BLACK');
@@ -47,7 +57,7 @@ with Session() as browser:
       const p=db.products.find(x=>x.id==='qa-barcode-colour-one');
       const t=db.tx.at(-1);
       const after=ZaviVariantInventory6662.verify(p,db.tx,stockOf(p.id));
-      return {before,type:t?.type,items:t?.items?.map(x=>({variant:x.variantKey,qty:x.qty})),
+      return {trace,before,type:t?.type,items:t?.items?.map(x=>({variant:x.variantKey,qty:x.qty})),
         after:after.map(x=>x.qty),stock:stockOf(p.id)};
     })()""")
     assert len(result['before'])==2,result
