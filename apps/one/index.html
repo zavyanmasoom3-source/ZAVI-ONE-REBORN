@@ -3120,8 +3120,19 @@ function openOrder(kind,defaultContactId='',chinaDefault=false){
   const matches=window.ZaviBarcodeV641.lookup(db.products,code);
   if(matches.length!==1){toast(matches.length?'یک بارکد به چند محصول تعلق دارد؛ گدام را بررسی کنید.':'بارکد در گدام ثبت نشده است؛ ابتدا محصول را ثبت کنید.');return;}
   const p=matches[0];
-  let row=[...box.querySelectorAll('.order-line')].find(r=>r.dataset.scanProductId===p.id);
-  if(row){const qty=row.querySelector('[data-field="qty"]');qty.focus();qty.select();toast('محصول پیدا شد؛ تعداد را خودتان مشخص کنید.');}
+  const matchedColour=variantEngine.rows(p).find(x=>x.barcode&&normalizeName(x.barcode)===normalizeName(code));
+  if(variantEngine.rows(p).length&&!variantEngine.tracked(p)){
+   toast('ابتدا موجودی رنگ‌های این محصول را توسط مالک تطبیق کنید.');return;
+  }
+  let row=[...box.querySelectorAll('.order-line')].find(r=>
+   r.dataset.scanProductId===p.id&&(!variantEngine.tracked(p)||
+    (matchedColour&&r.querySelector('[data-field="variantKey"]')?.value===matchedColour.key)));
+  if(row){
+   const qty=row.querySelector('[data-field="qty"]');
+   qty.value=String(qtyRound(num(qty.value)+1));
+   updateTotals();
+   toast('بارکد دوباره اسکن شد؛ تعداد همین رنگ افزایش یافت.');
+  }
   else{
    row=[...box.querySelectorAll('.order-line')].find(r=>!r.querySelector('[data-field="productName"]').value.trim());
    if(!row){addLine();row=box.querySelector('.order-line:last-child');}
@@ -3138,7 +3149,9 @@ function openOrder(kind,defaultContactId='',chinaDefault=false){
     row.querySelector('[data-field="salePrice"]').value=p.salePrice||0;
    }
   }
-  barcodeInput.value='';previewInvoiceBarcode();updateMatchStatus(row);updateTotals();const qtyField=row.querySelector('[data-field="qty"]');if(qtyField){qtyField.focus();qtyField.select();}
+  barcodeInput.value='';previewInvoiceBarcode();updateMatchStatus(row);
+  if(matchedColour&&row.querySelector('[data-field="variantKey"]'))row.querySelector('[data-field="variantKey"]').value=matchedColour.key;
+  updateTotals();const qtyField=row.querySelector('[data-field="qty"]');if(qtyField){qtyField.focus();qtyField.select();}
  });
  f.freeContactName.addEventListener('change',()=>{const c=matchingContact(f.freeContactName.value,f.freeContactPhone.value,type);if(c&&!f.freeContactPhone.value)f.freeContactPhone.value=c.phone||''});
  if(isPurchase)f.originalCurrency.addEventListener('change',()=>{f.exchangeRate.value=f.originalCurrency.value===db.currency?'1':'';updateTotals()});
@@ -3267,7 +3280,11 @@ function openCashForm(kind,defaultContactId=''){
 }
 
 function detail(id){let t=db.tx.find(x=>x.id===id);if(!t)return;let isOrder=!!t.items;let amount=txValue(t);let html=`<div class="detail-box"><div class="split-line"><span>کود سند</span><b>${escapeHtml(t.code)}</b></div><div class="split-line"><span>نوع</span><b>${txLabel(t)}</b></div><div class="split-line"><span>تاریخ</span><b>${fmtDate(t.date)}</b></div>${t.contactId?`<div class="split-line"><span>طرف حساب</span><b>${escapeHtml(contactName(t.contactId))}</b></div>`:''}${t.accountId?`<div class="split-line"><span>حساب نقدی</span><b>${escapeHtml(accountName(t.accountId))}</b></div>`:''}<div class="split-line"><span>مبلغ</span><b class="amount">${currency(amount)}</b></div>${t.purchaseOrigin?`<div class="split-line"><span>منبع خرید</span><b>${escapeHtml(({China:'چین',local:'بازار داخلی',other:'کشور دیگر'})[t.purchaseOrigin]||t.purchaseOrigin)}</b></div>`:''}${t.reference?`<div class="split-line"><span>شماره رسید / حواله</span><b>${escapeHtml(t.reference)}</b></div>`:''}${t.counterparty?`<div class="split-line"><span>نام طرف حساب</span><b>${escapeHtml(t.counterparty)}</b></div>`:''}${t.transferKind==='hawala'?`<div class="split-line"><span>فرستنده</span><b>${escapeHtml(t.senderName||'—')}</b></div><div class="split-line"><span>گیرنده</span><b>${escapeHtml(t.receiverName||'—')}</b></div><div class="split-line"><span>کارمزد</span><b>${currency(t.fee||0)}</b></div>`:''}${docFxDetails(t)}${t.type==='purchase'&&t.shipping?`<div class="split-line"><span>هزینه باربری</span><b>${currency(t.shipping)}</b></div>`:''}${isOrder?`<div class="split-line"><span>پرداخت نقدی</span><b class="amount">${currency(t.paid)}</b></div><div class="split-line"><span>مانده نسیه/اعتباری</span><b class="amount">${currency(amount-t.paid)}</b></div>`:''}${t.type==='transfer'?`<div class="split-line"><span>انتقال</span><b>${escapeHtml(accountName(t.fromAccountId))} ← ${escapeHtml(accountName(t.toAccountId))}</b></div>`:''}</div>${isOrder?`<div class="form-section-title">اقلام سند</div><div class="table-wrap" style="display:block"><table class="transaction-table" style="min-width:420px"><thead><tr><th>محصول</th><th>تعداد</th><th>فی واحد</th><th>جمع</th></tr></thead><tbody>${t.items.map(x=>`<tr><td>${escapeHtml(productName(x.productId))}${x.industryDetails?.values&&Object.keys(x.industryDetails.values).length?`<small class="z629-item-meta">${window.ZaviIndustryForms6529.display(x.industryDetails,6).map(([a,b])=>escapeHtml(a+': '+b)).join(' · ')}</small>`:''}</td><td>${fmtQty(x.qty)}</td><td class="amount">${currency(x.price)}</td><td class="amount">${currency(x.qty*x.price)}</td></tr>`).join('')}</tbody></table></div><div class="split-line" style="margin-top:12px"><span>تخفیف</span><b>${currency(t.discount)}</b></div>`:''}${t.type==='stock_adjust'?`<p>محصول: ${escapeHtml(productName(t.productId))} | تغییر: ${fmtQty(t.delta)}</p>`:''}${t.note?`<p class="muted">یادداشت: ${escapeHtml(t.note)}</p>`:''}${t.voided?'<div class="notice">این سند باطل شده و در محاسبات فعلی منظور نمی‌شود.</div>':''}`;showModal('جزئیات سند '+t.code,html,'',false);const foot=document.querySelector('.modal-foot');foot.insertAdjacentHTML('afterbegin',`${isOrder?`<button type="button" class="btn subtle" id="printDoc">${icon('print')} نمایش / چاپ / عکس فاکتور</button><button type="button" class="btn subtle" data-z644-thermal="${escapeHtml(t.id)}">🧾 چاپ حرارتی</button>`:''}${!t.voided?`<button type="button" class="btn danger" id="voidDoc">${icon('trash')} باطل‌سازی سند</button>`:''}`);if(isOrder)document.getElementById('printDoc').onclick=()=>printInvoice(t);if(!t.voided)document.getElementById('voidDoc').onclick=()=>voidDocument(id)}
-function voidDocument(id){const t=db.tx.find(x=>x.id===id);if(!t||t.voided)return;if(!confirm('آیا سند '+t.code+' باطل شود؟ این کار تمام اثرهای پولی و گدامی آن را از راپورها خارج می‌کند. نسخه سند برای سابقه باقی می‌ماند.'))return;let copy=db.tx.map(t=>({...t,voided:t.voided||t.id===id})),st=stockState(copy);if(Object.values(st).some(x=>x.qty<-.00001))return toast('این سند قابل باطل‌سازی نیست؛ چون موجودی یکی از محصولها منفی خواهد شد.');if(commit(n=>{let rec=n.tx.find(t=>t.id===id);rec.voided=true;rec.voidedAt=new Date().toISOString();n.audit.push({id:newId('audit'),at:rec.voidedAt,action:'void',code:rec.code})})){closeModal();toast('سند باطل شد و تاریخچه آن باقی ماند.')}}
+function voidDocument(id){const t=db.tx.find(x=>x.id===id);if(!t||t.voided)return;if(!confirm('آیا سند '+t.code+' باطل شود؟ این کار تمام اثرهای پولی و گدامی آن را از راپورها خارج می‌کند. نسخه سند برای سابقه باقی می‌ماند.'))return;let copy=db.tx.map(t=>({...t,voided:t.voided||t.id===id})),st=stockState(copy);if(Object.values(st).some(x=>x.qty<-.00001))return toast('این سند قابل باطل‌سازی نیست؛ چون موجودی یکی از محصولها منفی خواهد شد.');
+try{for(const p of db.products)if(window.ZaviVariantInventory6662.tracked(p))
+ window.ZaviVariantInventory6662.verify(p,copy,st[p.id]?.qty??0)}
+catch(error){return toast('ابطال سند باعث اختلاف موجودی رنگ می‌شود: '+error.message)}
+if(commit(n=>{let rec=n.tx.find(t=>t.id===id);rec.voided=true;rec.voidedAt=new Date().toISOString();n.audit.push({id:newId('audit'),at:rec.voidedAt,action:'void',code:rec.code})})){closeModal();toast('سند باطل شد و تاریخچه آن باقی ماند.')}}
 /* ZAVI 65.27 — invoice design settings; owner-only changes via commit(). */
 function z6527FormDesign(form){const f=new FormData(form);const o={palette:String(f.get('palette')||''),template:String(f.get('template')||''),paper:String(f.get('paper')||''),footer:String(f.get('footer')||'')};for(const key of ['showLogo','showPhone','showAddress','showIndustry','showSignature','showNotes','showBalance'])o[key]=f.has(key);return o;}
 function z6527UpdateDesignPreview(form){const p=document.getElementById('z6527DesignPreview'),studio=window.ZaviInvoiceStudio6527;if(p&&studio)p.innerHTML=studio.previewHTML(z6527FormDesign(form),zaviBusinessTypeV638());}
