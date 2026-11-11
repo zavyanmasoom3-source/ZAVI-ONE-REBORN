@@ -112,8 +112,13 @@
  // Only an explicit, owner-confirmed profile Save can change the stored trade.
  // Saving suggested modules never silently changes the trade, name or currency.
  function committedType(){
+  const stored=localStorage.getItem('zavi_v638_business_type_'+uid+'_'+ws);
+  let raw=stored;
+  // Earlier V47 builds JSON-quoted this raw preference. Accept it once,
+  // but all new writes use the plain token recognised by the main app.
+  if(raw?.startsWith('"')){try{raw=JSON.parse(raw)}catch(_){raw=''}}
   const type=String(getDraft()?.data?.business_type||getCached()?.data?.business_type||
-    localStorage.getItem('zavi_v638_business_type_'+uid+'_'+ws)||'general');
+    raw||'general');
   return type;
  }
  async function stage(allowTypeChange){
@@ -154,7 +159,7 @@
   const draft={owner_uid:uid,workspace_id:ws,pending:true,
     updated_at:new Date().toISOString(),data};
   save(draftKey(),draft);
-  save('zavi_v638_business_type_'+uid+'_'+ws,String(data.business_type||'general'));
+  localStorage.setItem('zavi_v638_business_type_'+uid+'_'+ws,String(data.business_type||'general'));
   if(!allowTypeChange&&$('type').value!==data.business_type){
    $('type').value=data.business_type;renderFeatures();renderContextV638();
   }
@@ -205,11 +210,13 @@
    try{
     await flushProfile();await flushQueue();
     const [p,f,b,s]=await Promise.all([request('zavi_v25_business_profiles'),request('zavi_v25_feature_settings'),request('zavi_v25_pharmacy_batches'),request('zavi_v25_services')]);
-    const storedType=getCached()?.data?.business_type||
-       localStorage.getItem('zavi_v638_business_type_'+uid+'_'+ws)||'general';
+    const storedRaw=localStorage.getItem('zavi_v638_business_type_'+uid+'_'+ws);
+    let storedFallback=storedRaw;
+    if(storedFallback?.startsWith('"')){try{storedFallback=JSON.parse(storedFallback)}catch(_){storedFallback=''}}
+    const storedType=getCached()?.data?.business_type||storedFallback||'general';
     // A missing cloud profile must not silently reset the owner's last saved trade.
     const data={business_type:p[0]?.business_type||storedType,display_name:p[0]?.display_name||'',locale:p[0]?.locale||'fa-AF',currency_code:p[0]?.currency_code||'AFN',features:f[0]?.features||{},batches:b,services:s};
-    save(snapshotKey(),{owner_uid:uid,workspace_id:ws,data});save('zavi_v638_business_type_'+uid+'_'+ws,String(data.business_type||'general'));restore(data);
+    save(snapshotKey(),{owner_uid:uid,workspace_id:ws,data});localStorage.setItem('zavi_v638_business_type_'+uid+'_'+ws,String(data.business_type||'general'));restore(data);
     msg(pendingOps().length?'چند مورد هنوز در صف ارسال است.':'✅ تنظیمات آماده است.');
    }catch(e){
     msg('اتصال موقتاً برقرار نیست؛ معلومات ذخیره‌شده محفوظ است. '+(e?.message||''),true);
