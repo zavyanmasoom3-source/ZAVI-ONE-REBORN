@@ -11,6 +11,7 @@ on:
       - 'scripts/test-login-design-browser.py'
       - 'scripts/test-v6662-login-center-browser.py'
       - 'scripts/test-v6662-owner-dashboard-browser.py'
+      - 'scripts/test-v6662-dual-calendar-invoice-numerals-browser.py'
       - 'apps/one/zavi-owner-dashboard-v6662.js'
       - 'apps/one/zavi-owner-dashboard-v6662.css'
       - 'scripts/test-v6662-sale-onepage-browser.py'
@@ -64,6 +65,8 @@ jobs:
         run: python3 scripts/test-v6662-login-center-browser.py
       - name: Verify approved dashboard with actual account values, all visible sections and mobile animations
         run: python3 scripts/test-v6662-owner-dashboard-browser.py
+      - name: Verify V66.62 approved dual calendar, invoices and ASCII digit policy
+        run: python3 scripts/test-v6662-dual-calendar-invoice-numerals-browser.py
       - name: Verify 21 product schemas, gold jewellery and validated colour metadata
         run: node scripts/test-v6662-21-trade-product-schema.cjs
       - name: Verify actual adaptive product modal for cases and gold, with no financial writes
@@ -103,6 +106,7 @@ jobs:
             qa-login-design/
             qa-v6662-login-center/
             qa-v6662-dashboard/
+            qa-v6662-approved-dates-invoices/
             qa-phase2-recovery/
             qa-v6662-neon-auth/
             qa-v6662-three-section-finish/
