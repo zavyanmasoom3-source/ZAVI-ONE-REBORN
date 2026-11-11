@@ -33,3 +33,11 @@ jobs:
         run: python3 scripts/check-offline-shell-assets.py
       - name: Test actual approved seven-section settings and preserve all real native controls
         run: python3 scripts/test-v6662-approved-settings-browser.py
+      - name: Retain exact mobile renders for owner review (including failed QA)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: approved-v6662-settings-visual-evidence
+          path: qa-settings/*.png
+          if-no-files-found: warn
+          retention-days: 7
