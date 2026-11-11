@@ -93,3 +93,16 @@ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",
  script.async=false;
  (document.head||document.documentElement).append(script);
 })();
+
+
+/* Owner-approved V66.62 sales management visual module.
+ * Native invoice list, search, accounting and purchase routes unchanged. */
+(()=>{
+ 'use strict';
+ if(document.querySelector('script[data-z66-owner-sales]'))return;
+ const script=document.createElement('script');
+ script.src='./zavi-owner-sales-management-v6662.js?v=1';
+ script.dataset.z66OwnerSales='1';
+ script.async=false;
+ (document.head||document.documentElement).append(script);
+})();
