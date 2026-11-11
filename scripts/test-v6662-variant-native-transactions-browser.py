@@ -34,7 +34,7 @@ with Session() as browser:
       const p=db.products.find(x=>x.name==='QA CASE UNIQUE 662');
       return {created:!!p,id:p?.id,qty:p?.openingQty,ledger:!!p?.variantLedger,
               current:p?ZaviVariantInventory6662.verify(p,db.tx,stockOf(p.id)).map(x=>x.qty):[],
-              before,after:db.products.length,txBefore,txAfter:db.tx.length};
+              before,after:db.products.length,txBefore,txAfter:db.tx.length,valid:f.checkValidity(),invalid:[...f.querySelectorAll(':invalid')].map(x=>x.name||x.outerHTML.slice(0,90)),toast:document.getElementById('toast')?.textContent,qtyInput:f.elements.openingQty.value,barcodes:f.elements.barcodes.value,canEdit:window.zaviCloudCanEdit?.()};
     })()""")
     assert created['created'] and created['ledger'] and created['qty']==8,created
     assert created['after']==created['before']+1 and created['current']==[5,3],created
