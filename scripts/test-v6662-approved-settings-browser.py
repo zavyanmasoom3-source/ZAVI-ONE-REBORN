@@ -61,12 +61,14 @@ with Session() as browser:
         id:x.id,text:(x.textContent||'').trim().slice(0,100)}));
       return {outside:visible,hubTop:hub.getBoundingClientRect().top,
         hubWidth:hub.clientWidth,scrollWidth:hub.scrollWidth,
-        oldHeader:getComputedStyle(root.querySelector(':scope > .page-head')).display,
+        oldHeader:((el)=>el?getComputedStyle(el).display:'absent')(root.querySelector(':scope > .page-head')),
+        leakedLegacy:!!root.querySelector(':scope > .settings-card,:scope > .z20-panel,:scope > .zavi-info-box'),
         visibleTopLevel:[...hub.querySelectorAll('.zavi-clean-settings-group')].length};
     })()""")
     print('ZAVI_APPROVED_SETTINGS_VISIBLE_ROOT='+json.dumps(layout,ensure_ascii=False),flush=True)
     assert not layout['outside'],layout
-    assert layout['oldHeader']=='none',layout
+    assert layout['oldHeader'] in ('none','absent'),layout
+    assert not layout['leakedLegacy'],layout
     assert layout['visibleTopLevel']==7,layout
     assert layout['scrollWidth']<=layout['hubWidth']+5,layout
 
@@ -162,5 +164,7 @@ with Session() as browser:
     browser.command('Emulation.setDeviceMetricsOverride',{'width':360,'height':780,
       'deviceScaleFactor':1,'mobile':True,'screenWidth':360,'screenHeight':780})
     Path('qa-settings/approved-66.62-settings-small-mobile.png').write_bytes(browser.screenshot())
+    browser.eval("""(()=>{const el=document.querySelector('#content .zavi-clean-settings-group[data-group=cloud]');if(el)el.open=true;})()""")
+    Path('qa-settings/approved-66.62-settings-expanded-cloud.png').write_bytes(browser.screenshot())
     print('PASS: zero duplicate root cards; exact seven approved settings visible on mobile')
     print('PASS: seven clean settings groups, original cloud/security/finance controls, native form state, 3 locales, 3 themes, offline ready')
