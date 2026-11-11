@@ -2,14 +2,30 @@
  * Only the existing authenticated store profile authorizes trade changes.
  * Never mutates invoices, stock, permissions, cash or offline licences. */
 (()=>{'use strict';
- const q=(s,p=document)=>p.querySelector(s), types=(window.ZAVI_UNIFIED_PROFILES||[]);
- if(!Array.isArray(types)||types.length!==20||new Set(types.map(x=>x.id)).size!==20)return;
+ const q=(s,p=document)=>p.querySelector(s);
+ const types=Array.isArray(window.ZAVI_UNIFIED_PROFILES)?
+   window.ZAVI_UNIFIED_PROFILES.slice():[];
+ // Keep all 20 installed presets, with an optional 21st accessories trade.
+ // Do not modify the original 20-platform manifest or Android package IDs.
+ if(types.length===20&&!types.some(x=>x.id==='accessories')){
+   types.push({id:'accessories',number:21,
+     name:{fa:'لوازم موبایل و پوش‌فروشی',ps:'د موبایل لوازم او پوښونه',en:'Mobile Accessories & Cases'},
+     features:['barcode','models','colors','variants','inventory','sales','purchases'],
+     focus:'قاب و پوش، گلس، چارجر، مدل‌های سازگار و موجودی مستقل رنگ‌ها'});
+ }
+ if(types.length!==21||new Set(types.map(x=>x.id)).size!==21)return;
+ // The original 66.62 global trade getter validates IDs against this map.
+ // Extend only the presentation registry: no automatic profile write.
+ if(typeof ZAVI_BUSINESS_PRESETS_V638!=='undefined'){
+   ZAVI_BUSINESS_PRESETS_V638.accessories=[
+     'لوازم موبایل و پوش‌فروشی','📱','مدل سازگار، رنگ، بارکد و گدام'];
+ }
  const byId=Object.fromEntries(types.map(p=>[p.id,p]));
  const language=()=>{const v=(document.documentElement.lang||'fa').toLowerCase();return v.startsWith('en')?'en':v.startsWith('ps')?'ps':'fa'};
  const msg={
- fa:{head:'سیستم اختصاصی',choose:'تغییر کسب‌وکار',current:'کسب‌وکار فعال',tools:'کارهای اصلی این کسب‌وکار',preview:'مشخصات تخصصی',check:'فورم‌ها، فاکتورها، ابزارهای روزانه و راپورها بر اساس نوع تجارت پیشنهاد می‌شوند. انتخاب جدید فقط بعد از ذخیره مالک اعمال می‌شود؛ معلومات قبلی حفظ می‌گردد.',all:'انتخاب یکی از ۲۰ کسب‌وکار',search:'جستجوی کسب‌وکار',cancel:'بستن',select:'انتخاب و تنظیم',warning:'پس از انتخاب، تنظیمات تجارت را مرور کرده و دکمۀ ذخیره را بزنید.',general:'حسابداری عمومی',sales:'فروش',purchases:'خرید',products:'کالا و گدام',contacts:'مشتریان',money:'صندوق',reports:'گزارش‌ها',hawala:'حواله',expenses:'مصارف',repairs:'تعمیرات',debtors:'طلبکاران',creditors:'بدهی‌ها',journal:'روزنامچه'},
- en:{head:'Industry workspace',choose:'Change business type',current:'Active business',tools:'Essential business tools',preview:'Industry fields',check:'Daily tools, product details, invoices and reports follow the saved business profile. Only an authorised owner can save a change; existing accounts and records stay intact.',all:'Choose from 20 businesses',search:'Search businesses',cancel:'Close',select:'Choose and configure',warning:'After choosing, review the store settings and press Save business settings.',general:'General accounting',sales:'Sales',purchases:'Purchases',products:'Products & inventory',contacts:'Customers',money:'Cash & payments',reports:'Reports',hawala:'Transfers',expenses:'Expenses',repairs:'Repairs',debtors:'Receivables',creditors:'Payables',journal:'Journal'},
- ps:{head:'د سوداګرۍ ځانګړی سیستم',choose:'د سوداګرۍ ډول بدل کړئ',current:'فعاله سوداګري',tools:'مهم کاري برخې',preview:'ځانګړي معلومات',check:'ورځنۍ چارې، توکي، بلونه او راپورونه د خوندي شوي ډول له مخې برابریږي. یوازې مالک یې خوندي کوي؛ پخواني معلومات ساتل کېږي.',all:'له ۲۰ سوداګریو څخه یوه وټاکئ',search:'د سوداګرۍ لټون',cancel:'تړل',select:'ټاکل او تنظیم',warning:'د سوداګرۍ تنظیمات وګورئ او د خوندي کولو تڼۍ ووهئ.',general:'عمومي حسابداري',sales:'پلور',purchases:'پېرود',products:'توکي او ګدام',contacts:'پېرودونکي',money:'صندوق',reports:'راپورونه',hawala:'حواله',expenses:'لګښتونه',repairs:'ترمیم',debtors:'پورونه',creditors:'بدهی',journal:'ورځپاڼه'}
+ fa:{head:'سیستم اختصاصی',choose:'تغییر کسب‌وکار',current:'کسب‌وکار فعال',tools:'کارهای اصلی این کسب‌وکار',preview:'مشخصات تخصصی',check:'فورم‌ها، فاکتورها، ابزارهای روزانه و راپورها بر اساس نوع تجارت پیشنهاد می‌شوند. انتخاب جدید فقط بعد از ذخیره مالک اعمال می‌شود؛ معلومات قبلی حفظ می‌گردد.',all:'انتخاب یکی از ۲۱ کسب‌وکار',search:'جستجوی کسب‌وکار',cancel:'بستن',select:'انتخاب و تنظیم',warning:'پس از انتخاب، تنظیمات تجارت را مرور کرده و دکمۀ ذخیره را بزنید.',general:'حسابداری عمومی',sales:'فروش',purchases:'خرید',products:'کالا و گدام',contacts:'مشتریان',money:'صندوق',reports:'گزارش‌ها',hawala:'حواله',expenses:'مصارف',repairs:'تعمیرات',debtors:'طلبکاران',creditors:'بدهی‌ها',journal:'روزنامچه'},
+ en:{head:'Industry workspace',choose:'Change business type',current:'Active business',tools:'Essential business tools',preview:'Industry fields',check:'Daily tools, product details, invoices and reports follow the saved business profile. Only an authorised owner can save a change; existing accounts and records stay intact.',all:'Choose from 21 businesses',search:'Search businesses',cancel:'Close',select:'Choose and configure',warning:'After choosing, review the store settings and press Save business settings.',general:'General accounting',sales:'Sales',purchases:'Purchases',products:'Products & inventory',contacts:'Customers',money:'Cash & payments',reports:'Reports',hawala:'Transfers',expenses:'Expenses',repairs:'Repairs',debtors:'Receivables',creditors:'Payables',journal:'Journal'},
+ ps:{head:'د سوداګرۍ ځانګړی سیستم',choose:'د سوداګرۍ ډول بدل کړئ',current:'فعاله سوداګري',tools:'مهم کاري برخې',preview:'ځانګړي معلومات',check:'ورځنۍ چارې، توکي، بلونه او راپورونه د خوندي شوي ډول له مخې برابریږي. یوازې مالک یې خوندي کوي؛ پخواني معلومات ساتل کېږي.',all:'له ۲۱ سوداګریو څخه یوه وټاکئ',search:'د سوداګرۍ لټون',cancel:'تړل',select:'ټاکل او تنظیم',warning:'د سوداګرۍ تنظیمات وګورئ او د خوندي کولو تڼۍ ووهئ.',general:'عمومي حسابداري',sales:'پلور',purchases:'پېرود',products:'توکي او ګدام',contacts:'پېرودونکي',money:'صندوق',reports:'راپورونه',hawala:'حواله',expenses:'لګښتونه',repairs:'ترمیم',debtors:'پورونه',creditors:'بدهی',journal:'ورځپاڼه'}
  };
  const fallback={
  general:['sales','products','purchases','reports'],
@@ -18,6 +34,7 @@
  laboratory:['contacts','sales','expenses','reports'],
  gold:['products','sales','purchases','money'],
  mobile:['products','sales','repairs','purchases'],
+ accessories:['products','sales','purchases','reports'],
  wholesale:['purchases','products','sales','creditors'],
  distribution:['sales','products','debtors','money'],
  clothing:['products','sales','purchases','reports'],
@@ -33,7 +50,7 @@
  services:['sales','contacts','expenses','money'],
  company:['money','reports','purchases','sales']
  };
- const icons={general:'📊',supermarket:'🛒',pharmacy:'💊',laboratory:'🧪',gold:'💍',mobile:'📱',wholesale:'📦',distribution:'🚚',clothing:'👕',footwear:'👟',bookstore:'📚',cosmetics:'🧴',electronics:'⚡',furniture:'🪑',hardware:'🔧',construction:'🏗️',exchange:'💱',contractor:'👷',services:'🛠️',company:'🏢'};
+ const icons={general:'📊',supermarket:'🛒',pharmacy:'💊',laboratory:'🧪',gold:'💍',mobile:'📱',accessories:'📱',wholesale:'📦',distribution:'🚚',clothing:'👕',footwear:'👟',bookstore:'📚',cosmetics:'🧴',electronics:'⚡',furniture:'🪑',hardware:'🔧',construction:'🏗️',exchange:'💱',contractor:'👷',services:'🛠️',company:'🏢'};
  const t=()=>msg[language()];
  const safe=id=>byId[id]?id:'general';
  const current=()=>{try{return safe(window.zaviActiveIndustry?.())}catch(e){return 'general'}};
