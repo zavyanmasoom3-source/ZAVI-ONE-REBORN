@@ -21,9 +21,30 @@ with Session() as browser:
        openEntity('product');
        return {before:db.products.length,txBefore:db.tx.length};
     })()""")
-    browser.until("""!!document.querySelector('#dialogForm.z66-product-editor[data-z66-product-trade="accessories"]
-      .z66-color-editor[data-z66-color-editor="1"]')""",
-      'real accessories product form enhanced with native variants')
+    try:
+      browser.until("""!!document.querySelector('#dialogForm.z66-product-editor[data-z66-product-trade="accessories"]
+        .z66-color-editor[data-z66-color-editor="1"]')""",
+        'real accessories product form enhanced with native variants')
+    except Exception:
+      debug=browser.eval("""(()=>{
+        const f=document.getElementById('dialogForm');
+        return {
+          modal:document.querySelector('.modal-head h3')?.textContent,
+          productForm:!!f,
+          tradeGetter:zaviBusinessTypeV638(),
+          activeGetter:window.zaviActiveIndustry?.(),
+          currentSchema:window.ZaviIndustryForms6529?.types?.length,
+          firstFields:[...f?.querySelectorAll('[name]')||[]].slice(0,25).map(x=>x.name),
+          enhanced:f?.className,
+          dataset:f?.dataset?.z66ProductTrade,
+          industry:f?.querySelector('.z629-industry')?.dataset?.z629Type,
+          editor:!!f?.querySelector('.z66-color-editor'),
+          category:!!f?.querySelector('[name=category]'),
+          errors:window.__z66QaErrors||null
+        }
+      })()""")
+      print('DEBUG accessory mount:',debug,flush=True)
+      raise
     initial=browser.eval("""(()=>{
       const form=document.getElementById('dialogForm');
       return {
