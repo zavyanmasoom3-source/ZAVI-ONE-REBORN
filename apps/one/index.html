@@ -1797,11 +1797,12 @@ window.zaviVariantWarehousePost=(input)=>{
  const id=String(input.id||'');
  const success=commit(n=>{
   const obj=n.products.find(x=>x.id===p.id);
+  const code=nextCode(n);
   const entry=engine.moveWarehouse(obj,n.tx,{
    id,fromWarehouseId:input.fromWarehouseId,toWarehouseId:input.toWarehouseId,
    variantKey:input.variantKey,qty:quantity,date:nowISO()
   });
-  entry.code=nextCode(n);
+  entry.code=code;
   entry.note=String(input.reference||'').slice(0,150);
  });
  if(!success)throw Error('انتقال در حافظه ثبت نشد؛ اطلاعات تغییر نکرد.');
