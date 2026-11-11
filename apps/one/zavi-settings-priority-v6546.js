@@ -26,7 +26,7 @@ function category(card){
  return 'advanced';
 }
 function arrange(){
- if(busy)return;
+ if(busy||window.ZaviUnifiedSettingsApproved)return;
  const root=document.getElementById('content');
  if(!root||!root.querySelector('#zawiChangePin')||root.querySelector('.zavi-settings-6546-group'))return;
  busy=true;
