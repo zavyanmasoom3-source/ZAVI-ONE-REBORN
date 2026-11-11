@@ -1,3 +1,4 @@
+@import url("./zavi-approved-settings-v6662.css?v=66.62-settings-approved-1");
 /* Shared ZAVI ONE/ADMIN clean settings: only existing visual layout, no data/API changes. */
 :root{--zc-surface:#fff;--zc-soft:#f1f6fc;--zc-text:#162b49;--zc-muted:#62768e;--zc-line:#d9e5f2;--zc-primary:#127be8}
 html:not([data-zavi-theme="light"]){--zc-surface:#10253b;--zc-soft:#0d1c2d;--zc-text:#eff7ff;--zc-muted:#bacadc;--zc-line:#2b4663;--zc-primary:#62b2ff}
