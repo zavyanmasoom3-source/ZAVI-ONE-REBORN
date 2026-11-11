@@ -3084,14 +3084,31 @@ function openOrder(kind,defaultContactId='',chinaDefault=false){
  const variantEngine=window.ZaviVariantInventory6662;
  function syncOrderVariant(row,p){
   const field=row.querySelector('[data-field="variantKey"]'),wrap=field?.closest('[data-variant-wrap]');
-  if(!field||!wrap)return;
-  if(!p||!variantEngine.tracked(p)){field.replaceChildren();field.value='';wrap.hidden=true;row.dataset.variantFor='';return;}
+  const whField=row.querySelector('[data-field="warehouseId"]'),whWrap=whField?.closest('[data-warehouse-wrap]');
+  if(!field||!wrap||!whField||!whWrap)return;
+  if(!p||!variantEngine.tracked(p)){
+   field.replaceChildren();field.value='';wrap.hidden=true;row.dataset.variantFor='';
+   whField.replaceChildren();whField.value='';whWrap.hidden=true;row.dataset.warehouseFor='';
+   return;
+  }
   const entries=variantEngine.verify(p,db.tx,stockOf(p.id));
   if(row.dataset.variantFor!==p.id){
    field.innerHTML='<option value="">انتخاب رنگ *</option>'+entries.map(x=>'<option value="'+escapeHtml(x.key)+'">'+escapeHtml(x.color)+' · '+fmtQty(x.qty)+'</option>').join('');
    row.dataset.variantFor=p.id;
   }
   wrap.hidden=false;
+  const ledger=p.variantLedger.warehouseLedger;
+  if(!ledger){whField.replaceChildren();whWrap.hidden=true;row.dataset.warehouseFor='';return}
+  const choices=new Map((window.ZaviWarehouseV1?.list?.()||[]).filter(w=>w.is_active)
+   .map(w=>[w.id,w.name]));
+  for(const w of ledger.initial)if(!choices.has(w.warehouseId))
+   choices.set(w.warehouseId,'گدام ذخیره‌شده · '+w.warehouseId.slice(0,8));
+  if(row.dataset.warehouseFor!==p.id){
+   whField.innerHTML='<option value="">انتخاب گدام *</option>'+[...choices].map(([id,name])=>
+    '<option value="'+escapeHtml(id)+'">'+escapeHtml(name)+'</option>').join('');
+   row.dataset.warehouseFor=p.id;
+  }
+  whWrap.hidden=false;
  }
  function updateMatchStatus(row){
   const nameInput=row.querySelector('[data-field="productName"]');
@@ -3132,6 +3149,8 @@ function openOrder(kind,defaultContactId='',chinaDefault=false){
     <div class="line-status">اسم محصول را بنویسید</div>
     <div data-variant-wrap hidden class="z66-invoice-colour"><label>رنگ محصول
      <select data-field="variantKey" aria-label="رنگ محصول" autocomplete="off"></select></label></div>
+    <div data-warehouse-wrap hidden class="z66-invoice-colour"><label>گدام این رنگ
+     <select data-field="warehouseId" aria-label="گدام این رنگ" autocomplete="off"></select></label></div>
     ${isPurchase?`<details><summary>کود، دسته‌بندی و قیمت فروش محصولی جدید (اختیاری)</summary>
     <div class="extras-grid"><div><label>کود / مدل</label><input data-field="productSku" maxlength="70" placeholder="مثلاً A16"></div>
     <div><label>دسته‌بندی</label><input data-field="category" list="zawiInvoiceCategories" maxlength="100" value="" placeholder="دسته‌بندی (اختیاری)"></div>
@@ -3257,6 +3276,7 @@ function openOrder(kind,defaultContactId='',chinaDefault=false){
    salePrice:isPurchase?window.ZaviDecimal.roundMoney(row.querySelector('[data-field="salePrice"]').value||'0'):0,
    qty:qtyRound(num(row.querySelector('[data-field="qty"]').value)),price:window.ZaviDecimal.roundMoney(row.querySelector('[data-field="price"]').value||'0'),
    variantKey:row.querySelector('[data-field="variantKey"]')?.value||'',
+   warehouseId:row.querySelector('[data-field="warehouseId"]')?.value||'',
    industryDetails:window.ZaviIndustryForms6529.collect(row.querySelector('.z629-industry'),orderIndustry)
   }));
   if(!enteredRows.length||enteredRows.some(l=>!l.name||l.name.length>140||l.qty<=0||l.price<0||l.salePrice<0||!Number.isFinite(l.qty)))throw Error('نام محصول، تعداد و قیمت هر ردیف را درست وارد کنید.');
@@ -3273,7 +3293,7 @@ function openOrder(kind,defaultContactId='',chinaDefault=false){
   const discount=money(disOriginal*rate),paid=money(paidOriginal*rate);
   // Validate every colour-affecting invoice, including returns and incoming purchases.
   // A pre-existing colour list without an activated opening snapshot is NOT safe to sell.
-  const variantUsage={};
+  const variantUsage={},warehouseUsage={};
   for(const l of enteredRows){
    const p=findNamedProduct(l.name,l.sku);
    if(!p)continue;
@@ -3283,6 +3303,20 @@ function openOrder(kind,defaultContactId='',chinaDefault=false){
     const available=variantEngine.verify(p,db.tx,stockOf(p.id));
     if(!l.variantKey||!available.some(x=>x.key===l.variantKey))
      throw Error('رنگ «'+p.name+'» را در ردیف فاکتور انتخاب کنید.');
+    if(p.variantLedger.warehouseLedger){
+     const warehouse=String(l.warehouseId||'');
+     const choices=variantEngine.warehouseBalances(p,db.tx);
+     const locations=new Set((window.ZaviWarehouseV1?.list?.()||[]).filter(w=>w.is_active).map(w=>w.id));
+     for(const x of p.variantLedger.warehouseLedger.initial)locations.add(x.warehouseId);
+     if(!warehouse||!locations.has(warehouse))throw Error('گدام رنگ «'+p.name+'» را انتخاب کنید.');
+     if(kind==='sale'||kind==='purchase_return'){
+      const k=p.id+'|'+l.variantKey+'|'+warehouse;
+      warehouseUsage[k]=(warehouseUsage[k]||0)+l.qty;
+      const current=choices.find(x=>x.variantKey===l.variantKey&&x.warehouseId===warehouse);
+      if(warehouseUsage[k]>(current?.qty||0)+.00001)
+       throw Error('موجودی این رنگ در گدام انتخاب‌شده کافی نیست.');
+     }
+    }
     if(kind==='sale'||kind==='purchase_return'){
      const k=p.id+'|'+l.variantKey;
      variantUsage[k]=(variantUsage[k]||0)+l.qty;
@@ -3322,7 +3356,7 @@ function openOrder(kind,defaultContactId='',chinaDefault=false){
     }
     const c=kind==='purchase'?money(l.price*rate*(grossOriginal?totalOriginal/grossOriginal:1)):(priorCosts[p.id]??0);
     if(kind==='purchase')p.purchasePrice=money(c);
-    return {productId:p.id,productName:p.name,qty:l.qty,variantKey:l.variantKey||undefined,price:money(l.price*rate),cost:c,industryDetails:l.industryDetails,...(isPurchase?{priceOriginal:l.price}:{})};
+    return {productId:p.id,productName:p.name,qty:l.qty,variantKey:l.variantKey||undefined,warehouseId:l.warehouseId||undefined,price:money(l.price*rate),cost:c,industryDetails:l.industryDetails,...(isPurchase?{priceOriginal:l.price}:{})};
    });
    let payload={id:newId('t'),code:nextCode(n),type:kind,date,created:new Date().toISOString(),contactId,customerName:name,customerPhone:phone,accountId:f.accountId.value,discount,paid,note:f.note.value.trim(),items:lines};
    if(isPurchase)Object.assign(payload,{purchaseOrigin:f.purchaseOrigin.value,originalCurrency:unit,exchangeRate:rate,originalAmount:totalOriginal,originalPaid:paidOriginal,originalDiscount:disOriginal,shipping:money(shippingOriginal*rate),shippingOriginal});
