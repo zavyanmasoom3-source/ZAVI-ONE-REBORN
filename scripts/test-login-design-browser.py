@@ -40,6 +40,68 @@ for app,field_id in [('one','zawiPinOne'),('admin','authPassword')]:
         })()""" %(json.dumps(field_id),json.dumps(field_id)))
         if not(original['input'] and original['button'] and original['password']=='password'):
             raise SystemExit(app+' real password control missing: '+repr(original))
+
+        if app=='one' and (ROOT/'apps/one/v6662-original-design-lock.json').is_file():
+            # Approved owner-requested 66.62 login, not a second mock login.
+            browser.until("""document.getElementById('zawiPrivateGate')
+              ?.classList.contains('zavi66-approved-login')""",
+              'approved compact login enhancement applied',seconds=15)
+            layout=browser.eval("""(()=>{
+              const gate=document.getElementById('zawiPrivateGate');
+              const card=gate.querySelector('.zawi-auth-card');
+              const meter=document.getElementById('z639PinProgress');
+              return {
+                compact:card.getBoundingClientRect().width<=395,
+                brandHidden:getComputedStyle(gate.querySelector('.zawi-brand-latin')).display==='none',
+                meterHidden:!meter||getComputedStyle(meter).display==='none',
+                originalLogo:card.querySelector('.zawi-lock-emblem img')
+                   ?.getAttribute('src')==='./zavi-one-original-logo.png',
+                languageAtTop:card.firstElementChild.id==='zaviGateLanguage' ||
+                  card.firstElementChild.classList.contains('zavi-auth-language'),
+                pinField:!!gate.querySelector('#zawiPinForm #zawiPinOne'),
+                setupConfirm:!!gate.querySelector('#zawiPinRepeat[required]'),
+                recoveryLink:!!gate.querySelector('#zawiForgotPinBtn'),
+                hintVisible:getComputedStyle(
+                  gate.querySelector('#zavi66PinHint')).display!=='none'
+              };
+            })()""")
+            assert all(layout.values()),layout
+            for locale,title in [
+                ('fa-AF','ورود به ZAVI ONE'),
+                ('ps-AF','ZAVI ONE ته ننوتل'),
+                ('en','Sign in to ZAVI ONE')
+            ]:
+                browser.eval('window.ZaviLocaleV22.set(%s)'%json.dumps(locale))
+                browser.until("""document.getElementById('zawiGateTitle')
+                  ?.textContent===%s"""%json.dumps(title),
+                  'login localizes without reload: '+locale,seconds=15)
+                state=browser.eval("""(()=>({
+                  title:document.getElementById('zawiGateTitle').textContent,
+                  label:document.getElementById('zawiPinLabel').textContent,
+                  activeLanguage:document.getElementById('zaviGateLanguage').value,
+                  direction:document.getElementById('zawiPrivateGate').dir,
+                  forgot:document.getElementById('zawiForgotPinBtn').textContent,
+                  pinKept:document.getElementById('zawiPinOne').type==='password'
+                }))()""")
+                assert state['activeLanguage']==locale,state
+                assert state['direction']==('ltr' if locale=='en' else 'rtl'),state
+                assert state['label'] and state['forgot'] and state['pinKept'],state
+            browser.eval("window.ZaviLocaleV22.set('fa-AF')")
+            for mode in ['light','dark','glass']:
+                theme=browser.eval("""(()=>{
+                  window.ZaviThemeV29.set(%s);
+                  const root=document.getElementById('zawiPrivateGate');
+                  const card=root.querySelector('.zawi-auth-card');
+                  const css=getComputedStyle(card);
+                  return {name:document.documentElement.dataset.zaviTheme,
+                    visible:card.getBoundingClientRect().width>250,
+                    bg:css.backgroundColor,ink:css.color};
+                })()"""%json.dumps(mode))
+                assert theme['name']==mode and theme['visible'],theme
+                assert theme['bg'] not in ('rgba(0, 0, 0, 0)','transparent'),theme
+            browser.eval("window.ZaviThemeV29.set('light')")
+            print('PASS: approved 66.62 compact PIN entry, locale labels, '
+                  'theme cards, eye and recovery controls')
         result=browser.eval("""(()=>{
           const input=document.getElementById(%s);
           const button=document.querySelector('[data-zds-password-toggle=%s]');
