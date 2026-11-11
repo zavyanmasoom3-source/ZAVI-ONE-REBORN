@@ -58,6 +58,208 @@ html[dir="rtl"] #z24Recovery{direction:rtl!important}
  #z24Recovery .z24-pbox{padding:11px}
  #z24Recovery .z24-stage{padding:11px}}
 @media(prefers-reduced-motion:reduce){#z24Recovery *{animation:none!important;transition:none!important}}
+
+/* Owner-approved neon account recovery – same ZAVI ONE blue family as PIN.
+   Original cloud sign-in, ownership approval, server RPC and PIN reset untouched. */
+#z24Recovery{
+ --z66r-paper:#162f69;--z66r-deep:#0c1d4a;--z66r-field:#16336c;
+ --z66r-ink:#f9fcff;--z66r-muted:#cbdffa;--z66r-border:#608cd0;
+ --z66r-glow:#14d7ff;--z66r-warn:#ffd2db;
+ background:radial-gradient(ellipse 90% 65% at 85% 10%,#122f77d9,transparent 72%),
+ radial-gradient(ellipse 90% 55% at 14% 90%,#342d86d9,transparent 75%),
+ rgba(4,12,38,.95)!important;
+ padding:calc(12px + env(safe-area-inset-top,0px))
+  max(12px,env(safe-area-inset-right,0px))
+  calc(12px + env(safe-area-inset-bottom,0px))
+  max(12px,env(safe-area-inset-left,0px))!important;
+ overflow-x:hidden!important;
+}
+#z24Recovery .z24-pbox{
+ position:relative;isolation:isolate;
+ width:min(410px,100%)!important;
+ max-height:calc(100vh - 24px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));
+ max-height:calc(100dvh - 24px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));
+ overflow-x:hidden;overflow-y:auto;
+ margin:auto!important;padding:16px!important;
+ background:linear-gradient(150deg,var(--z66r-paper),var(--z66r-deep) 90%)!important;
+ border:1px solid #71d8f2bc!important;border-radius:23px!important;
+ box-shadow:0 0 0 1px #4576c455 inset,0 22px 65px #0009,
+ 0 0 40px #1189ed24!important;
+ color:var(--z66r-ink)!important;
+ animation:z66rec-pop .48s cubic-bezier(.19,1,.22,1) both;
+}
+#z24Recovery .z24-pbox::before{
+ content:"";display:block;position:absolute;inset:0 0 auto;height:3px;z-index:0;
+ background:linear-gradient(90deg,#6a4dff,#18daff,#2e82ff,#9b53ff);
+ background-size:210% auto;animation:z66rec-line 8s linear infinite;
+ pointer-events:none;
+}
+#z24Recovery .z24-pbox::after{
+ content:"";position:absolute;inset:auto -12% -13% -12%;height:130px;
+ z-index:0;pointer-events:none;opacity:.65;
+ background:radial-gradient(ellipse at 45% 95%,#0bd2ff75,transparent 65%),
+ radial-gradient(ellipse at 95% 80%,#8853eb8a,transparent 65%);
+ filter:blur(12px);
+}
+#z24Recovery .z24-pbox > *{position:relative;z-index:1;max-width:100%}
+#z24Recovery .z24-ph{padding:0 0 9px!important;display:flex;flex-direction:column;align-items:center;gap:3px}
+#z24Recovery #z24Cancel{
+ align-self:flex-start;width:auto;min-width:0;min-height:37px;
+ padding:6px 12px!important;margin:0 0 6px!important;
+ color:#d5efff!important;background:#132f66!important;
+ border:1px solid #7fa9e8!important;border-radius:22px!important;
+ font-size:11px!important;font-weight:700!important;
+ box-shadow:none!important;
+}
+#z24Recovery .z66rec-brand{
+ display:flex;align-items:center;justify-content:center;gap:8px;
+ font:850 16px/1.3 system-ui,Arial,sans-serif;letter-spacing:.015em;
+ color:var(--z66r-ink);margin:3px 0 1px;
+}
+#z24Recovery .z66rec-mark{
+ width:37px;height:37px;display:grid;place-items:center;
+ color:#fff;line-height:1;font:900 18px/1 system-ui,Arial,sans-serif;
+ border:1px solid #5feaff;border-radius:11px;
+ background:linear-gradient(135deg,#167adf,#18d7ed);
+ box-shadow:0 0 18px #10aeee86;
+}
+#z24Recovery .z66rec-shield{
+ display:grid;place-items:center;position:relative;
+ width:73px;height:73px;margin:4px auto 2px;
+ border:1px solid #6cbeff;border-radius:24px;
+ background:radial-gradient(circle at 42% 20%,#59eafa50,#1562c775 55%,#152765);
+ box-shadow:0 0 25px #14c9ff52,0 0 40px #6755ff3f;
+ animation:z66rec-shield 5.5s ease-in-out infinite;
+}
+#z24Recovery .z66rec-shield svg{
+ width:45px;height:45px;stroke:#eefaff;fill:none;stroke-width:1.7;
+ stroke-linejoin:round;stroke-linecap:round;filter:drop-shadow(0 0 7px #65e7ff99);
+}
+#z24Recovery .z24-ph h2{
+ margin:2px 0 0!important;
+ color:var(--z66r-ink)!important;
+ text-align:center;font-size:clamp(18px,5vw,22px)!important;
+ text-shadow:0 2px 10px #082b596e;
+}
+#z24Recovery .z24-ph p{
+ margin:1px 0 0!important;text-align:center!important;max-width:290px;
+ color:var(--z66r-muted)!important;font-size:12px!important;
+}
+#z24Recovery .z24-progress{
+ width:100%;margin:9px 0 12px!important;gap:5px!important;
+}
+#z24Recovery .z24-progress span{
+ min-width:0;padding:7px 2px!important;border-radius:11px!important;
+ background:var(--z66r-field)!important;color:var(--z66r-muted)!important;
+ border:1px solid var(--z66r-border)!important;
+ transition:border-color .18s ease,background .18s ease,box-shadow .18s ease!important;
+}
+#z24Recovery .z24-progress span[data-current="true"]{
+ color:#fff!important;background:linear-gradient(125deg,#174cc1,#0c9fca)!important;
+ border-color:#6ee9ff!important;box-shadow:0 0 13px #10beed44!important;
+}
+#z24Recovery .z24-progress span :is(b,small){color:inherit!important}
+#z24Recovery .z24-stage{
+ margin:0;padding:12px!important;
+ color:var(--z66r-ink)!important;
+ background:linear-gradient(145deg,#132c6199,#0d2453cc)!important;
+ border:1px solid var(--z66r-border)!important;border-radius:15px!important;
+}
+#z24Recovery .z24-stagetitle{color:var(--z66r-ink)!important}
+#z24Recovery .z24-stagehint{color:var(--z66r-muted)!important}
+#z24Recovery .z24-pfield{
+ color:var(--z66r-ink)!important;font-size:12px!important;
+}
+#z24Recovery .z24-pfield :is(input,select){
+ color:var(--z66r-ink)!important;background:var(--z66r-field)!important;
+ border:1px solid var(--z66r-border)!important;border-radius:11px!important;
+ min-height:46px!important;
+}
+#z24Recovery .z24-pfield input::placeholder{color:var(--z66r-muted)!important;opacity:1}
+#z24Recovery .z24-pbtn:not(.alt){
+ min-height:46px!important;border:1px solid #52d6f0!important;
+ border-radius:12px!important;background:linear-gradient(105deg,#1e65ee,#0bc9d7)!important;
+ color:#fff!important;font-size:13px!important;
+ box-shadow:0 6px 16px #08a5ed44!important;
+ transition:transform .18s ease,box-shadow .18s ease!important;
+}
+#z24Recovery .z24-pbtn:not(.alt):active:not(:disabled){transform:scale(.985)}
+#z24Recovery .z24-pbtn.alt{
+ background:#183a76!important;border-color:#5e91db!important;color:#e4f4ff!important;
+}
+#z24Recovery .z24-pstatus{
+ color:var(--z66r-muted)!important;
+ border-radius:11px;margin:10px 1px 0!important;
+ padding:8px 9px!important;
+ background:#14426f99;border:1px solid #4c7eb077;
+}
+#z24Recovery .z24-pstatus.err{color:var(--z66r-warn)!important;border-color:#ee92ad88}
+#z24Recovery .z24-support{
+ color:var(--z66r-muted)!important;
+ font-size:11px!important;line-height:1.7!important;
+ margin:9px 1px 0!important;
+}
+#z24Recovery .z24-support [dir="ltr"]{unicode-bidi:isolate}
+#z24Recovery :is(button,input,select):focus-visible{
+ outline:3px solid #65e9ff!important;outline-offset:2px!important;
+}
+html[data-zavi-theme="light"] #z24Recovery,
+html[data-zavi-appearance="light"] #z24Recovery{
+ --z66r-paper:#f2f8ff;--z66r-deep:#e1efff;--z66r-field:#fff;
+ --z66r-ink:#173a60;--z66r-muted:#3d5e85;--z66r-border:#9cc3ee;
+ --z66r-warn:#9c1737;
+ background:rgba(12,33,68,.62)!important;
+}
+html[data-zavi-theme="light"] #z24Recovery .z24-stage,
+html[data-zavi-appearance="light"] #z24Recovery .z24-stage{
+ background:#f8fbff!important;
+}
+html[data-zavi-theme="light"] #z24Recovery .z24-pstatus,
+html[data-zavi-appearance="light"] #z24Recovery .z24-pstatus{
+ background:#e5f1ff!important;border-color:#b4cdec!important;
+}
+html[data-zavi-theme="light"] #z24Recovery .z24-pbtn.alt,
+html[data-zavi-appearance="light"] #z24Recovery .z24-pbtn.alt,
+html[data-zavi-theme="light"] #z24Recovery #z24Cancel,
+html[data-zavi-appearance="light"] #z24Recovery #z24Cancel{
+ color:#174c7f!important;background:#eef6ff!important;border-color:#7ca9da!important;
+}
+html[data-zavi-theme="light"] #z24Recovery .z24-progress span,
+html[data-zavi-appearance="light"] #z24Recovery .z24-progress span{
+ background:#f8fcff!important;color:#345b85!important;
+}
+html[data-zavi-theme="light"] #z24Recovery .z24-progress span[data-current="true"],
+html[data-zavi-appearance="light"] #z24Recovery .z24-progress span[data-current="true"]{
+ color:#fff!important;background:linear-gradient(125deg,#175ab9,#1b9cb8)!important;
+}
+@keyframes z66rec-pop{from{opacity:0;transform:translateY(12px) scale(.975)}
+ to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes z66rec-line{to{background-position:210% 0}}
+@keyframes z66rec-shield{50%{box-shadow:0 0 30px #14c9ff8c,0 0 42px #6755ff65}}
+html[data-z637-no-motion="true"] #z24Recovery *,
+html.zx-lite #z24Recovery *,
+html[data-z637-no-motion="true"] #z24Recovery .z24-pbox::before,
+html.zx-lite #z24Recovery .z24-pbox::before{
+ animation:none!important;transition:none!important;
+}
+@media(prefers-reduced-motion:reduce){
+ #z24Recovery *,#z24Recovery .z24-pbox::before{
+ animation:none!important;transition:none!important}
+}
+@media(max-height:600px){
+ #z24Recovery .z24-pbox{
+ max-height:calc(100dvh - 12px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));
+ padding:10px!important;
+ }
+ #z24Recovery .z66rec-shield{width:52px;height:52px;border-radius:17px}
+ #z24Recovery .z66rec-shield svg{width:32px;height:32px}
+ #z24Recovery .z24-progress{margin:5px 0 8px!important}
+}
+@media(max-width:360px){
+ #z24Recovery .z24-pbox{padding:11px!important}
+ #z24Recovery .z66rec-shield{width:60px;height:60px;border-radius:19px}
+ #z24Recovery .z66rec-shield svg{width:38px;height:38px}
+}
 `;
 
 const recoveryLabels={
@@ -242,6 +444,14 @@ function makeShell(){
  div.innerHTML=`
  <div class="z24-pbox">
    <header class="z24-ph">
+     <div class="z66rec-brand" aria-hidden="true"><span class="z66rec-mark">Z1</span><span>ZAVI ONE</span></div>
+     <div class="z66rec-shield" aria-hidden="true">
+       <svg viewBox="0 0 48 48" focusable="false">
+         <path d="M24 3 41 10v12c0 11-6.5 18.2-17 22C13.5 40.2 7 33 7 22V10Z"/>
+         <rect x="17" y="22" width="14" height="12" rx="3"/>
+         <path d="M20 22v-4a4 4 0 0 1 8 0v4M24 28v2"/>
+       </svg>
+     </div>
      <h2 id="z24RecoveryHeading" data-z24-label="heading">بازیابی حساب</h2>
      <p id="z24RecoveryIntro" data-z24-label="intro">حساب خود را در چند مرحله بازیابی کنید.</p>
    </header>
@@ -285,6 +495,10 @@ function makeShell(){
       <span dir="ltr">0764713434</span></p>
    <button type="button" class="z24-pbtn alt" id="z24Cancel" data-z24-label="cancel">بازگشت به ورود</button>
  </div>`;
+ // Move the existing native cancel action to the header, not a fake back button.
+ // No extra bypass or recovery endpoint is introduced.
+ const cancel=div.querySelector('#z24Cancel');
+ if(cancel)div.querySelector('.z24-ph')?.prepend(cancel);
  document.body.appendChild(div);
  div.addEventListener('click',handle);
  div.addEventListener('keydown',recoveryKeydown);
