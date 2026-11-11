@@ -82,6 +82,25 @@ function showEdit(box,id){
  const cancel=element('button','btn subtle',tr('لغو','لغوه','Cancel'));cancel.type='button';cancel.setAttribute('data-wh-cancel','');
  form.append(name,code,save,cancel);row.appendChild(form);name.focus();
 }
+
+function cachedCatalog(){
+ const c=owner();if(!c)return [];
+ if(activeWorkspace===c.id&&rows.length)return rows.filter(w=>w.is_active).map(w=>({...w}));
+ try{
+  const data=JSON.parse(localStorage.getItem('zavi-warehouse-catalog-v6662-'+c.id)||'null');
+  if(!data||data.workspace!==c.id||!Array.isArray(data.rows))return [];
+  return data.rows.filter(w=>w&&w.is_active===true&&w.workspace_id===c.id&&
+   /^[0-9a-f-]{36}$/i.test(w.id)).map(w=>({...w}));
+ }catch(_){return []}
+}
+function rememberCatalog(id){
+ try{
+  localStorage.setItem('zavi-warehouse-catalog-v6662-'+id,
+   JSON.stringify({workspace:id,at:new Date().toISOString(),rows:rows.map(w=>({
+    id:w.id,name:w.name,code:w.code,is_active:!!w.is_active,workspace_id:w.workspace_id
+   }))}));
+ }catch(_){/* Cache failure must not fake available server stock. */}
+}
 async function refresh(box){
  box=box||document.getElementById(ID);if(!box)return;
  var ticket=++requestNo,c=owner(),form=box.querySelector('[data-wh-add]');
@@ -90,7 +109,7 @@ async function refresh(box){
  try{
   var data=await rest('/rest/v1/zavi_warehouses?select=id,name,code,is_active,workspace_id&workspace_id=eq.'+encodeURIComponent(c.id)+'&order=created_at.asc','GET');
   if(ticket!==requestNo||!box.isConnected||activeWorkspace!==c.id)return;
-  rows=Array.isArray(data)?data.filter(w=>w&&w.workspace_id===c.id):[];draw(box);window.ZaviWarehouseTransfersV1?.mount(box,rows);
+  rows=Array.isArray(data)?data.filter(w=>w&&w.workspace_id===c.id):[];rememberCatalog(c.id);draw(box);window.ZaviWarehouseTransfersV1?.mount(box,rows);
   try {
    var stock=await rest('/rest/v1/zavi_warehouse_stock_summary?select=warehouse_id,product_ref,quantity,workspace_id&workspace_id=eq.'+encodeURIComponent(c.id)+'&order=warehouse_id,product_ref&limit=201','GET');
    if(ticket!==requestNo||!box.isConnected||activeWorkspace!==c.id)return;
@@ -144,5 +163,5 @@ document.addEventListener('click',function(e){
  if(!record||!owner()||owner().id!==activeWorkspace)return;
  mutate(box,'/rest/v1/zavi_warehouses?id=eq.'+encodeURIComponent(id)+'&workspace_id=eq.'+encodeURIComponent(activeWorkspace),'PATCH',{is_active:button.dataset.whState==='true'})
 });
-window.ZaviWarehouseV1={panel:panel,afterRender:function(){refresh()},refresh:refresh};
+window.ZaviWarehouseV1={panel:panel,afterRender:function(){refresh()},refresh:refresh,list:cachedCatalog};
 })();
