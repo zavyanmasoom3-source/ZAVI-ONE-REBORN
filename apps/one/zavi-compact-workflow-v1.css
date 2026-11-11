@@ -234,3 +234,203 @@ html[data-zavi-appearance="glass"] #dialogForm[data-zavi-sale-onepage="true"]{
 @media(prefers-reduced-motion:reduce){
  #dialogForm .z66-sale-single *{transition:none!important;animation:none!important}
 }
+
+
+/* Owner-approved V66.62 PURCHASE invoice; native form remains authoritative. */
+#dialogForm[data-zavi-purchase-onepage="true"]{
+ --z66p-bg:#142b5a;--z66p-paper:#1c3871;--z66p-edge:#6591cb;
+ --z66p-ink:#f8fbff;--z66p-muted:#c7dbf3;
+}
+html[data-zavi-theme="light"] #dialogForm[data-zavi-purchase-onepage="true"],
+html[data-zavi-appearance="light"] #dialogForm[data-zavi-purchase-onepage="true"]{
+ --z66p-bg:#eff6ff;--z66p-paper:#fff;--z66p-edge:#bbd3ee;
+ --z66p-ink:#153759;--z66p-muted:#47637f;
+}
+html[data-zavi-theme="glass"] #dialogForm[data-zavi-purchase-onepage="true"],
+html[data-zavi-appearance="glass"] #dialogForm[data-zavi-purchase-onepage="true"]{
+ --z66p-bg:#1a3a71;--z66p-paper:#29558c;--z66p-edge:#91bce9;
+ --z66p-ink:#fff;--z66p-muted:#e0edff;
+}
+#dialogForm[data-zavi-purchase-onepage="true"]{
+ box-sizing:border-box!important;min-width:0!important;overflow-x:hidden!important}
+#dialogForm[data-zavi-purchase-onepage="true"] .modal-body{
+ box-sizing:border-box;min-width:0;overflow-x:hidden!important;
+ padding-inline:clamp(9px,2.5vw,17px)!important}
+#dialogForm[data-zavi-purchase-onepage="true"] .z66-purchase-onepage{
+ display:grid!important;gap:10px!important;min-width:0!important;width:100%;
+ max-width:100%;box-sizing:border-box;padding-block:5px 8px;
+}
+#dialogForm .z66-purchase-onepage .z66-purchase-section{
+ box-sizing:border-box;min-width:0;max-width:100%;display:grid;gap:8px;
+ padding:11px;border-radius:14px;
+ background:var(--z66p-bg)!important;color:var(--z66p-ink)!important;
+ border:1px solid var(--z66p-edge)!important;
+ box-shadow:0 5px 18px #071d4919;
+ animation:z66p-reveal .38s cubic-bezier(.18,.85,.28,1) both;
+}
+#dialogForm .z66-purchase-onepage .z66-purchase-section:nth-child(2){animation-delay:.05s}
+#dialogForm .z66-purchase-onepage .z66-purchase-section:nth-child(3){animation-delay:.09s}
+#dialogForm .z66-purchase-onepage .z66-purchase-section:nth-child(4){animation-delay:.13s}
+#dialogForm .z66-purchase-onepage .z66-purchase-section:nth-child(5){animation-delay:.17s}
+#dialogForm .z66-purchase-onepage h3{
+ color:var(--z66p-ink)!important;margin:0!important;
+ font:800 14px/1.5 var(--zds-font-family,Vazirmatn,Tahoma,Arial,sans-serif)!important;
+}
+#dialogForm .z66-purchase-onepage .form-grid,
+#dialogForm .z66-purchase-onepage .extras-grid{
+ display:grid!important;grid-template-columns:minmax(0,1fr)!important;
+ gap:8px!important;margin:0!important;width:100%;min-width:0!important;
+}
+#dialogForm .z66-purchase-onepage .field{min-width:0!important;margin:0!important}
+#dialogForm .z66-purchase-onepage .field label,
+#dialogForm .z66-purchase-onepage .z66-purchase-input{
+ color:var(--z66p-ink)!important;font-size:12px!important;
+ line-height:1.5!important;font-weight:700!important;
+}
+#dialogForm .z66-purchase-onepage .z66-purchase-input{
+ min-width:0;display:grid;gap:4px;
+}
+#dialogForm .z66-purchase-onepage :is(input:not([type="hidden"]),select,textarea){
+ box-sizing:border-box!important;min-width:0!important;width:100%;
+ max-width:100%;min-height:43px!important;
+ padding:8px 10px!important;border-radius:10px!important;
+ color:var(--z66p-ink)!important;background:var(--z66p-paper)!important;
+ border:1px solid var(--z66p-edge)!important;font-size:14px!important;
+ line-height:1.5!important;
+}
+#dialogForm .z66-purchase-onepage :is(input,select,button,summary):focus-visible{
+ outline:3px solid #48e3fc!important;outline-offset:2px!important;
+}
+#dialogForm .z66-purchase-onepage input::placeholder{
+ color:var(--z66p-muted)!important;opacity:1!important;
+}
+#dialogForm .z66-purchase-onepage .fx-preview{
+ background:var(--z66p-paper)!important;border-radius:10px;
+ border:1px solid var(--z66p-edge)!important;color:var(--z66p-ink)!important;
+ font-size:12px!important;line-height:1.4;padding:9px;
+}
+#dialogForm .z66-purchase-onepage .field-hint{
+ color:var(--z66p-muted)!important;font-size:11px!important;
+ margin:1px 0!important;line-height:1.5!important;
+}
+#dialogForm .z66-purchase-onepage .zavi-barcode-box{
+ padding:0!important;margin:0!important;border:none!important;
+ min-width:0!important;max-width:100%!important;
+ background:transparent!important;color:var(--z66p-ink)!important;
+}
+#dialogForm .z66-purchase-onepage .zavi-barcode-box > label{
+ color:var(--z66p-ink)!important;font-size:12px!important;
+}
+#dialogForm .z66-purchase-onepage .zavi-barcode-actions{
+ display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ gap:7px!important;align-items:stretch!important;
+}
+#dialogForm .z66-purchase-onepage #zaviBarcodeScan{
+ grid-column:1/-1!important;width:100%!important;
+}
+#dialogForm .z66-purchase-onepage .zavi-barcode-actions button{
+ min-height:41px!important;margin:0!important;padding:7px 5px!important;
+ font-size:12px!important;line-height:1.4!important;
+ white-space:normal!important;overflow-wrap:anywhere!important;
+}
+#dialogForm .z66-purchase-onepage #z650ManualProduct{
+ grid-column:1/-1!important;min-height:36px!important;
+}
+#dialogForm .z66-purchase-onepage .z641-invoice-preview{
+ font-size:11px!important;line-height:1.5!important;
+ padding:7px 9px!important;margin:0!important;border-radius:10px!important;
+ color:var(--z66p-muted)!important;background:var(--z66p-paper)!important;
+ border:1px solid var(--z66p-edge)!important;
+}
+#dialogForm .z66-purchase-onepage #orderItems{
+ display:grid;gap:8px;min-width:0!important;
+}
+#dialogForm .z66-purchase-onepage .zawi-order-heading{display:none!important}
+#dialogForm .z66-purchase-onepage #orderItems .order-line{
+ box-sizing:border-box;max-width:100%;min-width:0!important;
+ margin:0!important;padding:8px!important;
+ border-radius:12px!important;background:var(--z66p-paper)!important;
+ border:1px solid var(--z66p-edge)!important;
+}
+#dialogForm .z66-purchase-onepage .order-line .order-row{
+ display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr)) 38px!important;
+ gap:7px!important;align-items:end!important;
+}
+#dialogForm .z66-purchase-onepage .order-line .z66-purchase-input-name{
+ grid-column:1/-1!important;
+}
+#dialogForm .z66-purchase-onepage .order-line .z66-purchase-input input{
+ min-height:41px!important;font-size:13px!important;
+}
+#dialogForm .z66-purchase-onepage .order-line .remove-line{
+ width:38px!important;height:41px!important;align-self:end!important;
+ border-radius:9px!important;
+}
+#dialogForm .z66-purchase-onepage .order-line .line-status{
+ font-size:11px!important;line-height:1.5!important;
+ color:var(--z66p-muted)!important;
+}
+#dialogForm .z66-purchase-onepage #addLine{
+ width:100%!important;min-height:42px!important;
+ border-radius:11px!important;padding:8px!important;
+ background:var(--z66p-paper)!important;
+ border:1px solid #61d3ed!important;color:var(--z66p-ink)!important;
+ font-size:12px!important;
+}
+#dialogForm .z66-purchase-onepage .totals{
+ display:grid!important;gap:5px!important;min-width:0!important;
+ margin:0!important;padding:10px!important;border-radius:11px!important;
+ background:var(--z66p-paper)!important;
+ border:1px solid var(--z66p-edge)!important;
+ color:var(--z66p-ink)!important;
+}
+#dialogForm .z66-purchase-onepage .totals div{
+ display:flex!important;align-items:center!important;
+ justify-content:space-between!important;flex-wrap:wrap;
+ gap:8px!important;color:var(--z66p-ink)!important;
+ font-size:12px!important;line-height:1.5!important;
+}
+#dialogForm .z66-purchase-onepage .totals b{
+ color:#65e4f6!important;direction:ltr;unicode-bidi:isolate;
+}
+html[data-zavi-theme="light"] #dialogForm .z66-purchase-onepage .totals b,
+html[data-zavi-appearance="light"] #dialogForm .z66-purchase-onepage .totals b{
+ color:#076a91!important;
+}
+#dialogForm .z66-purchase-onepage .z66-purchase-advanced{
+ margin-top:2px;border-top:1px solid var(--z66p-edge);
+ padding-top:8px;min-width:0!important;
+}
+#dialogForm .z66-purchase-onepage .z66-purchase-advanced > summary,
+#dialogForm .z66-purchase-onepage .z66-purchase-help > summary{
+ cursor:pointer;min-height:38px;padding:7px 2px!important;
+ color:var(--z66p-ink)!important;font-size:12px;font-weight:800;
+ line-height:1.5;
+}
+#dialogForm .z66-purchase-onepage .z66-purchase-advanced[open]{
+ display:grid;gap:8px;
+}
+#dialogForm .z66-purchase-onepage .tiny-note{
+ color:var(--z66p-muted)!important;font-size:11px!important;
+ line-height:1.5!important;margin:0!important;
+}
+#dialogForm[data-zavi-purchase-onepage="true"] .modal-foot{
+ position:sticky;bottom:0;z-index:6;
+ padding-block:8px!important;background:var(--z66p-bg)!important;
+ border-top:1px solid var(--z66p-edge)!important;
+}
+@keyframes z66p-reveal{
+ from{opacity:0;transform:translateY(9px) scale(.99)}
+ to{opacity:1;transform:translateY(0) scale(1)}
+}
+@media(max-width:390px){
+ #dialogForm .z66-purchase-onepage .z66-purchase-section{padding:9px!important}
+ #dialogForm .z66-purchase-onepage .zavi-barcode-actions{gap:5px!important}
+ #dialogForm .z66-purchase-onepage .zavi-barcode-actions button{font-size:11px!important}
+}
+html[data-z637-no-motion="true"] #dialogForm .z66-purchase-onepage *,
+html.zx-lite #dialogForm .z66-purchase-onepage *{animation:none!important;transition:none!important}
+@media(prefers-reduced-motion:reduce){
+ #dialogForm .z66-purchase-onepage *,
+ #dialogForm .z66-purchase-onepage *::before{animation:none!important;transition:none!important}
+}
