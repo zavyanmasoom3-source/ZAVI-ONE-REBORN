@@ -2974,13 +2974,24 @@ if(kind==='stock_adjust'){
  const label=document.createElement('label');label.textContent='رنگ محصول *';
  const variantChoice=document.createElement('select');variantChoice.name='variantKey';
  label.appendChild(variantChoice);wrap.appendChild(label);f.productId.closest('.field').after(wrap);
+ const whWrap=document.createElement('div');whWrap.className='field z66-invoice-colour';whWrap.hidden=true;
+ const whLabel=document.createElement('label');whLabel.textContent='گدام این رنگ *';
+ const whChoice=document.createElement('select');whChoice.name='warehouseId';whLabel.appendChild(whChoice);whWrap.appendChild(whLabel);
+ wrap.after(whWrap);
  function refreshColour(){
   const p=db.products.find(x=>x.id===f.productId.value);
   variantChoice.replaceChildren();wrap.hidden=!p||!engine.tracked(p);
+  whChoice.replaceChildren();whWrap.hidden=!p||!p.variantLedger?.warehouseLedger;
   if(!p||!engine.tracked(p))return;
   try{
    const available=engine.verify(p,db.tx,stockOf(p.id));
    available.forEach(x=>variantChoice.add(new Option(x.color+' · '+fmtQty(x.qty),x.key)));
+   if(p.variantLedger.warehouseLedger){
+    const catalog=new Map((window.ZaviWarehouseV1?.list?.()||[]).filter(w=>w.is_active).map(w=>[w.id,w.name]));
+    for(const w of p.variantLedger.warehouseLedger.initial)
+     if(!catalog.has(w.warehouseId))catalog.set(w.warehouseId,'گدام ذخیره‌شده · '+w.warehouseId.slice(0,8));
+    for(const [wid,name] of catalog)whChoice.add(new Option(name,wid));
+   }
   }catch(error){toast('موجودی رنگ‌ها قابل تأیید نیست: '+error.message)}
  }
  f.productId.addEventListener('change',refreshColour);refreshColour();
@@ -2997,6 +3008,12 @@ if(kind==='stock_adjust'){
     const current=engine.verify(p,db.tx,stockOf(pid)).find(x=>x.key===variantChoice.value);
     if(!current)return toast('رنگ معتبر انتخاب کنید.');
     if(d<0&&current.qty+.00001<q)return toast('موجودی رنگ «'+current.color+'» کافی نیست.');
+    if(p.variantLedger.warehouseLedger){
+     if(!whChoice.value)return toast('گدام رنگ را انتخاب کنید.');
+     const currentWh=engine.warehouseBalances(p,db.tx).find(x=>x.warehouseId===whChoice.value&&x.variantKey===current.key);
+     if(d<0&&(!currentWh||currentWh.qty+.00001<q))
+      return toast('موجودی این رنگ در گدام برای کاهش کافی نیست.');
+    }
     colourKey=current.key;
    }catch(error){return toast(error.message)}
   }
@@ -3004,7 +3021,9 @@ if(kind==='stock_adjust'){
   const cost=d>0?money(num(f.cost.value)):unitCost(pid);
   if(commit(n=>n.tx.push({id:newId('t'),code:nextCode(n),type:'stock_adjust',
    created:new Date().toISOString(),date:readDate(f.date.value),productId:pid,
-   ...(colourKey?{variantKey:colourKey}:{}),delta:d*q,cost,note:f.note.value.trim()}))){
+   ...(colourKey?{variantKey:colourKey}:{}),
+   ...(p.variantLedger?.warehouseLedger?{warehouseId:whChoice.value}:{}),
+   delta:d*q,cost,note:f.note.value.trim()}))){
    closeModal();toast('موجودی اصلاح شد.');
   }
  };
