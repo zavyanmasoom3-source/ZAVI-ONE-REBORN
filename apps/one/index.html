@@ -2911,7 +2911,6 @@ function openEntity(kind,id,creditorMode=false){if(kind==='product'||kind==='edi
   if(!warehouseIds.has(v.warehouseId))warehouseIds.set(v.warehouseId,'گدام ذخیره‌شده · '+v.warehouseId.slice(0,8));
  const warehouseChoices=[...warehouseIds].map(([id,name])=>[id,name]);
  const variantWarehouseMarkup=selectField('variantWarehouseId','گدام پیش‌فرض محصول (موجودی مستقل رنگ‌ها)',[['','انتخاب گدام'],...warehouseChoices],p.defaultWarehouseId||'');
-  '';
  const catData=`<datalist id="zawiCategoryOptions">${[...PRODUCT_CATS,'سایر'].map(x=>`<option value="${escapeHtml(x)}"></option>`).join('')}</datalist>`;
  const body=`<div class="form-grid">
  ${field('name','نام محصول *',p.name||'','text','required maxlength="140" placeholder="نام محصول را بنویسید"')}
@@ -3001,7 +3000,12 @@ const salePrice=money(num(f.salePrice.value)*priceMult),purchasePrice=money(num(
    const existingWarehouse=!!p.variantLedger?.warehouseLedger;
    if(variantRows.length&&!existingWarehouse&&knownWarehouses.length&&!selectedWarehouse)
     return toast('برای موجودی رنگ‌ها گدام را انتخاب کنید.');
-   if(selectedWarehouse&&!warehouseIds.has(selectedWarehouse))
+   // The owner can create a new warehouse while this modal is open.
+   // Re-validate against the live owner-scoped server catalog, not solely
+   // against the snapshot captured when opening the form.
+   const freshWarehouse=selectedWarehouse&&window.ZaviWarehouseV1?.list?.()
+     ?.find(w=>w.id===selectedWarehouse&&w.is_active===true);
+   if(selectedWarehouse&&!warehouseIds.has(selectedWarehouse)&&!freshWarehouse)
     return toast('گدام انتخابی در فهرست معتبر نیست.');
    if(edit&&!variantEngine.tracked(p)&&variantRows.length&&qtyRound(num(f.openingQty.value))!==actualQty)
     return toast('برای آغاز دفتر مستقل رنگ‌ها، مجموع رنگ‌ها باید برابر موجودی فعلی باشد. اصلاح موجودی را جدا ثبت کنید.');

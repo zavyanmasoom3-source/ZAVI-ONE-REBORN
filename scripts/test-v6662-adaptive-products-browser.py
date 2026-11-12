@@ -280,6 +280,16 @@ with Session() as browser:
     assert len(created['requests'])==1 and created['requests'][0]['name']=='گدام آزمایشی',created
     assert created['products']==state['before'] and created['tx']==state['txBefore'],created
 
+    # The original save handler must allow a warehouse added during this modal:
+    # old modal snapshot alone is stale, so assert fresh owner catalog lookup
+    # is present in the native onsubmit guard without writing any live data.
+    import re
+    source=(ROOT/'apps/one/index.html').read_text(encoding='utf-8')
+    assert 'const freshWarehouse=selectedWarehouse' in source
+    assert 'window.ZaviWarehouseV1?.list?.()' in source
+    assert 'if(selectedWarehouse&&!warehouseIds.has(selectedWarehouse)&&!freshWarehouse)' in source
+
+
     browser.eval("window.zaviProductDraftTrade=''")
     print('PASS: 21 native product trade schemas switch on explicit choice without changing owner business')
     print('PASS: manual USD rate preview correctly converts to base currency, no transaction posted')
