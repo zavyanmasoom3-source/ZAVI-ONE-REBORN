@@ -5,7 +5,7 @@
  */
 'use strict';
 const APK_ORIGIN='https://appassets.androidplatform.net';
-const CACHE_NAME='zavi-one-exact-original-v6662-restored-20261112-owner-premium-dashboard-v2';
+const CACHE_NAME='zavi-one-exact-original-v6662-restored-20261112-calendar-layout-v3';
 const SHELL_PROTOCOL='zavi-shell-v2';
 const CACHE_PREFIX='zavi-one-';
 const CORE=[

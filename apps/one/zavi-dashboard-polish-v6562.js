@@ -88,7 +88,7 @@ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",
  'use strict';
  if(document.querySelector('script[data-z66-owner-dashboard]'))return;
  const script=document.createElement('script');
- script.src='./zavi-owner-dashboard-v6662.js?v=1';
+ script.src='./zavi-owner-dashboard-v6662.js?v=20261112-calendar-v3';
  script.dataset.z66OwnerDashboard='1';
  script.async=false;
  (document.head||document.documentElement).append(script);
