@@ -2,6 +2,10 @@
    native accounting data and transaction handlers remain authoritative.
    Compact home, all sections visible, no trade guide, motion with opt-out. */
 (()=>{'use strict';
+// The legacy app can dynamically inject this module as well as referencing
+// it in the entrypoint. Exactly one observer and click delegate may be active.
+if(window.__z66OwnerDashboardStarted)return;
+window.__z66OwnerDashboardStarted=true;
 const CONTENT='content';
 const TEXT={
  fa:{welcome:'به ZAVI ONE خوش آمدید',title:'حساب‌های تجارت در یک نگاه',quick:'دسترسی سریع',sale:'فروش جدید',purchase:'خرید جدید',
@@ -251,7 +255,9 @@ function paint(){
    root.classList.remove('z66d-root');
    return;
  }
- if(hero.dataset.z66DashDone==='1')return;
+ // A native render can recreate stats without replacing the hero, leaving
+ // the old marker on an unstyled dashboard. Rebuild instead of returning.
+ if(hero.dataset.z66DashDone==='1')hero.removeAttribute('data-z66-dash-done');
  const t=labels();
  hero.dataset.z66DashDone='1';
  root.classList.add('z66d-root');
