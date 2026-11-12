@@ -132,6 +132,109 @@ function addInvoiceCard(root){
  const anchor=root.querySelector(':scope > .z66d-charts')||root.querySelector(':scope > .z66d-summary');
  if(anchor)anchor.after(section);else root.append(section);
 }
+
+/* Approved monthly chart/calendar: read-only, sourced from native ledger.
+   Uses original Kabul Solar/Gregorian boundaries and native summary math.
+   Never writes to db, rates, stock, invoices or permissions. */
+function buildMonthOverview(){
+ if(typeof zaviDashboardSelectedSpan!=='function'||typeof summary!=='function')return null;
+ const span=zaviDashboardSelectedSpan();
+ if(!span?.start||!span?.end)return null;
+ const first=Date.parse(span.start+'T12:00:00Z'),last=Date.parse(span.end+'T12:00:00Z');
+ const days=Math.round((last-first)/86400000)+1;
+ if(!Number.isFinite(days)||days<28||days>31)return null;
+ const t=extras(),panel=node('section','z66d-month-overview');
+ panel.setAttribute('aria-label',t.monthSales);
+ const top=node('div','z66d-month-header');
+ const money=node('div','z66d-month-money');
+ money.append(node('span','z66d-month-caption',t.monthSales));
+ const net=Number(summary(span.start,span.end).sales||0);
+ const formatted=typeof fmt==='function'?fmt(net):net.toLocaleString('en-US');
+ money.append(node('strong','z66d-month-total',formatted+' '+String(db.currency||'AFN')));
+ top.append(money);
+ const number=db.tx.filter(tx=>tx&&!tx.voided&&tx.type==='sale'&&
+   typeof tx.date==='string'&&tx.date.slice(0,10)>=span.start&&tx.date.slice(0,10)<=span.end).length;
+ top.append(node('span','z66d-month-doc-count',String(number)+' '+t.docs));
+ panel.append(top);
+ // Seven actual time buckets in the selected month, including returns in net sales.
+ const bucket=Array.from({length:7},(_,i)=>{
+   const a=Math.floor(i*days/7),b=Math.floor((i+1)*days/7)-1;
+   const start=new Date(first+a*86400000).toISOString().slice(0,10);
+   const end=new Date(first+Math.max(a,b)*86400000).toISOString().slice(0,10);
+   return {start,end,total:Number(summary(start,end).sales||0)};
+ });
+ const largest=Math.max(1,...bucket.map(x=>Math.max(0,x.total)));
+ const graph=node('div','z66d-month-graph');
+ const xmlns='http://www.w3.org/2000/svg';
+ const svg=document.createElementNS(xmlns,'svg');
+ svg.setAttribute('viewBox','0 0 320 148');
+ svg.setAttribute('role','img');
+ svg.setAttribute('aria-label',t.monthSales);
+ for(const height of [20,52,84,116]){
+   const line=document.createElementNS(xmlns,'line');
+   line.setAttribute('x1','8');line.setAttribute('x2','312');
+   line.setAttribute('y1',String(height));line.setAttribute('y2',String(height));
+   line.setAttribute('class','z66d-graph-gridline');svg.append(line);
+ }
+ bucket.forEach((b,i)=>{
+   const h=Math.max(2,Math.max(0,b.total)/largest*96);
+   const bar=document.createElementNS(xmlns,'rect');
+   bar.setAttribute('x',String(18+i*43));bar.setAttribute('y',String(116-h));
+   bar.setAttribute('width','26');bar.setAttribute('height',String(h));bar.setAttribute('rx','6');
+   bar.setAttribute('class','z66d-mini-bar'+(i===6?' z66d-mini-bar-last':''));
+   bar.style.animationDelay=String(i*.045)+'s';
+   const tip=document.createElementNS(xmlns,'title');
+   tip.textContent=b.start+' — '+b.end+': '+
+     (typeof fmt==='function'?fmt(b.total):String(b.total))+' '+String(db.currency||'AFN');
+   bar.append(tip);svg.append(bar);
+   const axis=document.createElementNS(xmlns,'text');
+   axis.setAttribute('x',String(31+i*43));axis.setAttribute('y','138');
+   axis.setAttribute('text-anchor','middle');axis.setAttribute('class','z66d-graph-week');
+   axis.textContent=String(i+1);svg.append(axis);
+ });
+ graph.append(svg);panel.append(graph);
+ if(!number)panel.append(node('p','z66d-month-empty',t.no));
+ // Expandable seven-column calendar with actual current month length.
+ const details=node('details','z66d-sales-calendar');
+ details.append(node('summary','z66d-calendar-label',t.calendar));
+ const inner=node('div','z66d-calendar-inner');
+ const grid=node('div','z66d-calendar-grid');
+ const weekdays=lang()==='en'?['Sat','Sun','Mon','Tue','Wed','Thu','Fri']:
+   ['ش','ی','د','س','چ','پ','ج'];
+ for(const day of weekdays)grid.append(node('span','z66d-calendar-weekday',day));
+ const startDay=(new Date(first).getUTCDay()+1)%7;
+ for(let i=0;i<startDay;i++)grid.append(node('span','z66d-calendar-blank',''));
+ const now=typeof nowISO==='function'?nowISO():new Date().toISOString().slice(0,10);
+ let selected=now>=span.start&&now<=span.end?now:span.start;
+ const dayButtons=[];
+ const status=node('p','z66d-calendar-status');status.setAttribute('aria-live','polite');
+ const dual=iso=>{
+  try{return window.ZaviDualDate?.formatBoth?.(iso+'T12:00:00Z')||iso}catch(_){return iso}
+ };
+ const updateDay=()=>{
+  for(const b of dayButtons)b.setAttribute('aria-pressed',String(b.dataset.date===selected));
+  const dSales=Number(summary(selected,selected).sales||0);
+  status.textContent=dual(selected)+' · '+t.day+': '+
+    (typeof fmt==='function'?fmt(dSales):dSales.toLocaleString('en-US'))+' '+String(db.currency||'AFN');
+ };
+ for(let i=0;i<days;i++){
+  const iso=new Date(first+i*86400000).toISOString().slice(0,10);
+  const button=node('button','z66d-calendar-day');
+  button.type='button';button.dataset.date=iso;
+  const date=new Date(iso+'T12:00:00Z');
+  const solar=window.ZaviDualDate?.preferred?.()==='solar';
+  const formatter=new Intl.DateTimeFormat(solar?'en-US-u-ca-persian-nu-latn':'en-US-u-nu-latn',
+    {timeZone:'Asia/Kabul',day:'numeric'});
+  button.textContent=formatter.format(date);
+  button.setAttribute('aria-label',dual(iso));
+  const hasSale=db.tx.some(tx=>tx&&!tx.voided&&tx.type==='sale'&&String(tx.date||'').slice(0,10)===iso);
+  if(hasSale)button.classList.add('z66d-calendar-has-sale');
+  button.addEventListener('click',()=>{selected=iso;updateDay()});
+  grid.append(button);dayButtons.push(button);
+ }
+ inner.append(grid,status);details.append(inner);panel.append(details);updateDay();
+ return panel;
+}
 function paint(){
  const root=document.getElementById(CONTENT);
  if(!root)return;
@@ -225,7 +328,22 @@ function paint(){
  const chartGrid=node('div','z66d-chart-grid');
  const originalChart=graph?.querySelector(':scope > .card:first-child');
  const lowStock=graph?.querySelector(':scope > .card:nth-child(2)');
- if(originalChart)chartGrid.append(originalChart);
+ // Native month/year selectors stay visible above our per-month graphic.
+ const monthFilters=originalChart?.querySelector('.z47-chart-header');
+ if(monthFilters)charts.append(monthFilters);
+ if(originalChart){
+   const oldChart=originalChart.querySelector('.z47-chart-scroll');
+   if(oldChart){
+     const yearTrend=node('details','z66d-year-trend');
+     yearTrend.append(node('summary','z66d-year-label',extras().trend));
+     const arrows=originalChart.querySelector('.zavi-chart-mobile-controls');
+     if(arrows)yearTrend.append(arrows);
+     oldChart.before(yearTrend);yearTrend.append(oldChart);
+   }
+   const title=originalChart.querySelector('.panel-head h3');
+   if(title)title.textContent=extras().trend;
+   chartGrid.append(originalChart);
+ }
  if(donut)chartGrid.append(donut);
  if(chartGrid.children.length){
    try{const overview=buildMonthOverview();if(overview)charts.append(overview);}catch(err){console.warn('ZAVI monthly chart:',err)}
