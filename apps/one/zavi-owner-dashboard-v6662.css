@@ -903,3 +903,32 @@ html.zx-lite #content.z66d-root .z66d-sales-calendar[open] .z66d-calendar-inner{
   padding:7px 10px!important;
  }
 }
+
+
+/* Landscape phones / compact tablets: keep welcome and sale on one row.
+   Old 190px flex-basis is vertical in 700px landscape and must not create
+   the large empty banner reported by the user. */
+@media(min-width:551px) and (max-width:850px){
+ #content.z66d-root > .welcome{
+  flex-direction:row!important;flex-wrap:nowrap!important;
+  justify-content:space-between!important;align-items:center!important;
+  gap:12px!important;padding:13px 15px!important;
+ }
+ #content.z66d-root > .welcome > div:first-child{
+  flex:1 1 auto!important;flex-basis:auto!important;
+  width:auto!important;min-width:0!important;min-height:0!important;
+  margin:0!important;
+ }
+ #content.z66d-root > .welcome .z66d-main-sale{
+  flex:0 0 152px!important;max-width:34%!important;
+  min-height:42px!important;width:152px!important;
+  margin:0!important;
+ }
+ #content.z66d-root > .welcome .z76-profile-chip{
+  margin:0 0 5px!important;
+ }
+ #content.z66d-root > .welcome h2{
+  font-size:clamp(17px,2.6vw,22px)!important;line-height:1.3!important;
+  margin:1px 0 5px!important;
+ }
+}
