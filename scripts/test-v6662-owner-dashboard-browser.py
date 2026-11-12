@@ -179,7 +179,15 @@ with Session() as browser:
             qr=quick?.getBoundingClientRect(),fr=filters?.getBoundingClientRect();
           return {contentTop:cr.top,heroTop:hr?.top,heroHeight:hr?.height,
             heroBg:hero?getComputedStyle(hero).backgroundImage:null,
-            heroText:hero?.innerText?.slice(0,110),quickTop:qr?.top,
+            heroText:hero?.innerText?.slice(0,110),
+            heroStyle:hero?{display:getComputedStyle(hero).display,direction:getComputedStyle(hero).direction,
+              flexDirection:getComputedStyle(hero).flexDirection,flexWrap:getComputedStyle(hero).flexWrap,
+              alignItems:getComputedStyle(hero).alignItems}:null,
+            heroChildren:[...hero?.children||[]].map(x=>{const r=x.getBoundingClientRect();
+              const c=getComputedStyle(x);return {tag:x.tagName,cls:String(x.className).slice(0,90),
+              top:r.top,left:r.left,height:r.height,width:r.width,display:c.display,position:c.position,
+              marginTop:c.marginTop,marginBottom:c.marginBottom,
+              text:x.innerText?.slice(0,90)};}).slice(0,12),quickTop:qr?.top,
             topSpace:(hr?.top||0)-cr.top,afterHeroGap:(qr?.top||0)-(hr?.bottom||0),
             filtersWidth:fr?.width,selectors};
         })()""")
