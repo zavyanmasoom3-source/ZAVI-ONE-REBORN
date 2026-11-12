@@ -58,6 +58,42 @@ with Session() as browser:
        'quantity','payment','advanced','save','noClonedInputs']),sale
     assert sale['order']==['z66-sale-customer','z66-sale-barcode',
         'z66-sale-products','z66-sale-payment'],sale
+
+    scanner=browser.eval("""(()=>{
+      const form=document.querySelector('#dialogForm[data-zavi-sale-onepage="true"]');
+      const box=form.querySelector('.z66-sale-barcode .zavi-barcode-box');
+      const buttons=[...box.querySelectorAll('.z66-sale-scan-choice')];
+      const input=box.querySelector('#zaviBarcodeScan');
+      const auto=box.querySelector('.z66-sale-autoadd input');
+      const before=db.tx.length;
+      const camera=!!box.querySelector('[data-zavi-camera-open="zaviBarcodeScan"]');
+      const defaultMode=box.dataset.z66ScanMode;
+      box.querySelector('[data-z66-scanner-mode="usb"]').click();
+      const usb=box.dataset.z66ScanMode==='usb'&&input.getAttribute('inputmode')==='none';
+      box.querySelector('[data-z66-scanner-mode="bluetooth"]').click();
+      const bt=box.dataset.z66ScanMode==='bluetooth';
+      input.value='QA-NONRELEASE';auto.checked=false;
+      const preRows=form.querySelectorAll('#orderItems .order-line').length;
+      input.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true,cancelable:true}));
+      const noAuto=form.querySelectorAll('#orderItems .order-line').length===preRows;
+      input.dispatchEvent(new KeyboardEvent('keydown',{key:'Tab',bubbles:true,cancelable:true}));
+      const noTabAuto=form.querySelectorAll('#orderItems .order-line').length===preRows;
+      auto.checked=true;input.value='';
+      box.querySelector('[data-z66-scanner-mode="manual"]').click();
+      const manual=box.dataset.z66ScanMode==='manual'&&input.getAttribute('inputmode')==='text';
+      box.querySelector('[data-z66-scanner-mode="camera"]').click();
+      return {choices:buttons.map(x=>x.dataset.z66ScannerMode),camera,
+        defaultMode,usb,bt,manual,noAuto,noTabAuto,originalTransactionCount:db.tx.length===before,
+        cameraSelected:box.dataset.z66ScanMode==='camera',
+        singleInput:form.querySelectorAll('#zaviBarcodeScan').length===1,
+        nativeConfirm:!!box.querySelector('#z659BarcodeConfirm'),
+        noPairingClaim:!box.textContent.includes('Connected')};
+    })()""")
+    assert scanner['choices']==['camera','manual','usb','bluetooth'],scanner
+    assert all(scanner[k] for k in ['camera','usb','bt','manual','noAuto','noTabAuto',
+      'originalTransactionCount','cameraSelected','singleInput','nativeConfirm',
+      'noPairingClaim']),scanner
+    assert scanner['defaultMode']=='camera',scanner
     # Exact registered barcode enters native product line. Repeated barcode
     # must increase quantity and not overwrite manually typed unit price.
     scan=browser.eval("""(()=>{
