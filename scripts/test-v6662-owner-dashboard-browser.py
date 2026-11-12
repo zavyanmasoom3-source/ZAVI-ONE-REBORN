@@ -9,6 +9,15 @@ import json
 out=ROOT/'qa-v6662-dashboard'
 out.mkdir(exist_ok=True)
 
+# A previously green browser suite did not establish that the actual APK
+# entrypoint loaded the approved JS or that the offline shell cached it.
+# Test both packaging invariants before opening Chrome.
+entry=(ROOT/'apps/one/index.html').read_text(encoding='utf-8')
+worker=(ROOT/'apps/one/sw.js').read_text(encoding='utf-8')
+assert 'src="./zavi-owner-dashboard-v6662.js?' in entry,'APP ENTRYPOINT MISSING approved dashboard script'
+assert '"zavi-owner-dashboard-v6662.js"' in worker,'OFFLINE CACHE MISSING dashboard JS'
+assert '"zavi-owner-dashboard-v6662.css"' in worker,'OFFLINE CACHE MISSING dashboard CSS'
+
 with Session() as browser:
     browser.unlock_one()
     browser.route('dashboard')
@@ -62,6 +71,27 @@ with Session() as browser:
     assert len(basics['actions'])==8,basics
     assert len(basics['stats'])>=3 and len(basics['accounts'])==2,basics
     assert all(basics[k] for k in ('allDocs','monthly','rate','inventory','recent','journaling','customer')),basics
+    approved=browser.eval("""(()=>{
+      const root=document.querySelector('#content.z66d-root');
+      return {
+        loaded:[...document.scripts].some(x=>x.src.includes('/zavi-owner-dashboard-v6662.js')),
+        primary:[...root.querySelectorAll('.z66d-quick-four [data-z66-dash-action]')]
+            .map(x=>x.dataset.z66DashAction),
+        rocket:!!root.querySelector('.welcome .z66d-rocket'),
+        overview:!!root.querySelector('.z66d-charts .z66d-month-overview'),
+        miniBars:root.querySelectorAll('.z66d-mini-bar').length,
+        calendarDays:root.querySelectorAll('.z66d-calendar-day').length,
+        calendarGrid:getComputedStyle(root.querySelector('.z66d-calendar-grid')).gridTemplateColumns,
+        invoiceButton:!!root.querySelector('[data-z66-dash-action="invoices"]'),
+        rate:!!root.querySelector('#usdRateDashboardForm')
+      };
+    })()""")
+    assert approved['loaded'] and approved['rocket'] and approved['overview'],approved
+    assert approved['primary']==['sale','purchase','warehouse','invoices'],approved
+    assert approved['miniBars']==7 and 28<=approved['calendarDays']<=31,approved
+    assert approved['invoiceButton'] and approved['rate'],approved
+    browser.eval("document.querySelector('[data-z66-dash-action=\"invoices\"]').click()")
+    assert browser.eval("document.activeElement?.classList.contains('z66d-invoice-tab')"),'invoice quick action did not open native invoice panel'
     before=basics['transactionLength']
     # The real app correctly refuses new sales in an empty shop. Add a
     # disposable in-memory test product (no persistent write, no real sale).
@@ -110,6 +140,17 @@ with Session() as browser:
         assert res['nav'],res
         assert all(x['visible'] and x['width']>0 for x in res['rects']),res
         assert res['scrollWidth']<=res['clientWidth']+2,res
+        # A common real-APK regression: two squeezed charts on a narrow phone.
+        if width<800:
+            chart=browser.eval("""(()=>{
+              const grid=document.querySelector('#content .z66d-chart-grid');
+              const cards=[...grid.children].filter(x=>x.matches('.card'));
+              return {container:grid.getBoundingClientRect().width,
+                cards:cards.map(x=>x.getBoundingClientRect().width)};
+            })()""")
+            assert len(chart['cards'])>=2 and all(
+                x>=chart['container']*.89 for x in chart['cards']),(
+                 'Dashboard chart squeezed to half-width on mobile',chart,[width,height])
         assert all(x['left']>=-1 and x['right']<=width+1 for x in res['rects']),res
         bysize.append({'size':[width,height],'width':res['scrollWidth']})
         if width==393:
