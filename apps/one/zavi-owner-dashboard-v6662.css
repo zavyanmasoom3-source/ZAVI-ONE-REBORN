@@ -861,3 +861,45 @@ html.zx-lite #content.z66d-root .z66d-sales-calendar[open] .z66d-calendar-inner{
  animation:none!important;transition:none!important;
  }
 }
+
+
+/* Redmi compact welcome: a legacy 190px flex-basis on the first child becomes
+   a 190px vertical minimum when another stylesheet switches flex-direction
+   to column. Override its *basis*, not the user's profile or financial cards. */
+@media(max-width:550px){
+ #content.z66d-root > .welcome{
+  flex-direction:column!important;flex-wrap:nowrap!important;
+  justify-content:flex-start!important;align-items:stretch!important;
+  gap:7px!important;padding:12px 13px!important;
+ }
+ #content.z66d-root > .welcome > div:first-child{
+  flex:0 1 auto!important;flex-basis:auto!important;
+  width:100%!important;min-height:0!important;
+  margin:0!important;padding:0!important;
+ }
+ #content.z66d-root > .welcome .z76-profile-chip{
+  min-height:34px!important;margin:0 0 4px!important;
+  padding:2px 7px!important;max-width:100%!important;
+ }
+ #content.z66d-root > .welcome .z76-small-avatar{
+  height:29px!important;width:29px!important;min-width:29px!important;
+ }
+ #content.z66d-root > .welcome .eyebrow{
+  font-size:10px!important;line-height:1.3!important;
+  margin:0 0 2px!important;
+ }
+ #content.z66d-root > .welcome h2{
+  font-size:clamp(15px,4.4vw,19px)!important;line-height:1.28!important;
+  margin:1px 0 4px!important;
+ }
+ #content.z66d-root > .welcome .zv-today{
+  font-size:10px!important;line-height:1.42!important;
+  margin:0!important;
+ }
+ #content.z66d-root > .welcome .z66d-main-sale{
+  flex:0 0 auto!important;align-self:stretch!important;
+  width:100%!important;max-width:100%!important;
+  min-height:40px!important;margin:0!important;
+  padding:7px 10px!important;
+ }
+}
