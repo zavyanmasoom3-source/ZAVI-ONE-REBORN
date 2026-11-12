@@ -413,8 +413,9 @@
     const shippingField=shipping?.closest('.field');
     if(shippingField)advanced.append(shippingField);
     pay.append(advanced);
-    window.ZaviPurchaseUpgrade6662?.mount?.(form,layout,advanced,supplier,pay);
+    // Native form elements must be connected before extension reads them.
     body.append(layout);
+    window.ZaviPurchaseUpgrade6662?.mount?.(form,layout,advanced,supplier,pay);
     form.dataset.zaviPurchaseOnepage='true';
     form.dataset.zaviPurchaseV6662='approved';
     // Label actual original line inputs (not copies), including later added
