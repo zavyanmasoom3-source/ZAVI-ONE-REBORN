@@ -234,16 +234,25 @@ with Session() as browser:
         openEntity('product');
         const f=document.getElementById('dialogForm');
         selected.push({type,actual:f.querySelector('.z629-industry')?.dataset.z629Type,
-          native:f.dataset.z66ProductNativeTrade,
-          label:[...f.querySelector('[data-z66-registration-industry]')?.options||[]].find(x=>x.value===type)?.textContent});
+          native:f.dataset.z66ProductNativeTrade});
       }
       return {selected,unchanged:db.products.length===before&&db.tx.length===tx,
         owner:zaviBusinessTypeV638()};
     })()""")
     assert len(all21['selected'])==21 and all21['unchanged'] and all21['owner']=='gold',all21
     assert all(x['type']==x['actual']==x['native'] for x in all21['selected']),all21
-    assert all21['selected'][[x['type'] for x in all21['selected']].index('accessories')]['label']!='تجارت عمومی',all21
-    assert 'موبایل' in all21['selected'][[x['type'] for x in all21['selected']].index('accessories')]['label'],all21
+    # A MutationObserver enhances freshly created native forms on a microtask.
+    # Check labels only after the actual dropdown has mounted.
+    browser.eval("""(()=>{window.zaviProductDraftTrade='accessories';openEntity('product')})()""")
+    browser.until("""!!document.querySelector('#dialogForm[data-z66-product-native-trade="accessories"] [data-z66-registration-industry]')""",
+      'native product accessories dropdown ready after observer')
+    labels=browser.eval("""(()=>{
+      const list=document.querySelector('#dialogForm [data-z66-registration-industry]');
+      return [...list.options].map(x=>({value:x.value,label:x.textContent}));
+    })()""")
+    assert len(labels)==21,labels
+    accessory=next((x for x in labels if x['value']=='accessories'),None)
+    assert accessory and 'موبایل' in accessory['label'] and accessory['label']!='تجارت عمومی',labels
     browser.eval("window.zaviProductDraftTrade=''")
     print('PASS: 21 native product trade schemas switch on explicit choice without changing owner business')
     print('PASS: manual USD rate preview correctly converts to base currency, no transaction posted')
