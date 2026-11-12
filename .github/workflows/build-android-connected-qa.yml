@@ -47,6 +47,12 @@ on:
 permissions:
   contents: write
   actions: read
+# Only newest dev push should consume Android/visual runner minutes.
+# Separate workflow/ref groups retain independent security and release gates.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   isolated-test:
     name: Installable connected test (independent sandbox) — ${{ matrix.app }}

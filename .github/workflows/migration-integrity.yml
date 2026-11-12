@@ -7,6 +7,12 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+# Only newest dev push should consume Android/visual runner minutes.
+# Separate workflow/ref groups retain independent security and release gates.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   verify:
     runs-on: ubuntu-latest
