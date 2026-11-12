@@ -932,3 +932,54 @@ html.zx-lite #content.z66d-root .z66d-sales-calendar[open] .z66d-calendar-inner{
   margin:1px 0 5px!important;
  }
 }
+
+
+/* Owner-approved interactive Afghan calendar: clear live day markers, no fake values. */
+#content.z66d-root .z66d-sales-calendar{
+ border-radius:13px!important;
+ background:linear-gradient(135deg,var(--z66d-paper),var(--z66d-inner))!important;
+}
+#content.z66d-root .z66d-calendar-label{
+ gap:10px!important;min-height:45px!important;
+ font-weight:800!important;font-size:13px!important;
+}
+#content.z66d-root .z66d-calendar-label::before{
+ content:"▦";display:inline-grid;place-items:center;
+ width:26px;height:26px;border-radius:8px;
+ background:rgba(61,149,221,.16);
+ color:var(--z66d-accent);font:800 19px/1 system-ui;
+ margin-inline-end:3px;
+}
+#content.z66d-root .z66d-calendar-grid{
+ padding:6px!important;border-radius:10px!important;
+ background:rgba(92,162,224,.055)!important;gap:5px!important;
+}
+#content.z66d-root .z66d-calendar-weekday{
+ font-size:11px!important;font-weight:750!important;
+ min-height:25px!important;
+}
+#content.z66d-root .z66d-calendar-day{
+ min-height:37px!important;font-size:13px!important;
+ border:1px solid transparent!important;
+}
+#content.z66d-root .z66d-calendar-day:hover,
+#content.z66d-root .z66d-calendar-day:focus-visible{
+ border-color:var(--z66d-accent)!important;
+ background:rgba(66,155,228,.13)!important;
+ outline-offset:1px!important;
+}
+#content.z66d-root .z66d-calendar-today:not([aria-pressed="true"]){
+ border:1px solid rgba(47,190,221,.55)!important;
+ color:var(--z66d-accent)!important;
+}
+#content.z66d-root .z66d-calendar-day[aria-pressed="true"]{
+ background:linear-gradient(135deg,#1664c5,#189fc5)!important;
+ border-color:rgba(163,231,255,.58)!important;
+ box-shadow:0 5px 14px rgba(20,110,180,.22)!important;
+}
+#content.z66d-root .z66d-calendar-status{
+ font-size:11px!important;color:var(--z66d-ink)!important;
+ background:var(--z66d-paper)!important;
+ border:1px solid var(--z66d-edge)!important;
+ border-radius:9px!important;padding:10px!important;
+}
