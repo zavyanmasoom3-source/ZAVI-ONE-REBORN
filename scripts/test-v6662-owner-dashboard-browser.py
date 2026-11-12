@@ -21,9 +21,30 @@ assert '"zavi-owner-dashboard-v6662.css"' in worker,'OFFLINE CACHE MISSING dashb
 with Session() as browser:
     browser.unlock_one()
     browser.route('dashboard')
-    browser.until("""!!document.querySelector('#content.z66d-root .z66d-chart-grid') &&
-       document.querySelectorAll('#content .z66d-action').length===8""",
-       'approved compact dashboard and quick actions are mounted')
+    try:
+        browser.until("""!!document.querySelector('#content.z66d-root .z66d-chart-grid') &&
+           document.querySelectorAll('#content .z66d-action').length===8""",
+           'approved compact dashboard and quick actions are mounted',seconds=14)
+    except RuntimeError:
+        diagnostic=browser.eval("""(()=>{
+          const root=document.getElementById('content');
+          return {
+           page:typeof page!=='undefined'?page:null,
+           classes:root?.className,hero:!!root?.querySelector(':scope > .welcome'),
+           originalStats:!!root?.querySelector(':scope > .stat-grid'),
+           transformedStats:!!root?.querySelector(':scope > .z66d-summary'),
+           childCount:root?.children.length,
+           names:[...root?.children||[]].map(x=>x.className||x.tagName).slice(0,24),
+           actions:root?.querySelectorAll('.z66d-action').length,
+           loaded:[...document.scripts].filter(x=>x.src.includes('owner-dashboard')).map(x=>x.src),
+           cssLoaded:!!document.getElementById('z66OwnerDashboardCss')?.sheet,
+           err:window.__z66DashboardLastError||'',
+           bootErrors:window.__zaviCIBootErrors||[],
+           chart:!!root?.querySelector('.z66d-chart-grid')
+          };
+        })()""")
+        print('DASHBOARD_BOOT_DIAGNOSTIC='+json.dumps(diagnostic,ensure_ascii=False),flush=True)
+        raise
     stylesheet=browser.eval("""(()=>{
       const e=document.querySelector('#z66OwnerDashboardCss');
       const root=document.querySelector('#content');
