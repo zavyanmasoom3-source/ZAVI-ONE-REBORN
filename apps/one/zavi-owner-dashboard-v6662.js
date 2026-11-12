@@ -422,7 +422,7 @@ function start(){
  }
  let queued=false;
  const schedule=()=>{if(queued)return;queued=true;
-    requestAnimationFrame(()=>{queued=false;try{paint()}catch(e){console.warn('ZAVI dashboard owner layout:',e);}});
+    requestAnimationFrame(()=>{queued=false;try{paint();window.__z66DashboardLastError='';}catch(e){window.__z66DashboardLastError=String(e?.stack||e);console.warn('ZAVI dashboard owner layout:',e);}});
  };
  new MutationObserver(schedule).observe(content,{childList:true,subtree:false});
  document.addEventListener('zavi:language-changed',schedule);
