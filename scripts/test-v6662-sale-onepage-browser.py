@@ -118,6 +118,35 @@ with Session() as browser:
     assert scan['matched'] and scan['before']>=1,scan
     assert scan['after']==scan['before']+1 and scan['price']=='7.25',scan
     assert scan['cleared'] and scan['stockPreserved'],scan
+
+    hid=browser.eval("""(()=>{
+      const f=document.getElementById('dialogForm');
+      const box=f.querySelector('.z66-sale-barcode .zavi-barcode-box');
+      const code=box.querySelector('#zaviBarcodeScan');
+      const row=f.querySelector('#orderItems [data-scan-product-id="qa-only-disposable"]');
+      const qty=row.querySelector('[data-field="qty"]');
+      box.querySelector('[data-z66-scanner-mode="usb"]').click();
+      const before=Number(qty.value);
+      code.value='QA-NONRELEASE';
+      code.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true,cancelable:true}));
+      return {before,after:Number(qty.value)};
+    })()""")
+    assert hid['after']==hid['before']+1,hid
+    browser.until("""document.activeElement?.id==='zaviBarcodeScan'""",
+       'USB HID consecutive scans keep barcode focus rather than overwriting qty')
+    repeated=browser.eval("""(()=>{
+      const f=document.getElementById('dialogForm');
+      const code=f.querySelector('#zaviBarcodeScan');
+      const qty=f.querySelector('#orderItems [data-scan-product-id="qa-only-disposable"] [data-field="qty"]');
+      const before=Number(qty.value);
+      code.value='QA-NONRELEASE';
+      code.dispatchEvent(new KeyboardEvent('keydown',{key:'Tab',bubbles:true,cancelable:true}));
+      return {before,after:Number(qty.value)};
+    })()""")
+    assert repeated['after']==repeated['before']+1,repeated
+    browser.until("""document.activeElement?.id==='zaviBarcodeScan'""",
+       'Tab-suffix HID scanner also retains focus for the next barcode')
+
     # Payment buttons modify only the existing paid field; no journal posts.
     modes=browser.eval("""(()=>{
       const f=document.getElementById('dialogForm');

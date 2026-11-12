@@ -110,6 +110,15 @@
     if(!box||box.dataset.z66ScanReady!=='true')return;
     const auto=box.querySelector('.z66-sale-autoadd input')?.checked!==false;
     const mode=box.dataset.z66ScanMode;
+    // Native form focuses the quantity field after an accepted barcode.
+    // In HID modes return focus to scanner INPUT after native accounting
+    // handlers finish, so the next physical scan cannot overwrite quantity.
+    if(event.key==='Enter'&&auto&&(mode==='usb'||mode==='bluetooth')){
+      queueMicrotask(()=>{
+        if(input.isConnected&&box.dataset.z66ScanMode===mode)
+          input.focus({preventScroll:true});
+      });
+    }
     if(event.key==='Tab'&&(mode==='usb'||mode==='bluetooth')&&String(input.value||'').trim()){
       event.preventDefault();event.stopImmediatePropagation();
       if(auto)input.dispatchEvent(new KeyboardEvent('keydown',{
