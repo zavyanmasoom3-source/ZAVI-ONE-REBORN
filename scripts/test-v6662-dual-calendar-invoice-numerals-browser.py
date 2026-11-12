@@ -58,7 +58,11 @@ with Session() as browser:
        'Afghan Solar preference is persistent; both dates still render')
     dual=browser.eval("""window.ZaviDualDate.formatBoth('2026-11-12T12:00:00Z')""")
     assert dual.index('1405')<dual.index('2026'),dual
-    # The native tab must switch without ever altering the accounting ledger.
+    # Calendar change rerenders the dashboard. Wait for the REAL invoice tabs
+    # to be mounted again before clicking; do not weaken the tab assertion.
+    browser.until("""!!document.querySelector('[data-z66-invoice-kind=purchase]')
+      && !!document.querySelector('[data-z66-invoice-kind=sale]')""",
+      'native invoice tabs remount after switching calendar')
     browser.eval("""document.querySelector('[data-z66-invoice-kind=purchase]').click()""")
     browser.until("""document.querySelector('[data-z66-invoice-kind=purchase]')
          ?.getAttribute('aria-pressed')==='true'""",'native purchase invoice list opens')
