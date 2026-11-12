@@ -76,6 +76,12 @@ with Session() as browser:
     browser.eval("go('sales')")
     browser.until("""document.getElementById('content')?.classList.contains('z66sales-root')""",
       'sales dashboard survives rerender')
+    browser.until("""!!document.querySelector('#content.z66sales-root > .z66sales-hero')
+      && !!document.querySelector('#content.z66sales-root > .z66sales-stats')
+      && !!document.querySelector('#content.z66sales-root > .z66sales-table')
+      && !!document.querySelector('#content.z66sales-root > .z66sales-stored')
+      && !!document.querySelector('#content.z66sales-root > .z66sales-manual')""",
+      'owner-approved sales layout class processing completes after native rerender')
     for width,height in ((320,568),(360,740),(393,852),(430,932)):
        browser.command('Emulation.setDeviceMetricsOverride',{
          'width':width,'height':height,'deviceScaleFactor':1,
