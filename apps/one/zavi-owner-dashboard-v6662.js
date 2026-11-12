@@ -140,6 +140,8 @@ function addInvoiceCard(root){
 /* Approved monthly chart/calendar: read-only, sourced from native ledger.
    Uses original Kabul Solar/Gregorian boundaries and native summary math.
    Never writes to db, rates, stock, invoices or permissions. */
+// Calendar starts visible; a user may collapse it without losing their choice on re-render.
+let calendarExpanded=true,calendarPickedDay=null;
 function buildMonthOverview(){
  if(typeof zaviDashboardSelectedSpan!=='function'||typeof summary!=='function')return null;
  const span=zaviDashboardSelectedSpan();
@@ -200,6 +202,8 @@ function buildMonthOverview(){
  if(!number)panel.append(node('p','z66d-month-empty',t.no));
  // Expandable seven-column calendar with actual current month length.
  const details=node('details','z66d-sales-calendar');
+ details.open=calendarExpanded;
+ details.addEventListener('toggle',()=>{calendarExpanded=details.open;});
  details.append(node('summary','z66d-calendar-label',t.calendar));
  const inner=node('div','z66d-calendar-inner');
  const grid=node('div','z66d-calendar-grid');
@@ -209,7 +213,7 @@ function buildMonthOverview(){
  const startDay=(new Date(first).getUTCDay()+1)%7;
  for(let i=0;i<startDay;i++)grid.append(node('span','z66d-calendar-blank',''));
  const now=typeof nowISO==='function'?nowISO():new Date().toISOString().slice(0,10);
- let selected=now>=span.start&&now<=span.end?now:span.start;
+ let selected=calendarPickedDay&&calendarPickedDay>=span.start&&calendarPickedDay<=span.end?calendarPickedDay:(now>=span.start&&now<=span.end?now:span.start);
  const dayButtons=[];
  const status=node('p','z66d-calendar-status');status.setAttribute('aria-live','polite');
  const dual=iso=>{
@@ -233,7 +237,8 @@ function buildMonthOverview(){
   button.setAttribute('aria-label',dual(iso));
   const hasSale=db.tx.some(tx=>tx&&!tx.voided&&tx.type==='sale'&&String(tx.date||'').slice(0,10)===iso);
   if(hasSale)button.classList.add('z66d-calendar-has-sale');
-  button.addEventListener('click',()=>{selected=iso;updateDay()});
+  if(iso===now)button.classList.add('z66d-calendar-today');
+  button.addEventListener('click',()=>{selected=iso;calendarPickedDay=iso;updateDay()});
   grid.append(button);dayButtons.push(button);
  }
  inner.append(grid,status);details.append(inner);panel.append(details);updateDay();
