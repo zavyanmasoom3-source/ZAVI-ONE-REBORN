@@ -2910,8 +2910,7 @@ function openEntity(kind,id,creditorMode=false){if(kind==='product'||kind==='edi
  for(const v of p.variantLedger?.warehouseLedger?.initial||[])
   if(!warehouseIds.has(v.warehouseId))warehouseIds.set(v.warehouseId,'گدام ذخیره‌شده · '+v.warehouseId.slice(0,8));
  const warehouseChoices=[...warehouseIds].map(([id,name])=>[id,name]);
- const variantWarehouseMarkup=warehouseChoices.length?
-  selectField('variantWarehouseId','گدام پیش‌فرض محصول (موجودی مستقل رنگ‌ها)',[['','انتخاب گدام'],...warehouseChoices],p.defaultWarehouseId||''):
+ const variantWarehouseMarkup=selectField('variantWarehouseId','گدام پیش‌فرض محصول (موجودی مستقل رنگ‌ها)',[['','انتخاب گدام'],...warehouseChoices],p.defaultWarehouseId||'');
   '';
  const catData=`<datalist id="zawiCategoryOptions">${[...PRODUCT_CATS,'سایر'].map(x=>`<option value="${escapeHtml(x)}"></option>`).join('')}</datalist>`;
  const body=`<div class="form-grid">

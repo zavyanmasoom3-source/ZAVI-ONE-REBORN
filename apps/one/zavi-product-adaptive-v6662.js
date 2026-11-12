@@ -419,6 +419,41 @@ function enhanceApprovedRegistration(form,trade,title){
     }
   },true);
  }
+
+ const warehouseSelect=form.elements.namedItem('variantWarehouseId');
+ const whField=warehouseSelect?.closest('.field');
+ if(whField&&!whField.querySelector('.z66-product-create-warehouse')){
+  const widget=doc.createElement('div');widget.className='z66-product-create-warehouse';
+  const toggle=doc.createElement('button');toggle.type='button';toggle.className='btn subtle';
+  toggle.textContent=T('＋ افزودن گدام','＋ ګدام زیاتول','＋ Add warehouse');
+  const group=doc.createElement('div');group.className='z66-create-wh-fields';group.hidden=true;
+  const name=doc.createElement('input');name.type='text';name.maxLength=90;
+  name.placeholder=T('نام گدام جدید','د ګدام نوم','Warehouse name');
+  const code=doc.createElement('input');code.type='text';code.maxLength=32;code.dir='ltr';
+  code.placeholder=T('کُد گدام (اختیاری، خودکار)','د ګدام کوډ (اختیاري)','Code (optional, automatic)');
+  const submit=doc.createElement('button');submit.type='button';submit.className='btn primary';
+  submit.textContent=T('ذخیره گدام','ګدام ساتل','Save warehouse');
+  const note=doc.createElement('small');note.className='field-hint';note.setAttribute('role','status');
+  group.append(name,code,submit,note);widget.append(toggle,group);whField.append(widget);
+  toggle.addEventListener('click',()=>{group.hidden=!group.hidden;if(!group.hidden)name.focus({preventScroll:true});});
+  submit.addEventListener('click',async()=>{
+   if(submit.disabled)return;submit.disabled=true;
+   note.textContent=T('در حال ثبت سروری…','په سرور کې ثبتېږي…','Saving on server…');
+   try{
+    const created=await window.ZaviWarehouseV1?.create?.({name:name.value,code:code.value});
+    if(!created?.id)throw Error(T('خدمت گدام در دسترس نیست.','د ګدام خدمت نشته.','Warehouse service unavailable.'));
+    if(![...warehouseSelect.options].some(x=>x.value===created.id))
+     warehouseSelect.append(new Option(created.name,created.id));
+    warehouseSelect.value=created.id;warehouseSelect.dispatchEvent(new Event('change',{bubbles:true}));
+    group.hidden=true;name.value='';code.value='';note.textContent='';
+    status(T('گدام روی سرور ثبت و برای این محصول انتخاب شد.',
+      'ګدام په سرور کې ثبت او د دې توکي لپاره وټاکل شو.',
+      'Warehouse saved on server and selected for this product.'));
+   }catch(err){note.textContent=String(err?.message||err);}
+   finally{submit.disabled=false;}
+  });
+ }
+
  // Exact rate is authored by the owner, not silently taken from live internet.
  const rateField=rate.closest('.field');
  const priceNote=doc.createElement('div');priceNote.className='z66-product-fx-preview field full';

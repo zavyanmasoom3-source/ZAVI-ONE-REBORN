@@ -196,5 +196,35 @@ document.addEventListener('click',function(e){
  if(!record||!owner()||owner().id!==activeWorkspace)return;
  mutate(box,'/rest/v1/zavi_warehouses?id=eq.'+encodeURIComponent(id)+'&workspace_id=eq.'+encodeURIComponent(activeWorkspace),'PATCH',{is_active:button.dataset.whState==='true'})
 });
-window.ZaviWarehouseV1={panel:panel,afterRender:function(){refresh()},refresh:refresh,list:cachedCatalog};
+
+/* Genuine owner-scoped warehouse creation for the native product form.
+ * Does NOT adjust inventory, issue invoices, or bypass RLS. */
+async function createForProduct(data){
+ const c=owner();
+ if(!c)throw Error(tr('برای افزودن گدام، حساب ابری مالک لازم است.','د ګدام لپاره د مالک کلاوډ حساب پکار دی.','Sign in as cloud owner to create a warehouse.'));
+ const name=String(data?.name||'').trim();
+ let code=String(data?.code||'').trim().toUpperCase();
+ if(!name||name.length>90)throw Error(tr('نام گدام نامعتبر است.','د ګدام نوم ناسم دی.','Invalid warehouse name.'));
+ if(!code){
+  if(!globalThis.crypto?.getRandomValues)throw Error('Secure warehouse code unavailable.');
+  const bytes=new Uint8Array(6);globalThis.crypto.getRandomValues(bytes);
+  code='WH-'+Array.from(bytes,x=>x.toString(16).padStart(2,'0')).join('').toUpperCase();
+ }
+ if(!/^[A-Z0-9_-]{1,32}$/.test(code))throw Error(tr('کُد گدام فقط حرف انگلیسی بزرگ، عدد و خط تیره قبول می‌کند.','د ګدام کوډ ناسم دی.','Invalid warehouse code.'));
+ const known=cachedCatalog();
+ if(known.some(x=>x.code===code||x.name.toLocaleLowerCase()===name.toLocaleLowerCase()))
+  throw Error(tr('نام یا کُد گدام تکراری است.','دا نوم یا کوډ تکراري دی.','Warehouse name or code already exists.'));
+ const result=await rest('/rest/v1/zavi_warehouses','POST',{workspace_id:c.id,name,code});
+ if(!Array.isArray(result)||result.length!==1||!result[0]?.id||
+    result[0].workspace_id!==c.id||result[0].name!==name||result[0].code!==code)
+  throw Error(tr('ثبت گدام تأیید نشد؛ پیش از تکرار، فهرست سرور را تازه کنید.','د ګدام ثبت نه دی تایید شوی.','Unconfirmed warehouse creation; refresh before retry.'));
+ if(owner()?.id!==c.id)throw Error('Workspace changed; verify the warehouse catalog.');
+ const created={...result[0],is_active:result[0].is_active!==false};
+ rows=[...known.filter(x=>x.id!==created.id),created];
+ activeWorkspace=c.id;rememberCatalog(c.id);
+ const manager=document.getElementById(ID);
+ if(manager)void refresh(manager);
+ return created;
+}
+window.ZaviWarehouseV1={panel:panel,afterRender:function(){refresh()},refresh:refresh,list:cachedCatalog,create:createForProduct};
 })();

@@ -253,6 +253,33 @@ with Session() as browser:
     assert len(labels)==21,labels
     accessory=next((x for x in labels if x['value']=='accessories'),None)
     assert accessory and 'موبایل' in accessory['label'] and accessory['label']!='تجارت عمومی',labels
+
+    # Mock server response; no cloud writes in disposable browser QA.
+    browser.eval("""(()=>{
+      const service=window.ZaviWarehouseV1;
+      window.__qaWhCreateOriginal=service.create;
+      window.__qaWhRequests=[];
+      service.create=async input=>{
+        window.__qaWhRequests.push(input);
+        return {id:'6727b56e-cc98-4997-8e45-18dd0baf17db',name:input.name,
+          code:'WH-QA',is_active:true};
+      };
+      const form=document.getElementById('dialogForm');
+      const widget=form.querySelector('.z66-product-create-warehouse');
+      widget.querySelector('button').click();
+      widget.querySelector('input').value='گدام آزمایشی';
+      widget.querySelector('.z66-create-wh-fields button').click();
+    })()""")
+    browser.until("""document.getElementById('dialogForm')?.elements.namedItem('variantWarehouseId')?.value==='6727b56e-cc98-4997-8e45-18dd0baf17db'""",
+      'server-confirmed warehouse selected inside native product form')
+    created=browser.eval("""(()=>{
+      const requests=window.__qaWhRequests;
+      window.ZaviWarehouseV1.create=window.__qaWhCreateOriginal;
+      return {requests,products:db.products.length,tx:db.tx.length};
+    })()""")
+    assert len(created['requests'])==1 and created['requests'][0]['name']=='گدام آزمایشی',created
+    assert created['products']==state['before'] and created['tx']==state['txBefore'],created
+
     browser.eval("window.zaviProductDraftTrade=''")
     print('PASS: 21 native product trade schemas switch on explicit choice without changing owner business')
     print('PASS: manual USD rate preview correctly converts to base currency, no transaction posted')

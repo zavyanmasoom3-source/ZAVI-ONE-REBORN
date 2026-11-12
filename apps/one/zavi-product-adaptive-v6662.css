@@ -153,3 +153,14 @@ html[data-z637-no-motion="true"] #dialogForm.z66-product-editor *{
 #dialogForm.z66-product-editor .field:has([name=productManualUsdRate])[hidden]{display:none!important}
 #dialogForm.z66-product-editor input[readonly]{opacity:.90}
 @media(prefers-reduced-motion:reduce){#dialogForm.z66-product-editor .z66-reg-method{transition:none!important}}
+
+/* Compact in-form warehouse creation; real owner-scoped server persistence. */
+#dialogForm.z66-product-editor .z66-product-create-warehouse{display:grid;gap:8px;margin-top:8px;min-width:0}
+#dialogForm.z66-product-editor .z66-product-create-warehouse>button{min-height:40px;border-radius:11px}
+#dialogForm.z66-product-editor .z66-create-wh-fields{display:grid;gap:8px;padding:10px;min-width:0;
+ border:1px solid var(--zavi-border,#6496bb);border-radius:12px;background:rgba(18,116,202,.10)}
+#dialogForm.z66-product-editor .z66-create-wh-fields[hidden]{display:none!important}
+#dialogForm.z66-product-editor .z66-create-wh-fields input{width:100%;min-width:0;box-sizing:border-box;
+ min-height:40px;padding:8px 11px;color:var(--zavi-text,#eefaff);background:var(--zavi-surface,#163963);
+ border:1px solid var(--zavi-border,#528dbc);border-radius:10px}
+#dialogForm.z66-product-editor .z66-create-wh-fields button{min-height:42px}
