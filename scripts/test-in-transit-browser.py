@@ -86,10 +86,12 @@ with Session() as browser:
     assert fields['country']=='China' and fields['product']==init['productId'],fields
     browser.until("window.__zvTransitQA.orders.length===1",'one mock server order')
     browser.until("!!document.querySelector('[data-zv-receive]')",'partial receipt form')
+    assert browser.eval("document.querySelector('[data-zv-receive] [name=confirmPhysical]')?.required"), 'physical goods confirmation is mandatory'
     browser.eval(r"""(()=>{
        const f=document.querySelector('[data-zv-receive]');
        f.elements.quantity.value='2';
        f.elements.note.value='Physically counted';
+       f.elements.confirmPhysical.checked=true;
        f.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
     })()""")
     browser.until("window.__zvTransitQA.receipts.length===1",'first mock receipt')
@@ -98,6 +100,7 @@ with Session() as browser:
        const fake=window.__zvTransitQA,form=document.querySelector('[data-zv-receive]');
        const first=fake.receipts[0],qty=stockState()[fake.product.id]?.qty||0;
        form.elements.quantity.value='1.25';
+       form.elements.confirmPhysical.checked=true;
        form.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
        return {countOrders:fake.orders.length,receiptCount:fake.receipts.length,posted:fake.posted,
          localStock:qty,firstReceiptId:first.p_receipt_id,
@@ -126,6 +129,7 @@ with Session() as browser:
       const f=document.querySelector('[data-zv-receive]');
       f.elements.quantity.value='1';
       f.elements.note.value='Last unit';
+      f.elements.confirmPhysical.checked=true;
       f.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
     })()""")
     browser.until("window.__zvTransitQA.receipts.length===2",'mock server second receipt committed')
