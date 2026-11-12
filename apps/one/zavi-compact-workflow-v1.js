@@ -413,6 +413,7 @@
     const shippingField=shipping?.closest('.field');
     if(shippingField)advanced.append(shippingField);
     pay.append(advanced);
+    window.ZaviPurchaseUpgrade6662?.mount?.(form,layout,advanced,supplier,pay);
     body.append(layout);
     form.dataset.zaviPurchaseOnepage='true';
     form.dataset.zaviPurchaseV6662='approved';

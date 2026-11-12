@@ -3281,11 +3281,12 @@ function openOrder(kind,defaultContactId='',chinaDefault=false){
  }
  function amountDisplay(n){const unit=isPurchase?f.originalCurrency.value:db.currency;return `${fmt(n)} ${unit==='CNY'?'RMB':unit}`}
  function updateTotals(){
-  let raw,after,paid;
+  let raw,after,paid;let additionalCharges=0;
   try{
    // Exact scaled-integer sum; no binary floating point accumulation in invoice preview.
    raw=window.ZaviDecimal.sumLineTotals([...box.querySelectorAll('.order-line')].map(row=>({qty:row.querySelector('[data-field="qty"]').value||'0',price:row.querySelector('[data-field="price"]').value||'0'})));
-   after=Math.max(0,window.ZaviDecimal.roundMoney(raw-window.ZaviDecimal.roundMoney(f.discount.value||'0')+(kind==='purchase'?window.ZaviDecimal.roundMoney(f.shippingOriginal.value||'0'):0)));
+   if(kind==='purchase')additionalCharges=window.ZaviPurchaseUpgrade6662?.calculate?.(f,raw,window.ZaviDecimal.roundMoney(f.discount.value||'0'))?.additional||0;
+   after=Math.max(0,window.ZaviDecimal.roundMoney(raw-window.ZaviDecimal.roundMoney(f.discount.value||'0')+(kind==='purchase'?window.ZaviDecimal.roundMoney(num(f.shippingOriginal.value||0)+additionalCharges):0)));
    paid=window.ZaviDecimal.roundMoney(f.paid.value||'0');
   }catch(_){['sumBefore','sumTotal','sumRemaining'].forEach(id=>document.getElementById(id).textContent='—');return;}
   document.getElementById('sumBefore').textContent=amountDisplay(raw);
@@ -3405,7 +3406,13 @@ function openOrder(kind,defaultContactId='',chinaDefault=false){
   }));
   if(!enteredRows.length||enteredRows.some(l=>!l.name||l.name.length>140||l.qty<=0||l.price<0||l.salePrice<0||!Number.isFinite(l.qty)))throw Error('نام محصول، تعداد و قیمت هر ردیف را درست وارد کنید.');
   for(const l of enteredRows){const duplicates=db.products.filter(p=>normalizeName(p.name)===normalizeName(l.name));if(duplicates.length>1&&!l.sku)throw Error(`برای «${l.name}» چند مدل با نام مشابه هست؛ لطفاً کود / مدل را در جزئیات آن ردیف بنویسید.`)}
-  const invoiceAmounts=window.ZaviDecimal.invoiceTotals(enteredRows,f.discount.value||'0',kind==='purchase'?f.shippingOriginal.value||'0':'0',f.paid.value||'0');
+  const grossForCosts=window.ZaviDecimal.sumLineTotals(enteredRows);
+  const discountForCosts=window.ZaviDecimal.roundMoney(f.discount.value||'0');
+  const extras=kind==='purchase'?window.ZaviPurchaseUpgrade6662?.calculate?.(f,grossForCosts,discountForCosts):null;
+  const secondOriginal=extras?.secondPaid||0;
+  const paidCombined=window.ZaviDecimal.roundMoney(num(f.paid.value||0)+secondOriginal);
+  const totalShipping=kind==='purchase'?window.ZaviDecimal.roundMoney(num(f.shippingOriginal.value||0)+(extras?.additional||0)):0;
+  const invoiceAmounts=window.ZaviDecimal.invoiceTotals(enteredRows,f.discount.value||'0',String(totalShipping),String(paidCombined));
   const {gross:grossOriginal,discount:disOriginal,shipping:shippingOriginal,total:totalOriginal,paid:paidOriginal}=invoiceAmounts;
   if(disOriginal<0||disOriginal>grossOriginal||shippingOriginal<0)throw Error('تخفیف یا باربری درست وارد نشده است.');
   if(paidOriginal<0||paidOriginal>totalOriginal)throw Error('پرداخت نقدی از مبلغ فاکتور بیشتر است.');
@@ -3414,7 +3421,20 @@ function openOrder(kind,defaultContactId='',chinaDefault=false){
   if(totalOriginal-paidOriginal>.009&&!name)throw Error('برای خرید یا فروش قرضی، اسم مشتری یا عرضه‌کننده را بنویسید.');
   const unit=isPurchase?f.originalCurrency.value:db.currency,rate=isPurchase&&unit!==db.currency?num(f.exchangeRate.value):1;
   if(rate<=0||!Number.isFinite(rate))throw Error('نرخ تبدیل معتبر وارد کنید.');
-  const discount=money(disOriginal*rate),paid=money(paidOriginal*rate);
+  if(kind==='purchase'&&extras){
+    const supplier=String(f.freeContactName.value||'').trim();
+    if(extras.reference&&db.tx.some(t=>t.type==='purchase'&&!t.voided&&
+       t.purchaseInvoiceReference===extras.reference&&normalizeName(t.customerName)===normalizeName(supplier)))
+      throw Error('شماره فاکتور این عرضه‌کننده تکراری است.');
+    if(secondOriginal>0&&(!supplier||!db.accounts.some(a=>a.id===extras.secondAccount)||
+        f.accountId.value===extras.secondAccount))
+      throw Error('پرداخت دوم به نام عرضه‌کننده و از حساب متفاوت لازم است.');
+    if(extras.payMode==='cash'&&Math.abs(totalOriginal-paidOriginal)>.009)
+      throw Error('در خرید نقدی پرداخت کامل الزامی است؛ قرضی یا قسطی را انتخاب کنید.');
+    if(extras.payMode==='installment'&&totalOriginal-paidOriginal>.009&&!/^\d{4}-\d{2}-\d{2}$/.test(extras.due))
+      throw Error('تاریخ سررسید قسط را وارد کنید.');
+  }
+  const discount=money(disOriginal*rate),paid=money((paidOriginal-secondOriginal)*rate);
   // Validate every colour-affecting invoice, including returns and incoming purchases.
   // A pre-existing colour list without an activated opening snapshot is NOT safe to sell.
   const variantUsage={},warehouseUsage={};
@@ -3478,13 +3498,40 @@ function openOrder(kind,defaultContactId='',chinaDefault=false){
       newProducts.set(k,p);n.products.push(p);
      }
     }
-    const c=kind==='purchase'?money(l.price*rate*(grossOriginal?totalOriginal/grossOriginal:1)):(priorCosts[p.id]??0);
+    let c=priorCosts[p.id]??0;
+    if(kind==='purchase'){
+      const allocation=extras?.allocation||'value';
+      const qtySum=enteredRows.reduce((sum,x)=>sum+x.qty,0);
+      const basic=grossOriginal?l.price*(1-disOriginal/grossOriginal):l.price;
+      const extra=allocation==='qty'&&qtySum?shippingOriginal/qtySum:
+        allocation==='equal'&&enteredRows.length?shippingOriginal/(enteredRows.length*l.qty):
+        grossOriginal?shippingOriginal*l.price/grossOriginal:0;
+      c=money((basic+extra)*rate);
+    }
     if(kind==='purchase')p.purchasePrice=money(c);
     return {productId:p.id,productName:p.name,qty:l.qty,variantKey:l.variantKey||undefined,warehouseId:l.warehouseId||undefined,price:money(l.price*rate),cost:c,industryDetails:l.industryDetails,...(isPurchase?{priceOriginal:l.price}:{})};
    });
    let payload={id:newId('t'),code:nextCode(n),type:kind,date,created:new Date().toISOString(),contactId,customerName:name,customerPhone:phone,accountId:f.accountId.value,discount,paid,note:f.note.value.trim(),items:lines};
-   if(isPurchase)Object.assign(payload,{purchaseOrigin:f.purchaseOrigin.value,originalCurrency:unit,exchangeRate:rate,originalAmount:totalOriginal,originalPaid:paidOriginal,originalDiscount:disOriginal,shipping:money(shippingOriginal*rate),shippingOriginal});
+   if(isPurchase)Object.assign(payload,{purchaseOrigin:f.purchaseOrigin.value,originalCurrency:unit,exchangeRate:rate,
+     originalAmount:totalOriginal,originalPaid:money(paidOriginal-secondOriginal),
+     originalDiscount:disOriginal,shipping:money(shippingOriginal*rate),shippingOriginal,
+     ...(kind==='purchase'&&extras?{
+       purchaseCountry:extras.country,purchaseInvoiceReference:extras.reference,
+       purchasePaymentMode:extras.payMode,purchaseDueDate:extras.due,
+       purchaseCostAllocation:extras.allocation,purchaseTotalPaidOriginal:paidOriginal,
+       purchaseExpenses:{freight:num(f.shippingOriginal.value||0),customs:extras.customs,
+         insurance:extras.insurance,other:extras.other,tax:extras.tax,
+         taxRate:extras.taxRate,taxIncluded:extras.taxIncluded}
+     }:{})});
    n.tx.push(payload);savedInvoiceId=payload.id;
+   if(kind==='purchase'&&secondOriginal>0){
+     n.tx.push({id:newId('t'),code:nextCode(n),type:'supplier_payment',
+       date,created:new Date().toISOString(),contactId,
+       accountId:extras.secondAccount,amount:money(secondOriginal*rate),
+       originalCurrency:unit,originalAmount:secondOriginal,exchangeRate:rate,
+       purchaseId:payload.id,reference:extras.reference,
+       note:'پرداخت دوم فاکتور '+payload.code});
+   }
   })){invoiceSaved=true;closeModal();toast(isPurchase?'خرید ثبت شد و محصولهای جدید به گدام اضافه شدند.':'فاکتور فروش ثبت شد.');if(savedInvoiceId){const saved=db.tx.find(x=>x.id===savedInvoiceId);if(saved&&['sale','purchase'].includes(saved.type))setTimeout(()=>printInvoice(saved),80);}}
  }catch(err){toast(err.message||'فاکتور ثبت نشد.')}finally{invoiceSubmitting=false;}};
 }
@@ -4041,6 +4088,7 @@ document.addEventListener('change',e=>{if(e.target.dataset.moduleId){zaviSaveMod
 <link rel="stylesheet" href="./zavi-in-transit-v1.css?v=1">
 <script defer src="./zavi-v6662-pin-visibility-v1.js?v=1" data-zavi-original-login-eye="1"></script>
 <script defer src="./zavi-product-adaptive-v6662.js?v=20261112-registration-v1"></script>
+<script defer src="./zavi-purchase-upgrade-v6662.js?v=1"></script>
 <script defer src="./zavi-compact-workflow-v1.js?v=1" data-zavi-compact-workflow-script="1"></script>
 <script defer src="./zavi-sale-scanner-modes-v6662.js?v=20261112-approved1" data-zavi-owner-approved-sale-scanner="1"></script>
 <script defer src="./zavi-cheques-v1.js?v=stage4-01" data-zavi-cheques="1"></script>

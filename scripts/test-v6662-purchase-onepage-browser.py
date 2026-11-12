@@ -52,6 +52,22 @@ with Session() as browser:
     assert state['sectionNames']==['supplier','currency','barcode','products','payment'],state
     assert all(state[k] for k in ['noTabs','nativeFields','noClones','currencyVisible',
       'supplierVisible','barcode','products','totals','pay','advanced','realSubmit']),state
+    advanced=browser.eval("""(()=>{
+      const f=document.getElementById('dialogForm'),field=f.elements;
+      const names=['pCountry','pCustoms','pInsurance','pOther','pTaxOn','pTaxRate',
+        'pTaxIncluded','pAllocation','pSupplierInvoice','pPayMode','pSplitPay',
+        'pSecondPaid','pSecondAccount','pDue'];
+      const all=names.every(name=>!!field.namedItem(name));
+      field.pCustoms.value='6';field.pInsurance.value='2';field.pOther.value='1';
+      field.pTaxOn.checked=true;field.pTaxRate.value='5';
+      const cost=window.ZaviPurchaseUpgrade6662.calculate(field,100,0);
+      field.pCustoms.value='0';field.pInsurance.value='0';field.pOther.value='0';
+      field.pTaxOn.checked=false;field.pTaxRate.value='0';
+      return {all,cost,ledger:db.tx.length,accountCount:field.accountId.options.length};
+    })()""")
+    assert advanced['all'] and advanced['cost']['additional']==14,advanced
+    assert advanced['ledger']==0 and advanced['accountCount']>=4,advanced
+    print('PASS: real purchase fields include customs/tax/insurance, split payment and existing accounts')
     # Original currency/rate calculation must still run from the actual inputs.
     math=browser.eval("""(()=>{
        const f=document.getElementById('dialogForm');

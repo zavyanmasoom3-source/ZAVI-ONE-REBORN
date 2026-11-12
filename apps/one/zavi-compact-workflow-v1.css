@@ -434,3 +434,19 @@ html.zx-lite #dialogForm .z66-purchase-onepage *{animation:none!important;transi
  #dialogForm .z66-purchase-onepage *,
  #dialogForm .z66-purchase-onepage *::before{animation:none!important;transition:none!important}
 }
+
+/* Owner-approved purchase controls; consistent with the original theme. */
+#dialogForm .z66-purchase-onepage .z66p-field{display:grid;gap:6px;margin:8px 0;color:var(--z66p-ink,#fff);font-size:12px}
+#dialogForm .z66-purchase-onepage .z66p-field input,
+#dialogForm .z66-purchase-onepage .z66p-field select{min-width:0;width:100%;min-height:40px;box-sizing:border-box;padding:8px 10px;border-radius:10px;border:1px solid var(--z66p-edge,#648abd);background:var(--z66p-field,#17385e);color:var(--z66p-ink,#fff)}
+#dialogForm .z66-purchase-onepage .z66p-fees,
+#dialogForm .z66-purchase-onepage .z66p-payments{display:grid;gap:8px;margin:8px 0;padding:10px;border-radius:12px;background:var(--z66p-field,#17385e);border:1px solid var(--z66p-edge,#5b8db7);min-width:0}
+#dialogForm .z66-purchase-onepage .z66p-fees h4,
+#dialogForm .z66-purchase-onepage .z66p-payments h4{font-size:13px;margin:0}
+#dialogForm .z66-purchase-onepage .z66p-check{display:flex;gap:9px;align-items:center;min-height:36px;font-size:12px;color:var(--z66p-ink,#fff)}
+#dialogForm .z66-purchase-onepage .z66p-check input{height:18px;width:18px;accent-color:#12b9db}
+#dialogForm .z66-purchase-onepage .z66p-tax[hidden],
+#dialogForm .z66-purchase-onepage .z66p-split[hidden],
+#dialogForm .z66-purchase-onepage .z66p-field[hidden]{display:none!important}
+#dialogForm .z66-purchase-onepage .z66p-price-preview{padding:10px;background:rgba(13,174,205,.10);border-radius:10px;font-size:12px;color:var(--z66p-ink,#fff)}
+#dialogForm .z66-purchase-onepage .z66p-payments p{font-size:11px;color:var(--z66p-muted,#bcd3f0);margin:0}
