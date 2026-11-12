@@ -231,8 +231,10 @@ function enhanceApprovedRegistration(form,trade,title){
  if(!sku||!extras||!currency||!rate||form.querySelector('.z66-registration-trade'))return;
  const doc=document;
  const T=(fa,ps,en)=>tr(fa,ps,en);
- const label=(key)=>window.ZaviIndustryKit6525?.profile?.(key)?.label||
-    window.ZaviIndustryForms6529?.label?.(key)||key;
+ // Native schema has 21 product trades; the older industry kit only has 20
+ // and treats 'accessories' as general. Prefer native business labels.
+ const label=(key)=>window.ZaviIndustryForms6529?.label?.(key)||
+    window.ZaviIndustryKit6525?.profile?.(key)?.label||key;
  const types=window.ZaviIndustryForms6529?.types||Object.keys(preset);
  const wrap=doc.createElement('div');wrap.className='z66-registration-trade field full';
  const heading=doc.createElement('label');heading.textContent=T('نوع کسب‌وکار این محصول','د توکي د سوداګرۍ ډول','Product business type');

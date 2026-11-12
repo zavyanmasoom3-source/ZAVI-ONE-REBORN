@@ -234,13 +234,16 @@ with Session() as browser:
         openEntity('product');
         const f=document.getElementById('dialogForm');
         selected.push({type,actual:f.querySelector('.z629-industry')?.dataset.z629Type,
-          native:f.dataset.z66ProductNativeTrade});
+          native:f.dataset.z66ProductNativeTrade,
+          label:[...f.querySelector('[data-z66-registration-industry]')?.options||[]].find(x=>x.value===type)?.textContent});
       }
       return {selected,unchanged:db.products.length===before&&db.tx.length===tx,
         owner:zaviBusinessTypeV638()};
     })()""")
     assert len(all21['selected'])==21 and all21['unchanged'] and all21['owner']=='gold',all21
     assert all(x['type']==x['actual']==x['native'] for x in all21['selected']),all21
+    assert all21['selected'][[x['type'] for x in all21['selected']].index('accessories')]['label']!='تجارت عمومی',all21
+    assert 'موبایل' in all21['selected'][[x['type'] for x in all21['selected']].index('accessories')]['label'],all21
     browser.eval("window.zaviProductDraftTrade=''")
     print('PASS: 21 native product trade schemas switch on explicit choice without changing owner business')
     print('PASS: manual USD rate preview correctly converts to base currency, no transaction posted')
