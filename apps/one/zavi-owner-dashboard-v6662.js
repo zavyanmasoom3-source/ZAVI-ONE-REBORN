@@ -370,14 +370,14 @@ function paint(){
  if(recent)(customers||stock.isConnected&&stock||charts.isConnected&&charts||summary).after(recent);
  // Trade guide is *not* displayed. Existing routes remain available in quick actions
  // and in Settings. Keep the authentic low-stock/debt/sync alert panel.
- const extras=root.querySelector(':scope > #z649DashboardExtras');
- if(extras){
-  const alert=extras.querySelector('.z644-alert-card');
+ const extraWidgets=root.querySelector(':scope > #z649DashboardExtras');
+ if(extraWidgets){
+  const alert=extraWidgets.querySelector('.z644-alert-card');
   if(alert){
    alert.classList.add('z66d-alert');
    (recent||stock.isConnected&&stock||summary).after(alert);
   }
-  extras.remove();
+  extraWidgets.remove();
  }
  // Old quick-actions duplicate navigation; keep their legacy handlers available
  // while removing only redundant visible surfaces, not any accounting modules.
