@@ -28,7 +28,24 @@ const schema={
  services:[F('service','نوع خدمت'),F('jobNo','شماره کار'),F('assignee','مسئول خدمت'),D('due','موعد تکمیل'),N('hours','ساعت کار (معلومات)'),F('completionRef','شماره سند تکمیل')],
  company:[F('contract','شماره قرارداد'),F('costCenter','مرکز هزینه'),F('department','بخش مسئول'),F('reference','شماره مرجع'),D('due','تاریخ تسویه')]
 };
-const schemaKeys=Object.keys(schema);
+
+// Keep all 21 historic schemas and their persisted business IDs intact.
+// Four newly approved industries are ADDITIVE product profiles, never aliases
+// of old owner shops. Historic workflows continue using schemaKeys.
+const legacySchemaKeys=Object.keys(schema);
+Object.assign(schema,{
+ food:[D('expiry','تاریخ انقضا'),F('packWeight','وزن بسته / حجم'),F('country','کشور تولید'),F('batch','شماره بچ'),F('storage','شرایط نگهداری')],
+ restaurant:[F('ingredients','مواد تشکیل‌دهنده'),F('portion','اندازه پرس'),N('prepMinutes','مدت آماده‌سازی (دقیقه)'),F('allergens','حساسیت‌های غذایی'),F('mealGroup','نوع غذا')],
+ automotive:[F('vehicleModel','مدل موتر سازگار'),F('partNo','شماره پرزه'),F('vehicleYear','سال ساخت'),F('manufacturer','شرکت سازنده'),F('warranty','ضمانت')],
+ agriculture:[F('season','فصل / تاریخ کشت'),F('cropType','نوع محصول'),D('expiry','تاریخ انقضا'),F('producer','تولیدکننده'),F('packWeight','وزن یا حجم')]
+});
+const approvedTypes=Object.freeze([
+ 'general','supermarket','gold','pharmacy','wholesale','clothing',
+ 'bookstore','footwear','cosmetics','electronics','furniture','hardware',
+ 'exchange','construction','mobile','accessories','food','restaurant',
+ 'automotive','services','agriculture'
+]);
+const schemaKeys=legacySchemaKeys;
 const typeOf=t=>Object.hasOwn(schema,String(t))?String(t):'general';
 const escape=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const textNum=v=>String(v).replace(/[۰-۹]/g,c=>String('۰۱۲۳۴۵۶۷۸۹'.indexOf(c))).replace(/[٠-٩]/g,c=>String('٠١٢٣٤٥٦٧٨٩'.indexOf(c))).replace(/[,٬]/g,'').replace('٫','.').trim();
@@ -90,7 +107,7 @@ function render(type,previous=null,{expanded=false,forOrder=false}={}){
  const note=t==='gold'?'وزن، عیار و اجرت برای این سند نگهداری می‌شوند؛ مبلغ فاکتور را پس از بررسی خودتان وارد کنید.':t==='mobile'?'برای موبایل IMEI و برای لوازم جانبی سریال یا مدل را وارد کنید.':t==='exchange'?'نرخ و کارمزد را دقیق بررسی کنید. این مشخصات پیش‌نمایش‌اند و به‌تنهایی پول را بین صندوق‌های ارزی منتقل نمی‌کنند.':t==='contractor'?'متره، مرحله قرارداد و پیش‌پرداخت را با رسید واقعی تطبیق دهید. این فورم به‌تنهایی صندوق را تغییر نمی‌دهد.':'مشخصات مرتبط در همین محصول یا ردیف فاکتور محفوظ می‌مانند.';
  return `<details class="z629-industry" data-z629-type="${t}" ${expanded?'open':''}><summary>✦ مشخصات مخصوص ${escape(label(t))} <small>${forOrder?'در این ردیف':'در گدام'}</small></summary><div class="z629-fields">${body}</div>${t==='exchange'?'<datalist id="z6530Currencies"><option value="AFN"><option value="USD"><option value="EUR"><option value="PKR"><option value="GBP"><option value="AED"><option value="SAR"><option value="CNY"><option value="IRR"><option value="INR"></datalist>':''}<p class="z629-hint">${escape(note)}</p></details>`;
 }
-const labels={accessories:'لوازم موبایل و پوش‌فروشی',general:'تجارت عمومی',supermarket:'سوپرمارکت',pharmacy:'دواخانه',laboratory:'لابراتوار',gold:'زرگری',mobile:'موبایل',wholesale:'عمده‌فروشی',distribution:'توزیع',clothing:'پوشاک',footwear:'کفش',bookstore:'کتاب‌فروشی',cosmetics:'آرایشی',electronics:'وسایل برقی',furniture:'مبلمان',hardware:'ابزارفروشی', construction:'مصالح ساختمانی',exchange:'صرافی و تبدیل ارز',contractor:'شرکت ساختمانی و پروژه‌ها',services:'خدمات',company:'شرکت تجارتی'};
+const labels={accessories:'لوازم موبایل و پوش‌فروشی',general:'تجارت عمومی',supermarket:'سوپرمارکت',pharmacy:'دواخانه',laboratory:'لابراتوار',gold:'زرگری',mobile:'موبایل',wholesale:'عمده‌فروشی',distribution:'توزیع',clothing:'پوشاک',footwear:'کفش',bookstore:'کتاب‌فروشی',cosmetics:'آرایشی',electronics:'وسایل برقی',furniture:'مبلمان',hardware:'ابزارفروشی', construction:'مصالح ساختمانی',exchange:'صرافی و تبدیل ارز',contractor:'شرکت ساختمانی و پروژه‌ها',services:'خدمات',company:'شرکت تجارتی',food:'مواد غذایی',restaurant:'رستورانت',automotive:'لوازم موتر',agriculture:'زراعت و مالداری'};
 function label(t){return labels[typeOf(t)]}
 function collect(container,type){if(!container)return normalize(type,{});const values={};for(const el of container.querySelectorAll('[data-z629-key]'))values[el.dataset.z629Key]=el.value;return normalize(type,values)}
 function fill(container,type,details){if(!container)return;const saved=details?.type===type?details.values||{}:{};for(const el of container.querySelectorAll('[data-z629-key]'))el.value=String(saved[el.dataset.z629Key]??'')}
@@ -100,5 +117,5 @@ function display(details,limit=8){const t=typeOf(details?.type),val=details?.val
    return [f.label,Array.isArray(a)?a.map(r=>r.color+' ('+r.qty+')').join('، '):'—'];}
   return [f.label,String(val[f.key])];
  });}
-return Object.freeze({schema,types:schemaKeys,fields,normalize,render,collect,fill,display,label,typeOf});
+return Object.freeze({schema,types:schemaKeys,approvedTypes,fields,normalize,render,collect,fill,display,label,typeOf});
 });

@@ -241,6 +241,29 @@ with Session() as browser:
     })()""")
     assert len(all21['selected'])==21 and all21['unchanged'] and all21['owner']=='gold',all21
     assert all(x['type']==x['actual']==x['native'] for x in all21['selected']),all21
+    # Verify the 21 user-approved types, including newly added specialisations,
+    # use actual native fields, while legacy owner schemas remain preserved.
+    approved21=browser.eval("""(()=>{
+      const approved=window.ZaviIndustryForms6529.approvedTypes;
+      const out=[];
+      const before=db.products.length,tx=db.tx.length;
+      for(const type of approved){
+        window.zaviProductDraftTrade=type;
+        openEntity('product');
+        const f=document.getElementById('dialogForm');
+        const details=f.querySelector('.z629-industry');
+        out.push({type,form:details?.dataset.z629Type,
+          native:f.dataset.z66ProductNativeTrade,
+          fields:details?.querySelectorAll('[data-z629-key]')?.length,
+          categories:window.ZaviProductCategories6662.categories(type)?.length});
+      }
+      return {out,owner:zaviBusinessTypeV638(),
+        unchanged:db.products.length===before&&db.tx.length===tx};
+    })()""")
+    assert len(approved21['out'])==21 and approved21['unchanged'] and approved21['owner']=='gold',approved21
+    assert all(x['type']==x['form']==x['native'] and x['fields']>=2 and x['categories']>=2 for x in approved21['out']),approved21
+    assert {x['type'] for x in approved21['out']}>= {'food','restaurant','automotive','agriculture'},approved21
+
     # A MutationObserver enhances freshly created native forms on a microtask.
     # Check labels only after the actual dropdown has mounted.
     browser.eval("""(()=>{window.zaviProductDraftTrade='accessories';openEntity('product')})()""")

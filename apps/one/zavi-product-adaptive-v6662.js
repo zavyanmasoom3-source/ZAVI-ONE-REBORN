@@ -23,7 +23,11 @@ const preset={
  furniture:'مبل و سوفه|میز و چوکی|تخت و الماری|فرش و پرده|دکوراسیون',
  hardware:'ابزار دستی|ابزار برقی|پیچ و مهره|رنگ و چسب|ابزار برش|تجهیزات ایمنی',
  laboratory:'آزمایش خون|آزمایش ادرار|بیوشیمی|هورمون‌ها|میکروبیولوژی|نمونه‌گیری',
- distribution:'مواد خوراکی|نوشیدنی‌ها|مواد بهداشتی|اجناس عمده|اقلام نمایندگی|سفارش توزیع'
+ distribution:'مواد خوراکی|نوشیدنی‌ها|مواد بهداشتی|اجناس عمده|اقلام نمایندگی|سفارش توزیع',
+ food:'برنج|روغن|آرد|حبوبات|خشکبار|مواد منجمد|مواد بسته‌بندی',
+ restaurant:'غذای اصلی|نوشیدنی|پیش‌غذا|دسر|سفارش بیرون‌بر',
+ automotive:'پرزه‌جات|روغن موتر|تایر|باطری|لوازم تزئینی|وسایل ترمیم',
+ agriculture:'تخم بذری|کود|خوراک حیوانات|محصولات زراعتی|لوازم زراعت'
 };
 const esc=x=>String(x||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const tr=(fa,ps,en)=>{const l=document.documentElement.lang||'fa-AF';return l.startsWith('en')?en:l.startsWith('ps')?ps:fa};
@@ -235,7 +239,11 @@ function enhanceApprovedRegistration(form,trade,title){
  // and treats 'accessories' as general. Prefer native business labels.
  const label=(key)=>window.ZaviIndustryForms6529?.label?.(key)||
     window.ZaviIndustryKit6525?.profile?.(key)?.label||key;
- const types=window.ZaviIndustryForms6529?.types||Object.keys(preset);
+ const types=[...(window.ZaviIndustryForms6529?.approvedTypes||
+    window.ZaviIndustryForms6529?.types||Object.keys(preset))];
+ // Existing saved products and an already selected legacy shop keep their
+ // original schema even if it is outside the 21 owner-approved choices.
+ if(trade&&!types.includes(trade))types.push(trade);
  const wrap=doc.createElement('div');wrap.className='z66-registration-trade field full';
  const heading=doc.createElement('label');heading.textContent=T('نوع کسب‌وکار این محصول','د توکي د سوداګرۍ ډول','Product business type');
  const selector=doc.createElement('select');selector.dataset.z66RegistrationIndustry='true';
@@ -487,6 +495,6 @@ function init(){
  new MutationObserver(apply).observe(overlay,{childList:true});
  apply();
 }
-window.ZaviProductCategories6662=Object.freeze({profiles:Object.keys(preset),categories:t=>(preset[t]||preset.general).split('|')});
+window.ZaviProductCategories6662=Object.freeze({profiles:[...(window.ZaviIndustryForms6529?.approvedTypes||Object.keys(preset))],categories:t=>(preset[t]||preset.general).split('|')});
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();

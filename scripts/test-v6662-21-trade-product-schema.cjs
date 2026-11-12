@@ -7,6 +7,27 @@ const all=['general','supermarket','pharmacy','laboratory','gold','mobile','whol
  'distribution','clothing','footwear','bookstore','cosmetics','electronics','furniture',
  'hardware','construction','exchange','contractor','services','company','accessories'];
 assert.equal(forms.types.length,21);
+const approved=['general','supermarket','gold','pharmacy','wholesale',
+ 'clothing','bookstore','footwear','cosmetics','electronics','furniture','hardware',
+ 'exchange','construction','mobile','accessories','food','restaurant',
+ 'automotive','services','agriculture'];
+assert.equal(forms.approvedTypes.length,21);
+assert.deepEqual(forms.approvedTypes,approved);
+assert.equal(new Set(approved).size,21);
+for(const type of ['food','restaurant','automotive','agriculture']){
+ assert(forms.fields(type).length>=3,'missing native product schema: '+type);
+ assert.notEqual(forms.typeOf(type),'general','cannot alias distinct products: '+type);
+ assert(forms.render(type,null,{expanded:true}).includes('data-z629-type="'+type+'"'));
+}
+assert.equal(forms.label('food'),'مواد غذایی');
+assert.equal(forms.label('restaurant'),'رستورانت');
+assert.equal(forms.label('automotive'),'لوازم موتر');
+assert.equal(forms.label('agriculture'),'زراعت و مالداری');
+assert.equal(forms.normalize('food',{batch:'B-001'}).type,'food');
+assert.equal(forms.normalize('restaurant',{prepMinutes:'15'}).values.prepMinutes,'15');
+assert.equal(forms.normalize('automotive',{partNo:'A-123'}).values.partNo,'A-123');
+assert.equal(forms.normalize('agriculture',{cropType:'گندم'}).values.cropType,'گندم');
+
 for(const id of all){assert(forms.types.includes(id));assert(forms.fields(id).length>=2);}
 const gold=Object.fromEntries(forms.fields('gold').map(x=>[x.key,x]));
 for(const field of ['jewelryKind','locketType','setPieces','karat','grossGrams','labor','stoneGrams','rate24'])assert(gold[field]);
