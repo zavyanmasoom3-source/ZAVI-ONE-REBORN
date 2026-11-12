@@ -187,6 +187,64 @@ with Session() as browser:
     assert gold['locketVisible'] and gold['setVisible'] and gold['setSelected'],gold
     assert 'گردنبند' in gold['pieces'] and 'گوشواره' in gold['pieces'] and gold['noPosting'],gold
     (out/'gold-set-native-form.png').write_bytes(browser.screenshot())
+
+    # The dropdown changes this product draft only, NEVER the owner's active
+    # shop business. A new native form must actually render the chosen schema.
+    change=browser.eval("""(()=>{
+      const before=db.products.length,tx=db.tx.length;
+      const f=document.getElementById('dialogForm');
+      const select=f.querySelector('[data-z66-registration-industry]');
+      select.value='mobile';
+      select.dispatchEvent(new Event('change',{bubbles:true}));
+      const next=document.getElementById('dialogForm');
+      return {trade:next.dataset.z66ProductNativeTrade,
+        schema:next.querySelector('.z629-industry')?.dataset.z629Type,
+        owner:zaviBusinessTypeV638(),notPosted:db.products.length===before&&db.tx.length===tx};
+    })()""")
+    assert change['trade']=='mobile' and change['schema']=='mobile',change
+    assert change['owner']=='gold' and change['notPosted'],change
+    browser.until("""!!document.querySelector('#dialogForm[data-z66-product-native-trade="mobile"] .z66-registration-trade')""",
+      'owner-approved 21-trade picker remounts real mobile form')
+    fx=browser.eval("""(()=>{
+      const f=document.getElementById('dialogForm');
+      const original=db.tx.length;
+      const cur=f.elements.namedItem('productPriceCurrency');
+      const rate=f.elements.namedItem('productManualUsdRate');
+      const sale=f.elements.namedItem('salePrice');
+      const base=cur.options[0].value;
+      cur.value='USD';cur.dispatchEvent(new Event('change',{bubbles:true}));
+      sale.value='20';sale.dispatchEvent(new Event('input',{bubbles:true}));
+      rate.value='70';rate.dispatchEvent(new Event('input',{bubbles:true}));
+      const preview=f.querySelector('.z66-product-fx-preview')?.textContent||'';
+      return {base,currency:cur.value,rate:rate.value,
+         rateVisible:!rate.closest('.field').hidden,preview,
+         posted:db.tx.length!==original,
+         mobile:!!f.querySelector('[data-z629-key="imei"]')};
+    })()""")
+    assert fx['currency']=='USD' and fx['rate']=='70' and not fx['posted'],fx
+    assert fx['mobile'] and fx['rateVisible'],fx
+    assert ('1,400' if fx['base']!='USD' else '20') in fx['preview'],fx
+    # Test every approved schema in the original product constructor, not a
+    # disconnected demo. This only creates unsaved modals in disposable Chrome.
+    all21=browser.eval("""(()=>{
+      const before=db.products.length,tx=db.tx.length;
+      const selected=[];
+      for(const type of window.ZaviIndustryForms6529.types){
+        window.zaviProductDraftTrade=type;
+        openEntity('product');
+        const f=document.getElementById('dialogForm');
+        selected.push({type,actual:f.querySelector('.z629-industry')?.dataset.z629Type,
+          native:f.dataset.z66ProductNativeTrade});
+      }
+      return {selected,unchanged:db.products.length===before&&db.tx.length===tx,
+        owner:zaviBusinessTypeV638()};
+    })()""")
+    assert len(all21['selected'])==21 and all21['unchanged'] and all21['owner']=='gold',all21
+    assert all(x['type']==x['actual']==x['native'] for x in all21['selected']),all21
+    browser.eval("window.zaviProductDraftTrade=''")
+    print('PASS: 21 native product trade schemas switch on explicit choice without changing owner business')
+    print('PASS: manual USD rate preview correctly converts to base currency, no transaction posted')
+
     browser.eval("""(()=>{
       zaviBusinessTypeV638=window.__qaTradeOriginal;
       window.zaviActiveIndustry=window.__qaActiveOriginal;
