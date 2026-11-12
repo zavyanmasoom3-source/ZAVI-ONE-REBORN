@@ -158,6 +158,41 @@ with Session() as browser:
           return {viewport,scrollWidth:root.scrollWidth,clientWidth:root.clientWidth,
                   rects,nav:!!document.querySelector('#mobileBottom')};
         })()""")
+        # Reproduce reported Redmi screenshot: an empty top viewport and
+        # labels تقویم/ماه/سال split vertically by old 3-column mobile layout.
+        geometry=browser.eval("""(()=>{
+          const root=document.getElementById('content');
+          const hero=root.querySelector(':scope > .welcome'),quick=root.querySelector('.z66d-quick');
+          const filters=root.querySelector('.z66d-charts .z27-chart-filters');
+          const selectors=[...filters?.querySelectorAll('label')||[]].map(el=>{
+            const select=el.querySelector('select');
+            const labelBox=el.getBoundingClientRect(),selectBox=select?.getBoundingClientRect();
+            const text=[...el.childNodes].find(n=>n.nodeType===3&&n.textContent.trim());
+            const range=document.createRange();
+            if(text)range.selectNodeContents(text);
+            return {width:labelBox.width,height:labelBox.height,
+              selectWidth:selectBox?.width||0,selectHeight:selectBox?.height||0,
+              text: text?.textContent?.trim()||'',textLines:text?[...range.getClientRects()].length:0,
+              selected:select?.selectedOptions[0]?.textContent?.trim()||''};
+          });
+          const cr=root.getBoundingClientRect(),hr=hero?.getBoundingClientRect(),
+            qr=quick?.getBoundingClientRect(),fr=filters?.getBoundingClientRect();
+          return {contentTop:cr.top,heroTop:hr?.top,heroHeight:hr?.height,
+            heroBg:hero?getComputedStyle(hero).backgroundImage:null,
+            heroText:hero?.innerText?.slice(0,110),quickTop:qr?.top,
+            topSpace:(hr?.top||0)-cr.top,afterHeroGap:(qr?.top||0)-(hr?.bottom||0),
+            filtersWidth:fr?.width,selectors};
+        })()""")
+        print('MOBILE_DASHBOARD_GEOMETRY='+json.dumps({'size':[width,height],**geometry},
+             ensure_ascii=False),flush=True)
+        assert geometry['topSpace']<=60 and geometry['heroHeight']<=235 and geometry['afterHeroGap']<=40,(
+            'Giant blank dashboard welcome area on real mobile',width,height,geometry)
+        if width<=430:
+            labels=geometry['selectors']
+            assert len(labels)==3 and labels[0]['width']>=geometry['filtersWidth']*.93,(
+                'Calendar mode must have a full-width line',width,labels)
+            assert all(x['textLines']<=1 and x['selectWidth']>=x['width']*.92 for x in labels),(
+                'Month/year/calendar labels wrap or selects are clipped',width,labels)
         assert res['nav'],res
         assert all(x['visible'] and x['width']>0 for x in res['rects']),res
         assert res['scrollWidth']<=res['clientWidth']+2,res
@@ -176,6 +211,18 @@ with Session() as browser:
         bysize.append({'size':[width,height],'width':res['scrollWidth']})
         if width==393:
             (out/'dashboard-393x852.png').write_bytes(browser.screenshot())
+            # Screenshot at the *selected calendar*, not only the top dashboard.
+            browser.eval("""(()=>{
+              const filters=document.querySelector('#content .z66d-charts .z27-chart-filters');
+              filters?.scrollIntoView({block:'center',behavior:'instant'});
+            })()""")
+            (out/'dashboard-calendar-filters-393.png').write_bytes(browser.screenshot())
+            browser.eval("""(()=>{
+              const c=document.querySelector('#content .z66d-sales-calendar');
+              c.open=true;c.scrollIntoView({block:'center',behavior:'instant'});
+            })()""")
+            (out/'dashboard-calendar-open-393.png').write_bytes(browser.screenshot())
+
     for locale,title in [('fa-AF','فروش جدید'),('ps-AF','نوی پلور'),('en','New sale')]:
         browser.eval('window.ZaviLocaleV22.set(%s)'%json.dumps(locale))
         browser.until("""document.querySelector('#content [data-z66-dash-action="sale"]')
