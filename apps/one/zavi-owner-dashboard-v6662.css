@@ -413,3 +413,313 @@ html.zx-lite #content.z66d-root *::before{animation:none!important;transition:no
 @media(prefers-reduced-motion:reduce){
  #content.z66d-root .z66d-invoices *,#content.z66d-root .z66d-chart-grid *{transition:none!important}
 }
+
+
+/* Premium V66.62 approved dashboard — Nov 12, 2026.
+   Scoped presentation only; the genuine native invoice, rate and stock data survive.
+   MOBILE: full-width charts. Dark, light, glass; always usable without motion. */
+#content.z66d-root{
+ --z66d-elevation:0 12px 30px rgba(14,42,82,.10);
+ scroll-padding-top:16px;
+}
+#content.z66d-root>.welcome{
+ background:radial-gradient(circle at 67% 0%,rgba(127,239,255,.22),transparent 39%),
+ linear-gradient(116deg,#173ba8 0%,#1b68cf 58%,#0aa5bc 100%)!important;
+ border-radius:20px!important;min-height:116px!important;
+ box-shadow:0 13px 30px rgba(14,64,173,.22)!important;
+}
+#content.z66d-root .z66d-rocket{
+ display:block!important;position:absolute;top:7px;left:47%;
+ font-size:18px!important;line-height:1!important;
+ opacity:.65;z-index:0;pointer-events:none!important;
+ animation:z66d-rocket-drift 6s ease-in-out infinite;
+ filter:drop-shadow(0 0 9px rgba(223,250,255,.7));
+}
+#content.z66d-root .z66d-rocket::before,
+#content.z66d-root .z66d-rocket::after{
+ content:"✧";position:absolute;pointer-events:none;color:#ddfaff;
+ font-size:10px;opacity:.8;animation:z66d-twinkle 3.8s ease-in-out infinite;
+}
+#content.z66d-root .z66d-rocket::before{top:-4px;left:-17px}
+#content.z66d-root .z66d-rocket::after{top:21px;left:20px;animation-delay:1.4s}
+#content.z66d-root .z66d-quick-four{
+ display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
+ gap:7px!important;
+}
+#content.z66d-root .z66d-quick-four .z66d-action{
+ min-height:76px!important;padding:10px 4px!important;border-radius:16px!important;
+ box-shadow:0 9px 22px #123c9240!important;
+}
+#content.z66d-root .z66d-quick-four .z66d-action-sale{
+ background:linear-gradient(137deg,#2462e4,#247bdc)!important;
+}
+#content.z66d-root .z66d-quick-four .z66d-action-purchase{
+ background:linear-gradient(137deg,#087fbd,#139eb0)!important;
+}
+#content.z66d-root .z66d-quick-four .z66d-action-warehouse{
+ background:linear-gradient(137deg,#6656cc,#7868db)!important;
+}
+#content.z66d-root .z66d-quick-four .z66d-action-invoices{
+ background:linear-gradient(137deg,#2474bb,#3999cf)!important;
+}
+#content.z66d-root .z66d-action-icon svg{
+ width:24px!important;height:24px!important;display:block!important;
+ fill:none!important;stroke:currentColor!important;
+ stroke-width:1.75!important;stroke-linecap:round!important;stroke-linejoin:round!important;
+}
+#content.z66d-root .z66d-quick-four .z66d-action-icon{
+ min-height:25px!important;
+}
+#content.z66d-root .z66d-quick-four .z66d-action-label{
+ font-size:11px!important;line-height:1.5!important;min-width:0;
+ overflow-wrap:normal!important;word-break:normal!important;
+}
+#content.z66d-root .z66d-more-actions{
+ border:1px solid var(--z66d-edge)!important;border-radius:12px!important;
+ background:var(--z66d-paper)!important;overflow:hidden;
+}
+#content.z66d-root .z66d-more-label{
+ color:var(--z66d-muted)!important;min-height:35px!important;
+ display:flex!important;align-items:center!important;justify-content:space-between!important;
+ padding:7px 13px!important;font-size:11px!important;font-weight:700!important;
+ cursor:pointer;list-style:none;
+}
+#content.z66d-root .z66d-more-label::after{
+ content:"⌄";font:900 16px system-ui;line-height:1;transition:transform .2s ease;
+}
+#content.z66d-root .z66d-more-actions[open] .z66d-more-label::after{transform:rotate(180deg)}
+#content.z66d-root .z66d-more-label::-webkit-details-marker{display:none}
+#content.z66d-root .z66d-more-actions .z66d-quick-second{
+ padding:6px!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
+}
+#content.z66d-root .z66d-more-actions .z66d-action{
+ min-height:60px!important;
+}
+#content.z66d-root .z66d-summary .stat-grid>.card,
+#content.z66d-root .z66d-money-grid>.card{
+ border-radius:14px!important;padding:12px!important;
+ background:var(--z66d-inner)!important;
+ box-shadow:0 5px 13px rgba(21,55,118,.07)!important;
+}
+#content.z66d-root .z66d-summary .stat-grid .stat-value,
+#content.z66d-root .z66d-money-grid .stat-value{
+ font-variant-numeric:tabular-nums;
+ font-family:system-ui,"Vazirmatn",sans-serif;
+}
+#content.z66d-root .z66d-money-controls{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;
+}
+#content.z66d-root .z66d-money-control{
+ display:flex!important;justify-content:center;align-items:center;min-height:42px!important;
+ border:1px solid var(--z66d-edge)!important;border-radius:11px!important;
+ color:var(--z66d-ink)!important;background:var(--z66d-inner)!important;
+ padding:8px!important;font-size:12px!important;font-weight:750!important;
+ transition:transform .18s ease,background .18s ease!important;
+}
+#content.z66d-root .z66d-money-control:active{transform:scale(.97)}
+/* Put real month/year selectors above the actual selected-month chart. */
+#content.z66d-root .z66d-charts>.z47-chart-header{
+ display:grid!important;gap:8px!important;min-width:0!important;
+ padding:7px 0!important;color:var(--z66d-ink)!important;
+}
+#content.z66d-root .z66d-charts>.z47-chart-header .z27-chart-filters{
+ display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:7px!important;
+}
+#content.z66d-root .z66d-charts>.z47-chart-header label{
+ color:var(--z66d-muted)!important;min-width:0!important;
+ font-size:11px!important;line-height:1.5!important;
+}
+#content.z66d-root .z66d-charts>.z47-chart-header select{
+ display:block!important;width:100%!important;max-width:100%!important;min-width:0!important;
+ background:var(--z66d-inner)!important;color:var(--z66d-ink)!important;
+ border:1px solid var(--z66d-edge)!important;
+ border-radius:10px!important;min-height:42px!important;
+ padding:7px!important;font-size:11px!important;font-weight:750!important;
+}
+#content.z66d-root .z66d-month-overview{
+ min-width:0!important;background:var(--z66d-inner)!important;
+ border:1px solid var(--z66d-edge)!important;border-radius:16px!important;
+ padding:14px 12px 11px!important;display:grid!important;gap:9px!important;
+ box-shadow:var(--z66d-elevation)!important;
+}
+#content.z66d-root .z66d-month-header{
+ display:flex!important;gap:8px!important;justify-content:space-between!important;
+ align-items:center!important;min-width:0!important;
+}
+#content.z66d-root .z66d-month-money{
+ display:grid!important;gap:3px!important;min-width:0!important;
+}
+#content.z66d-root .z66d-month-caption{
+ color:var(--z66d-muted)!important;font-size:11px!important;font-weight:650!important;
+}
+#content.z66d-root .z66d-month-total{
+ color:var(--z66d-ink)!important;font-size:clamp(19px,5vw,26px)!important;
+ font-weight:900!important;line-height:1.35!important;
+ direction:ltr;unicode-bidi:isolate;overflow-wrap:anywhere;
+ font-variant-numeric:tabular-nums;
+}
+#content.z66d-root .z66d-month-doc-count{
+ color:#10bfa6!important;background:rgba(21,167,145,.11)!important;
+ border:1px solid rgba(46,195,157,.28)!important;
+ border-radius:20px!important;padding:7px 9px!important;font:800 11px system-ui!important;
+ white-space:nowrap;
+}
+#content.z66d-root .z66d-month-graph{
+ width:100%;min-width:0!important;padding:5px 0 0!important;
+ border-radius:12px!important;overflow:hidden!important;
+}
+#content.z66d-root .z66d-month-graph svg{
+ width:100%;height:auto;display:block;max-height:166px;
+}
+#content.z66d-root .z66d-graph-gridline{
+ stroke:var(--z66d-edge);stroke-width:1;stroke-dasharray:4 6;opacity:.8;
+}
+#content.z66d-root .z66d-mini-bar{
+ fill:#428ce9;transform-box:fill-box;transform-origin:bottom;
+ animation:z66d-graph-reveal .55s cubic-bezier(.2,.9,.2,1) both;
+}
+#content.z66d-root .z66d-mini-bar-last{fill:#1abda8}
+#content.z66d-root .z66d-graph-week{fill:var(--z66d-muted);font:650 12px system-ui,sans-serif}
+#content.z66d-root .z66d-month-empty{
+ color:var(--z66d-muted)!important;text-align:center!important;
+ font-size:11px!important;margin:0!important;
+}
+#content.z66d-root .z66d-sales-calendar,
+#content.z66d-root .z66d-year-trend{
+ border:1px solid var(--z66d-edge)!important;border-radius:11px!important;
+ overflow:hidden!important;background:var(--z66d-paper)!important;
+ min-width:0!important;
+}
+#content.z66d-root .z66d-calendar-label,
+#content.z66d-root .z66d-year-label{
+ padding:10px 12px!important;min-height:39px!important;
+ display:flex!important;align-items:center!important;justify-content:space-between!important;
+ font-size:12px!important;font-weight:750!important;cursor:pointer;
+ color:var(--z66d-ink)!important;list-style:none;
+}
+#content.z66d-root :is(.z66d-calendar-label,.z66d-year-label)::after{
+ content:"⌄";font:900 15px system-ui;transition:transform .2s ease;
+}
+#content.z66d-root :is(.z66d-sales-calendar,.z66d-year-trend)[open]>summary::after{transform:rotate(180deg)}
+#content.z66d-root :is(.z66d-calendar-label,.z66d-year-label)::-webkit-details-marker{display:none}
+#content.z66d-root .z66d-calendar-inner{
+ display:grid!important;gap:10px!important;padding:10px!important;
+}
+#content.z66d-root .z66d-calendar-grid{
+ display:grid!important;grid-template-columns:repeat(7,minmax(0,1fr))!important;
+ gap:3px!important;align-items:center!important;min-width:0!important;
+}
+#content.z66d-root .z66d-calendar-weekday{
+ display:grid;place-items:center;color:var(--z66d-muted)!important;
+ font-size:10px!important;min-width:0;
+}
+#content.z66d-root .z66d-calendar-day{
+ position:relative;display:grid!important;place-items:center!important;
+ width:100%!important;min-width:0!important;min-height:34px!important;
+ border:0!important;border-radius:9px!important;
+ color:var(--z66d-ink)!important;background:transparent!important;
+ font:750 12px system-ui!important;cursor:pointer;
+ transition:background .18s ease,transform .18s ease!important;
+}
+#content.z66d-root .z66d-calendar-day[aria-pressed="true"]{
+ color:#fff!important;background:#1f77da!important;
+ box-shadow:0 3px 9px #1e70b446!important;
+}
+#content.z66d-root .z66d-calendar-has-sale:not([aria-pressed="true"])::after{
+ content:"";position:absolute;bottom:2px;width:4px;height:4px;
+ background:#18b99b;border-radius:50%;
+}
+#content.z66d-root .z66d-calendar-day:active{transform:scale(.94)}
+#content.z66d-root .z66d-calendar-status{
+ color:var(--z66d-muted)!important;margin:0!important;
+ padding:10px 3px 1px!important;font-size:10px!important;
+ line-height:1.8!important;overflow-wrap:anywhere;
+}
+#content.z66d-root .z66d-year-trend{
+ display:block;margin:6px 0!important;
+}
+#content.z66d-root .z66d-year-trend>.zavi-chart-mobile-controls{
+ padding:6px 10px!important;
+}
+#content.z66d-root .z66d-year-trend>.z47-chart-scroll{
+ max-width:100%!important;overflow-x:auto!important;
+ padding:10px!important;
+}
+/* Full-width: previous 2-column mobile chart caused vertical month labels. */
+@media(max-width:799px){
+ #content.z66d-root .z66d-chart-grid{
+  grid-template-columns:minmax(0,1fr)!important;
+ }
+ #content.z66d-root .z66d-chart-grid>.card{
+  width:100%!important;min-width:0!important;
+  padding:11px!important;border-radius:14px!important;
+ }
+}
+#content.z66d-root .z66d-chart-grid .z6539-donut-content{
+ display:grid!important;grid-template-columns:1fr!important;
+ justify-items:center!important;gap:12px!important;
+}
+#content.z66d-root .z66d-chart-grid .z6539-donut{
+ width:165px!important;height:165px!important;min-width:165px!important;
+ border-radius:50%!important;box-shadow:0 7px 22px #16408d25!important;
+}
+#content.z66d-root .z66d-chart-grid .z6539-donut-inner{
+ width:118px!important;height:118px!important;
+ font-size:22px!important;background:var(--z66d-paper)!important;
+ color:var(--z66d-ink)!important;
+}
+#content.z66d-root .z66d-chart-grid .z6539-donut-legend{
+ display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ gap:8px!important;width:100%!important;min-width:0!important;
+}
+#content.z66d-root .z66d-chart-grid .z6539-legend-row{
+ background:var(--z66d-paper)!important;border-radius:10px!important;
+ border:1px solid var(--z66d-edge)!important;padding:9px 7px!important;
+ font-size:11px!important;display:flex!important;
+ flex-wrap:wrap!important;gap:6px!important;
+}
+#content.z66d-root .z66d-chart-grid .z6539-legend-row b{
+ white-space:nowrap!important;font-variant-numeric:tabular-nums;
+}
+#content.z66d-root .z66d-invoices{
+ scroll-margin-top:16px!important;
+ border-radius:18px!important;padding:13px!important;
+}
+#content.z66d-root .z66d-invoice-entry{
+ box-shadow:0 4px 14px rgba(22,60,123,.07)!important;
+}
+html[data-zavi-theme="glass"] #content.z66d-root .z66d-section,
+html[data-zavi-theme="glass"] #content.z66d-root .z66d-month-overview{
+ backdrop-filter:blur(16px) saturate(130%);
+ -webkit-backdrop-filter:blur(16px) saturate(130%);
+}
+@keyframes z66d-rocket-drift{
+ 0%,100%{transform:translate3d(0,0,0) rotate(-12deg)}
+ 50%{transform:translate3d(6px,-8px,0) rotate(2deg)}
+}
+@keyframes z66d-twinkle{
+ 0%,100%{opacity:.3;transform:scale(.8)}50%{opacity:1;transform:scale(1.2)}
+}
+@keyframes z66d-graph-reveal{
+ from{transform:scaleY(.04);opacity:.45}
+ to{transform:scaleY(1);opacity:1}
+}
+@media(max-width:360px){
+ #content.z66d-root .z66d-quick-four{gap:5px!important}
+ #content.z66d-root .z66d-quick-four .z66d-action{padding:8px 2px!important}
+ #content.z66d-root .z66d-charts>.z47-chart-header .z27-chart-filters{gap:5px!important}
+ #content.z66d-root .z66d-charts>.z47-chart-header select{font-size:10px!important}
+}
+html[data-z637-no-motion="true"] #content.z66d-root .z66d-rocket,
+html.zx-lite #content.z66d-root .z66d-rocket,
+html[data-z637-no-motion="true"] #content.z66d-root .z66d-rocket::before,
+html[data-z637-no-motion="true"] #content.z66d-root .z66d-rocket::after,
+html[data-z637-no-motion="true"] #content.z66d-root .z66d-mini-bar,
+html.zx-lite #content.z66d-root .z66d-mini-bar{
+ animation:none!important;transition:none!important;
+}
+@media(prefers-reduced-motion:reduce){
+ #content.z66d-root :is(.z66d-rocket,.z66d-mini-bar,.z66d-action,.z66d-calendar-day),
+ #content.z66d-root .z66d-rocket::before,
+ #content.z66d-root .z66d-rocket::after{animation:none!important;transition:none!important}
+}
