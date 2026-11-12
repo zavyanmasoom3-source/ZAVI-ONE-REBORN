@@ -20,6 +20,23 @@ const TEXT={
 const lang=()=>{const l=String(document.documentElement.lang||'fa-AF').toLowerCase();
  return l.startsWith('en')?'en':l.startsWith('ps')?'ps':'fa';};
 const labels=()=>TEXT[lang()];
+
+const EXTRA={
+ fa:{invoice:'فاکتورها',more:'خدمات بیشتر',monthSales:'فروش ماه انتخاب‌شده',trend:'روند 12 ماه',calendar:'تقویم فروش',day:'فروش روز',docs:'اسناد',no:'در این بازه فروشی ثبت نشده است.',cashIn:'دریافت پول',cashOut:'پرداخت پول'},
+ ps:{invoice:'بلونه',more:'نورې آسانتیاوې',monthSales:'د ټاکلې میاشتې پلور',trend:'د 12 میاشتو بهیر',calendar:'د پلور کلیزه',day:'د ورځې پلور',docs:'سندونه',no:'په دې موده کې پلور نشته.',cashIn:'پیسې ترلاسه کول',cashOut:'پیسې ورکول'},
+ en:{invoice:'Invoices',more:'More tools',monthSales:'Sales in selected month',trend:'12-month trend',calendar:'Sales calendar',day:'Daily sales',docs:'Records',no:'No sales in this period.',cashIn:'Receive money',cashOut:'Pay money'}
+};
+const extras=()=>EXTRA[lang()];
+const ICONS={
+ sale:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h2l2.3 10h10.6l2-7H7"/><circle cx="10" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>',
+ purchase:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14l1 13H4L5 8Z M9 10V6a3 3 0 0 1 6 0v4"/></svg>',
+ warehouse:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10 12 4l9 6v11H3V10Z M7 21v-9h10v9 M10 15h4"/></svg>',
+ invoices:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h10l3 3v17l-3-2-3 2-3-2-4 2V2Z M9 9h7 M9 13h7 M9 17h4"/></svg>',
+ reports:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16 M6 16v-5 M12 16V4 M18 16V9"/></svg>',
+ contacts:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3"/><path d="M5 20v-2a7 7 0 0 1 14 0v2"/></svg>',
+ receive:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v15 M6 12l6 6 6-6 M4 21h16"/></svg>',
+ barcode:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5v14 M6 5v14 M10 5v14 M13 5v14 M17 5v14 M21 5v14"/></svg>'
+};
 function node(tag,cls,txt){const el=document.createElement(tag);if(cls)el.className=cls;
  if(txt!==undefined)el.textContent=txt;return el;}
 function section(name,title){
@@ -33,8 +50,8 @@ function quickAction(label,icon,target,value){
  // Native event delegation: never synthesize or post transactions in UI code.
  if(target==='sale'||target==='purchase'||target==='receive'||target==='pay')
    el.dataset.action={sale:'sale',purchase:'purchase',receive:'customer_payment',pay:'supplier_payment'}[target];
- else el.dataset.go=target==='barcode'?'products':value;
- el.innerHTML='<span class="z66d-action-icon" aria-hidden="true">'+icon+'</span>';
+ else if(target!=='invoices')el.dataset.go=target==='barcode'?'products':value;
+ el.innerHTML='<span class="z66d-action-icon" aria-hidden="true">'+(ICONS[target]||icon)+'</span>';
  el.append(node('span','z66d-action-label',label));
  return el;
 }
@@ -135,6 +152,8 @@ function paint(){
  const t=labels();
  hero.dataset.z66DashDone='1';
  root.classList.add('z66d-root');
+ const rocket=node('span','z66d-rocket','🚀');
+ rocket.setAttribute('aria-hidden','true');hero.append(rocket);
  const title=hero.querySelector('h2'),eyebrow=hero.querySelector('.eyebrow'),sub=hero.querySelector('p');
  if(eyebrow)eyebrow.textContent=t.welcome;
  if(title)title.textContent=t.title;
@@ -155,15 +174,18 @@ function paint(){
  const access=node('nav','z66d-quick');
  access.setAttribute('aria-label',t.quick);
  const four=node('div','z66d-quick-four'),secondary=node('div','z66d-quick-second');
+ const ex=extras();
  const primary=[
   ['sale','＋',t.sale,'sales'],['purchase','▣',t.purchase,'purchases'],
-  ['warehouse','▧',t.warehouse,'products'],['reports','▥',t.reports,'reports']];
+  ['warehouse','▧',t.warehouse,'products'],['invoices','▤',ex.invoice,'invoices']];
  for(const [a,i,l,route] of primary)four.append(quickAction(l,i,a,route));
  for(const [a,i,l,route] of [
-    ['receive','↙',t.receive,'money'],['pay','↗',t.pay,'money'],
+    ['reports','▥',t.reports,'reports'],['receive','↙',t.receive,'money'],
     ['contacts','♙',t.contacts,'contacts'],['barcode','▤',t.barcode,'products']
  ])secondary.append(quickAction(l,i,a,route));
- access.append(four,secondary);
+ const more=node('details','z66d-more-actions');
+ more.append(node('summary','z66d-more-label',ex.more),secondary);
+ access.append(four,more);
  hero.after(access);
  // One summary: reuse exactly the original, already-computed financial cards.
  const summary=section('summary',t.summary);
@@ -177,7 +199,15 @@ function paint(){
       moneyGrid.append(stat);
    }
  }
- if(moneyGrid.children.length){money.append(moneyGrid);summary.after(money);}
+ if(moneyGrid.children.length){
+   money.append(moneyGrid);
+   const cashControls=node('div','z66d-money-controls');
+   for(const [label,action] of [[extras().cashIn,'customer_payment'],[extras().cashOut,'supplier_payment']]){
+      const btn=node('button','z66d-money-control',label);
+      btn.type='button';btn.dataset.action=action;cashControls.append(btn);
+   }
+   money.append(cashControls);summary.after(money);
+ }
  else money.remove();
  // Keep the one real exchange-rate editor and original USD ledger and journal.
  const rate=root.querySelector(':scope > .zavi-usd-today-card');
@@ -197,7 +227,10 @@ function paint(){
  const lowStock=graph?.querySelector(':scope > .card:nth-child(2)');
  if(originalChart)chartGrid.append(originalChart);
  if(donut)chartGrid.append(donut);
- if(chartGrid.children.length){charts.append(chartGrid);(shortLedger||rate||money.isConnected&&money||summary).after(charts);}
+ if(chartGrid.children.length){
+   try{const overview=buildMonthOverview();if(overview)charts.append(overview);}catch(err){console.warn('ZAVI monthly chart:',err)}
+   charts.append(chartGrid);(shortLedger||rate||money.isConnected&&money||summary).after(charts);
+ }
  const inventory=[...root.children].find(x=>x!==stock&&x!==graph&&
    /موجودی هوشمند|هوښیار موجودي|Smart stock|هوشمند گدام/i.test(x.textContent?.slice(0,220)||'') &&
    x.querySelector?.('[class*="stock"],[data-go="products"]'));
@@ -239,6 +272,17 @@ function handleActions(event){
  const button=event.target.closest?.('#content.z66d-root [data-z66-dash-action]');
  if(!button)return;
  const kind=button.dataset.z66DashAction;
+ if(kind==='invoices'){
+   event.preventDefault();event.stopImmediatePropagation();
+   const target=document.querySelector('#content.z66d-root .z66d-invoices');
+   if(target){
+    const noMotion=document.documentElement.dataset.z637NoMotion==='true'||
+     matchMedia('(prefers-reduced-motion: reduce)').matches;
+    target.scrollIntoView({block:'start',behavior:noMotion?'auto':'smooth'});
+    target.querySelector('.z66d-invoice-tab')?.focus({preventScroll:true});
+   }
+   return;
+ }
  const route=button.dataset.go;
  if(route&&!sourceHas(route)){
    // Disable navigation to absent modules; never fabricate business data.
@@ -255,7 +299,7 @@ function start(){
  // Load CSS after original V66.62 skins; only dashboard selectors apply.
  if(!document.getElementById('z66OwnerDashboardCss')){
    const style=document.createElement('link');style.id='z66OwnerDashboardCss';
-   style.rel='stylesheet';style.href='./zavi-owner-dashboard-v6662.css?v=1';
+   style.rel='stylesheet';style.href='./zavi-owner-dashboard-v6662.css?v=20261112-premium-1';
    document.head.append(style);
  }
  let queued=false;
