@@ -141,7 +141,7 @@ with Session() as browser:
         originalSku:f.elements.namedItem('sku').value};
     })()""")
     assert entered['total']=='8' and len(entered['variants'])==2,entered
-    assert entered['barcodes']==['QA-BLACK-01','QA-WHITE-01'],entered
+    assert entered['barcodes']==['QA-REG-BT-01','QA-BLACK-01','QA-WHITE-01'],entered
     assert entered['nativeCalled'] and entered['notPosted'],entered
     # Invalid duplicate colour must stop the native submit handler in capture.
     duplicate=browser.eval("""(()=>{
