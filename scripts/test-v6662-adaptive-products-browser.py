@@ -65,7 +65,7 @@ with Session() as browser:
         variant:!!form.querySelector('[data-z629-key="colorVariants"]'),
         rate:!!form.elements.namedItem('productPriceCurrency'),
         nativeSku:!!form.elements.namedItem('sku').value,
-        barcodeCamera:!!form.querySelector('[data-zavi-camera-open="fld_sku"]'),
+        barcodeCamera:!!form.querySelector('[data-zavi-camera-open="z66ProductPrimaryBarcode"]'),
         photo:!!form.querySelector('#zaviProductPhotoInput'),
         photoCamera:!!form.querySelector('.z66-photo-camera input[type=file][capture=environment]'),
         originalSave:typeof form.onsubmit==='function',
