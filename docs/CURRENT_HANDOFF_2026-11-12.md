@@ -55,5 +55,15 @@
 - دو اجرای متوالی با versionCode افزایشی و هویت ثابت، همراه تست نصب و ارتقا روی دستگاه **آزمایشی بدون اطلاعات واقعی** لازم است.
 - قبل از انجام این موارد: **BLOCKED**. مرحلهٔ بعد از نظر اجرا هنوز شروع نشده است.
 
+## 6A. تغییر تأییدشدهٔ فروش یک‌صفحه‌ای و چهار روش اسکن — 2026-11-12
+- تأیید صریح مالک در گفت‌وگو: فاکتور فروش در **یک صفحه** باشد، چهار روش بارکد «دوربین، دستی، USB، Bluetooth» و افزودن خودکار با اسکن تکراری داشته باشد. نمونهٔ تعاملی پیش از اجرا پذیرفته شد.
+- کامیت‌های کد واقعی در `dev`: [98344597](https://github.com/zavyanmasoom3-source/ZAVI-ONE-REBORN/commit/983445970e134914cf150a374612a71454d98b67) (ماژول/UI اسکن و تست)، [aa123a6e](https://github.com/zavyanmasoom3-source/ZAVI-ONE-REBORN/commit/aa123a6e9996ca9e3b26e2038f16ba478b35c19b) (حفظ ترتیب محافظت‌شدهٔ CSS)، [689eeb8d](https://github.com/zavyanmasoom3-source/ZAVI-ONE-REBORN/commit/689eeb8d12c414da9fa079a95643234deba93642) (فوکوس مجدد HID بعد از Enter/Tab و تست آن).
+- فایل تازهٔ مخصوص فروش: `apps/one/zavi-sale-scanner-modes-v6662.js` و `.css`. فقط روی `#dialogForm[data-zavi-sale-onepage="true"]` نصب می‌شوند؛ فاکتورهای خرید، برگشت، ADMIN و دیتابیس بدون تغییر مانده‌اند.
+- چهار گزینهٔ قابل انتخاب، راهنمای دری/پشتو/English، ورود دستی، دکمهٔ دوربین واقعی موجود، USB/OTG HID و Bluetooth HID با ورود مانند کیبورد، افزودن خودکار قابل خاموش‌کردن، پردازش Enter و Tab و بازگرداندن فوکوس به کدخوان برای اسکن پشت‌سرهم. همهٔ شناسه‌ها و handlerهای native ثبت، قیمت، گدام و موجودی حفظ شده‌اند.
+- **شواهد واقعی:** [Owner original APK style visual QA 43190727242](https://github.com/zavyanmasoom3-source/ZAVI-ONE-REBORN/actions/runs/43190727242) برای کامیت `689eeb8d` به‌طور کامل **SUCCESS**. مرحلهٔ `Verify approved one-page sale, typed unit price, barcode repeat and safe submission` موفق است؛ آزمون `scripts/test-v6662-sale-onepage-browser.py` حالات UI، جلوگیری از افزودن با auto-off، دو suffix رایج HID و تداوم فوکوس را بررسی می‌کند. [Migration integrity 43190727196](https://github.com/zavyanmasoom3-source/ZAVI-ONE-REBORN/actions/runs/43190727196) نیز **SUCCESS**.
+- **محدودیت:** این تست‌ها مرورگر/آفلاین آزمایشی‌اند. اتصال فیزیکی اسکنر USB یا Bluetooth و دوربین/برنامه روی تلفن Android واقعی، عملکرد HID برندهای مختلف و ارتقای یک APK امضاشده **هنوز آزموده نشده**. Bluetooth SPP یا دستگاه‌های غیر-HID در این ماژول پیاده نشده‌اند و نباید پشتیبانی‌شده معرفی شوند.
+- اجرای `REBORN clean Android QA builds` همان کامیت همچنان به‌دلیل نبود Secrets گواهی پایدار **FAIL** می‌شود؛ Issue #3 باز است. هیچ APK نهایی صادر یا تحویل نشده است.
+- **مرحلهٔ بعد فقط پس از تصمیم مالک/آزمون لازم:** حفظ همین طرح و رفع مانع Signing یا بررسی مشکل تازه بر اساس عکس؛ بدون ادعای صددرصد برای سخت‌افزار واقعی.
+
 ## 7. دستور ادامه در چت جدید
 «فایل `docs/CURRENT_HANDOFF_2026-11-12.md` و Issue #3 مخزن `zavyanmasoom3-source/ZAVI-ONE-REBORN` شاخه `dev` را بخوان. ابتدا head جدید و وضعیت Actions را با این گزارش مقایسه کن. فقط مانع ثبت‌شدهٔ امضای QA را بدون دورزدن امنیت بررسی کن. هر تغییر واقعی را با SHA کامیت و نتیجهٔ CI گزارش کن. تا زمان برطرف‌شدن مانع، هیچ APKی را تحویل/نهایی اعلام نکن. تصمیم‌های UI، حسابداری، آفلاین و Supabase را حفظ کن.»
