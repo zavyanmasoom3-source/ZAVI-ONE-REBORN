@@ -2888,6 +2888,11 @@ function openEntity(kind,id,creditorMode=false){if(kind==='product'||kind==='edi
  const p=db.products.find(x=>x.id===id)||{},edit=!!p.id;
  const actualQty=edit?stockOf(id):0;
  const buyingPrice=edit?(p.purchasePrice??unitCost(id)):(p.purchasePrice??p.openingCost??0);
+ // Keep the converted ledger money intact. Original USD entry and the exact
+ // manually approved rate are metadata, never a rewrite of past invoices.
+ const usdMeta=edit&&p.productPriceMeta?.currency==='USD'&&p.productPriceMeta.baseCurrency===db.currency?p.productPriceMeta:null;
+ const shownBuy=usdMeta?usdMeta.purchase:buyingPrice;
+ const shownSale=usdMeta?usdMeta.sale:(p.salePrice??0);
   const variantEngine=window.ZaviVariantInventory6662;
   let productVariantDetails=p.industryDetails;
   if(edit&&variantEngine?.tracked(p)){
@@ -2898,14 +2903,15 @@ function openEntity(kind,id,creditorMode=false){if(kind==='product'||kind==='edi
    }catch(error){toast('موجودی رنگ‌ها قابل تأیید نیست: '+error.message);return;}
   }
  let pendingProductImage=zaviSafeProductImage(p.imageData),productImageBusy=false;
- const productIndustry=zaviBusinessTypeV638();
+ const productIndustry=edit?(p.industryDetails?.type||zaviBusinessTypeV638()):
+   (window.zaviProductDraftTrade||zaviBusinessTypeV638());
  const knownWarehouses=(window.ZaviWarehouseV1?.list?.()||[]).filter(w=>w.is_active&&w.id&&w.name);
  const warehouseIds=new Map(knownWarehouses.map(w=>[w.id,w.name]));
  for(const v of p.variantLedger?.warehouseLedger?.initial||[])
   if(!warehouseIds.has(v.warehouseId))warehouseIds.set(v.warehouseId,'گدام ذخیره‌شده · '+v.warehouseId.slice(0,8));
  const warehouseChoices=[...warehouseIds].map(([id,name])=>[id,name]);
- const variantWarehouseMarkup=warehouseChoices.length&&(['mobile','accessories'].includes(productIndustry)||variantEngine.tracked(p))?
-  selectField('variantWarehouseId','گدام برای موجودی و اصلاح رنگ‌ها',[['','انتخاب گدام'],...warehouseChoices]):
+ const variantWarehouseMarkup=warehouseChoices.length?
+  selectField('variantWarehouseId','گدام پیش‌فرض محصول (موجودی مستقل رنگ‌ها)',[['','انتخاب گدام'],...warehouseChoices],p.defaultWarehouseId||''):
   '';
  const catData=`<datalist id="zawiCategoryOptions">${[...PRODUCT_CATS,'سایر'].map(x=>`<option value="${escapeHtml(x)}"></option>`).join('')}</datalist>`;
  const body=`<div class="form-grid">
@@ -2915,9 +2921,10 @@ function openEntity(kind,id,creditorMode=false){if(kind==='product'||kind==='edi
  <div class="field full"><label for="zaviExtraBarcodes">بارکدهای اضافی (هر کود در یک خط)</label><textarea name="barcodes" id="zaviExtraBarcodes" rows="3" maxlength="1800" placeholder="بارکد دوم، سوم و ...">${escapeHtml(Array.isArray(p.barcodes)?p.barcodes.join('\n'):'')}</textarea><small class="field-hint">بارکدهای اضافی هم در فروش و خرید شناسایی می‌شوند. بارکد محصول خودش دوباره ثبت نمی‌شود.</small></div>
  <div class="field full"><div id="zaviBarcodeProductNotice" class="z641-product-match" role="status" aria-live="polite"></div></div>
  <div class="field"><label>دسته‌بندی محصول</label><input name="category" list="zawiCategoryOptions" maxlength="100" placeholder="دسته‌بندی (اختیاری)" value="${escapeHtml(p.category||'')}">${catData}</div>
- ${field('salePrice','قیمت فروش هر واحد',p.salePrice??0,'number','min="0" step="any" required')}
- ${field('purchasePrice','قیمت آمد / خرید هر واحد',buyingPrice,'number','min="0" step="any" required')}
-  ${selectField('productPriceCurrency','واحد پول قیمت‌های واردشده',[[db.currency,'پول اصلی ('+db.currency+')'],...(db.currency==='USD'?[]:[['USD','دالر امریکایی (USD)']])],db.currency)}
+ ${field('salePrice','قیمت فروش هر واحد',shownSale,'number','min="0" step="any" required')}
+ ${field('purchasePrice','قیمت آمد / خرید هر واحد',shownBuy,'number','min="0" step="any" required')}
+  ${selectField('productPriceCurrency','واحد پول قیمت‌های واردشده',[[db.currency,'پول اصلی ('+db.currency+')'],...(db.currency==='USD'?[]:[['USD','دالر امریکایی (USD)']])],usdMeta?'USD':db.currency)}
+ ${field('productManualUsdRate','نرخ دستی: ۱ USD به '+db.currency,usdMeta?usdMeta.rate:(fxUsdRate()||''),'number','min="0.000001" step="any"')}
   <div class="field full"><div class="small-info">اگر قیمت را به دالر می‌نویسید، نخست نرخ دالر را در داشبورد ثبت کنید. بعد قیمت فروش و قیمت خرید را هر دو به دالر وارد کنید؛ هنگام ذخیره، معادل حسابداری به پول اصلی ثبت می‌شود.</div></div>
  ${window.ZaviIndustryForms6529.render(productIndustry,productVariantDetails,{expanded:!!p.industryDetails})}
  ${variantWarehouseMarkup}
@@ -2933,6 +2940,8 @@ function openEntity(kind,id,creditorMode=false){if(kind==='product'||kind==='edi
  // Existing barcode always means existing product: show an explicit EDIT action,
  // not a misleading error or silent reuse of another product's financial history.
  const productForm=document.getElementById('dialogForm');
+ productForm.dataset.z66ProductNativeTrade=productIndustry;
+ productForm.dataset.z66ProductEditing=edit?'true':'false';
  const zaviFormCodes=()=>String(productForm.elements.barcodes.value||'').split(/[,;\n]+/).map(x=>x.trim()).filter(Boolean);
  let zaviPreviewOwner='';
  function refreshProductBarcodeNotice(){
@@ -2979,7 +2988,12 @@ function openEntity(kind,id,creditorMode=false){if(kind==='product'||kind==='edi
   }
   // Empty barcode is valid; repeated codes inside the SAME product are de-duplicated.
   const barcodes=inspected.barcodes;
-  const priceMult=f.productPriceCurrency.value==='USD'?(fxUsdRate()||0):1; if(priceMult<=0)return toast('اول نرخ دالر را در تنظیمات ذخیره کنید.');const salePrice=money(num(f.salePrice.value)*priceMult),purchasePrice=money(num(f.purchasePrice.value)*priceMult),qty=qtyRound(num(f.openingQty.value)),reorder=qtyRound(num(f.reorder.value));
+  const inputCurrency=f.productPriceCurrency.value;
+  const usdRate=Number(f.productManualUsdRate?.value);
+  const priceMult=inputCurrency==='USD'&&db.currency!=='USD'?usdRate:1;
+  if(!Number.isFinite(priceMult)||priceMult<=0)
+    return toast('برای قیمت دالر، نرخ دستی معتبر را وارد کنید.');
+const salePrice=money(num(f.salePrice.value)*priceMult),purchasePrice=money(num(f.purchasePrice.value)*priceMult),qty=qtyRound(num(f.openingQty.value)),reorder=qtyRound(num(f.reorder.value));
   if(!name)return toast('نام محصول را بنویسید.');
   let industryDetails;try{industryDetails=window.ZaviIndustryForms6529.collect(productForm.querySelector('.z629-industry'),productIndustry)}catch(e){return toast(e.message)}
    let variantRows;try{variantRows=variantEngine.rows({industryDetails})}catch(e){return toast(e.message)}
@@ -3000,7 +3014,13 @@ function openEntity(kind,id,creditorMode=false){if(kind==='product'||kind==='edi
   }
   if(commit(n=>{
    let obj=edit?n.products.find(x=>x.id===id):{id:newId('p')};
-   Object.assign(obj,{name,sku,barcodes,category,salePrice,purchasePrice,reorder,imageData:pendingProductImage,industryDetails});
+   Object.assign(obj,{name,sku,barcodes,category,salePrice,purchasePrice,reorder,
+     imageData:pendingProductImage,industryDetails,
+     defaultWarehouseId:selectedWarehouse||p.defaultWarehouseId||'',
+     productPriceMeta:inputCurrency==='USD'?{
+       currency:'USD',baseCurrency:db.currency,rate:priceMult,
+       sale:num(f.salePrice.value),purchase:num(f.purchasePrice.value)
+     }:null});
    if(!edit){
     obj.openingQty=qty;obj.openingCost=purchasePrice;
     if(variantRows.length){
@@ -4008,6 +4028,7 @@ document.addEventListener('change',e=>{if(e.target.dataset.moduleId){zaviSaveMod
 <script defer src="../../packages/shared/i18n/language-core.js" data-zavi-safe-original-shared="true"></script>
 <script defer src="../../packages/shared/ui/design-system-v1.js" data-zavi-utilities-only="true"></script>
 <link rel="stylesheet" href="./zavi-sale-scanner-modes-v6662.css?v=20261112-approved1">
+<link rel="stylesheet" href="./zavi-product-adaptive-v6662.css?v=20261112-registration-v1">
 <link rel="stylesheet" href="./zavi-compact-workflow-v1.css?v=1" data-zavi-compact-workflow="1">
 <link rel="stylesheet" href="./zavi-cheques-v1.css?v=stage4-01" data-zavi-cheques="1">
 <link rel="stylesheet" href="./zavi-warehouses-v1.css?v=2">
@@ -4016,6 +4037,7 @@ document.addEventListener('change',e=>{if(e.target.dataset.moduleId){zaviSaveMod
 <link rel="stylesheet" href="./zavi-safe-transfer-v1.css?v=1">
 <link rel="stylesheet" href="./zavi-in-transit-v1.css?v=1">
 <script defer src="./zavi-v6662-pin-visibility-v1.js?v=1" data-zavi-original-login-eye="1"></script>
+<script defer src="./zavi-product-adaptive-v6662.js?v=20261112-registration-v1"></script>
 <script defer src="./zavi-compact-workflow-v1.js?v=1" data-zavi-compact-workflow-script="1"></script>
 <script defer src="./zavi-sale-scanner-modes-v6662.js?v=20261112-approved1" data-zavi-owner-approved-sale-scanner="1"></script>
 <script defer src="./zavi-cheques-v1.js?v=stage4-01" data-zavi-cheques="1"></script>

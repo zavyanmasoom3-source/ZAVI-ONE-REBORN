@@ -73,6 +73,43 @@ with Session() as browser:
         extraBarcodes:!!form.elements.namedItem('barcodes')
       };
     })()""")
+
+    approved=browser.eval("""(()=>{
+      const f=document.getElementById('dialogForm');
+      const types=[...f.querySelector('[data-z66-registration-industry]').options];
+      const code=f.elements.namedItem('sku');
+      const barcode=f.querySelector('#z66ProductPrimaryBarcode');
+      const buttons=[...f.querySelectorAll('.z66-reg-method')];
+      const camera=f.querySelector('[data-zavi-camera-open="z66ProductPrimaryBarcode"]');
+      const codes=f.elements.namedItem('barcodes').value.split(/\n/).filter(Boolean);
+      const before=db.products.length,tx=db.tx.length;
+      const a=f.querySelector('.z66-registration-scanner');
+      a.querySelector('[data-z66-scan-mode="usb"]').click();
+      const usb=barcode.getAttribute('inputmode')==='none';
+      a.querySelector('[data-z66-scan-mode="bluetooth"]').click();
+      barcode.value='QA-REG-BT-01';
+      barcode.dispatchEvent(new Event('input',{bubbles:true}));
+      const kb=new KeyboardEvent('keydown',{key:'Tab',bubbles:true,cancelable:true});
+      barcode.dispatchEvent(kb);
+      a.querySelector('[data-z66-scan-mode="manual"]').click();
+      const manual=barcode.getAttribute('inputmode')==='text';
+      const synced=f.elements.namedItem('barcodes').value.split(/\n/).includes('QA-REG-BT-01');
+      const sameCatalog=window.ZaviBarcodeV641.inspect(db.products,code.value,
+         f.elements.namedItem('barcodes').value.split(/\n/)).ok;
+      const beforeSku=code.value;
+      const sb=f.querySelector('.z66-reg-segment');
+      sb.querySelectorAll('button')[1].click();code.value='QA-MANUAL-SKU-21';
+      code.dispatchEvent(new Event('input',{bubbles:true}));
+      return {types:types.length,trade:f.dataset.z66ProductNativeTrade,
+        camera:!!camera,methods:buttons.length,usb,manual,synced,
+        noPosting:db.products.length===before&&db.tx.length===tx,
+        skuAuto:!!beforeSku,skuManual:code.value==='QA-MANUAL-SKU-21',
+        nativeCodes:sameCatalog,cameraIsNative:camera?.getAttribute('type')==='button'};
+    })()""")
+    assert approved['types']==21 and approved['trade']=='accessories',approved
+    assert all(approved[k] for k in ['camera','usb','manual','synced','noPosting',
+      'skuAuto','skuManual','nativeCodes','cameraIsNative']),approved
+    assert approved['methods']==4,approved
     assert initial['trade']=='accessories' and initial['originalSave'],initial
     assert all(initial[k] for k in ['brand','model','variant','rate','nativeSku',
       'barcodeCamera','photo','photoCamera','extraBarcodes']),initial

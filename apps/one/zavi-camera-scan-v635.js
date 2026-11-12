@@ -7,7 +7,7 @@ const dict={
  ps:{start:'د بارکوډ سکن',close:'کمره بندول',ready:'بارکوډ د کمرې مخې ته ونیسئ.',unavailable:'د کمرې سکن نشته؛ کوډ په لاس ولیکئ.',secure:'کمره HTTPS یا نصب شوی اپ غواړي.',denied:'د کمرې اجازه نشته؛ کوډ په لاس ولیکئ.',retry:'کمره بنده شوه. بیا هڅه وکړئ.'},
  en:{start:'Scan barcode',close:'Close camera',ready:'Point the camera at the barcode.',unavailable:'Camera scanning unavailable; enter the barcode manually.',secure:'Camera requires HTTPS or an installed app.',denied:'Camera permission denied; enter the code manually.',retry:'Camera stopped. Please try again.'}
 };
-const ids=new Set(['zaviBarcodeScan','zaviWarehouseScan','fld_sku']);
+const ids=new Set(['zaviBarcodeScan','zaviWarehouseScan','fld_sku','z66ProductPrimaryBarcode']);
 const isProductColourId=id=>/^z66-colour-barcode-[1-9][0-9]{0,2}$/.test(String(id||''));
 const messages=()=>{const l=(document.documentElement.lang||'fa-AF').toLowerCase();return dict[l.startsWith('en')?'en':l.startsWith('ps')?'ps':'fa']};
 function notify(value){if(typeof window.toast==='function')window.toast(value);else window.alert(value)}
@@ -33,7 +33,7 @@ function deliver(value,token){
  input.dispatchEvent(new Event('change',{bubbles:true}));
  // Colour barcodes must NEVER simulate Enter: it can submit the actual product
  // form before the user finishes the remaining colour or payment details.
- if(id!=='fld_sku'&&!isProductColourId(id))
+ if(id!=='fld_sku'&&id!=='z66ProductPrimaryBarcode'&&!isProductColourId(id))
    input.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true,cancelable:true}));
  input.focus({preventScroll:true});
 }

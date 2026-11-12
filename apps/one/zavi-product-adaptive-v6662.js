@@ -39,7 +39,7 @@ function enhance(form){
  const title=form.closest('.modal')?.querySelector('.modal-head h3')?.textContent||'';
  if(!/ثبت محصول|ویرایش محصول|new product|edit product/i.test(title))return;
  form.dataset.z66ProductReady='true';
- const trade=active(),category=form.elements.namedItem('category');
+ const trade=form.dataset.z66ProductNativeTrade||active(),category=form.elements.namedItem('category');
  const nativeCategory=category.closest('.field');
  if(!nativeCategory)return;
  form.classList.add('z66-product-editor');
@@ -215,7 +215,221 @@ function enhance(form){
     camera.append(file);label.after(camera);
    }
  }
+ enhanceApprovedRegistration(form,trade,title);
 }
+
+/* V66.62 owner-approved product editor: draft trade, SKU, primary barcode and
+ * explicit HID modes. All prices, collisions, inventory and saves are delegated
+ * to the native form. Selecting a trade NEVER changes shop Settings. */
+function enhanceApprovedRegistration(form,trade,title){
+ const sku=form.elements.namedItem('sku');
+ const extras=form.elements.namedItem('barcodes');
+ const currency=form.elements.namedItem('productPriceCurrency');
+ const rate=form.elements.namedItem('productManualUsdRate');
+ const sale=form.elements.namedItem('salePrice'),buy=form.elements.namedItem('purchasePrice');
+ const edit=form.dataset.z66ProductEditing==='true';
+ if(!sku||!extras||!currency||!rate||form.querySelector('.z66-registration-trade'))return;
+ const doc=document;
+ const T=(fa,ps,en)=>tr(fa,ps,en);
+ const label=(key)=>window.ZaviIndustryKit6525?.profile?.(key)?.label||
+    window.ZaviIndustryForms6529?.label?.(key)||key;
+ const types=window.ZaviIndustryForms6529?.types||Object.keys(preset);
+ const wrap=doc.createElement('div');wrap.className='z66-registration-trade field full';
+ const heading=doc.createElement('label');heading.textContent=T('نوع کسب‌وکار این محصول','د توکي د سوداګرۍ ډول','Product business type');
+ const selector=doc.createElement('select');selector.dataset.z66RegistrationIndustry='true';
+ for(const type of types){const o=new Option(label(type),type);selector.append(o);}
+ selector.value=trade;selector.disabled=edit;
+ const hint=doc.createElement('small');hint.className='field-hint';
+ hint.textContent=edit?
+  T('صنف این محصول ثبت شده و برای حفاظت از سابقه قابل تغییر نیست.',
+    'د ثبت شوي توکي صنف د سابقې د ساتنې لپاره نه بدلېږي.',
+    'Business type is locked for an existing product to preserve its history.'):
+  T('فقط همین فورم تغییر می‌کند؛ کسب‌وکار اصلی فروشگاه خودکار تغییر نمی‌کند.',
+    'یوازې دا فورم بدلېږي؛ د پلورنځي اصلي سوداګري په خپله نه بدلېږي.',
+    'Changes this product draft only; shop business stays unchanged.');
+ wrap.append(heading,selector,hint);
+ const grid=form.querySelector('.form-grid');
+ grid?.prepend(wrap);
+ selector.addEventListener('change',()=>{
+  if(edit)return;
+  const selected=selector.value;
+  if(!types.includes(selected)||!window.openEntity)return;
+  // The original native form binds the industry once at construction. Reopen
+  // with an explicit one-product draft override; never change owner settings.
+  const draft={};
+  for(const key of ['name','sku','barcodes','purchasePrice','salePrice',
+    'productPriceCurrency','productManualUsdRate','openingQty','reorder']){
+   const field=form.elements.namedItem(key);if(field)draft[key]=field.value;
+  }
+  window.zaviProductDraftTrade=selected;
+  window.openEntity('product');
+  const newer=doc.getElementById('dialogForm');
+  if(!newer||newer===form)return;
+  for(const [key,value] of Object.entries(draft)){
+   const field=newer.elements.namedItem(key);
+   if(field){field.value=value;field.dispatchEvent(new Event('input',{bubbles:true}));}
+  }
+ });
+ // The original SKU is the catalog lookup ID. Leave it visible and native:
+ // extra barcodes remain the same product, not duplicate inventory rows.
+ const skuField=sku.closest('.field');
+ if(skuField){
+  const note=doc.createElement('div');note.className='z66-reg-segment field full';
+  const row=doc.createElement('div');row.className='z66-reg-heading';
+  const title=doc.createElement('strong');title.textContent=T('کُد محصول / SKU','د توکي کوډ','Product code / SKU');
+  const autoBtn=doc.createElement('button'),manualBtn=doc.createElement('button');
+  for(const b of [autoBtn,manualBtn])b.type='button';
+  autoBtn.textContent=T('خودکار','اتومات','Auto');manualBtn.textContent=T('دستی','لاسي','Manual');
+  row.append(title,autoBtn,manualBtn);
+  const msg=doc.createElement('small');msg.className='field-hint';
+  msg.textContent=T('کُد محصول یکتا است و برای فروش و خرید قابل جستجو می‌ماند.',
+    'د توکي ځانګړی کوډ په پېر او پلور کې لټول کېږي.',
+    'The unique SKU remains searchable in native purchase and sale.');
+  note.append(row,msg);skuField.after(note);
+  let generated=!edit;
+  function fresh(prefix){
+    const uuid=window.crypto?.randomUUID?.();
+    if(uuid)return prefix+'-'+uuid.replace(/-/g,'').slice(0,12).toUpperCase();
+    const bytes=new Uint8Array(8);
+    if(window.crypto?.getRandomValues){window.crypto.getRandomValues(bytes);
+     return prefix+'-'+Array.from(bytes,x=>x.toString(16).padStart(2,'0')).join('').toUpperCase();}
+    return '';
+  }
+  function setAuto(on){
+    generated=on;sku.readOnly=on;autoBtn.setAttribute('aria-pressed',String(on));
+    manualBtn.setAttribute('aria-pressed',String(!on));
+    if(on && (!sku.value||!sku.value.trim()||!edit)){
+      const code=fresh('ZV'+String(trade).slice(0,3).toUpperCase());
+      if(code){sku.value=code;sku.dispatchEvent(new Event('input',{bubbles:true}));}
+    }
+    if(!on){sku.readOnly=false;sku.focus({preventScroll:true});}
+  }
+  autoBtn.addEventListener('click',()=>setAuto(true));
+  manualBtn.addEventListener('click',()=>setAuto(false));
+  setAuto(!edit);
+  // New product can optionally retain the existing auto-assigned ZV UUID.
+  // Manual editing of a SKU requires the explicit Manual choice.
+ }
+ const barcodeBox=form.querySelector('.zavi-barcode-box');
+ const camera=barcodeBox?.querySelector('[data-zavi-camera-open="fld_sku"]');
+ if(barcodeBox&&camera){
+  const section=doc.createElement('div');section.className='z66-registration-scanner field full';
+  const heading=doc.createElement('div');heading.className='z66-reg-heading';
+  const strong=doc.createElement('strong');strong.textContent=T('بارکد اصلی','لومړی بارکوډ','Primary barcode');
+  const autoBtn=doc.createElement('button'),manualBtn=doc.createElement('button');
+  for(const b of [autoBtn,manualBtn])b.type='button';
+  autoBtn.textContent=T('خودکار','اتومات','Auto');manualBtn.textContent=T('دستی','لاسي','Manual');
+  heading.append(strong,autoBtn,manualBtn);section.append(heading);
+  const methods=doc.createElement('div');methods.className='z66-reg-methods';
+  const input=doc.createElement('input');input.type='text';input.maxLength=70;
+  input.id='z66ProductPrimaryBarcode';input.dir='ltr';input.autocomplete='off';
+  input.placeholder=T('بارکد را اسکن یا بنویسید','بارکوډ سکن یا ولیکئ','Scan or type barcode');
+  const hint=doc.createElement('small');hint.className='field-hint';
+  hint.setAttribute('role','status');
+  const nativeBarcodes=()=>String(extras.value||'').split(/[,;\n]+/).map(x=>x.trim()).filter(Boolean);
+  let originalCodes=nativeBarcodes();
+  let previous=originalCodes[0]||'';
+  input.value=previous;
+  let auto=!edit&&!previous;
+  let mode='camera';
+  function freshBarcode(){
+    const rand=window.crypto?.randomUUID?.()?.replace(/-/g,'').slice(0,12).toUpperCase();
+    if(rand)return 'BC-'+String(trade).slice(0,3).toUpperCase()+'-'+rand;
+    const a=new Uint8Array(7);
+    if(window.crypto?.getRandomValues){window.crypto.getRandomValues(a);
+     return 'BC-'+Array.from(a,x=>x.toString(16).padStart(2,'0')).join('').toUpperCase();}
+    return '';
+  }
+  function sync(){
+    const code=String(input.value||'').trim();
+    const rest=nativeBarcodes().filter(c=>c.toLocaleLowerCase()!==previous.toLocaleLowerCase()&&c.toLocaleLowerCase()!==code.toLocaleLowerCase());
+    const normalized=[...(code?[code]:[]),...rest];
+    if(normalized.length>20)hint.textContent=T('حداکثر ۲۰ بارکد مجاز است.','تر ۲۰ بارکوډونو اجازه شته.','Maximum 20 barcodes.');
+    else hint.textContent=T('بارکد اصلی و اضافی در خرید و فروش همین محصول شناسایی می‌شوند.',
+      'لومړی او نور بارکوډونه د همدې توکي لپاره کار کوي.',
+      'All barcodes resolve to this one product in sales and purchases.');
+    previous=code;
+    const next=normalized.join('\n');
+    if(extras.value!==next){extras.value=next;extras.dispatchEvent(new Event('input',{bubbles:true}));}
+  }
+  function chooseAuto(on){
+    auto=on;autoBtn.setAttribute('aria-pressed',String(on));
+    manualBtn.setAttribute('aria-pressed',String(!on));
+    input.readOnly=on; // Camera still writes programmatically and triggers input.
+    if(on){const b=freshBarcode();if(b){input.value=b;sync();}}
+    else{input.readOnly=false;input.focus({preventScroll:true});}
+  }
+  autoBtn.addEventListener('click',()=>chooseAuto(true));
+  manualBtn.addEventListener('click',()=>chooseAuto(false));
+  const methodNames=[
+    ['camera','📷',T('دوربین','کمره','Camera')],
+    ['manual','⌨',T('تایپی','لاسي','Type')],
+    ['usb','USB','USB'],
+    ['bluetooth','ᛒ','Bluetooth']
+  ];
+  for(const [key,icon,name] of methodNames){
+    const button=doc.createElement('button');button.type='button';
+    button.className='z66-reg-method';button.dataset.z66ScanMode=key;
+    button.textContent=icon+' '+name;
+    button.addEventListener('click',()=>{
+      mode=key;
+      methods.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',String(x===button)));
+      camera.hidden=key!=='camera';
+      input.inputMode=key==='usb'||key==='bluetooth'?'none':'text';
+      if(key!=='camera')input.focus({preventScroll:true});
+    });
+    button.setAttribute('aria-pressed',String(key==='camera'));
+    methods.append(button);
+  }
+  camera.dataset.zaviCameraOpen=input.id;
+  camera.textContent=T('📷 اسکن بارکد با دوربین','📷 د کمرې له لارې سکن','📷 Scan using camera');
+  section.append(methods,input,hint);
+  barcodeBox.parentElement?.insertBefore(section,barcodeBox);
+  if(auto)chooseAuto(true);
+  else{autoBtn.setAttribute('aria-pressed','false');manualBtn.setAttribute('aria-pressed','true');}
+  input.addEventListener('input',()=>{
+    // An explicit camera/HID scan takes precedence over an auto-generated code.
+    if(auto){auto=false;autoBtn.setAttribute('aria-pressed','false');
+      manualBtn.setAttribute('aria-pressed','true');input.readOnly=false;}
+    sync();
+  });
+  input.addEventListener('keydown',event=>{
+    if(event.key!=='Enter'&&!(event.key==='Tab'&&['usb','bluetooth'].includes(mode)))return;
+    event.preventDefault();event.stopPropagation();sync();
+    if(['usb','bluetooth'].includes(mode))queueMicrotask(()=>input.focus({preventScroll:true}));
+  },true);
+  // Capture validation only; native barcode owner check is authoritative.
+  form.addEventListener('submit',event=>{
+    sync();
+    if(!input.value.trim()){event.preventDefault();event.stopImmediatePropagation();
+      status(T('بارکد اصلی را دستی وارد کنید یا حالت خودکار را انتخاب کنید.',
+        'بارکوډ ولیکئ یا اتومات وټاکئ.','Enter a primary barcode or choose Auto.'));
+    }
+  },true);
+ }
+ // Exact rate is authored by the owner, not silently taken from live internet.
+ const rateField=rate.closest('.field');
+ const priceNote=doc.createElement('div');priceNote.className='z66-product-fx-preview field full';
+ priceNote.setAttribute('role','status');
+ (rateField||currency.closest('.field'))?.after(priceNote);
+ function drawPrice(){
+  const usd=currency.value==='USD';
+  if(rateField)rateField.hidden=!usd;
+  const rateNumber=usd?Number(rate.value):1;
+  const base=currency.options[0]?.value||'AFN';
+  if(usd&&base!=='USD'&&!(rateNumber>0)){
+    priceNote.textContent=T('برای قیمت USD، نرخ دستی را وارد کنید.',
+      'د USD لپاره لاسي نرخ ولیکئ.','Enter a manual USD exchange rate.');
+  }else{
+    const val=Number(sale.value);
+    priceNote.textContent=T('قیمت فروش در پول اصلی: ','په اصلي پیسو د خرڅلاو بیه: ','Sale price in base currency: ')+
+      (Number.isFinite(val)?(val*(usd&&base!=='USD'?rateNumber:1)).toLocaleString('en-US',{maximumFractionDigits:2})+' '+base:'—');
+  }
+ }
+ for(const field of [currency,rate,sale,buy])field.addEventListener('input',drawPrice);
+ currency.addEventListener('change',drawPrice);drawPrice();
+}
+
 function init(){
  const overlay=document.getElementById('overlay');if(!overlay)return;
  const apply=()=>{const form=overlay.querySelector('#dialogForm');
