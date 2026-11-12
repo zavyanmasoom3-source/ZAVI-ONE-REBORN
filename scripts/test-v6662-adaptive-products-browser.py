@@ -81,7 +81,7 @@ with Session() as browser:
       const barcode=f.querySelector('#z66ProductPrimaryBarcode');
       const buttons=[...f.querySelectorAll('.z66-reg-method')];
       const camera=f.querySelector('[data-zavi-camera-open="z66ProductPrimaryBarcode"]');
-      const codes=f.elements.namedItem('barcodes').value.split(/\\n/).filter(Boolean);
+      const codes=f.elements.namedItem('barcodes').value.split(String.fromCharCode(10)).filter(Boolean);
       const before=db.products.length,tx=db.tx.length;
       const a=f.querySelector('.z66-registration-scanner');
       a.querySelector('[data-z66-scan-mode="usb"]').click();
@@ -93,9 +93,9 @@ with Session() as browser:
       barcode.dispatchEvent(kb);
       a.querySelector('[data-z66-scan-mode="manual"]').click();
       const manual=barcode.getAttribute('inputmode')==='text';
-      const synced=f.elements.namedItem('barcodes').value.split(/\\n/).includes('QA-REG-BT-01');
+      const synced=f.elements.namedItem('barcodes').value.split(String.fromCharCode(10)).includes('QA-REG-BT-01');
       const sameCatalog=window.ZaviBarcodeV641.inspect(db.products,code.value,
-         f.elements.namedItem('barcodes').value.split(/\\n/)).ok;
+         f.elements.namedItem('barcodes').value.split(String.fromCharCode(10))).ok;
       const beforeSku=code.value;
       const sb=f.querySelector('.z66-reg-segment');
       sb.querySelectorAll('button')[1].click();code.value='QA-MANUAL-SKU-21';
