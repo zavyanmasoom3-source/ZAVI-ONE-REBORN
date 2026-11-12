@@ -373,6 +373,16 @@ function enhanceApprovedRegistration(form,trade,title){
     button.textContent=icon+' '+name;
     button.addEventListener('click',()=>{
       mode=key;
+      // A keyboard-wedge HID device cannot type into a readonly generated
+      // field. Selecting typing/USB/Bluetooth explicitly makes it editable.
+      if(key!=='camera'&&auto){
+        auto=false;
+        autoBtn.setAttribute('aria-pressed','false');
+        manualBtn.setAttribute('aria-pressed','true');
+        input.readOnly=false;
+        input.value='';
+        sync();
+      }
       methods.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',String(x===button)));
       camera.hidden=key!=='camera';
       input.inputMode=key==='usb'||key==='bluetooth'?'none':'text';
