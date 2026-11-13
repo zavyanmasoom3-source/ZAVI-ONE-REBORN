@@ -12,7 +12,9 @@ with Session() as browser:
     route=browser.route('purchases')
     assert route['selected'] and route['visible'] and not route['locked'],route
     browser.until("!!document.querySelector('[data-zv-transit]')",'in-transit module mounted')
-    assert browser.eval("document.querySelectorAll('[data-zv-open]').length===1"),'purchase heading must expose one transit launcher'
+    assert browser.eval("!!document.querySelector('#content .z66pm-root [data-z66pm-view=orders]')"),'approved purchase manager must expose orders in transit'
+    browser.eval("document.querySelector('#content [data-z66pm-view=orders]').click()")
+    browser.until("document.querySelector('#content [data-zv-transit]')?.hidden===false", 'native in-transit panel visible under approved purchase manager')
     assert browser.eval("document.querySelector('[data-zv-status]').textContent.includes('مالک')"),'owner-only gate must be visible'
     print('PASS: real Chrome purchase page displays owner-only cloud gate')
     init=browser.eval(r"""(()=>{
