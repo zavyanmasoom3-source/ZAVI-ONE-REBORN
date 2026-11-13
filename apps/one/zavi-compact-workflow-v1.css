@@ -450,3 +450,58 @@ html.zx-lite #dialogForm .z66-purchase-onepage *{animation:none!important;transi
 #dialogForm .z66-purchase-onepage .z66p-field[hidden]{display:none!important}
 #dialogForm .z66-purchase-onepage .z66p-price-preview{padding:10px;background:rgba(13,174,205,.10);border-radius:10px;font-size:12px;color:var(--z66p-ink,#fff)}
 #dialogForm .z66-purchase-onepage .z66p-payments p{font-size:11px;color:var(--z66p-muted,#bcd3f0);margin:0}
+
+/* Approved real purchase manager on V66.62 — scoped, does NOT redesign other routes. */
+#content .z66pm-root{display:grid;gap:13px;max-width:1100px;margin-inline:auto;min-width:0;animation:z66p-reveal .32s ease both}
+#content .z66pm-root .z66pm-hero{background:linear-gradient(125deg,#1454ad,#113974 65%,#0d2d59);border:1px solid rgba(108,188,255,.35);
+ padding:18px;border-radius:17px;color:#fff;box-shadow:0 8px 24px rgba(5,35,82,.13)}
+#content .z66pm-root .z66pm-eyebrow{display:block;font-size:10px;letter-spacing:.10em;font-weight:800;color:#c7eaff;margin-bottom:8px}
+#content .z66pm-root .z66pm-hero h2{font-size:clamp(20px,4.5vw,26px);color:#fff;margin:0 0 7px}
+#content .z66pm-root .z66pm-hero p{font-size:12px;color:#e3f0ff;line-height:1.7;margin:0 0 10px}
+#content .z66pm-root .z66pm-trade{display:inline-flex;border-radius:999px;padding:5px 10px;background:rgba(255,255,255,.13);font-size:11px;color:#fff}
+#content .z66pm-root .z66pm-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+#content .z66pm-root .z66pm-action{display:flex;align-items:center;gap:10px;min-width:0;padding:14px 12px;border:1px solid rgba(130,191,246,.3);
+ border-radius:14px;text-align:start;cursor:pointer;min-height:86px;color:#fff;box-shadow:0 4px 12px rgba(0,18,57,.12)}
+#content .z66pm-root .z66pm-action-new{background:linear-gradient(125deg,#145bc6,#19479b)}
+#content .z66pm-root .z66pm-action-foreign{background:linear-gradient(125deg,#3c53aa,#34347c)}
+#content .z66pm-root .z66pm-action-transit{background:linear-gradient(125deg,#0d727c,#16525f)}
+#content .z66pm-root .z66pm-action-return{background:linear-gradient(125deg,#335f87,#1e496e)}
+#content .z66pm-root .z66pm-action-icon{font-size:26px;line-height:1;display:grid;place-items:center;width:35px;flex:none}
+#content .z66pm-root .z66pm-action-copy{display:grid;gap:6px;min-width:0}
+#content .z66pm-root .z66pm-action-copy strong{font-weight:850;font-size:14px;color:#fff;line-height:1.3}
+#content .z66pm-root .z66pm-action-copy small{font-size:10px;font-weight:450;line-height:1.5;color:#dbefff}
+#content .z66pm-root .z66pm-chevron{margin-inline-start:auto;font-size:20px;color:#beddf9}
+#content .z66pm-root .z66pm-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+#content .z66pm-root .z66pm-metric{display:grid;gap:7px;min-width:0;padding:13px;background:var(--surface,#1b3053);
+ border:1px solid var(--border,#40628c);border-radius:12px}
+#content .z66pm-root .z66pm-metric span{font-size:11px;color:var(--muted,#c0d4ed)}
+#content .z66pm-root .z66pm-metric strong{font-size:clamp(13px,3.6vw,21px);font-weight:850;direction:ltr;text-align:start;overflow-wrap:anywhere}
+#content .z66pm-root .z66pm-menu{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;padding:5px;border-radius:12px;
+ background:var(--surface,#203958);border:1px solid var(--border,#3b6087)}
+#content .z66pm-root .z66pm-nav{border:0;border-radius:9px;min-height:42px;padding:7px 9px;cursor:pointer;background:transparent;
+ color:var(--text,#dbe8fa);font-size:12px;font-weight:800}
+#content .z66pm-root .z66pm-nav.active{background:#146cd3;color:#fff;box-shadow:0 3px 10px rgba(14,99,202,.3)}
+#content .z66pm-root .z66pm-screen[hidden]{display:none!important}
+#content .z66pm-root .z66pm-card{padding:15px;margin-bottom:12px;border:1px solid var(--border,#3c6089);
+ border-radius:15px;background:var(--surface,#1a3050);color:var(--text,#e7f1ff);overflow:hidden}
+#content .z66pm-root .z66pm-card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+#content .z66pm-root .z66pm-card-head h3,#content .z66pm-root .z66pm-card h3{margin:0 0 6px;font-size:14px}
+#content .z66pm-root .z66pm-currency-pills{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+#content .z66pm-root .z66pm-supplier-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 0;
+ border-bottom:1px solid var(--border,#386084)}
+#content .z66pm-root .z66pm-supplier-row>div:first-child{display:grid;gap:4px;min-width:0}
+#content .z66pm-root .z66pm-supplier-row small{color:var(--muted,#b2cde6)}
+#content .z66pm-root .z66pm-supplier-tail{display:grid;gap:6px;justify-items:end}
+#content .z66pm-root .z66pm-inline-actions,#content .z66pm-root .z66pm-bottom-tools{display:flex;gap:8px;flex-wrap:wrap}
+#content .z66pm-root .z66pm-bottom-tools .btn{flex:1;min-width:115px}
+#content .z66pm-root .z66pm-muted{font-size:12px;line-height:1.7;color:var(--muted,#bdd4eb)}
+#content .z66pm-root .zv-transit{margin:0;box-shadow:none;border:0;padding:0;background:transparent}
+#content .z66pm-root button:focus-visible{outline:2px solid #7dd8ff;outline-offset:3px}
+html[dir="ltr"] #content .z66pm-root .z66pm-action{text-align:left}
+@media(max-width:380px){#content .z66pm-root .z66pm-action{padding:10px 9px;min-height:88px;gap:5px}
+#content .z66pm-root .z66pm-action-icon{font-size:23px;width:25px}
+#content .z66pm-root .z66pm-action-copy strong{font-size:12px}
+#content .z66pm-root .z66pm-action-copy small{font-size:10px}
+#content .z66pm-root .z66pm-metric{padding:9px}}
+@media(max-width:310px){#content .z66pm-root .z66pm-actions{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){#content .z66pm-root{animation:none}}

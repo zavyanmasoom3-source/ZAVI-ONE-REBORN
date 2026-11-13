@@ -16,6 +16,7 @@ on:
       - 'apps/one/zavi-owner-dashboard-v6662.css'
       - 'scripts/test-v6662-sale-onepage-browser.py'
       - 'scripts/test-v6662-purchase-onepage-browser.py'
+      - 'scripts/test-v6662-purchase-management-browser.py'
       - 'scripts/test-v6662-owner-sales-management-browser.py'
       - 'scripts/test-v6662-adaptive-products-browser.py'
       - 'scripts/test-v6662-21-trade-product-schema.cjs'
@@ -81,6 +82,8 @@ jobs:
         run: python3 scripts/test-v6662-owner-sales-management-browser.py
       - name: Verify approved compact purchase invoice, real FX/discount, barcode and payment controls
         run: python3 scripts/test-v6662-purchase-onepage-browser.py
+      - name: Verify actual approved purchase management route, native foreign flow and in-transit tabs
+        run: python3 scripts/test-v6662-purchase-management-browser.py
       - name: Verify approved one-page sale, typed unit price, barcode repeat and safe submission
         run: python3 scripts/test-v6662-sale-onepage-browser.py
       - name: Verify full private PIN recovery with isolated fake owner approval

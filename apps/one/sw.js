@@ -5,7 +5,7 @@
  */
 'use strict';
 const APK_ORIGIN='https://appassets.androidplatform.net';
-const CACHE_NAME='zavi-one-exact-original-v6662-restored-20261112-purchase-costs-v6';
+const CACHE_NAME='zavi-one-exact-original-v6662-approved-purchase-home-20261113-v7';
 const SHELL_PROTOCOL='zavi-shell-v2';
 const CACHE_PREFIX='zavi-one-';
 const CORE=[
@@ -68,6 +68,7 @@ const CORE=[
   "zavi-v6662-pin-visibility-v1.js",
   "zavi-compact-workflow-v1.js",
   "zavi-purchase-upgrade-v6662.js",
+  "zavi-purchase-management-v6662.js",
   "zavi-product-adaptive-v6662.js",
   "zavi-product-adaptive-v6662.css",
   "zavi-sale-scanner-modes-v6662.js",

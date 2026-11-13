@@ -6,6 +6,8 @@ on:
     paths:
       - '.github/workflows/build-android-connected-qa.yml'
       - 'apps/one/zavi-compact-workflow-v1.js'
+      - 'apps/one/zavi-purchase-management-v6662.js'
+      - 'scripts/test-v6662-purchase-management-browser.py'
       - 'apps/one/zavi-compact-workflow-v1.css'
       - 'apps/one/zavi-purchase-upgrade-v6662.js'
       - 'apps/one/zavi-in-transit-v1.js'
