@@ -7,6 +7,7 @@ on:
       - '.github/workflows/build-android-connected-qa.yml'
       - 'apps/one/zavi-compact-workflow-v1.js'
       - 'apps/one/zavi-purchase-management-v6662.js'
+      - 'apps/one/sw.js'
       - 'scripts/test-v6662-purchase-management-browser.py'
       - 'apps/one/zavi-compact-workflow-v1.css'
       - 'apps/one/zavi-purchase-upgrade-v6662.js'
@@ -91,6 +92,8 @@ jobs:
         if: matrix.app == 'one'
         run: |
           python3 scripts/test-v6662-sale-onepage-browser.py
+          python3 scripts/test-v6662-purchase-onepage-browser.py
+          python3 scripts/test-v6662-purchase-management-browser.py
           python3 scripts/test-v6662-login-center-browser.py
           python3 scripts/test-phase2-recovery-contract-browser.py
           python3 scripts/test-v6662-neon-recovery-browser.py
