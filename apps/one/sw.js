@@ -5,7 +5,7 @@
  */
 'use strict';
 const APK_ORIGIN='https://appassets.androidplatform.net';
-const CACHE_NAME='zavi-one-exact-original-v6662-approved-purchase-home-20261113-v7';
+const CACHE_NAME='zavi-one-exact-original-v6662-restored-approved-purchase-home-20261113-v7';
 const SHELL_PROTOCOL='zavi-shell-v2';
 const CACHE_PREFIX='zavi-one-';
 const CORE=[
