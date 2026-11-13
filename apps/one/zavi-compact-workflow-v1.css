@@ -505,3 +505,42 @@ html[dir="ltr"] #content .z66pm-root .z66pm-action{text-align:left}
 #content .z66pm-root .z66pm-metric{padding:9px}}
 @media(max-width:310px){#content .z66pm-root .z66pm-actions{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){#content .z66pm-root{animation:none}}
+
+/* Purchase page contrast lock: theme global button/card overrides must not wash out labels. */
+html #content .z66pm-root .z66pm-action-new{background:#1856b7!important;color:#fff!important}
+html #content .z66pm-root .z66pm-action-foreign{background:#3b4394!important;color:#fff!important}
+html #content .z66pm-root .z66pm-action-transit{background:#116473!important;color:#fff!important}
+html #content .z66pm-root .z66pm-action-return{background:#2e557b!important;color:#fff!important}
+html #content .z66pm-root .z66pm-action-copy strong,
+html #content .z66pm-root .z66pm-action-copy small,
+html #content .z66pm-root .z66pm-action-icon,
+html #content .z66pm-root .z66pm-chevron{color:#fff!important;-webkit-text-fill-color:#fff!important;opacity:1}
+html #content .z66pm-root .z66pm-hero h2,
+html #content .z66pm-root .z66pm-hero p,
+html #content .z66pm-root .z66pm-eyebrow,
+html #content .z66pm-root .z66pm-trade{color:#fff!important;-webkit-text-fill-color:#fff!important}
+html #content .z66pm-root .z66pm-hero{background:linear-gradient(125deg,#164f9e,#102f5d)!important}
+html #content .z66pm-root .z66pm-metric{background:#17345d!important;border-color:#426690!important;color:#fff!important}
+html #content .z66pm-root .z66pm-metric span{color:#d1e3fb!important}
+html #content .z66pm-root .z66pm-metric strong{color:#fff!important;-webkit-text-fill-color:#fff!important}
+html #content .z66pm-root .z66pm-card{background:#192f51!important;color:#f1f6ff!important;border-color:#345985!important}
+html #content .z66pm-root .z66pm-card-head h3,
+html #content .z66pm-root .z66pm-card h3{color:#f1f6ff!important}
+html #content .z66pm-root .z66pm-nav{color:#d9e8fc!important;background:transparent!important}
+html #content .z66pm-root .z66pm-nav.active{background:#1765bd!important;color:#fff!important}
+html[data-zavi-theme="light"] #content .z66pm-root .z66pm-card,
+html[data-zavi-appearance="light"] #content .z66pm-root .z66pm-card{background:#fff!important;color:#18324f!important;border-color:#c3d4e8!important}
+html[data-zavi-theme="light"] #content .z66pm-root .z66pm-card h3,
+html[data-zavi-appearance="light"] #content .z66pm-root .z66pm-card h3,
+html[data-zavi-theme="light"] #content .z66pm-root .z66pm-card-head h3,
+html[data-zavi-appearance="light"] #content .z66pm-root .z66pm-card-head h3{color:#18324f!important;-webkit-text-fill-color:#18324f!important}
+html[data-zavi-theme="light"] #content .z66pm-root .z66pm-metric,
+html[data-zavi-appearance="light"] #content .z66pm-root .z66pm-metric{background:#fff!important;border-color:#c3d4e8!important;color:#18324f!important}
+html[data-zavi-theme="light"] #content .z66pm-root .z66pm-metric strong,
+html[data-zavi-appearance="light"] #content .z66pm-root .z66pm-metric strong{color:#18324f!important;-webkit-text-fill-color:#18324f!important}
+html[data-zavi-theme="light"] #content .z66pm-root .z66pm-metric span,
+html[data-zavi-appearance="light"] #content .z66pm-root .z66pm-metric span{color:#4c6280!important}
+html[data-zavi-theme="light"] #content .z66pm-root .z66pm-nav:not(.active),
+html[data-zavi-appearance="light"] #content .z66pm-root .z66pm-nav:not(.active){color:#254666!important;background:#edf3fb!important}
+html[data-zavi-theme="light"] #content .z66pm-root .z66pm-menu,
+html[data-zavi-appearance="light"] #content .z66pm-root .z66pm-menu{background:#d9e5f2!important;border-color:#becede!important}
