@@ -941,7 +941,7 @@ html[data-zavi-appearance="glass"] body #content .zavi-flow-layout[data-zavi-flo
 /* Approved native V66.62 real product wizard and warehouse movement ergonomics. */
 /* Three real sections, not separate copies of form data; the single native
    modal footer and native ledger submit remain untouched. */
-#dialogForm.z66-product-editor>.form-grid{
+#dialogForm.z66-product-editor .modal-body>.form-grid{
   display:block!important;min-width:0;max-width:100%;
 }
 #dialogForm.z66-product-editor .zavi-product-three-step{
