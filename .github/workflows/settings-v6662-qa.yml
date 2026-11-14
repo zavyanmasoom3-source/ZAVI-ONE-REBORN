@@ -13,6 +13,8 @@ on:
       - 'apps/one/index.html'
       - 'apps/one/sw.js'
       - 'scripts/test-v6662-approved-settings-browser.py'
+      - 'scripts/test-v6662-compact-video-browser.py'
+      - 'apps/one/zavi-compact-workflow-v1.css'
       - '.github/workflows/settings-v6662-qa.yml'
   workflow_dispatch:
 
@@ -35,6 +37,8 @@ jobs:
         run: python3 scripts/check-offline-shell-assets.py
       - name: Test actual approved seven-section settings and preserve all real native controls
         run: python3 scripts/test-v6662-approved-settings-browser.py
+      - name: Verify readable light settings and compact native purchase screens from owner video
+        run: python3 scripts/test-v6662-compact-video-browser.py
       - name: Retain exact mobile renders for owner review (including failed QA)
         if: always()
         uses: actions/upload-artifact@v4
