@@ -1128,3 +1128,311 @@ html[data-zavi-theme="glass"] #content .zavi-flow-layout[data-zavi-flow="product
     flex:1 1 calc(50% - 5px);font-size:12px;
   }
 }
+
+
+/* 2026-11-14 owner QA video: compact real screens + light-theme contrast repair. */
+/* No forms, functionality, subscriptions or permissions are removed.
+   Light has explicit ink colours; dark/glass keep original V66.62 blue look. */
+:root{
+ --zq-paper:#152f52;--zq-soft:#203c63;--zq-ink:#f4f9ff;
+ --zq-muted:#cbdff2;--zq-line:#648db5;--zq-action:#2464ba;
+ --zq-glass-filter:none;
+}
+html[data-zavi-theme="light"]{
+ --zq-paper:#fff;--zq-soft:#f0f6fd;--zq-ink:#153452;
+ --zq-muted:#4a667d;--zq-line:#bfd0e2;--zq-action:#126abc;
+ --zq-glass-filter:none;
+}
+html[data-zavi-theme="glass"]{
+ --zq-paper:rgba(21,49,92,.82);--zq-soft:rgba(31,70,119,.70);
+ --zq-ink:#f9fcff;--zq-muted:#d2e5f6;--zq-line:rgba(157,201,242,.70);
+ --zq-action:#146bb6;--zq-glass-filter:blur(12px) saturate(125%);
+}
+/* Fix the real screenshot's blank white visibility options, caused by the
+   dark-only/legacy switch text competing with white light-theme tiles. */
+html[data-zavi-theme="light"] body #content .zavi-clean-settings-hub
+  .zavi-settings-feature-body :is(.zavi-module-grid,.z20-grid) :is(
+    label.zavi-switch,label.z20-toggle,.zavi-switch,.z20-toggle){
+ color:#153452!important;-webkit-text-fill-color:#153452!important;
+ background:#f0f6fd!important;background-color:#f0f6fd!important;
+ border:1px solid #b3cce3!important;
+ opacity:1!important;visibility:visible!important;
+}
+html[data-zavi-theme="light"] body #content .zavi-clean-settings-hub
+  .zavi-settings-feature-body :is(.zavi-module-grid,.z20-grid) :is(
+    .zavi-switch,.z20-toggle) :is(span,strong,b,small,div){
+ color:#153452!important;-webkit-text-fill-color:#153452!important;
+ opacity:1!important;visibility:visible!important;
+}
+body #content .zavi-clean-settings-hub
+  .zavi-settings-feature-body :is(.zavi-module-grid,.z20-grid) :is(
+    label.zavi-switch,label.z20-toggle,.zavi-switch,.z20-toggle){
+ display:flex!important;align-items:center!important;justify-content:space-between!important;
+ gap:10px!important;min-height:46px!important;height:auto!important;
+ max-height:none!important;min-width:0!important;
+ margin:0!important;padding:8px 11px!important;
+ border-radius:10px!important;font-size:12.5px!important;line-height:1.5!important;
+ white-space:normal!important;overflow-wrap:break-word!important;
+}
+body #content .zavi-clean-settings-hub
+  .zavi-settings-feature-body :is(.zavi-module-grid,.z20-grid) :is(
+    .zavi-switch,.z20-toggle) :is(input[type="checkbox"],input[type="radio"]){
+ flex:0 0 19px!important;width:19px!important;height:19px!important;
+ min-width:19px!important;margin:0!important;opacity:1!important;
+ accent-color:#147bc4!important;
+}
+html[data-zavi-theme="light"] body #content .zavi-clean-settings-hub
+  .zavi-settings-feature-body :is(.zavi-module-grid,.z20-grid){
+ background:#fff!important;color:#153452!important;
+}
+/* The settings hub should be an index of short expandable items, not nested
+   border-on-border cards. The live settings fields stay in place. */
+body #content.z65-settings-page .zavi-clean-settings-hub{
+ max-width:860px!important;margin-inline:auto!important;
+ padding:9px!important;
+}
+body #content.z65-settings-page .zavi-clean-settings-groups{gap:7px!important}
+body #content.z65-settings-page .zavi-clean-settings-group>summary{
+ min-height:49px!important;padding-block:8px!important;
+}
+body #content.z65-settings-page .zavi-clean-settings-stack{gap:6px!important}
+body #content.z65-settings-page .zavi-settings-feature{
+ margin:0!important;border-radius:10px!important;
+ background:var(--zq-paper)!important;border:1px solid var(--zq-line)!important;
+ box-shadow:none!important;
+}
+body #content.z65-settings-page .zavi-settings-feature>summary{
+ min-height:44px!important;padding:8px 11px!important;
+ font-size:13px!important;line-height:1.45!important;
+ color:var(--zq-ink)!important;-webkit-text-fill-color:var(--zq-ink)!important;
+ background:var(--zq-paper)!important;
+}
+body #content.z65-settings-page .zavi-settings-feature-body{
+ background:var(--zq-paper)!important;padding:8px!important;
+ color:var(--zq-ink)!important;
+}
+body #content.z65-settings-page .zavi-settings-feature-body>.settings-card{
+ margin:0!important;padding:10px!important;
+ background:var(--zq-paper)!important;border:0!important;
+ box-shadow:none!important;min-height:0!important;height:auto!important;
+}
+body #content.z65-settings-page .zavi-settings-feature-body :is(
+  p,.tiny-note,.field-hint,small){
+ margin-block:3px 8px!important;line-height:1.55!important;
+ color:var(--zq-muted)!important;-webkit-text-fill-color:var(--zq-muted)!important;
+}
+body #content.z65-settings-page .zavi-settings-extra{
+ background:var(--zq-paper)!important;border-color:var(--zq-line)!important;
+ margin-block:7px!important;
+}
+body #content.z65-settings-page .zavi-settings-extra>summary{
+ background:var(--zq-soft)!important;color:var(--zq-ink)!important;
+ -webkit-text-fill-color:var(--zq-ink)!important;
+}
+body #content.z65-settings-page .zavi-settings-feature-body :is(input,select,textarea){
+ min-height:42px!important;
+ border-color:var(--zq-line)!important;
+}
+body #content.z65-settings-page .zavi-settings-feature-body .z65-device-hint{
+ min-height:0!important;padding:9px!important;margin-block:5px!important;
+}
+body #content.z65-settings-page .zavi-settings-feature-body :is(
+  .z652-status,.z652-loading,#z652DevicePanel,#z20CloudPanel){
+ min-height:0!important;height:auto!important;max-height:none!important;
+}
+body #content.z65-settings-page .zavi-clean-settings-hub :is(
+  button,summary,input,select,textarea):focus-visible{
+ outline:2px solid #1699d6!important;outline-offset:2px!important;
+}
+/* Purchase: original four actions stay available, but descriptions no longer
+   turn each into an oversized card. Live order/supplier tabs are unchanged. */
+#content .z66pm-root{
+ max-width:100%;min-width:0;
+}
+#content .z66pm-root .z66pm-hero{
+ padding:13px 15px!important;margin-bottom:9px!important;
+ min-height:0!important;border-radius:13px!important;
+}
+#content .z66pm-root .z66pm-heading h2{
+ font-size:clamp(19px,4.6vw,23px)!important;
+ line-height:1.35!important;margin:3px 0!important;
+}
+#content .z66pm-root .z66pm-heading p{
+ margin:3px 0!important;font-size:12px!important;
+ line-height:1.45!important;
+}
+#content .z66pm-root .z66pm-actions{
+ display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ gap:8px!important;margin:9px 0!important;min-width:0;
+}
+#content .z66pm-root .z66pm-action{
+ min-width:0!important;min-height:78px!important;height:auto!important;
+ padding:10px!important;gap:6px!important;
+ border-radius:12px!important;box-shadow:none!important;
+}
+#content .z66pm-root .z66pm-action strong{
+ font-size:clamp(12px,3.2vw,14px)!important;line-height:1.35!important;
+ overflow-wrap:normal!important;
+}
+#content .z66pm-root .z66pm-action small{
+ font-size:10px!important;line-height:1.35!important;
+ display:-webkit-box!important;-webkit-line-clamp:2;
+ -webkit-box-orient:vertical;overflow:hidden;
+}
+#content .z66pm-root .z66pm-metrics{
+ grid-template-columns:repeat(3,minmax(0,1fr))!important;
+ gap:7px!important;margin:9px 0!important;
+}
+#content .z66pm-root .z66pm-metric{
+ padding:9px!important;border-radius:10px!important;min-height:0!important;
+}
+#content .z66pm-root .z66pm-metric span{font-size:10.5px!important;line-height:1.4!important}
+#content .z66pm-root .z66pm-metric strong{font-size:clamp(13px,3.5vw,17px)!important}
+#content .z66pm-root .z66pm-menu{margin:9px 0!important}
+#content .z66pm-root :is(.z66pm-card,.z66pm-screen){
+ min-width:0!important;max-width:100%;
+}
+#content .z66pm-root .z66pm-card{
+ padding:11px!important;margin-block:9px!important;
+ border-radius:12px!important;box-shadow:none!important;
+}
+#content .z66pm-root .z66pm-card-head h3{
+ font-size:15px!important;line-height:1.4!important;
+}
+#content .z66pm-root .z66pm-bottom-tools{
+ gap:6px!important;margin:10px 0!important;
+}
+#content .z66pm-root .z66pm-bottom-tools button{
+ min-height:42px!important;padding:8px!important;font-size:11.5px!important;
+ white-space:normal!important;
+}
+/* Subscription: shorter, readable summary; 7/180/365 day options never run
+   into each other, and the true server-driven status remains authoritative. */
+#content .zsh{max-width:860px!important;width:100%;min-width:0}
+#content .zsh .zsh-hero{
+ padding:15px!important;margin:0 0 10px!important;
+ border-radius:14px!important;box-shadow:none!important;
+}
+#content .zsh .zsh-hero h2{font-size:clamp(18px,5vw,23px)!important;margin:5px 0!important}
+#content .zsh .zsh-card,
+#content .zsh .z46-offline-card{
+ padding:12px!important;margin:0 0 10px!important;
+ border-radius:12px!important;box-shadow:none!important;
+ min-width:0!important;min-height:0!important;
+}
+#content .zsh .zsh-grid{gap:10px!important;margin:0 0 10px!important}
+#content .zsh .zsh-card h3{font-size:16px!important;margin:4px 0 9px!important}
+#content .zsh .zsh-days{font-size:clamp(28px,8vw,38px)!important;gap:7px!important;line-height:1.2}
+#content .zsh .zsh-row{
+ gap:8px!important;padding:8px 0!important;
+ font-size:12px!important;line-height:1.5!important;
+ min-width:0!important;align-items:flex-start;
+}
+#content .zsh .zsh-row>span{flex:0 0 36%;min-width:0;overflow-wrap:anywhere}
+#content .zsh .zsh-row>strong{
+ flex:1 1 64%;min-width:0;max-width:64%;
+ overflow-wrap:break-word!important;white-space:normal!important;
+ text-align:start!important;
+}
+#content .zsh .zsh-note,#content .zsh .zsh-progress-note{
+ margin-top:6px!important;font-size:11px!important;line-height:1.5!important;
+}
+#content .zsh .zsh-actions{margin:12px 0 2px!important;gap:8px!important}
+#content .zsh .zsh-actions .zsh-btn{padding:9px 12px!important;min-height:42px!important;flex:1 1 130px}
+#content .zsh .zsh-plan-choices{
+ display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;
+ gap:6px!important;margin:10px 0!important;
+}
+#content .zsh .zsh-plan-choices>span{
+ min-width:0!important;max-width:100%!important;
+ display:flex!important;align-items:center!important;
+ justify-content:center!important;flex-wrap:wrap!important;
+ padding:9px 4px!important;line-height:1.4!important;
+ font-size:11px!important;overflow-wrap:anywhere!important;
+ white-space:normal!important;text-align:center!important;
+}
+#content .zsh .zsh-plan-choices strong{font-size:13px!important}
+/* The historic V50 stylesheet forced dark for every mode; repair the light
+   screenshot without changing subscription arithmetic or dates. */
+html[data-zavi-theme="light"] body #content .zsh{
+ color:#173452!important;
+}
+html[data-zavi-theme="light"] body #content .zsh :is(.zsh-card,.z46-offline-card){
+ background:#fff!important;color:#173452!important;
+ border:1px solid #c0d4e7!important;box-shadow:none!important;
+}
+html[data-zavi-theme="light"] body #content .zsh :is(
+  .zsh-card h3,.zsh-days,.zsh-row strong,.zsh-plan-choices strong){
+ color:#173452!important;-webkit-text-fill-color:#173452!important;
+}
+html[data-zavi-theme="light"] body #content .zsh :is(
+  .zsh-row span,.zsh-caption,.zsh-hint,.zsh-note,.zsh-progress-note,.zsh-row .zavi-v10-date small){
+ color:#49647c!important;-webkit-text-fill-color:#49647c!important;
+}
+html[data-zavi-theme="light"] body #content .zsh .zsh-plan-choices>span{
+ color:#173452!important;background:#edf5ff!important;
+ border:1px solid #bdd3e6!important;
+}
+html[data-zavi-theme="light"] body #content .zsh .zsh-row .zavi-v10-date b{
+ color:#173452!important;-webkit-text-fill-color:#173452!important;
+}
+html[data-zavi-theme="glass"] body #content .zsh :is(.zsh-card,.z46-offline-card){
+ background:var(--zq-paper)!important;
+ border-color:var(--zq-line)!important;
+ -webkit-backdrop-filter:var(--zq-glass-filter)!important;
+ backdrop-filter:var(--zq-glass-filter)!important;
+}
+/* Sale invoice: preserve original one-page 3-stage content and native totals,
+   reduce redundant padding while leaving a safe bottom strip for actions. */
+@media(max-width:650px){
+ #dialogForm[data-zavi-sale-onepage="true"] .modal-body{
+   padding:11px 10px calc(98px + env(safe-area-inset-bottom,0px))!important;
+ }
+ #dialogForm .z66-sale-single{gap:8px!important;margin:4px 0!important}
+ #dialogForm .z66-sale-single .z66-sale-section{
+   padding:9px!important;gap:7px!important;border-radius:11px!important;
+   box-shadow:none!important;
+ }
+ #dialogForm .z66-sale-single .form-grid{gap:7px!important}
+ #dialogForm .z66-sale-single .field{gap:3px!important}
+ #dialogForm .z66-sale-single h3{font-size:13px!important;line-height:1.4!important}
+ #dialogForm .modal-foot{
+   padding:9px 11px calc(9px + env(safe-area-inset-bottom,0px))!important;
+   gap:7px!important;max-width:100%!important;
+ }
+ #dialogForm .modal-foot>button{min-height:44px!important;white-space:normal!important}
+}
+/* Compact the actual nav drawer without modifying its accessible routes. */
+@media(max-width:700px){
+ #side.mobile-drawer .nav-btn,
+ #side.mobile-drawer .zavi-v6-menu-scroll .nav-btn{
+   min-height:43px!important;height:auto!important;
+   padding:8px 10px!important;margin:1px 0!important;
+   border-radius:10px!important;gap:8px!important;
+   font-size:12px!important;line-height:1.4!important;
+ }
+ #side.mobile-drawer .nav-btn svg{width:17px!important;height:17px!important}
+ #side.mobile-drawer .zavi-v6-menu-scroll{row-gap:4px!important}
+ #content{scroll-padding-bottom:calc(106px + env(safe-area-inset-bottom,0px))}
+ #content .card:not(.welcome){min-width:0;max-width:100%}
+ /* The assistant remains available from Settings; the approved owner design
+    explicitly avoids a floating button covering dashboard/accounting cards. */
+ body:not(.zavi-settings-clean-active) #z637AiButton,
+ body:not(.zavi-settings-clean-active) .z637-ai-button{
+   display:none!important;
+ }
+ body.zavi-settings-clean-active #z637AiButton,
+ body.zavi-settings-clean-active .z637-ai-button{
+   bottom:calc(89px + env(safe-area-inset-bottom,0px))!important;
+ }
+}
+@media(max-width:390px){
+ #content .z66pm-root .z66pm-action{min-height:74px!important;padding:8px!important}
+ #content .z66pm-root .z66pm-action small{font-size:9.5px!important}
+ #content .zsh .zsh-plan-choices>span{padding:7px 3px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ #content .z66pm-root *,#content .zsh *{
+   animation:none!important;transition:none!important;
+ }
+}
