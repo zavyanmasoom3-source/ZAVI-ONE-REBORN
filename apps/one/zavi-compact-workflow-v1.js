@@ -177,7 +177,44 @@
     refreshHistory();
     const native=manager.querySelector('.zv-wh-history');
     if(native)new MutationObserver(refreshHistory).observe(native,{childList:true,subtree:true});
-    // Warehouse forms are server-backed. Movement history remains read-only.
+    // Compact actual, authenticated warehouse modules without re-creating
+    // forms or event handlers. Their original parent remains #warehouseManager.
+    function foldWarehouse(selector,fa,ps,en,cls){
+      const element=manager.querySelector(':scope > '+selector);
+      if(!element||element.closest('details'))return null;
+      const fold=document.createElement('details');fold.className='zavi-warehouse-fold '+cls;
+      const title=document.createElement('summary');
+      title.textContent=lang()==='en'?en:lang()==='ps'?ps:fa;
+      fold.append(title,element);manager.append(fold);return fold;
+    }
+    const warehouseAdd=foldWarehouse('[data-wh-add]','افزودن گدام','ګدام زیاتول','Add warehouse','zavi-warehouse-add-fold');
+    foldWarehouse('.zv-wh-stock','موجودی مستقل هر گدام','د ګدام خپلواک موجودي','Warehouse stock','zavi-warehouse-stock-fold');
+    const warehouseTransfer=foldWarehouse('.zv-wh-transfer','انتقال بین گدام‌ها','د ګدامونو ترمنځ لېږد','Transfer stock','zavi-warehouse-transfer-fold');
+    foldWarehouse('.zv-wh-history','تاریخچه حرکت‌ها','د موجودۍ تاریخچه','Movement history','zavi-warehouse-history-fold');
+    // Three movement choices guide the owner to existing REAL transfer,
+    // purchase-receipt and stock-adjustment workflows. No speculative stock
+    // write is generated in the products page.
+    const movementActions=document.createElement('nav');
+    movementActions.className='zavi-stock-movement-actions';
+    movementActions.setAttribute('aria-label',tr('movements'));
+    const movementButtons=[
+      ['transfer','انتقال گدام','د ګدام لېږد','Transfer'],
+      ['receive','دریافت کالا','توکي ترلاسه کول','Receive goods'],
+      ['adjust','اصلاح موجودی','موجودي اصلاح کول','Adjust stock']
+    ];
+    for(const [key,fa,ps,en] of movementButtons){
+      const b=document.createElement('button');b.type='button';
+      b.className='btn subtle zavi-stock-movement-action';
+      b.dataset.zaviStockAction=key;
+      b.textContent=lang()==='en'?en:lang()==='ps'?ps:fa;
+      movementActions.append(b);
+    }
+    const movementHint=document.createElement('p');
+    movementHint.className='zavi-stock-movement-hint';
+    movementHint.textContent=lang()==='en'?
+      'Transfer between warehouses, confirm physical delivery of in-transit orders, or correct stock with a real accounting document.':
+      lang()==='ps'?'لېږد، د رښتینو توکو ترلاسه کول یا د سند له لارې د موجودۍ اصلاح.':
+      'انتقال بین گدام‌ها، دریافت واقعی سفارش در راه و اصلاح موجودی با سند جداگانه.';
     // The fourth tab launches the existing printable Code128/EAN-13 modal.
     const labelsPanel=document.createElement('section');
     labelsPanel.className='card zavi-products-label-panel';
@@ -186,10 +223,31 @@
     printLabel.dataset.action='barcode_label';
     printLabel.textContent=lang()==='en'?'Print label':lang()==='ps'?'لېبل چاپ':'چاپ لیبل';
     labelsPanel.append(printLabel);
-    const layout=createTabs(main,'products',[products,[manager],[snapshot],[labelsPanel]],
+    const layout=createTabs(main,'products',[products,[manager],[movementActions,movementHint,snapshot],[labelsPanel]],
       ['products','warehouses','movements','labels']);
     if(!layout)return;
     layout.querySelectorAll('[role="tab"]')[2].addEventListener('click',refreshHistory);
+    movementActions.addEventListener('click',event=>{
+      const action=event.target.closest('[data-zavi-stock-action]')?.dataset.zaviStockAction;
+      if(!action)return;
+      if(action==='transfer'){
+        layout.zaviActivate(1);
+        if(warehouseTransfer)warehouseTransfer.open=true;
+        (warehouseTransfer||manager).scrollIntoView({block:'nearest',behavior:'auto'});
+      }else if(action==='receive'){
+        // Receipt is controlled by the in-transit purchase service, with owner
+        // identity, physical confirmation, exactly-once RPC and server stock.
+        if(typeof go==='function')go('purchases');
+        requestAnimationFrame(()=>{
+          document.querySelector('[data-z66pm-view="orders"]')?.click();
+          document.querySelector('[data-zv-transit]')?.scrollIntoView({block:'nearest',behavior:'auto'});
+        });
+      }else if(action==='adjust'){
+        // Delegated native data-action opens the real stock_adjust ledger form.
+        const native=document.querySelector('#content [data-action="stock_adjust"]');
+        if(native)native.click();
+      }
+    });
     if(originalHeader){
       // Leave the real Product action visible; move secondary native
       // controls into a small opt-in menu instead of deleting handlers.
@@ -208,6 +266,110 @@
       }
       if(main.firstElementChild!==originalHeader)main.prepend(originalHeader);
     }
+  }
+
+  /* Approved native product form: three actual steps, one original ledger save.
+     No clones: all real business fields, barcode input listeners, warehouse
+     selector and camera/photo handlers are moved with their DOM nodes. */
+  function enhanceProductEditor(){
+    const form=document.querySelector('#dialogForm.z66-product-editor');
+    if(!form||form.dataset.zaviProductThreeStep==='true')return;
+    if(!form.querySelector('.z66-registration-trade')||
+       !form.querySelector('.z66-registration-scanner'))return;
+    const grid=form.querySelector(':scope > .form-grid');
+    if(!grid||!grid.children.length)return;
+    const labels3={
+      fa:['مشخصات','قیمت و گدام','بیشتر','بعدی'],
+      ps:['معلومات','بیه او ګدام','نور','بل ګام'],
+      en:['Details','Price & warehouse','More','Next']
+    }[lang()];
+    const wrapper=document.createElement('div');wrapper.className='zavi-product-three-step';
+    wrapper.dataset.zaviProductFlow='true';
+    const tabs=document.createElement('div');tabs.className='zavi-product-step-tabs';
+    tabs.setAttribute('role','tablist');
+    const panes=[];
+    for(let i=0;i<3;i++){
+      const tab=document.createElement('button');tab.type='button';tab.className='zavi-product-step-tab';
+      tab.setAttribute('role','tab');tab.dataset.zaviProductStep=String(i);
+      tab.id='zavi-product-step-'+i;tab.textContent=labels3[i];
+      tab.setAttribute('aria-controls','zavi-product-step-panel-'+i);
+      tabs.append(tab);
+      const pane=document.createElement('section');
+      pane.className='zavi-product-step-panel';
+      pane.id='zavi-product-step-panel-'+i;
+      pane.setAttribute('role','tabpanel');pane.setAttribute('aria-labelledby',tab.id);
+      panes.push(pane);
+    }
+    const basicNames=['name','sku','category'];
+    const stockNames=['salePrice','purchasePrice','productPriceCurrency',
+      'productManualUsdRate','variantWarehouseId','openingQty','reorder'];
+    function stepOf(node){
+      if(node.matches('.z66-registration-trade,.z66-registration-scanner,.z66-reg-segment,.zavi-barcode-box')||
+         node.querySelector('[id="zaviBarcodeProductNotice"]')||
+         basicNames.some(n=>node.querySelector('[name="'+n+'"]')))return 0;
+      if(node.matches('.z66-product-fx-preview')||
+         stockNames.some(n=>node.querySelector('[name="'+n+'"]')))return 1;
+      return 2;
+    }
+    const oldChildren=[...grid.children];
+    if(!oldChildren.some(node=>node.querySelector('[name="openingQty"]')))return;
+    if(!oldChildren.some(node=>node.querySelector('[name="name"]')))return;
+    for(const node of oldChildren)panes[stepOf(node)].append(node);
+    function activate(i,focus=false){
+      panes.forEach((pane,j)=>{
+        pane.hidden=i!==j;
+        const tab=tabs.children[j];
+        tab.tabIndex=i===j?0:-1;
+        tab.setAttribute('aria-selected',String(i===j));
+        if(i===j&&focus)tab.focus({preventScroll:true});
+      });
+      wrapper.dataset.activeStep=String(i);
+    }
+    [...tabs.children].forEach((tab,i)=>tab.addEventListener('click',()=>activate(i)));
+    tabs.addEventListener('keydown',e=>{
+      if(!['ArrowLeft','ArrowRight','Home','End'].includes(e.key))return;
+      e.preventDefault();
+      const now=Number(wrapper.dataset.activeStep||0);
+      const direction=document.documentElement.dir==='rtl'?-1:1;
+      const next=e.key==='Home'?0:e.key==='End'?2:
+        (now+(e.key==='ArrowRight'?direction:-direction)+3)%3;
+      activate(next,true);
+    });
+    [0,1].forEach(i=>{
+      const next=document.createElement('button');next.type='button';
+      next.className='btn subtle zavi-product-step-next';
+      next.textContent=labels3[3];
+      next.addEventListener('click',()=>{
+        const bad=[...panes[i].querySelectorAll('input,select,textarea')]
+          .find(el=>el.willValidate&&!el.checkValidity());
+        if(bad){bad.reportValidity();return;}
+        activate(i+1,true);
+      });
+      panes[i].append(next);
+    });
+    wrapper.append(tabs,...panes);
+    grid.append(wrapper);
+    // Reveal the actual tab holding invalid native form data before browser
+    // tries to focus a hidden required input. Never bypass save validation.
+    form.addEventListener('invalid',e=>{
+      const pane=e.target.closest('.zavi-product-step-panel');
+      if(pane){const i=panes.indexOf(pane);if(i>=0)activate(i);}
+    },true);
+    // Optional extras remain available but do not overwhelm the first screen.
+    for(const [selector,fa,ps,en] of [
+      ['[name="barcodes"]','بارکدهای اضافی','نور بارکوډونه','Additional barcodes'],
+      ['#zaviProductPhotoInput','عکس محصول','د توکي انځور','Product photo']
+    ]){
+      const el=panes[2].querySelector(selector)?.closest('.field');
+      if(!el||el.closest('.zavi-product-optional'))continue;
+      const fold=document.createElement('details');
+      fold.className='zavi-product-optional';
+      const summary=document.createElement('summary');
+      summary.textContent=lang()==='en'?en:lang()==='ps'?ps:fa;
+      el.replaceWith(fold);fold.append(summary,el);
+    }
+    form.dataset.zaviProductThreeStep='true';
+    activate(0);
   }
 
   /* Approved 66.62 sale: single continuous page. Move ORIGINAL live controls only.
@@ -665,6 +827,7 @@
       enhanceProducts(root);
     }
     enhanceOrderForm();
+    enhanceProductEditor();
     refreshLabels();
   }
   let queued=false;
