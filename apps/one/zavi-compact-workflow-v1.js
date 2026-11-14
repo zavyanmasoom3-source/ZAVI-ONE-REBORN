@@ -125,6 +125,17 @@
     const originalHeader=existing.find(el=>el.matches?.('.page-head'));
     const products=existing.filter(el=>el!==manager&&el!==originalHeader);
     if(!products.includes(listing))return;
+    // Keep all four REAL stock metrics available without making the product
+    // screen a wall of summary cards on a small Android phone.
+    const metrics=products.find(el=>el.matches?.('.report-grid'));
+    if(metrics){
+      const folded=document.createElement('details');
+      folded.className='zavi-products-overview';
+      const title=document.createElement('summary');
+      title.textContent=lang()==='en'?'Warehouse overview':lang()==='ps'?'د ګدام لنډیز':'خلاصه گدام';
+      folded.append(title,metrics);
+      products.splice(products.indexOf(metrics),1,folded);
+    }
     // Keep the REAL scanner and its live camera/USB/Bluetooth listeners.
     // Only its visibility changes; no extra stock logic or fake scanner.
     const compactScanner=document.createElement('details');
