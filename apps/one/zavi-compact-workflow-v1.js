@@ -276,7 +276,8 @@
     if(!form||form.dataset.zaviProductThreeStep==='true')return;
     if(!form.querySelector('.z66-registration-trade')||
        !form.querySelector('.z66-registration-scanner'))return;
-    const grid=form.querySelector(':scope > .form-grid');
+    const grid=form.querySelector('.modal-body > .form-grid')||
+      form.querySelector('.form-grid');
     if(!grid||!grid.children.length)return;
     const labels3={
       fa:['مشخصات','قیمت و گدام','بیشتر','بعدی'],
