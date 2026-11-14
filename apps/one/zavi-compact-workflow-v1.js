@@ -103,13 +103,24 @@
     if(result)split.remove();
   }
   function enhanceProducts(root){
-    const main=root.querySelector('.zui-phase2-content');
-    if(!main||main.querySelector('[data-zavi-flow="products"]'))return;
-    const manager=main.querySelector(':scope > .zv-wh-manager');
+    // Actual V66.62 renderProducts() writes directly into #content. The old
+    // '.zui-phase2-content' selector never existed in that entrypoint; it
+    // silently suppressed every owner-approved product/warehouse tab.
+    const main=root.querySelector('.zui-phase2-content')||root;
+    if(main.querySelector('[data-zavi-flow="products"]'))return;
     const scanner=main.querySelector(':scope > .z638-warehouse-scanner');
+    if(!scanner)return; // Only the real products route has this scanner.
+    let manager=main.querySelector(':scope > .zv-wh-manager');
+    if(!manager&&typeof window.ZaviWarehouseV1?.panel==='function'){
+      // Mount the native authenticated warehouse manager, never an unconnected
+      // imitation. Keep its original submit, RLS and stock transfer handlers.
+      scanner.insertAdjacentHTML('afterend',window.ZaviWarehouseV1.panel());
+      manager=main.querySelector(':scope > .zv-wh-manager');
+      if(manager)window.ZaviWarehouseV1.afterRender?.();
+    }
     const listing=[...main.children].find(el=>el.matches?.('section.card')&&
       el!==manager&&el!==scanner);
-    if(!manager||!scanner||!listing)return;
+    if(!manager||!listing)return;
     const existing=[...main.children];
     const originalHeader=existing.find(el=>el.matches?.('.page-head'));
     const products=existing.filter(el=>el!==manager&&el!==originalHeader);
