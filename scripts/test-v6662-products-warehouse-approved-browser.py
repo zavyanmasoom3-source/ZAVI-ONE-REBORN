@@ -61,6 +61,77 @@ with Session() as browser:
         })()""")
         assert result['active']==str(index) and result['visible']==[i==index for i in range(4)],result
         assert result['selected']==['true' if i==index else 'false' for i in range(4)],result
+    # Exact owner-approved inventory screen: real three movement actions and
+    # compact warehouse forms instead of a bare read-only history projection.
+    flow=browser.eval("""(()=>{
+      const root=document.querySelector('#content [data-zavi-flow=products]');
+      const buttons=[...root.querySelectorAll('[data-zavi-stock-action]')];
+      const add=root.querySelector('.zavi-warehouse-add-fold');
+      const transfer=root.querySelector('.zavi-warehouse-transfer-fold');
+      return {
+        actions:buttons.map(b=>b.dataset.zaviStockAction),
+        addFold:!!add,addSummary:add?.querySelector('summary')?.textContent,
+        transferFold:!!transfer,
+        formInside:!!add?.querySelector('[data-wh-add] [name=warehouse_code]'),
+        stockFold:!!root.querySelector('.zavi-warehouse-stock-fold .zv-wh-stock'),
+        historyFold:!!root.querySelector('.zavi-warehouse-history-fold .zv-wh-history')
+      };
+    })()""")
+    assert flow['actions']==['transfer','receive','adjust'],flow
+    assert all(flow[k] for k in ('addFold','transferFold','formInside','stockFold','historyFold')),flow
+    browser.eval("""(()=>{
+      const root=document.querySelector('#content [data-zavi-flow=products]');
+      root.querySelector('[data-zavi-flow-label=movements]').click();
+      root.querySelector('[data-zavi-stock-action=transfer]').click();
+    })()""")
+    navigation=browser.eval("""(()=>{
+      const root=document.querySelector('#content [data-zavi-flow=products]');
+      return {
+        active:root.dataset.activeTab,
+        open:!!root.querySelector('.zavi-warehouse-transfer-fold[open]'),
+        transfer:!!root.querySelector('.zv-wh-transfer')
+      };
+    })()""")
+    assert navigation=={'active':'1','open':True,'transfer':True},navigation
+    browser.eval("go('products');openEntity('product')")
+    browser.until("""!!document.querySelector('#dialogForm.z66-product-editor .zavi-product-three-step')
+      && !!document.querySelector('#dialogForm [data-zavi-product-flow=true]')""",
+      'native product edit uses all three approved sections',seconds=12)
+    productForm=browser.eval("""(()=>{
+      const f=document.querySelector('#dialogForm.z66-product-editor');
+      const flow=f.querySelector('.zavi-product-three-step');
+      const panes=[...flow.querySelectorAll(':scope > .zavi-product-step-panel')];
+      const present=(i,name)=>!!panes[i].querySelector('[name="'+name+'"]');
+      return {
+        panes:panes.length,tabs:flow.querySelectorAll('.zavi-product-step-tab').length,
+        first:present(0,'name')&&present(0,'sku')&&present(0,'category'),
+        second:present(1,'openingQty')&&present(1,'salePrice')&&present(1,'reorder'),
+        third:present(2,'barcodes')&&!!panes[2].querySelector('#zaviProductPhotoInput')
+              &&!!panes[2].querySelector('.z629-industry'),
+        nativeSave:typeof f.onsubmit==='function',
+        barcodeMethods:f.querySelectorAll('.z66-reg-method').length,
+        photoOptional:!!f.querySelector('.zavi-product-optional #zaviProductPhotoInput'),
+        active:flow.dataset.activeStep
+      };
+    })()""")
+    assert productForm['panes']==3 and productForm['tabs']==3,productForm
+    assert all(productForm[k] for k in ('first','second','third','nativeSave','photoOptional')),productForm
+    assert productForm['barcodeMethods']==4 and productForm['active']=='0',productForm
+    for i in range(3):
+        browser.eval("""document.querySelectorAll(
+            '#dialogForm .zavi-product-step-tab')[%d].click()"""%i)
+        state=browser.eval("""(()=>{
+          const f=document.querySelector('#dialogForm'),flow=f.querySelector('.zavi-product-three-step');
+          return {
+            active:flow.dataset.activeStep,
+            displayed:[...flow.querySelectorAll(':scope > .zavi-product-step-panel')].map(p=>!p.hidden),
+            tabs:[...flow.querySelectorAll('.zavi-product-step-tab')].map(t=>t.getAttribute('aria-selected'))
+          };
+        })()""")
+        assert state['active']==str(i) and state['displayed']==[j==i for j in range(3)],state
+        assert state['tabs']==['true' if j==i else 'false' for j in range(3)],state
+    browser.eval("closeModal()")
+    print('PASS original V66.62 3-step native product form, compact authenticated warehouse forms and 3 live stock actions')
     # Existing barcode builder must launch, with real product list supplied in
     # the test's disposable in-memory ledger (no saved purchases/sales).
     browser.eval("""(()=>{
