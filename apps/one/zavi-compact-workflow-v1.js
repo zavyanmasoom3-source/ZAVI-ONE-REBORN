@@ -254,7 +254,24 @@
       const group=originalHeader.querySelector('.action-group');
       if(group&&!group.querySelector('.zavi-products-more-actions')){
         const primary=group.querySelector('[data-action="product"]');
-        const others=[...group.children].filter(el=>el!==primary);
+        // Owner-approved main screen has TWO visible actions: create product
+        // and scan barcode. Scanning opens the real native camera/HID controls.
+        let scanShortcut=group.querySelector('[data-zavi-quick-scan]');
+        if(primary&&!scanShortcut){
+          scanShortcut=document.createElement('button');
+          scanShortcut.type='button';
+          scanShortcut.className='btn subtle zavi-products-quick-scan';
+          scanShortcut.dataset.zaviQuickScan='true';
+          scanShortcut.textContent=lang()==='en'?'Scan barcode':lang()==='ps'?'بارکوډ سکین':'اسکن بارکد';
+          primary.after(scanShortcut);
+          scanShortcut.addEventListener('click',()=>{
+            layout.zaviActivate(0);
+            compactScanner.open=true;
+            compactScanner.scrollIntoView({block:'nearest',behavior:'auto'});
+            compactScanner.querySelector('input')?.focus({preventScroll:true});
+          });
+        }
+        const others=[...group.children].filter(el=>el!==primary&&el!==scanShortcut);
         if(primary&&others.length){
           const more=document.createElement('details');more.className='zavi-products-more-actions';
           const label=document.createElement('summary');
