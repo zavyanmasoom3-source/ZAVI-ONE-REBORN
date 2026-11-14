@@ -137,9 +137,15 @@
    openOrder('purchase');
    function configure(){
      const form=document.getElementById('dialogForm');
-     if(!form)return;
+     if(!form||form.dataset.z66pmForeignConfigured==='1')return;
      const cur=form.elements.namedItem('originalCurrency');
      const source=form.elements.namedItem('purchaseOrigin');
+     const country=form.elements.namedItem('pCountry');
+     // Initialize only when the native purchase enhancer has mounted its
+     // country field; never overwrite currency or origin twice after a user
+     // starts editing the live invoice.
+     if(!cur||!source||!country)return;
+     form.dataset.z66pmForeignConfigured='1';
      if(cur){
        if([...cur.options].some(o=>o.value==='USD'))cur.value='USD';
        cur.dispatchEvent(new Event('change',{bubbles:true}));
