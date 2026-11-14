@@ -626,3 +626,30 @@ html[data-zavi-appearance="light"] #content .z66pm-root .z66pm-menu{background:#
  .zavi-products-scanner-details *,
  .zavi-products-more-actions *{animation:none!important;transition:none!important}
 }
+
+
+/* Small-screen owner-approved products: real metrics remain on demand. */
+.zavi-flow-layout[data-zavi-flow="products"] .zavi-products-overview{
+  border:1px solid var(--zds-border,#899caf);
+  border-radius:12px;background:var(--zds-surface,#fff);
+  min-width:0;max-width:100%;overflow:hidden;
+}
+.zavi-products-overview>summary{
+  display:flex;align-items:center;justify-content:space-between;
+  min-height:44px;padding:10px 13px;cursor:pointer;list-style:none;
+  color:var(--zds-text,#152b43);font-weight:700;
+}
+.zavi-products-overview>summary::-webkit-details-marker{display:none}
+.zavi-products-overview>summary::after{content:"⌄";margin-inline-start:10px}
+.zavi-products-overview[open]>summary{
+  border-bottom:1px solid var(--zds-border,#899caf);
+}
+.zavi-products-overview>.report-grid{
+  display:grid;gap:8px;margin:0!important;padding:10px!important;
+  min-width:0;max-width:100%;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+}
+.zavi-products-overview>.report-grid>.card{min-width:0;max-width:100%;margin:0!important}
+@media(max-width:390px){
+ .zavi-products-overview>.report-grid{grid-template-columns:1fr!important}
+}
