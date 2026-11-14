@@ -55,9 +55,10 @@ function enhance(form){
  const options=[...new Set(cats)];
  if(datalist)datalist.innerHTML=options.map(x=>'<option value="'+esc(x)+'"></option>').join('');
  const mini=document.createElement('div');mini.className='z66-category-tools';
- mini.innerHTML='<small>'+esc(tr('پیشنهادهای مخصوص کسب‌وکار انتخاب‌شده','د ټاکلې سوداګرۍ ځانګړې کټګورۍ','Categories for the selected trade'))+'</small>'+
- '<div class="z66-category-chipset">'+options.slice(0,9).map(x=>'<button type="button" data-z66-cat="'+esc(x)+'">'+esc(x)+'</button>').join('')+'</div>'+
- '<div class="z66-category-add"><input type="text" maxlength="100" placeholder="'+esc(tr('دسته‌بندی تازه','نوې کټګوري','New category'))+'"><button type="button" data-z66-category-add>'+esc(tr('افزودن دسته','کټګوري زیاتول','Add category'))+'</button></div>';
+ mini.innerHTML='<details class="z66-category-choices"><summary>'+esc(tr('تمام دسته‌بندی‌های این کسب‌وکار','د دې سوداګرۍ ټولې کټګورۍ','All categories for this trade'))+'</summary>'+
+ '<div class="z66-category-chipset">'+options.map(x=>'<button type="button" data-z66-cat="'+esc(x)+'">'+esc(x)+'</button>').join('')+'</div></details>'+
+ '<details class="z66-category-new-fold"><summary>'+esc(tr('افزودن دسته‌بندی','نوې کټګوري زیاتول','Add category'))+'</summary>'+
+ '<div class="z66-category-add"><input type="text" maxlength="100" placeholder="'+esc(tr('دسته‌بندی تازه','نوې کټګوري','New category'))+'"><button type="button" data-z66-category-add>'+esc(tr('افزودن دسته','کټګوري زیاتول','Add category'))+'</button></div></details>';
  nativeCategory.append(mini);
  mini.querySelectorAll('[data-z66-cat]').forEach(b=>b.addEventListener('click',()=>{
   category.value=b.dataset.z66Cat;
