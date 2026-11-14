@@ -667,13 +667,13 @@ html:is([data-zavi-theme="light"],[data-zavi-appearance="light"]){
 html:is([data-zavi-theme="dark"],[data-zavi-appearance="dark"]){
   --zw-surface:#19365b;--zw-surface-soft:#203f69;--zw-field:#112b4b;
   --zw-ink:#f3f8ff;--zw-muted:#c3d8ee;--zw-line:#5480aa;
-  --zw-accent:#147dc4;--zw-accent-text:#ffffff;--zw-focus:#70d2f9;
+  --zw-accent:#1261aa;--zw-accent-text:#ffffff;--zw-focus:#70d2f9;
   --zw-glass-filter:none;--zw-elevation:0 5px 16px rgba(0,10,31,.19);
 }
 html:is([data-zavi-theme="glass"],[data-zavi-appearance="glass"]){
   --zw-surface:rgba(24,58,106,.73);--zw-surface-soft:rgba(39,83,139,.64);
   --zw-field:rgba(8,39,83,.78);--zw-ink:#f7fbff;--zw-muted:#d4e8fc;
-  --zw-line:rgba(172,214,255,.72);--zw-accent:#137ac9;
+  --zw-line:rgba(172,214,255,.72);--zw-accent:#1067ae;
   --zw-accent-text:#ffffff;--zw-focus:#85e7fc;
   --zw-glass-filter:blur(15px) saturate(130%);
   --zw-elevation:0 5px 20px rgba(6,24,66,.22);
