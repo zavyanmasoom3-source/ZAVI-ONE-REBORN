@@ -1107,3 +1107,24 @@ html[data-zavi-theme="glass"] #content .zavi-flow-layout[data-zavi-flow="product
     grid-template-columns:minmax(0,1fr);
   }
 }
+
+
+/* Owner-approved visible New Product + native Scan Barcode pair. */
+#content:has(.zavi-flow-layout[data-zavi-flow="products"]) .page-head .action-group>.zavi-products-quick-scan{
+  min-height:44px;min-width:0;
+  padding:9px 13px;font-weight:750;line-height:1.5;
+  background:var(--zw-surface-soft,#203f69)!important;
+  color:var(--zw-ink,#f3f8ff)!important;
+  -webkit-text-fill-color:currentColor!important;
+  border:1px solid var(--zw-line,#5480aa)!important;
+  border-radius:11px;
+}
+#content:has(.zavi-flow-layout[data-zavi-flow="products"]) .page-head .action-group>.zavi-products-quick-scan:focus-visible{
+  outline:3px solid var(--zw-focus,#70d2f9)!important;
+}
+@media(max-width:410px){
+  #content:has(.zavi-flow-layout[data-zavi-flow="products"]) .page-head .action-group>[data-action="product"],
+  #content:has(.zavi-flow-layout[data-zavi-flow="products"]) .page-head .action-group>.zavi-products-quick-scan{
+    flex:1 1 calc(50% - 5px);font-size:12px;
+  }
+}
