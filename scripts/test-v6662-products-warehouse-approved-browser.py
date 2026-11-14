@@ -36,6 +36,7 @@ with Session() as browser:
         addHidden:!!add?.hidden,
         labelButton:!!root.querySelector('.zavi-products-label-panel [data-action=barcode_label]'),
         productButton:!!document.querySelector('#content .page-head [data-action=product]'),
+        scanButton:!!document.querySelector('#content .page-head [data-zavi-quick-scan]'),
         duplicateLabel:!!document.querySelector('#zavi-label-launcher'),
         stockHistory:!!manager?.querySelector('.zv-wh-history'),
         transfer:!!manager?.querySelector('.zv-wh-transfer'),
@@ -44,7 +45,7 @@ with Session() as browser:
     })()""")
     assert info['labels']==['products','warehouses','movements','labels'],info
     assert all(info[k] for k in ('manager','scanner','addForm','warehouseName','warehouseCode',
-                                  'labelButton','productButton','stockHistory','transfer')),info
+                                  'labelButton','productButton','scanButton','stockHistory','transfer')),info
     assert not info['addHidden'] and not info['duplicateLabel'],info
     assert info['overview'] and info['cards']>=4,info
     for index in range(4):
@@ -61,6 +62,19 @@ with Session() as browser:
         })()""")
         assert result['active']==str(index) and result['visible']==[i==index for i in range(4)],result
         assert result['selected']==['true' if i==index else 'false' for i in range(4)],result
+    # Native scanner must be visible as the second primary action, and must
+    # open the actual camera/manual/USB/Bluetooth scanner, not a mock search.
+    browser.eval("""document.querySelector('#content [data-zavi-quick-scan]').click()""")
+    scan=browser.eval("""(()=>{
+      const flow=document.querySelector('#content [data-zavi-flow=products]');
+      return {
+        active:flow.dataset.activeTab,
+        expanded:!!flow.querySelector('.zavi-products-scanner-details[open]'),
+        original:!!flow.querySelector('.zavi-products-scanner-details .z638-warehouse-scanner'),
+        input:!!flow.querySelector('#zaviWarehouseScan')
+      };
+    })()""")
+    assert scan=={'active':'0','expanded':True,'original':True,'input':True},scan
     # Exact owner-approved inventory screen: real three movement actions and
     # compact warehouse forms instead of a bare read-only history projection.
     flow=browser.eval("""(()=>{
