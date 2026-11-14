@@ -137,7 +137,7 @@
    openOrder('purchase');
    function configure(){
      const form=document.getElementById('dialogForm');
-     if(!form||form.dataset.z66pmForeignConfigured==='1')return;
+     if(!form||form.dataset.zaviPurchaseOnepage!=='true'||form.dataset.z66pmForeignConfigured==='1')return false;
      const cur=form.elements.namedItem('originalCurrency');
      const source=form.elements.namedItem('purchaseOrigin');
      const countryField=form.elements.namedItem('pCountry');
@@ -155,10 +155,20 @@
      if(country){country.value='';country.placeholder=title('کشور مبدأ را وارد کنید','اصلي هېواد ولیکئ','Enter country of origin');}
      const advanced=form.querySelector('.z66-purchase-advanced');
      if(advanced)advanced.open=true;
+     return true;
    }
-   // The existing invoice enhancer mounts when the native modal DOM changes.
-   queueMicrotask(configure);
-   setTimeout(configure,50);
+   // The native purchase enhancer mounts asynchronously and can replace the
+   // modal subtree. Only initialize the finished *real* one-page form, once,
+   // before its first user edit. Never re-apply after a successful configure.
+   const overlay=document.getElementById('overlay');
+   const observer=new MutationObserver(()=>{
+     if(configure()||!document.getElementById('dialogForm'))observer.disconnect();
+   });
+   if(overlay)observer.observe(overlay,{childList:true,subtree:true,
+     attributes:true,attributeFilter:['data-zavi-purchase-onepage']});
+   queueMicrotask(()=>{if(configure())observer.disconnect()});
+   requestAnimationFrame(()=>{if(configure())observer.disconnect()});
+   setTimeout(()=>{if(configure())observer.disconnect()},50);
  }
  document.addEventListener('click',e=>{
    if(e.target.closest('[data-z66pm-foreign]')){e.preventDefault();foreign();return;}
