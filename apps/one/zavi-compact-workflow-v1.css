@@ -653,3 +653,245 @@ html[data-zavi-appearance="light"] #content .z66pm-root .z66pm-menu{background:#
 @media(max-width:390px){
  .zavi-products-overview>.report-grid{grid-template-columns:1fr!important}
 }
+
+
+/* Approved V66.62 product / warehouse 3-mode appearance matrix: 2026-11-14. */
+/* Scope new visual tokens to the approved inventory UI. Preserve the same
+   four working DOM tabs, native RLS warehouse form, scanner and label engine. */
+html:is([data-zavi-theme="light"],[data-zavi-appearance="light"]){
+  --zw-surface:#ffffff;--zw-surface-soft:#f1f7ff;--zw-field:#ffffff;
+  --zw-ink:#193953;--zw-muted:#496882;--zw-line:#bfd4e9;
+  --zw-accent:#096fcb;--zw-accent-text:#ffffff;--zw-focus:#0088d4;
+  --zw-glass-filter:none;--zw-elevation:0 3px 12px rgba(28,66,105,.06);
+}
+html:is([data-zavi-theme="dark"],[data-zavi-appearance="dark"]){
+  --zw-surface:#19365b;--zw-surface-soft:#203f69;--zw-field:#112b4b;
+  --zw-ink:#f3f8ff;--zw-muted:#c3d8ee;--zw-line:#5480aa;
+  --zw-accent:#147dc4;--zw-accent-text:#ffffff;--zw-focus:#70d2f9;
+  --zw-glass-filter:none;--zw-elevation:0 5px 16px rgba(0,10,31,.19);
+}
+html:is([data-zavi-theme="glass"],[data-zavi-appearance="glass"]){
+  --zw-surface:rgba(24,58,106,.73);--zw-surface-soft:rgba(39,83,139,.64);
+  --zw-field:rgba(8,39,83,.78);--zw-ink:#f7fbff;--zw-muted:#d4e8fc;
+  --zw-line:rgba(172,214,255,.72);--zw-accent:#137ac9;
+  --zw-accent-text:#ffffff;--zw-focus:#85e7fc;
+  --zw-glass-filter:blur(15px) saturate(130%);
+  --zw-elevation:0 5px 20px rgba(6,24,66,.22);
+}
+/* The app also boots in dark mode before any preference is stored. */
+#content .zavi-flow-layout[data-zavi-flow="products"]{
+  min-width:0;max-width:100%;width:100%;box-sizing:border-box;
+  color:var(--zw-ink,#f3f8ff)!important;
+  padding-bottom:calc(82px + env(safe-area-inset-bottom,0px));
+}
+#content .zavi-flow-layout[data-zavi-flow="products"] :is(
+  .zavi-flow-tabs,.zavi-products-overview,.zavi-products-scanner-details,
+  .zavi-products-more-actions,.zavi-products-label-panel,
+  .zavi-stock-history-projection,.zv-wh-manager){
+  color:var(--zw-ink,#f3f8ff)!important;
+  background:var(--zw-surface,#19365b)!important;
+  border:1px solid var(--zw-line,#5480aa)!important;
+  box-shadow:var(--zw-elevation)!important;
+  -webkit-backdrop-filter:var(--zw-glass-filter,none);
+  backdrop-filter:var(--zw-glass-filter,none);
+}
+#content .zavi-flow-layout[data-zavi-flow="products"] .zavi-flow-tabs{
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  width:100%;min-width:0;max-width:100%;gap:4px;padding:4px;
+}
+#content .zavi-flow-layout[data-zavi-flow="products"] .zavi-flow-tab{
+  color:var(--zw-ink,#f3f8ff)!important;
+  background:transparent!important;border-color:transparent!important;
+  font-size:clamp(11px,2.7vw,13px);font-weight:750;
+  line-height:1.5;min-width:0;min-height:44px;
+  overflow-wrap:normal;white-space:normal;text-align:center;
+  -webkit-text-fill-color:currentColor;
+}
+#content .zavi-flow-layout[data-zavi-flow="products"] .zavi-flow-tab[aria-selected="true"]{
+  color:var(--zw-accent-text,#fff)!important;
+  background:var(--zw-accent,#096fcb)!important;
+  border-color:var(--zw-accent,#096fcb)!important;
+  -webkit-text-fill-color:currentColor!important;
+}
+#content .zavi-flow-layout[data-zavi-flow="products"] :is(
+  .zavi-flow-tab,.zavi-products-overview>summary,
+  .zavi-products-scanner-details>summary,.zavi-products-more-actions>summary):focus-visible{
+  outline:3px solid var(--zw-focus,#70d2f9)!important;outline-offset:1px;
+}
+#content .zavi-flow-layout[data-zavi-flow="products"] :is(
+  .zavi-products-overview>summary,.zavi-products-scanner-details>summary,
+  .zavi-products-more-actions>summary){
+  color:var(--zw-ink,#f3f8ff)!important;
+  -webkit-text-fill-color:currentColor!important;
+  min-height:44px;line-height:1.55;
+}
+#content .zavi-flow-layout[data-zavi-flow="products"] :is(
+  .zavi-products-scanner-details[open]>summary,
+  .zavi-products-overview[open]>summary,
+  .zavi-products-more-actions[open]>summary){
+  border-bottom-color:var(--zw-line,#5480aa)!important;
+}
+#content .zavi-flow-layout[data-zavi-flow="products"] :is(
+  .zavi-products-overview>.report-grid>.card,
+  .zv-wh-row,.zv-wh-stock-row,.zv-wh-history .zv-wh-stock-row,
+  .zavi-history-rows>*,.zv-wh-transfer){
+  min-width:0;max-width:100%;box-sizing:border-box;
+  border-color:var(--zw-line,#5480aa)!important;
+  color:var(--zw-ink,#f3f8ff)!important;
+}
+#content .zavi-flow-layout[data-zavi-flow="products"] .zavi-products-overview>.report-grid>.card{
+  background:var(--zw-surface-soft,#203f69)!important;
+}
+#content .zavi-flow-layout[data-zavi-flow="products"] :is(
+  .zv-wh-manager,.zavi-stock-history-projection){
+  padding:13px!important;margin:0!important;
+  overflow-wrap:anywhere;min-width:0;
+}
+#content .zavi-flow-layout[data-zavi-flow="products"] :is(
+  .zv-wh-manager h3,.zv-wh-manager h4,.zv-wh-row strong,
+  .zavi-history-title,.zv-wh-stock-row b,.zv-wh-transfer h4){
+  color:var(--zw-ink,#f3f8ff)!important;
+  -webkit-text-fill-color:currentColor!important;
+}
+#content .zavi-flow-layout[data-zavi-flow="products"] :is(
+  .zv-wh-note,.zv-wh-status,.zv-wh-row small,
+  .zv-wh-transfer-status,.zavi-history-rows .zds-muted){
+  color:var(--zw-muted,#c3d8ee)!important;
+  -webkit-text-fill-color:currentColor!important;
+}
+#content .zavi-flow-layout[data-zavi-flow="products"] :is(
+  .zv-wh-form label,.zv-wh-edit-form label,.zv-wh-transfer-form label){
+  color:var(--zw-ink,#f3f8ff)!important;min-width:0;
+}
+#content .zavi-flow-layout[data-zavi-flow="products"] :is(
+  .zv-wh-form input,.zv-wh-edit-form input,
+  .zv-wh-transfer-form input,.zv-wh-transfer-form select,
+  .zavi-products-scanner-details input){
+  background:var(--zw-field,#112b4b)!important;
+  border:1px solid var(--zw-line,#5480aa)!important;
+  color:var(--zw-ink,#f3f8ff)!important;
+  -webkit-text-fill-color:currentColor!important;
+  min-height:44px;min-width:0;max-width:100%;
+  box-sizing:border-box;border-radius:10px;
+}
+#content .zavi-flow-layout[data-zavi-flow="products"] :is(
+  .zv-wh-form input,.zv-wh-edit-form input,
+  .zv-wh-transfer-form input,.zv-wh-transfer-form select):focus-visible{
+  outline:2px solid var(--zw-focus,#70d2f9)!important;
+  outline-offset:1px;
+}
+#content .zavi-flow-layout[data-zavi-flow="products"] :is(
+  .zv-wh-form,.zv-wh-edit-form,.zv-wh-transfer-form){
+  width:100%;max-width:100%;min-width:0;
+  align-items:end;box-sizing:border-box;
+}
+#content .zavi-flow-layout[data-zavi-flow="products"] .zv-wh-form[hidden]{
+  display:none!important;
+}
+#content .zavi-flow-layout[data-zavi-flow="products"] .zv-wh-row{
+  gap:8px;padding:10px;border-radius:10px;
+  background:var(--zw-surface-soft,#203f69)!important;
+}
+#content .zavi-flow-layout[data-zavi-flow="products"] .zv-wh-manager .btn:not(.primary),
+#content .zavi-flow-layout[data-zavi-flow="products"] .zavi-products-more-actions .btn{
+  color:var(--zw-ink,#f3f8ff)!important;
+  background:var(--zw-surface-soft,#203f69)!important;
+  border:1px solid var(--zw-line,#5480aa)!important;
+  -webkit-text-fill-color:currentColor!important;
+}
+#content .zavi-flow-layout[data-zavi-flow="products"] .zv-wh-manager .btn.primary,
+#content .zavi-flow-layout[data-zavi-flow="products"] .zavi-products-label-panel .btn.primary{
+  color:#fff!important;background:var(--zw-accent,#096fcb)!important;
+  border-color:var(--zw-accent,#096fcb)!important;
+  -webkit-text-fill-color:#fff!important;
+}
+#content .zavi-flow-layout[data-zavi-flow="products"] .zavi-products-label-panel{
+  min-height:90px;display:grid!important;align-content:start;
+  padding:13px!important;
+}
+#content .zavi-flow-layout[data-zavi-flow="products"] .zavi-flow-panel{
+  min-width:0;max-width:100%;overflow-wrap:normal;
+}
+#content:has(.zavi-flow-layout[data-zavi-flow="products"])>.page-head{
+  min-width:0;max-width:100%;box-sizing:border-box;
+}
+#content:has(.zavi-flow-layout[data-zavi-flow="products"])>.page-head .action-group{
+  display:flex;flex-wrap:wrap;gap:8px;min-width:0;
+}
+/* Genuine product editor: use the exact same three-mode vocabulary, and
+   never hide original SKU, camera/USB/Bluetooth or variant controls. */
+#dialogForm.z66-product-editor :is(
+  .z66-registration-trade,.z66-registration-scanner,
+  .z66-reg-segment,.z66-create-wh-fields,.z66-product-fx-preview){
+  background:var(--zw-surface-soft,#203f69)!important;
+  color:var(--zw-ink,#f3f8ff)!important;
+  border-color:var(--zw-line,#5480aa)!important;
+}
+#dialogForm.z66-product-editor :is(
+  .z66-registration-trade label,.z66-reg-heading strong,
+  .z66-variant-note,.z66-product-status){
+  color:var(--zw-ink,#f3f8ff)!important;
+}
+#dialogForm.z66-product-editor :is(
+  .z66-registration-trade select,.z66-registration-scanner input,
+  .z66-reg-method,.z66-create-wh-fields input){
+  background:var(--zw-field,#112b4b)!important;
+  color:var(--zw-ink,#f3f8ff)!important;
+  border-color:var(--zw-line,#5480aa)!important;
+  -webkit-text-fill-color:currentColor!important;
+}
+#dialogForm.z66-product-editor .z66-reg-method[aria-pressed="true"]{
+  color:#fff!important;background:var(--zw-accent,#096fcb)!important;
+  -webkit-text-fill-color:#fff!important;
+}
+#dialogForm.z66-product-editor :is(
+  .z66-registration-trade select,.z66-registration-scanner input,
+  .z66-reg-method,.z66-create-wh-fields input):focus-visible{
+  outline:2px solid var(--zw-focus,#70d2f9)!important;outline-offset:2px;
+}
+/* Native barcode label print dialog: preview remains opaque white for actual
+   thermal printing; edit controls must remain readable in all three themes. */
+#dialogForm:has(.zavi-label-grid) .zavi-label-grid :is(input,select){
+  background:var(--zw-field,#112b4b)!important;
+  color:var(--zw-ink,#f3f8ff)!important;
+  border:1px solid var(--zw-line,#5480aa)!important;
+  -webkit-text-fill-color:currentColor!important;
+}
+#dialogForm:has(.zavi-label-grid) .zavi-label-grid label{
+  color:var(--zw-ink,#f3f8ff)!important;
+  -webkit-text-fill-color:currentColor!important;
+}
+#dialogForm:has(.zavi-label-grid) #z-label-preview{
+  border-color:var(--zw-line,#5480aa)!important;
+  background:var(--zw-surface-soft,#203f69)!important;
+}
+#dialogForm:has(.zavi-label-grid) .zavi-label-sheet{
+  color:#111!important;background:#fff!important;
+  -webkit-text-fill-color:#111!important;
+}
+@media(max-width:390px){
+ #content .zavi-flow-layout[data-zavi-flow="products"] .zavi-flow-tabs{
+   gap:2px;padding:3px;
+ }
+ #content .zavi-flow-layout[data-zavi-flow="products"] .zavi-flow-tab{
+   font-size:10.5px;padding:8px 2px;min-height:44px;
+ }
+ #content .zavi-flow-layout[data-zavi-flow="products"] .zv-wh-manager{
+   padding:10px!important;
+ }
+ #content .zavi-flow-layout[data-zavi-flow="products"] .zv-wh-form{
+   grid-template-columns:minmax(0,1fr);
+ }
+}
+@media(prefers-reduced-transparency:reduce){
+ html[data-zavi-theme="glass"]{
+   --zw-surface:#1c416e;--zw-surface-soft:#294e7f;--zw-field:#15335b;
+   --zw-glass-filter:none;
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ #content .zavi-flow-layout[data-zavi-flow="products"] *,
+ #dialogForm.z66-product-editor .z66-registration-scanner *{
+  transition:none!important;animation:none!important;
+ }
+}
