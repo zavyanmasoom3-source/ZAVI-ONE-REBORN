@@ -48,7 +48,7 @@
       action('foreign','🌐',title('خرید خارجی','بهرنی پېرود','Foreign purchase'),
         title('هر کشور، هر ارز، گمرک و مالیات','هر هېواد، اسعار، ګمرک او مالیه','All countries, currencies and import costs'),'data-z66pm-foreign="1"')+
       action('transit','🚚',title('سفارش‌های در راه','په لار کې فرمایشونه','Orders in transit'),
-        title('ثبت سفارش، رسید به گدام و دریافت قسمی','فرمایش، ګدام ته رسېدل او قسمي ترلاسه کول','Order, receive and track partial arrivals'),'data-z66pm-view="orders"')+
+        title('ثبت سفارش، دریافت کالا و دریافت قسمی','فرمایش، ګدام ته رسېدل او قسمي ترلاسه کول','Order, receive and track partial arrivals'),'data-z66pm-view="orders"')+
       action('return','↩',title('برگشت خرید','د پېرود بېرته ستنول','Purchase return'),
         title('اصلاح موجودی و سند برگشت','موجودي او د ستنولو سند','Return document and stock correction'),'data-action="purchase_return"')+
       '</div>';
@@ -82,7 +82,7 @@
       '</div></div></section>';
    const orders='<section class="z66pm-screen" data-z66pm-pane="orders" hidden>'+
       '<div class="z66pm-card"><div class="z66pm-card-head"><h3>'+title('سفارش‌های در راه','په لار کې فرمایشونه','Orders in transit')+'</h3></div>'+
-      '<p class="z66pm-muted">'+title('بعد از رسیدن کالا «رسید به گدام» را تأیید کنید. تا دریافت سروری، موجودی قابل فروش تغییر نمی‌کند.',
+      '<p class="z66pm-muted">'+title('بعد از رسیدن واقعی کالا، «تأیید دریافت» را بزنید. تا تأیید سرور، موجودی قابل فروش تغییر نمی‌کند.',
       'کله چې توکي راورسي، د ګدام رسېدنه تایید کړئ. له سروري تایید پرته موجودي نه بدلېږي.',
       'Confirm goods only after physical arrival. Sellable stock changes after server acknowledgement.')+'</p>'+
       '<div data-z66pm-transit-slot><span class="muted">'+title('در حال آماده‌سازی سفارش‌ها…','فرمایشونه چمتو کېږي…','Loading orders…')+'</span></div>'+
