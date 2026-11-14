@@ -983,3 +983,92 @@ html.zx-lite #content.z66d-root .z66d-sales-calendar[open] .z66d-calendar-inner{
  border:1px solid var(--z66d-edge)!important;
  border-radius:9px!important;padding:10px!important;
 }
+
+
+/* V66.62 phone fix — 2026-11-14, approved original design preserved.
+   Physical Redmi screenshot: microphone obscures the title and the mobile
+   navigation overlaps the final cards. Dashboard only, no ledger changes. */
+#content.z66d-root{
+  row-gap:14px!important;
+  padding-bottom:calc(122px + env(safe-area-inset-bottom,0px))!important;
+  scroll-padding-bottom:calc(110px + env(safe-area-inset-bottom,0px))!important;
+}
+#content.z66d-root > :is(.z66d-quick,.z66d-section,.z66d-warning,.backup-reminder){
+  flex-shrink:0!important;
+  min-width:0!important;
+  margin-block:0!important;
+}
+#content.z66d-root > .welcome{
+  isolation:isolate!important;
+  overflow:visible!important;
+}
+#content.z66d-root > .welcome > div:first-child{
+  position:relative!important;
+  z-index:1!important;
+  min-width:0!important;
+  max-width:100%!important;
+}
+#content.z66d-root > .welcome h2{
+  display:block!important;
+  white-space:normal!important;
+  overflow:visible!important;
+  overflow-wrap:normal!important;
+  word-break:normal!important;
+  text-wrap:pretty;
+  max-width:100%!important;
+}
+#content.z66d-root > .welcome .zv-today{
+  max-width:100%!important;
+  overflow-wrap:break-word!important;
+}
+#content.z66d-root .z66d-quick-four{
+  gap:9px!important;
+}
+#content.z66d-root .z66d-more-actions{
+  margin-top:3px!important;
+}
+/* Owner approved assistant is an icon in Settings; the legacy floating mic
+   must not cover dashboard text or actions. Do not disable the voice engine. */
+#content.z66d-root #z197-dashboard-mic{display:none!important}
+@media(max-width:550px){
+  #content.z66d-root{
+    row-gap:13px!important;
+    padding-bottom:calc(126px + env(safe-area-inset-bottom,0px))!important;
+  }
+  #content.z66d-root > .welcome{
+    gap:10px!important;
+    padding:15px 14px!important;
+    flex-direction:column!important;
+    align-items:stretch!important;
+  }
+  #content.z66d-root > .welcome > div:first-child{
+    flex:0 1 auto!important;
+    flex-basis:auto!important;
+  }
+  #content.z66d-root > .welcome h2{
+    font-size:clamp(16px,4.3vw,19px)!important;
+    line-height:1.48!important;
+    margin:5px 0 9px!important;
+  }
+  #content.z66d-root > .welcome .z76-profile-chip{
+    margin-bottom:8px!important;
+  }
+  #content.z66d-root > .welcome .zv-today{
+    line-height:1.6!important;
+    padding-block:2px!important;
+  }
+  #content.z66d-root > .welcome .z66d-main-sale{
+    margin-top:2px!important;
+    min-height:44px!important;
+  }
+  #content.z66d-root .z66d-quick-four .z66d-action{
+    min-height:78px!important;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  #content.z66d-root > .welcome,
+  #content.z66d-root .z66d-quick-four .z66d-action{
+    scroll-behavior:auto!important;
+    transition:none!important;
+  }
+}
