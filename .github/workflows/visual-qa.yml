@@ -21,6 +21,7 @@ on:
       - 'scripts/test-v6662-adaptive-products-browser.py'
       - 'scripts/test-v6662-products-warehouse-approved-browser.py'
       - 'scripts/test-v6662-products-warehouse-3theme-browser.py'
+      - 'scripts/test-v6662-compact-video-browser.py'
       - 'scripts/test-v6662-21-trade-product-schema.cjs'
       - 'scripts/test-phase2-recovery-contract-browser.py'
       - 'scripts/test-v6662-neon-recovery-browser.py'
@@ -84,6 +85,8 @@ jobs:
         run: python3 scripts/test-v6662-products-warehouse-approved-browser.py
       - name: Verify products warehouses and label in real Light Dark Glass x 3 languages x 3 phone widths
         run: python3 scripts/test-v6662-products-warehouse-3theme-browser.py
+      - name: Check owner phone footage regressions (light toggle contrast and purchase density)
+        run: python3 scripts/test-v6662-compact-video-browser.py
       - name: Verify approved sales manager with native archives, search, returns and multi-theme layout
         run: python3 scripts/test-v6662-owner-sales-management-browser.py
       - name: Verify approved compact purchase invoice, real FX/discount, barcode and payment controls
