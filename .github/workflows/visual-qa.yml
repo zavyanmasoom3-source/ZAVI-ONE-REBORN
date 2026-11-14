@@ -19,6 +19,7 @@ on:
       - 'scripts/test-v6662-purchase-management-browser.py'
       - 'scripts/test-v6662-owner-sales-management-browser.py'
       - 'scripts/test-v6662-adaptive-products-browser.py'
+      - 'scripts/test-v6662-products-warehouse-approved-browser.py'
       - 'scripts/test-v6662-21-trade-product-schema.cjs'
       - 'scripts/test-phase2-recovery-contract-browser.py'
       - 'scripts/test-v6662-neon-recovery-browser.py'
@@ -78,6 +79,8 @@ jobs:
         run: node scripts/test-v6662-21-trade-product-schema.cjs
       - name: Verify actual adaptive product modal for cases and gold, with no financial writes
         run: python3 scripts/test-v6662-adaptive-products-browser.py
+      - name: Verify REAL V66.62 products screen shows approved warehouse, scanner, movement and label tabs
+        run: python3 scripts/test-v6662-products-warehouse-approved-browser.py
       - name: Verify approved sales manager with native archives, search, returns and multi-theme layout
         run: python3 scripts/test-v6662-owner-sales-management-browser.py
       - name: Verify approved compact purchase invoice, real FX/discount, barcode and payment controls
