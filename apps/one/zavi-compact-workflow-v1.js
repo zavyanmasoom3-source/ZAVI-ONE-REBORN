@@ -4,13 +4,13 @@
   'use strict';
   const labels={
     fa:{accounts:'حساب‌ها',transactions:'تراکنش‌ها',more:'بیشتر',summary:'خلاصه',details:'جزئیات',output:'خروجی',warehouses:'گدام‌ها',movements:'حرکت موجودی',
-      products:'محصولات',customer:'مشتری',payment:'پرداخت',specs:'مشخصات',
+      products:'محصولات',labels:'لیبل',customer:'مشتری',payment:'پرداخت',specs:'مشخصات',
       required:'این فیلد ضروری است.',positive:'قیمت هر واحد باید بیشتر از صفر باشد.',badNumber:'یک عدد معتبر وارد کنید.',badFormat:'فرمت این فیلد معتبر نیست.',continue:'ادامه'},
     ps:{accounts:'حسابونه',transactions:'معاملې',more:'نور',summary:'لنډیز',details:'جزئیات',output:'وتنه',warehouses:'ګدامونه',movements:'د موجودۍ حرکت',
-      products:'توکي',customer:'پېرودونکی',payment:'تادیه',specs:'معلومات',
+      products:'توکي',labels:'لېبل',customer:'پېرودونکی',payment:'تادیه',specs:'معلومات',
       required:'دا برخه اړینه ده.',positive:'د هر واحد بیه باید له صفر څخه لوړه وي.',badNumber:'سمه شمېره ولیکئ.',badFormat:'د دې برخې بڼه سمه نه ده.',continue:'بل ګام'},
     en:{accounts:'Accounts',transactions:'Transactions',more:'More',summary:'Summary',details:'Details',output:'Export',warehouses:'Warehouses',movements:'Stock movements',
-      products:'Products',customer:'Customer',payment:'Payment',specs:'Details',
+      products:'Products',labels:'Labels',customer:'Customer',payment:'Payment',specs:'Details',
       required:'This field is required.',positive:'Unit price must be greater than zero.',badNumber:'Enter a valid number.',badFormat:'Invalid field format.',continue:'Continue'}
   };
   const lang=()=>{
@@ -114,6 +114,14 @@
     const originalHeader=existing.find(el=>el.matches?.('.page-head'));
     const products=existing.filter(el=>el!==manager&&el!==originalHeader);
     if(!products.includes(listing))return;
+    // Keep the REAL scanner and its live camera/USB/Bluetooth listeners.
+    // Only its visibility changes; no extra stock logic or fake scanner.
+    const compactScanner=document.createElement('details');
+    compactScanner.className='zavi-products-scanner-details';
+    const scannerTitle=document.createElement('summary');
+    scannerTitle.textContent=lang()==='en'?'Scan barcode':lang()==='ps'?'بارکوډ سکین':'اسکن بارکد';
+    compactScanner.append(scannerTitle,scanner);
+    products.splice(products.indexOf(scanner),1,compactScanner);
     const snapshot=document.createElement('section');
     snapshot.className='card zavi-stock-history-projection';
     snapshot.setAttribute('role','region');
@@ -147,13 +155,37 @@
     refreshHistory();
     const native=manager.querySelector('.zv-wh-history');
     if(native)new MutationObserver(refreshHistory).observe(native,{childList:true,subtree:true});
-    // Keep warehouse management in its original server-backed DOM. The third
-    // tab is read-only and never makes writes on its own.
-    const layout=createTabs(main,'products',[products,[manager],[snapshot]],
-      ['products','warehouses','movements']);
+    // Warehouse forms are server-backed. Movement history remains read-only.
+    // The fourth tab launches the existing printable Code128/EAN-13 modal.
+    const labelsPanel=document.createElement('section');
+    labelsPanel.className='card zavi-products-label-panel';
+    const printLabel=document.createElement('button');
+    printLabel.type='button';printLabel.className='btn primary';
+    printLabel.dataset.action='barcode_label';
+    printLabel.textContent=lang()==='en'?'Print label':lang()==='ps'?'لېبل چاپ':'چاپ لیبل';
+    labelsPanel.append(printLabel);
+    const layout=createTabs(main,'products',[products,[manager],[snapshot],[labelsPanel]],
+      ['products','warehouses','movements','labels']);
     if(!layout)return;
     layout.querySelectorAll('[role="tab"]')[2].addEventListener('click',refreshHistory);
-    if(originalHeader && main.firstElementChild!==originalHeader)main.prepend(originalHeader);
+    if(originalHeader){
+      // Leave the real Product action visible; move secondary native
+      // controls into a small opt-in menu instead of deleting handlers.
+      const group=originalHeader.querySelector('.action-group');
+      if(group&&!group.querySelector('.zavi-products-more-actions')){
+        const primary=group.querySelector('[data-action="product"]');
+        const others=[...group.children].filter(el=>el!==primary);
+        if(primary&&others.length){
+          const more=document.createElement('details');more.className='zavi-products-more-actions';
+          const label=document.createElement('summary');
+          label.textContent=lang()==='en'?'More':lang()==='ps'?'نور':'بیشتر';
+          more.append(label);
+          for(const item of others)more.append(item);
+          group.append(more);
+        }
+      }
+      if(main.firstElementChild!==originalHeader)main.prepend(originalHeader);
+    }
   }
 
   /* Approved 66.62 sale: single continuous page. Move ORIGINAL live controls only.
