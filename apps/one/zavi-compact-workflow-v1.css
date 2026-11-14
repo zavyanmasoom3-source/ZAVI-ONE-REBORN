@@ -936,3 +936,174 @@ html[data-zavi-appearance="glass"] body #content .zavi-flow-layout[data-zavi-flo
   border-color:var(--zw-line,rgba(172,214,255,.72))!important;
   color:var(--zw-ink,#f7fbff)!important;
 }
+
+
+/* Approved native V66.62 real product wizard and warehouse movement ergonomics. */
+/* Three real sections, not separate copies of form data; the single native
+   modal footer and native ledger submit remain untouched. */
+#dialogForm.z66-product-editor>.form-grid{
+  display:block!important;min-width:0;max-width:100%;
+}
+#dialogForm.z66-product-editor .zavi-product-three-step{
+  display:grid;gap:12px;min-width:0;max-width:100%;width:100%;
+  box-sizing:border-box;
+}
+#dialogForm.z66-product-editor .zavi-product-step-tabs{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:4px;padding:4px;border:1px solid var(--zw-line,#5480aa);
+  border-radius:13px;background:var(--zw-surface,#19365b);
+  min-width:0;max-width:100%;box-sizing:border-box;
+}
+#dialogForm.z66-product-editor .zavi-product-step-tab{
+  color:var(--zw-ink,#f3f8ff)!important;
+  -webkit-text-fill-color:currentColor!important;
+  min-width:0;min-height:44px;
+  border:1px solid transparent;border-radius:9px;
+  background:transparent;
+  font:inherit;font-size:clamp(11px,3vw,14px);font-weight:750;
+  padding:8px 5px;line-height:1.55;
+  text-align:center;white-space:normal;
+}
+#dialogForm.z66-product-editor .zavi-product-step-tab[aria-selected="true"]{
+  color:#fff!important;-webkit-text-fill-color:#fff!important;
+  background:var(--zw-accent,#096fcb)!important;
+  border-color:var(--zw-accent,#096fcb)!important;
+}
+#dialogForm.z66-product-editor .zavi-product-step-tab:focus-visible{
+  outline:3px solid var(--zw-focus,#70d2f9)!important;
+  outline-offset:1px;
+}
+#dialogForm.z66-product-editor .zavi-product-step-panel{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:11px;min-width:0;max-width:100%;
+  color:var(--zw-ink,#f3f8ff);
+}
+#dialogForm.z66-product-editor .zavi-product-step-panel[hidden]{
+  display:none!important;
+}
+#dialogForm.z66-product-editor .zavi-product-step-panel>*{
+  min-width:0;max-width:100%;box-sizing:border-box;
+}
+#dialogForm.z66-product-editor .zavi-product-step-panel :is(
+  .full,.z66-registration-trade,.z66-registration-scanner,.z66-reg-segment,
+  .zavi-barcode-box,.z629-industry,.z66-color-editor,
+  .zavi-product-optional,.zavi-product-step-next,.z66-product-fx-preview){
+  grid-column:1/-1;
+}
+#dialogForm.z66-product-editor .zavi-product-step-panel>.field{
+  margin:0!important;
+}
+#dialogForm.z66-product-editor .zavi-product-step-panel :is(
+  input:not([type="hidden"]),textarea,select){
+  min-width:0;max-width:100%;box-sizing:border-box;
+}
+#dialogForm.z66-product-editor .zavi-product-step-next{
+  width:100%;min-height:44px;margin-block:4px 2px;
+  color:var(--zw-ink,#f3f8ff)!important;
+  background:var(--zw-surface-soft,#203f69)!important;
+  border:1px solid var(--zw-line,#5480aa)!important;
+}
+#dialogForm.z66-product-editor .zavi-product-optional{
+  grid-column:1/-1;min-width:0;border-radius:12px;
+  border:1px solid var(--zw-line,#5480aa);
+  color:var(--zw-ink,#f3f8ff)!important;
+  background:var(--zw-surface-soft,#203f69);
+  padding:0;overflow:hidden;
+}
+#dialogForm.z66-product-editor .zavi-product-optional>summary{
+  min-height:44px;display:flex;align-items:center;
+  padding:10px 12px;cursor:pointer;list-style:none;
+  font-weight:700;font-size:13px;
+  color:var(--zw-ink,#f3f8ff)!important;
+}
+#dialogForm.z66-product-editor .zavi-product-optional>summary::-webkit-details-marker{
+  display:none;
+}
+#dialogForm.z66-product-editor .zavi-product-optional[open]>summary{
+  border-bottom:1px solid var(--zw-line,#5480aa);
+}
+#dialogForm.z66-product-editor .zavi-product-optional>.field{
+  margin:0;padding:12px;box-sizing:border-box;min-width:0;
+}
+#dialogForm.z66-product-editor .zavi-product-step-panel .z66-category-tools{
+  min-width:0;max-width:100%;
+}
+#content .zavi-stock-movement-actions{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:8px;min-width:0;
+}
+#content .zavi-stock-movement-actions>button{
+  min-width:0;min-height:48px;white-space:normal;
+  padding:9px 5px;font-size:clamp(10px,2.8vw,13px);
+  line-height:1.45;font-weight:750;
+  border-radius:11px;
+  background:var(--zw-surface-soft,#203f69)!important;
+  color:var(--zw-ink,#f3f8ff)!important;
+  border:1px solid var(--zw-line,#5480aa)!important;
+  -webkit-text-fill-color:currentColor!important;
+}
+#content .zavi-stock-movement-actions>button:focus-visible{
+  outline:3px solid var(--zw-focus,#70d2f9)!important;
+  outline-offset:1px;
+}
+#content .zavi-stock-movement-hint{
+  font-size:12px;line-height:1.6;
+  color:var(--zw-muted,#c3d8ee)!important;
+  margin:0;
+}
+#content .zavi-flow-layout[data-zavi-flow="products"] .zavi-warehouse-fold{
+  border:1px solid var(--zw-line,#5480aa)!important;
+  background:var(--zw-surface-soft,#203f69)!important;
+  color:var(--zw-ink,#f3f8ff)!important;
+  border-radius:12px;margin-block:9px;overflow:hidden;
+  min-width:0;max-width:100%;
+}
+#content .zavi-flow-layout[data-zavi-flow="products"] .zavi-warehouse-fold>summary{
+  display:flex;align-items:center;justify-content:space-between;
+  cursor:pointer;list-style:none;min-height:44px;
+  padding:10px 12px;font-size:13px;line-height:1.55;
+  font-weight:750;color:var(--zw-ink,#f3f8ff)!important;
+  -webkit-text-fill-color:currentColor!important;
+}
+#content .zavi-flow-layout[data-zavi-flow="products"] .zavi-warehouse-fold>summary::-webkit-details-marker{
+  display:none;
+}
+#content .zavi-flow-layout[data-zavi-flow="products"] .zavi-warehouse-fold>summary:after{
+  content:"⌄";margin-inline-start:8px;
+}
+#content .zavi-flow-layout[data-zavi-flow="products"] .zavi-warehouse-fold[open]>summary{
+  border-bottom:1px solid var(--zw-line,#5480aa);
+}
+#content .zavi-flow-layout[data-zavi-flow="products"] .zavi-warehouse-fold>:not(summary){
+  max-width:100%;min-width:0;box-sizing:border-box;
+  margin:0!important;padding:10px!important;
+}
+#content .zavi-flow-layout[data-zavi-flow="products"] .zavi-warehouse-fold .zv-wh-form{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:9px;
+}
+#content .zavi-flow-layout[data-zavi-flow="products"] .zavi-warehouse-fold .zv-wh-form>button{
+  grid-column:1/-1;min-height:44px;
+}
+#content .zavi-flow-layout[data-zavi-flow="products"] .zavi-warehouse-fold .zv-wh-form[hidden]{
+  display:none!important;
+}
+html[data-zavi-theme="glass"] #content .zavi-flow-layout[data-zavi-flow="products"] .zavi-warehouse-fold{
+  -webkit-backdrop-filter:blur(10px) saturate(125%);
+  backdrop-filter:blur(10px) saturate(125%);
+}
+@media(max-width:530px){
+  #dialogForm.z66-product-editor .zavi-product-step-panel{
+    grid-template-columns:minmax(0,1fr);
+    gap:9px;
+  }
+  #dialogForm.z66-product-editor .zavi-product-step-tab{
+    font-size:12px;padding-inline:3px;
+  }
+  #content .zavi-stock-movement-actions{
+    gap:5px;
+  }
+  #content .zavi-flow-layout[data-zavi-flow="products"] .zavi-warehouse-fold .zv-wh-form{
+    grid-template-columns:minmax(0,1fr);
+  }
+}
