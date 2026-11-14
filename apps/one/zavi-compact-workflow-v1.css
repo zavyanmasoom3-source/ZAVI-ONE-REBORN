@@ -544,3 +544,85 @@ html[data-zavi-theme="light"] #content .z66pm-root .z66pm-nav:not(.active),
 html[data-zavi-appearance="light"] #content .z66pm-root .z66pm-nav:not(.active){color:#254666!important;background:#edf3fb!important}
 html[data-zavi-theme="light"] #content .z66pm-root .z66pm-menu,
 html[data-zavi-appearance="light"] #content .z66pm-root .z66pm-menu{background:#d9e5f2!important;border-color:#becede!important}
+
+
+/* Owner-approved V66.62 product and warehouse navigation, 2026-11-14.
+   Presentation only; all scanner, catalog, ledger and Supabase controls stay native. */
+.zavi-flow-layout[data-zavi-flow="products"] .zavi-flow-tabs{
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:4px;
+}
+.zavi-flow-layout[data-zavi-flow="products"] .zavi-flow-tab{
+  min-width:0;overflow-wrap:normal;word-break:normal;
+  padding:8px 3px;
+}
+.zavi-products-scanner-details{
+  border:1px solid var(--zds-border,#899caf);
+  border-radius:12px;
+  background:var(--zds-surface,#fff);
+  padding:0;min-width:0;overflow:hidden;
+}
+.zavi-products-scanner-details>summary{
+  cursor:pointer;min-height:44px;display:flex;align-items:center;
+  padding:10px 13px;font-weight:700;color:var(--zds-text,#152b43);
+  list-style:none;
+}
+.zavi-products-scanner-details>summary::-webkit-details-marker{display:none}
+.zavi-products-scanner-details>summary::before{content:"▥";margin-inline-end:8px}
+.zavi-products-scanner-details[open]>summary{
+  border-bottom:1px solid var(--zds-border,#899caf);
+}
+.zavi-products-scanner-details>.z638-warehouse-scanner{
+  display:block;min-width:0;max-width:100%;
+  margin:0!important;padding:10px!important;
+}
+.zavi-products-label-panel{
+  display:grid!important;align-content:start;
+  gap:10px;min-height:100px;padding:13px!important;
+}
+.zavi-products-label-panel>button{
+  min-height:44px;width:100%;max-width:100%;
+  font-size:14px;font-weight:750;
+}
+#content .zavi-products-more-actions{
+  min-width:0;flex:0 0 auto;
+  border:1px solid var(--zds-border,#899caf);
+  border-radius:11px;
+  background:var(--zds-surface,#fff);
+  padding:0;
+}
+#content .zavi-products-more-actions>summary{
+  min-height:42px;display:flex;align-items:center;
+  padding:8px 14px;color:var(--zds-text,#152b43);
+  cursor:pointer;list-style:none;font-weight:650;
+}
+#content .zavi-products-more-actions>summary::-webkit-details-marker{display:none}
+#content .zavi-products-more-actions>summary::after{
+  content:"⌄";margin-inline-start:9px;
+}
+#content .zavi-products-more-actions[open]{
+  display:flex;flex-direction:column;align-items:stretch;
+  gap:8px;padding:0 8px 8px;
+}
+#content .zavi-products-more-actions[open]>summary{
+  margin-inline:-8px;border-bottom:1px solid var(--zds-border,#899caf);
+}
+#content .zavi-products-more-actions>:is(button,label){
+  min-height:42px;margin:0!important;
+}
+#content .zavi-products-more-actions>:is(button,label) input[type=file]{
+  max-width:100%;
+}
+@media(max-width:390px){
+ .zavi-flow-layout[data-zavi-flow="products"] .zavi-flow-tabs{
+   gap:2px;padding:3px;
+ }
+ .zavi-flow-layout[data-zavi-flow="products"] .zavi-flow-tab{
+   font-size:10.5px;line-height:1.35;
+   padding:9px 2px;min-height:44px;
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ .zavi-products-scanner-details *,
+ .zavi-products-more-actions *{animation:none!important;transition:none!important}
+}
