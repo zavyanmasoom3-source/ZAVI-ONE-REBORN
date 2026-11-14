@@ -137,7 +137,7 @@ function rememberCatalog(id){
 async function refresh(box){
  box=box||document.getElementById(ID);if(!box)return;
  var ticket=++requestNo,c=owner(),form=box.querySelector('[data-wh-add]');
- if(!c){rows=[];stockRows=[];historyRows=[];stockNote='';historyNote='';activeWorkspace='';if(form)form.hidden=true;draw(box);drawStock(box);drawHistory(box);window.ZaviWarehouseTransfersV1?.mount(box,[]);message(box,tr('برای افزودن گدام، وارد حساب ابری مالک شوید.','د ګدام لپاره د مالک کلاوډ حساب ته ننوځئ.','Sign in as cloud owner to manage warehouses.'));return}
+ if(!c){rows=[];stockRows=[];historyRows=[];stockNote='';historyNote='';activeWorkspace='';if(form)form.hidden=false;draw(box);drawStock(box);drawHistory(box);window.ZaviWarehouseTransfersV1?.mount(box,[]);message(box,tr('فرم افزودن گدام آماده است؛ برای ثبت نهایی، ورود مالک و اتصال سرور لازم است.','د ګدام فورم شته؛ د ثبت لپاره د مالک ننوتل او سرور ته اتصال اړین دی.','Add warehouse is available; owner sign-in and server connection are required to save.'));return}
  activeWorkspace=c.id;stockRows=[];historyRows=[];stockNote='';historyNote='';if(form)form.hidden=false;message(box,tr('دریافت از سرور…','له سرور څخه ترلاسه کېږي…','Loading from server…'));
  try{
   var data=await rest('/rest/v1/zavi_warehouses?select=id,name,code,is_active,workspace_id&workspace_id=eq.'+encodeURIComponent(c.id)+'&order=created_at.asc','GET');
@@ -181,7 +181,8 @@ document.addEventListener('submit',function(e){
   return;
  }
  if(!form.matches||!form.matches('[data-wh-add]'))return;e.preventDefault();
- var box=form.closest('#'+ID),c=owner();if(!box||!c)return;
+ var box=form.closest('#'+ID),c=owner();if(!box)return;
+ if(!c){message(box,tr('برای ثبت گدام، حساب ابری مالک را وصل کنید.','د ګدام د ثبت لپاره د مالک کلاوډ حساب وصل کړئ.','Connect the owner cloud account before saving a warehouse.'));return;}
  var name=form.elements.warehouse_name.value.trim(),code=form.elements.warehouse_code.value.trim().toUpperCase();
  if(!name||name.length>90||!/^[A-Z0-9_-]{1,32}$/.test(code)){message(box,tr('نام یا کود نامعتبر است.','نوم یا کوډ ناسم دی.','Invalid name or code.'));return}
  mutate(box,'/rest/v1/zavi_warehouses','POST',{workspace_id:c.id,name:name,code:code}).then(function(ok){if(ok&&box.isConnected)form.reset()})
