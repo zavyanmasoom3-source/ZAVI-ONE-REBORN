@@ -29,6 +29,8 @@ with Session() as browser:
         tabs:tabs.map(t=>t.textContent.trim()),
         labels:tabs.map(t=>t.dataset.zaviFlowLabel),
         manager:!!manager,scanner:!!scanner,
+        overview:!!root.querySelector('.zavi-products-overview > .report-grid'),
+        cards:root.querySelectorAll('.zavi-products-overview .report-grid > .card').length,
         addForm:!!add,warehouseName:!!add?.querySelector('[name=warehouse_name]'),
         warehouseCode:!!add?.querySelector('[name=warehouse_code]'),
         addHidden:!!add?.hidden,
@@ -44,6 +46,7 @@ with Session() as browser:
     assert all(info[k] for k in ('manager','scanner','addForm','warehouseName','warehouseCode',
                                   'labelButton','productButton','stockHistory','transfer')),info
     assert not info['addHidden'] and not info['duplicateLabel'],info
+    assert info['overview'] and info['cards']>=4,info
     for index in range(4):
         browser.eval("""document.querySelectorAll('#content [data-zavi-flow=products] .zavi-flow-tabs [role=tab]')[%d].click()"""%index)
         result=browser.eval("""(()=>{
