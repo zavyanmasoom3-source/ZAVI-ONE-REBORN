@@ -93,6 +93,25 @@ with Session() as browser:
       };
     })()""")
     assert navigation=={'active':'1','open':True,'transfer':True},navigation
+    browser.eval("""(()=>{
+      const root=document.querySelector('#content [data-zavi-flow=products]');
+      root.querySelector('[data-zavi-flow-label=movements]').click();
+      root.querySelector('[data-zavi-stock-action=adjust]').click();
+    })()""")
+    browser.until("""!!document.querySelector('#dialogForm') &&
+      !!document.querySelector('#dialogForm [name="productId"]')""",
+      'real stock adjustment opens native accounting form',seconds=9)
+    browser.eval("closeModal();go('products')")
+    browser.until("""!!document.querySelector('#content [data-zavi-flow=products]')""",
+                  'return to approved stock movements',seconds=10)
+    browser.eval("""(()=>{
+      const root=document.querySelector('#content [data-zavi-flow=products]');
+      root.querySelector('[data-zavi-flow-label=movements]').click();
+      root.querySelector('[data-zavi-stock-action=receive]').click();
+    })()""")
+    browser.until("""!!document.querySelector('#content [data-z66pm-pane=orders]') &&
+      !document.querySelector('#content [data-z66pm-pane=orders]').hidden""",
+      'receive goods opens the native in-transit purchase and server receipt view',seconds=12)
     browser.eval("go('products');openEntity('product')")
     browser.until("""!!document.querySelector('#dialogForm.z66-product-editor .zavi-product-three-step')
       && !!document.querySelector('#dialogForm [data-zavi-product-flow=true]')""",
