@@ -15,6 +15,7 @@ on:
       - 'scripts/test-v6662-purchase-onepage-browser.py'
       - 'scripts/test-in-transit-contract.cjs'
       - 'scripts/test-v6662-sale-onepage-browser.py'
+      - 'scripts/test-v6662-products-warehouse-approved-browser.py'
       - 'apps/one/zavi-v6662-pin-visibility-v1.js'
       - 'scripts/test-v6662-login-center-browser.py'
       - 'scripts/test-v6662-owner-dashboard-browser.py'
@@ -93,6 +94,7 @@ jobs:
         run: |
           python3 scripts/test-v6662-sale-onepage-browser.py
           python3 scripts/test-v6662-purchase-onepage-browser.py
+          python3 scripts/test-v6662-products-warehouse-approved-browser.py
           python3 scripts/test-v6662-purchase-management-browser.py
           python3 scripts/test-v6662-login-center-browser.py
           python3 scripts/test-phase2-recovery-contract-browser.py
