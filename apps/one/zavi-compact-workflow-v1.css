@@ -895,3 +895,31 @@ html:is([data-zavi-theme="glass"],[data-zavi-appearance="glass"]){
   transition:none!important;animation:none!important;
  }
 }
+
+
+/* Approved high-specificity fix for global theme inputs and selected native tab. */
+html[data-zavi-theme] body #content .zavi-flow-layout[data-zavi-flow="products"] .zavi-flow-tabs > button.zavi-flow-tab[aria-selected="true"]{
+  background:var(--zw-accent,#096fcb)!important;
+  background-color:var(--zw-accent,#096fcb)!important;
+  background-image:none!important;
+  color:var(--zw-accent-text,#fff)!important;
+  -webkit-text-fill-color:var(--zw-accent-text,#fff)!important;
+  border-color:var(--zw-accent,#096fcb)!important;
+}
+html[data-zavi-theme] body #content .zavi-flow-layout[data-zavi-flow="products"] .zv-wh-manager :is(
+  .zv-wh-form input,.zv-wh-edit-form input,
+  .zv-wh-transfer-form input,.zv-wh-transfer-form select){
+  background:var(--zw-field,#112b4b)!important;
+  background-color:var(--zw-field,#112b4b)!important;
+  background-image:none!important;
+  color:var(--zw-ink,#f3f8ff)!important;
+  -webkit-text-fill-color:var(--zw-ink,#f3f8ff)!important;
+  border-color:var(--zw-line,#5480aa)!important;
+  opacity:1!important;
+}
+html[data-zavi-theme] body #content .zavi-flow-layout[data-zavi-flow="products"] .zv-wh-manager :is(
+  .zv-wh-form input,.zv-wh-edit-form input,
+  .zv-wh-transfer-form input,.zv-wh-transfer-form select):focus-visible{
+  outline:2px solid var(--zw-focus,#70d2f9)!important;
+  outline-offset:1px;
+}
