@@ -185,7 +185,7 @@
       const fold=document.createElement('details');fold.className='zavi-warehouse-fold '+cls;
       const title=document.createElement('summary');
       title.textContent=lang()==='en'?en:lang()==='ps'?ps:fa;
-      fold.append(title,element);manager.append(fold);return fold;
+      element.replaceWith(fold);fold.append(title,element);return fold;
     }
     const warehouseAdd=foldWarehouse('[data-wh-add]','افزودن گدام','ګدام زیاتول','Add warehouse','zavi-warehouse-add-fold');
     foldWarehouse('.zv-wh-stock','موجودی مستقل هر گدام','د ګدام خپلواک موجودي','Warehouse stock','zavi-warehouse-stock-fold');
