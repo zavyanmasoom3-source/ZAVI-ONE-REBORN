@@ -214,10 +214,10 @@ jobs:
           gradle=Path('android-build/app/build.gradle')
           gradle_text=gradle.read_text(encoding='utf-8')
           substitutions={
-            "applicationIdSuffix '.offlinepreview'":("applicationIdSuffix '.approvedsettingspreview'" if '${{ matrix.app }}'=='one' else "applicationIdSuffix '.connectedpreview'"),
+            "applicationIdSuffix '.offlinepreview'":("applicationIdSuffix '.approvedsettingspreview.r${{ github.run_number }}'" if '${{ matrix.app }}'=='one' else "applicationIdSuffix '.connectedpreview.r${{ github.run_number }}'"),
             "versionNameSuffix '-OFFLINE-PREVIEW-NOT-RELEASE'":"versionNameSuffix '-CONNECTED-TEST-NOT-RELEASE'",
-            "ZAVI ADMIN OFFLINE PREVIEW":"ZAVI ADMIN CONNECTED TEST",
-            "ZAVI ONE OFFLINE PREVIEW":"ZAVI 66.62 SETTINGS QA",
+            "ZAVI ADMIN OFFLINE PREVIEW":"ZAVI ADMIN QA ${{ github.run_number }}",
+            "ZAVI ONE OFFLINE PREVIEW":"ZAVI ONE QA ${{ github.run_number }}",
           }
           for original,new in substitutions.items():
               assert gradle_text.count(original)==1, 'Unexpected preview Gradle structure: '+original
@@ -233,10 +233,10 @@ jobs:
           PY
           if [[ "${{ matrix.app }}" == "one" ]]; then
             version="66.62-settings.qa.$GITHUB_RUN_NUMBER-CONNECTED-TEST-NOT-RELEASE"
-            package="com.zavione.one.approvedsettingspreview"
+            package="com.zavione.one.approvedsettingspreview.r$GITHUB_RUN_NUMBER"
           else
             version="1.4.69-reborn.qa.$GITHUB_RUN_NUMBER-CONNECTED-TEST-NOT-RELEASE"
-            package="com.zavione.one.admin.connectedpreview"
+            package="com.zavione.one.admin.connectedpreview.r$GITHUB_RUN_NUMBER"
           fi
           printf '{"commit":"%s","app":"%s","run":"%s","version":"%s","package":"%s","kind":"CONNECTED-TEST-NOT-RELEASE","server":"live-public-key","signing":"%s"}\n' \
             "$GITHUB_SHA" "${{ matrix.app }}" "$GITHUB_RUN_NUMBER" "$version" "$package" "ephemeral-connected-test" \
@@ -317,9 +317,9 @@ jobs:
           package=$(sed -n '1p' <<< "$badging")
           echo "$package"
           if [[ "${{ matrix.app }}" == one ]]; then
-            grep -F "name='com.zavione.one.approvedsettingspreview'" <<< "$package"
+            grep -F "name='com.zavione.one.approvedsettingspreview.r$GITHUB_RUN_NUMBER'" <<< "$package"
           else
-            grep -F "name='com.zavione.one.admin.connectedpreview'" <<< "$package"
+            grep -F "name='com.zavione.one.admin.connectedpreview.r$GITHUB_RUN_NUMBER'" <<< "$package"
           fi
           grep -F 'CONNECTED-TEST-NOT-RELEASE' <<< "$package"
           "$aapt" dump xmltree "$apk" AndroidManifest.xml | grep -E 'testOnly.*0x0$' >/dev/null
@@ -424,8 +424,8 @@ jobs:
               assert info['commit']==sha,(app,'wrong commit')
               assert info['run']==run,(app,'wrong run')
               assert info['kind']=='CONNECTED-TEST-NOT-RELEASE',(app,'wrong build kind')
-              assert info['package']==('com.zavione.one.admin.connectedpreview' if app=='admin'
-                else 'com.zavione.one.approvedsettingspreview'),info
+              assert info['package']==('com.zavione.one.admin.connectedpreview.r'+run if app=='admin'
+                else 'com.zavione.one.approvedsettingspreview.r'+run),info
               assert info['server']=='live-public-key',(app,'not connected')
               assert info['signing']=='ephemeral-connected-test',(app,'unexpected signing')
               target=Path('direct-apks')/('ZAVI_ONE_ADMIN_CONNECTED_TEST.apk' if app=='admin' else 'ZAVI_ONE_V6662_FULL_OFFLINE_CONNECTED_TEST.apk')
