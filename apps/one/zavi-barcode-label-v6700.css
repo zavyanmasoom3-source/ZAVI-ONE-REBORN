@@ -12,4 +12,21 @@
 .zavi-label-sheet[data-size="60x40"]{width:60mm;min-height:40mm}.zavi-label-sheet[data-size="58x30"]{width:58mm;min-height:30mm}
 .zavi-label-sheet strong{font-size:9pt;overflow:hidden;max-width:100%;white-space:nowrap;text-overflow:ellipsis}
 .zavi-label-bars{width:96%;height:13mm}.zavi-label-sheet span{font:8pt monospace}
-@media(max-width:480px){.zavi-label-grid{grid-template-columns:1fr}.zavi-label-grid label:first-child{grid-column:auto}}
+/* Approved phone label: keep fields clear without a tall one-column dialog. */
+@media(max-width:480px){
+ .zavi-label-grid{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:9px;
+ }
+ .zavi-label-grid>label:first-child,
+ .zavi-label-grid>label:nth-child(2),
+ .zavi-label-grid>.zavi-label-toggles{grid-column:1/-1}
+ .zavi-label-grid label{min-width:0;line-height:1.45}
+ .zavi-label-grid input,.zavi-label-grid select{
+  min-width:0;width:100%;min-height:42px;
+  padding:8px 9px;font-size:13px;
+ }
+ .zavi-label-toggles{gap:12px;justify-content:flex-start}
+ #z-label-preview{padding:9px;overflow:hidden}
+ #z-label-preview .zavi-label-sheet{max-width:100%}
+}
