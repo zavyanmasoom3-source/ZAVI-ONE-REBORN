@@ -1000,7 +1000,9 @@ html.zx-lite #content.z66d-root .z66d-sales-calendar[open] .z66d-calendar-inner{
 }
 #content.z66d-root > .welcome{
   isolation:isolate!important;
-  overflow:visible!important;
+  /* Keep the 180%-wide shimmer pseudo-element inside the card;
+     un-clipping it made the root 486px wide at 320px viewport. */
+  overflow:hidden!important;
 }
 #content.z66d-root > .welcome > div:first-child{
   position:relative!important;
