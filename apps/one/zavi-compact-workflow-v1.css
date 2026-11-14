@@ -923,3 +923,16 @@ html[data-zavi-theme] body #content .zavi-flow-layout[data-zavi-flow="products"]
   outline:2px solid var(--zw-focus,#70d2f9)!important;
   outline-offset:1px;
 }
+
+
+/* Explicit glass manager override: native global dark skin used a higher-specificity opaque panel. */
+html[data-zavi-theme="glass"] body #content .zavi-flow-layout[data-zavi-flow="products"] #zaviWarehouseManagerV1.zv-wh-manager,
+html[data-zavi-appearance="glass"] body #content .zavi-flow-layout[data-zavi-flow="products"] #zaviWarehouseManagerV1.zv-wh-manager{
+  background:var(--zw-surface,rgba(24,58,106,.73))!important;
+  background-color:var(--zw-surface,rgba(24,58,106,.73))!important;
+  background-image:none!important;
+  -webkit-backdrop-filter:var(--zw-glass-filter,blur(15px) saturate(130%))!important;
+  backdrop-filter:var(--zw-glass-filter,blur(15px) saturate(130%))!important;
+  border-color:var(--zw-line,rgba(172,214,255,.72))!important;
+  color:var(--zw-ink,#f7fbff)!important;
+}
