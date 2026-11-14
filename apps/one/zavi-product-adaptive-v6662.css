@@ -164,3 +164,46 @@ html[data-z637-no-motion="true"] #dialogForm.z66-product-editor *{
  min-height:40px;padding:8px 11px;color:var(--zavi-text,#eefaff);background:var(--zavi-surface,#163963);
  border:1px solid var(--zavi-border,#528dbc);border-radius:10px}
 #dialogForm.z66-product-editor .z66-create-wh-fields button{min-height:42px}
+
+
+/* Approved expandable all-21-trades category selector, not nine truncated chips. */
+#dialogForm.z66-product-editor .z66-category-tools :is(
+ .z66-category-choices,.z66-category-new-fold){
+  min-width:0;width:100%;max-width:100%;
+  border:1px solid var(--zw-line,#5480aa);
+  border-radius:11px;
+  background:var(--zw-surface-soft,#203f69);
+  color:var(--zw-ink,#f3f8ff);
+  overflow:hidden;
+}
+#dialogForm.z66-product-editor .z66-category-tools :is(
+ .z66-category-choices,.z66-category-new-fold)>summary{
+  min-height:42px;display:flex;align-items:center;
+  padding:9px 11px;cursor:pointer;list-style:none;
+  font-size:12px;font-weight:750;
+  color:var(--zw-ink,#f3f8ff)!important;
+}
+#dialogForm.z66-product-editor .z66-category-tools :is(
+ .z66-category-choices,.z66-category-new-fold)>summary::-webkit-details-marker{
+  display:none;
+}
+#dialogForm.z66-product-editor .z66-category-tools :is(
+ .z66-category-choices,.z66-category-new-fold)[open]>summary{
+  border-bottom:1px solid var(--zw-line,#5480aa);
+}
+#dialogForm.z66-product-editor .z66-category-choices .z66-category-chipset{
+  padding:10px;max-height:220px;overflow-y:auto;overscroll-behavior:contain;
+}
+#dialogForm.z66-product-editor .z66-category-new-fold .z66-category-add{
+  padding:10px;gap:8px;
+}
+#dialogForm.z66-product-editor .z66-category-chipset button{
+  color:var(--zw-ink,#f3f8ff)!important;
+  background:var(--zw-field,#112b4b)!important;
+  border-color:var(--zw-line,#5480aa)!important;
+  min-height:36px;
+}
+#dialogForm.z66-product-editor .z66-category-chipset button:focus-visible,
+#dialogForm.z66-product-editor .z66-category-tools summary:focus-visible{
+  outline:2px solid var(--zw-focus,#70d2f9)!important;outline-offset:1px;
+}
