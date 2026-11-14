@@ -1436,3 +1436,130 @@ html[data-zavi-theme="glass"] body #content .zsh :is(.zsh-card,.z46-offline-card
    animation:none!important;transition:none!important;
  }
 }
+
+
+/* Owner phone QA: debtors, creditors, expenses and dashboard essentials remain readable but compact. */
+/* Debtors and our own creditors share authentic receipts and balances; this
+   adjusts spacing only, never hides debt amounts or collect/payment actions. */
+#content:has(> .debt-hero)>.debt-hero{
+ min-width:0!important;max-width:100%;
+ min-height:0!important;height:auto!important;
+ padding:12px 14px!important;margin:0 0 10px!important;
+ border-radius:13px!important;gap:11px!important;
+ box-shadow:none!important;
+}
+#content:has(> .debt-hero)>.debt-hero strong{
+ font-size:clamp(20px,5.5vw,27px)!important;line-height:1.3!important;
+}
+#content:has(> .debt-hero)>.debt-hero small,
+#content:has(> .debt-hero)>.debt-hero span{
+ font-size:11px!important;line-height:1.5!important;
+}
+#content:has(> .debt-hero)>.debt-hero .btn{
+ min-height:42px!important;padding:8px 11px!important;font-size:12px!important;
+}
+#content:has(> .debt-hero)>.card:has(.searchbox){
+ margin:0 0 10px!important;border-radius:11px!important;
+}
+#content:has(> .debt-hero)>.card .table-bar{
+ padding:9px!important;gap:8px!important;
+}
+#content .debt-cards{
+ grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr))!important;
+ gap:9px!important;margin:0 0 12px!important;
+}
+#content .debt-card{
+ min-width:0!important;min-height:0!important;
+ padding:12px!important;margin:0!important;
+ border:1px solid var(--zq-line)!important;
+ border-radius:12px!important;background:var(--zq-paper)!important;
+ color:var(--zq-ink)!important;box-shadow:none!important;
+}
+#content .debt-card :is(h3,.dc-amount){line-height:1.4!important}
+#content .debt-card h3{font-size:14px!important;color:var(--zq-ink)!important}
+#content .debt-card .dc-amount{font-size:clamp(17px,4.4vw,21px)!important;margin-block:5px!important}
+#content .debt-card .dc-contact{
+ color:var(--zq-muted)!important;margin:5px 0!important;
+ font-size:11px!important;flex-wrap:wrap;
+}
+#content .debt-card .dc-actions{
+ margin-top:9px!important;gap:6px!important;
+}
+#content .debt-card .dc-actions .btn{
+ min-height:40px!important;padding:7px 9px!important;
+ font-size:11px!important;
+}
+#content .debt-card .zavi-more-actions{
+ max-width:100%!important;min-width:0!important;
+ margin:0!important;
+}
+#content .debt-card .zavi-more-actions>summary{
+ min-height:40px!important;padding:7px!important;line-height:1.4!important;
+ color:var(--zq-ink)!important;
+}
+/* The three instructional debt steps are optional reading, not a second
+   transaction form: keep them compact and let clients access all text. */
+#content .z6528-guide{
+ padding:10px!important;margin:0 0 10px!important;
+ border-radius:12px!important;box-shadow:none!important;
+}
+#content .z6528-guide h3{
+ font-size:14px!important;margin:0 0 6px!important;
+}
+#content .z6528-guide .z6528-steps{
+ gap:7px!important;margin:7px 0!important;
+}
+#content .z6528-guide .z6528-step{
+ min-width:0!important;min-height:0!important;
+ padding:9px!important;border-radius:10px!important;
+}
+/* Expenses: two actual numbers and the real ledger, no oversized empty
+   financial summary boxes. */
+#content:has(> .stat-grid + section.card)>.stat-grid{
+ grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ gap:8px!important;margin:0 0 10px!important;
+}
+#content:has(> .stat-grid + section.card)>.stat-grid .stat{
+ min-height:80px!important;padding:11px!important;
+ border-radius:12px!important;box-shadow:none!important;
+}
+#content:has(> .stat-grid + section.card)>.stat-grid .stat-value{
+ font-size:clamp(15px,4vw,20px)!important;line-height:1.35!important;
+}
+#content:has(> .stat-grid + section.card)>section.card .panel-head{
+ padding:10px 12px!important;
+}
+/* Dashboard: the required configure/backup banners keep their actions but
+   no longer occupy an entire mobile screen. */
+#content.z66d-root>.z66d-warning,
+#content.z66d-root>.backup-reminder{
+ min-height:0!important;height:auto!important;
+ margin:0!important;padding:10px 12px!important;
+ border-radius:12px!important;box-shadow:none!important;
+}
+#content.z66d-root>.z66d-warning :is(h2,h3,h4),
+#content.z66d-root>.backup-reminder :is(h2,h3,h4){
+ font-size:13px!important;line-height:1.45!important;
+ margin:0 0 5px!important;
+}
+#content.z66d-root>.z66d-warning p,
+#content.z66d-root>.backup-reminder p{
+ font-size:11px!important;line-height:1.5!important;margin:0 0 6px!important;
+}
+#content.z66d-root>.z66d-warning .btn,
+#content.z66d-root>.backup-reminder .btn{
+ min-height:42px!important;padding:7px 11px!important;
+}
+@media(max-width:430px){
+ #content:has(> .debt-hero)>.debt-hero{
+   display:grid!important;grid-template-columns:1fr!important;
+ }
+ #content:has(> .debt-hero)>.debt-hero .btn{
+   width:100%!important;justify-content:center;
+ }
+ #content .debt-card .dc-actions{
+   display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));
+ }
+ #content .debt-card .dc-actions>*{min-width:0!important;max-width:100%}
+ #content .debt-card .dc-actions .btn{white-space:normal!important}
+}
