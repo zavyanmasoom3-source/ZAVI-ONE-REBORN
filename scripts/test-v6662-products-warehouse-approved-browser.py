@@ -94,6 +94,12 @@ with Session() as browser:
     })()""")
     assert navigation=={'active':'1','open':True,'transfer':True},navigation
     browser.eval("""(()=>{
+      // Stock adjustment is correctly blocked when the native product
+      // catalogue is empty. Seed one disposable in-memory product first.
+      if(!db.products.some(p=>p.id==='z66-qa-label-only'))
+        db.products.push({id:'z66-qa-label-only',name:'QA-only label product',
+          sku:'QA-128-66',barcodes:['QA-128-66'],salePrice:25,purchasePrice:10,
+          category:'QA',openingQty:0,reorder:0});
       const root=document.querySelector('#content [data-zavi-flow=products]');
       root.querySelector('[data-zavi-flow-label=movements]').click();
       root.querySelector('[data-zavi-stock-action=adjust]').click();
@@ -154,7 +160,8 @@ with Session() as browser:
     # Existing barcode builder must launch, with real product list supplied in
     # the test's disposable in-memory ledger (no saved purchases/sales).
     browser.eval("""(()=>{
-      db.products.push({id:'z66-qa-label-only',name:'QA-only label product',
+      if(!db.products.some(p=>p.id==='z66-qa-label-only'))
+        db.products.push({id:'z66-qa-label-only',name:'QA-only label product',
          sku:'QA-128-66',barcodes:['QA-128-66'],salePrice:25,purchasePrice:10,
          category:'QA',openingQty:0,reorder:0});
       if(typeof go==='function')go('products');
