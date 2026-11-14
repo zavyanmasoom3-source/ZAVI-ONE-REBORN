@@ -43,7 +43,7 @@
   if(typeof window.showModal!=='function'){window.alert('صفحهٔ محصولات هنوز آماده نیست.');return;}
   const opts=list.map(p=>'<option value="'+escape(p.id)+'">'+escape(p.name||'محصول')+'</option>').join('');
   const body='<div class="zavi-label-grid"><label>محصول<select id="z-label-product">'+opts+'</select></label><label>بارکد<input id="z-label-code" dir="ltr" maxlength="40"></label><label>نوع بارکد<select id="z-label-type"><option value="code128">Code 128</option><option value="ean13">EAN-13</option></select></label><label>اندازه لیبل<select id="z-label-size"><option value="50x30">50×30 mm</option><option value="60x40">60×40 mm</option><option value="58x30">58×30 mm</option></select></label><label>تعداد چاپ<input id="z-label-copies" type="number" min="1" max="500" value="1"></label><div class="zavi-label-toggles"><label><input type="checkbox" id="z-label-name" checked> نام محصول</label><label><input type="checkbox" id="z-label-price" checked> قیمت فروش</label></div></div><p id="z-label-error" role="status"></p><div id="z-label-preview"></div>';
-  window.showModal('ساخت لیبل بارکد',body,'چاپ لیبل');
+  window.showModal('چاپ لیبل',body,'چاپ لیبل');
   const $=id=>document.getElementById(id);
   const form=$('dialogForm');if(!form)return;
   const selected=()=>list.find(p=>String(p.id)===$('z-label-product').value)||list[0];
@@ -71,11 +71,17 @@
   },true);
  }
  function inject(){
-  const root=document.getElementById('content');if(!root||root.querySelector('#zavi-label-launcher'))return;
+  const root=document.getElementById('content');if(!root)return;
+  // Four-tab approved product workspace owns the sole label entry.
+  // Keep the old launcher only as a fallback when the tabs are unavailable.
+  if(root.querySelector('[data-zavi-flow="products"] .zavi-products-label-panel')){
+   root.querySelector('#zavi-label-launcher')?.remove();return;
+  }
+  if(root.querySelector('#zavi-label-launcher'))return;
   const active= document.body.dataset.zaviPage==='products'||root.classList.contains('zpdf-products')||!!document.querySelector('.nav-btn.active[data-go="products"]');
   if(!active)return;
   const head=root.querySelector('.page-head,.zui-section-heading,header');if(!head)return;
-  const button=document.createElement('button');button.id='zavi-label-launcher';button.type='button';button.className='btn subtle';button.textContent='▥ ساخت لیبل بارکد';button.addEventListener('click',open);
+  const button=document.createElement('button');button.id='zavi-label-launcher';button.type='button';button.className='btn subtle';button.textContent='چاپ لیبل';button.addEventListener('click',open);
   head.appendChild(button);
  }
  window.ZaviBarcodeLabelsV6700=Object.freeze({open,eanBits,code128Bits});
