@@ -339,6 +339,26 @@ jobs:
             assert info.file_size==59707625,('Original 66.62 offline model is missing',info.file_size)
             assert 'assets/zavi-compact-workflow-v1.js' in z.namelist()
             assert 'assets/zavi-compact-workflow-v1.css' in z.namelist()
+            # Prove the APK contains the CURRENT approved implementation, not
+            # merely an old file with the same name (the owner's reported bug).
+            approved_files=(
+              'zavi-compact-workflow-v1.js','zavi-compact-workflow-v1.css',
+              'zavi-warehouses-v1.js','zavi-barcode-label-v6700.js',
+              'zavi-product-adaptive-v6662.js','zavi-in-transit-v1.js'
+            )
+            for name in approved_files:
+              apk_content=z.read('assets/'+name)
+              source_content=Path('apps/one',name).read_bytes()
+              assert apk_content==source_content,('APK differs from committed approved source',name)
+            compact=z.read('assets/zavi-compact-workflow-v1.js').decode('utf-8')
+            assert "scanner.insertAdjacentHTML('afterend',window.ZaviWarehouseV1.panel())" in compact, \
+              'APK missing real native warehouse mount fix'
+            assert "zavi-products-overview" in compact and "zavi-products-label-panel" in compact, \
+              'APK missing approved simple product and label layout'
+            native_html=z.read('assets/index.html').decode('utf-8')
+            for name in approved_files:
+              if name.endswith('.js'):
+                assert name in native_html,('Native APK index does not load',name)
             assert 'assets/zavi-build-info.json' in z.namelist()
             assert 'assets/zavi-approved-settings-v6662.css' in z.namelist(), 'Approved seven-section settings CSS was not packaged'
             assert 'assets/zavi-final-settings-store-v6559.js' in z.namelist(), 'Settings grouping JS not packaged'
