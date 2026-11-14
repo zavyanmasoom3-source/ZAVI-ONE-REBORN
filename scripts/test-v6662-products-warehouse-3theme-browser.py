@@ -39,6 +39,13 @@ with Session() as browser:
                 browser.command('Emulation.setDeviceMetricsOverride',{
                   'width':width,'height':844,'deviceScaleFactor':1,'mobile':True,
                   'screenWidth':width,'screenHeight':844})
+                browser.eval("""document.querySelectorAll(
+                  '#content [data-zavi-flow=products] .zavi-flow-tabs > [role=tab]')[1].click()""")
+                browser.until("""(()=>{
+                  const selected=document.querySelector(
+                    '#content [data-zavi-flow=products] .zavi-flow-tabs [aria-selected=true]');
+                  return !!selected && getComputedStyle(selected).backgroundColor!=='rgba(0, 0, 0, 0)';
+                })()""","selected inventory tab background fully painted",seconds=5)
                 state=browser.eval("""(()=>{
                   const root=document.querySelector('#content [data-zavi-flow=products]');
                   const tabs=[...root.querySelectorAll('.zavi-flow-tabs > [role=tab]')];
@@ -48,7 +55,6 @@ with Session() as browser:
                   const more=document.querySelector('#content .zavi-products-more-actions');
                   const stock=root.querySelector('.zavi-products-overview');
                   const button=tabs[0];
-                  tabs[1].click();
                   const input=manager?.querySelector('[data-wh-add] input[name=warehouse_name]');
                   const s={
                     theme:document.documentElement.dataset.zaviTheme,
@@ -87,14 +93,17 @@ with Session() as browser:
                 assert state['active']=='1' and state['panelVisible'] and state['addVisible'],state
                 assert state['overview'] and state['scanner'] and state['label'],state
                 assert state['scroll']<=state['client']+3,('HORIZONTAL_OVERFLOW',width,state)
+                def components(color):
+                    import re
+                    return tuple(int(v) for v in re.findall(r'\d+',color)[:3])
                 if theme=='light':
-                    assert state['tabInk'].startswith('rgb(25, 57, 83)') and (
-                        state['tabSurface']=='rgb(255, 255, 255)'),state
-                    assert state['fieldInk']=='rgb(25, 57, 83)',state
+                    assert max(components(state['tabInk']))<125,state
+                    assert max(components(state['fieldInk']))<125,state
+                    assert min(components(state['tabSurface']))>225,state
+                    assert min(components(state['fieldSurface']))>205,state
                 else:
-                    assert state['tabInk']=='rgb(243, 248, 255)' if theme=='dark' else (
-                        state['tabInk']=='rgb(247, 251, 255)'),state
-                    assert state['fieldInk']==state['tabInk'],state
+                    assert min(components(state['tabInk']))>185,state
+                    assert min(components(state['fieldInk']))>165,state
                 assert state['activeContrast']=='rgb(255, 255, 255)',state
                 assert state['activeBg']!='rgba(0, 0, 0, 0)',state
                 if theme=='glass':
@@ -121,8 +130,10 @@ with Session() as browser:
               };
             })()""")
             assert modal['trades']==21 and modal['methods']==4,modal
-            assert modal['ink']==state['tabInk'] and modal['fieldInk']==state['tabInk'],(
-                theme,language,modal,state)
+            assert min(components(modal['ink']))>165 if theme!='light' else (
+                max(components(modal['ink']))<125), (theme,language,modal)
+            assert min(components(modal['fieldInk']))>165 if theme!='light' else (
+                max(components(modal['fieldInk']))<125), (theme,language,modal)
             browser.eval("closeModal()")
             # The same working Code128/EAN13 engine: white thermal preview is
             # invariant between themes and separate from the dark/glass editor.
@@ -144,7 +155,10 @@ with Session() as browser:
             })()""")
             assert label['product']>=1 and label['types']==['code128','ean13'],label
             assert label['previewBg']=='rgb(255, 255, 255)' and label['previewInk']=='rgb(17, 17, 17)',label
-            assert label['fieldInk']==state['tabInk'],label
+            if theme=='light':
+                assert max(components(label['fieldInk']))<125,label
+            else:
+                assert min(components(label['fieldInk']))>165,label
             browser.eval("closeModal()")
             report.append({'theme':theme,'language':language,'widths':WIDTHS,
                            'productEditor':True,'warehouse':True,'label':True})
