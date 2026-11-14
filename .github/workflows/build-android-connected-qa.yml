@@ -438,15 +438,18 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          tag="zavi-v6662-approved-settings-corrected-full-model-test-20261111-run${GITHUB_RUN_NUMBER}"
+          tag="zavi-v6662-native-warehouse-products-approved-20261114-run${GITHUB_RUN_NUMBER}"
           cat > release-notes.txt <<'NOTES'
           THESE ARE NOT PRODUCTION APKs.
           Owner-uploaded ZAVI ONE 66.62 original appearance is retained outside the approved sale form.
           Sale is compact one-page, with original live accounting inputs, barcode and editable price.
           PIN login is centered with symmetric margins and safe scrolling at small Android viewport sizes.
           Dashboard has all approved real finance panels, compact live action buttons, no trade guide and accessible motion.
-          NEW: owner-approved seven-section compact settings, original forms preserved, native profile and account actions, Dari/Pashto/English, clear light/dark/glass contrast.
-          Exact approved-settings browser QA runs before building; the new settings stylesheet and grouping JavaScript are verified inside the compiled 62MB APK.
+          NEW: the real products page mounts the server-backed warehouse form and four approved Products/Warehouses/Movements/Labels tabs.
+          NEW: compact barcode scanning, original stock summaries behind an optional overview, working Code128/EAN-13 label editor, and approved warehouse receipt text.
+          Owner-approved seven-section compact settings and three language/appearance modes remain available.
+          Native products/warehouse/label browser regression must pass before building.
+          All approved products, warehouse, label, inventory receipt JS and CSS are byte-compared to the committed source inside the finished APK.
           Repeated barcode adds one quantity in the existing product row.
           ONE APK packages the authentic full 59,707,625-byte ggml offline model extracted from the SHA-256-pinned original 62,226,180-byte V66.62 APK.
           Native voice transcription operation on a physical Android handset is NOT certified.
@@ -454,12 +457,13 @@ jobs:
           Connected to the existing live Supabase project using PUBLIC publishable key only.
           CAUTION: Do not log in using an active business account. Test ONLY using a disposable account.
           Real finance syncing, server-side RLS and printing on physical Android are NOT certified.
-          These packages CANNOT upgrade existing installed production apps.
+          Each QA run installs as a NEW, visibly numbered test app (separate identifier and isolated signing key).
+          These packages CANNOT upgrade existing installed production apps or older test apps.
           No original APK, financial data, or cloud records were changed by this build.
           NOTES
           gh release create "$tag" direct-apks/*.apk \
             --prerelease --target "$GITHUB_SHA" \
-            --title "ZAVI ONE 66.62 ORIGINAL MODEL + VERIFIED seven-section settings — TEST ONLY — run ${GITHUB_RUN_NUMBER}" \
+            --title "ZAVI ONE V66.62 native products + warehouse approved UI — TEST ONLY — run ${GITHUB_RUN_NUMBER}" \
             --notes-file release-notes.txt -R "$GITHUB_REPOSITORY"
           gh release view "$tag" -R "$GITHUB_REPOSITORY" --json url,assets \
             --jq '{release: .url, assets: [.assets[] | {name:.name,url:.url}]}'
