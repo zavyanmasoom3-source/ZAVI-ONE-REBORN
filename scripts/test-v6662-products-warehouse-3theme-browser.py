@@ -130,10 +130,22 @@ with Session() as browser:
               };
             })()""")
             assert modal['trades']==21 and modal['methods']==4,modal
-            assert min(components(modal['ink']))>165 if theme!='light' else (
-                max(components(modal['ink']))<125), (theme,language,modal)
-            assert min(components(modal['fieldInk']))>165 if theme!='light' else (
-                max(components(modal['fieldInk']))<125), (theme,language,modal)
+            def contrast(fg,bg):
+                def lightness(rgb):
+                    def linear(c):
+                        c=c/255.0
+                        return c/12.92 if c<=0.04045 else ((c+0.055)/1.055)**2.4
+                    a=components(rgb)
+                    return sum(w*linear(v) for w,v in zip((0.2126,0.7152,0.0722),a))
+                a,b=lightness(fg),lightness(bg)
+                return (max(a,b)+0.05)/(min(a,b)+0.05)
+            # The first real scan method is selected: white ink on blue is
+            # correct even in Light mode. Check readable contrast, not hue.
+            assert contrast(modal['ink'],modal['bg'])>=4.5,(theme,language,modal)
+            if theme=='light':
+                assert max(components(modal['fieldInk']))<125,(theme,language,modal)
+            else:
+                assert min(components(modal['fieldInk']))>165,(theme,language,modal)
             browser.eval("closeModal()")
             # The same working Code128/EAN13 engine: white thermal preview is
             # invariant between themes and separate from the dark/glass editor.
