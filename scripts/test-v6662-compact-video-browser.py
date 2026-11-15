@@ -63,6 +63,35 @@ with Session() as browser:
         assert state['contrast']>=4.5,state
         report[theme]=state
     brightness_check(report)
+    # The owner screenshots show MOST module rows white-on-white, although
+    # the former test only checked row one. Test every real checkbox label.
+    # All nodes remain the original settings controls, no fake toggles.
+    for mode in ('light','dark','glass'):
+        browser.eval("window.ZaviThemeV29.set("+json.dumps(mode)+")")
+        browser.command('Emulation.setDeviceMetricsOverride',{
+            'width':360,'height':780,'deviceScaleFactor':1,'mobile':True,
+            'screenWidth':360,'screenHeight':780})
+        details=browser.eval("""(()=>{
+          const labels=[...document.querySelectorAll('#content .zavi-clean-settings-hub .zavi-module-grid label.zavi-switch')];
+          const rgba=c=>(c.match(/[0-9.]+/g)||[]).slice(0,3).map(Number);
+          const lum=c=>{const x=rgba(c).map(v=>v/255).map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4);
+            return x[0]*.2126+x[1]*.7152+x[2]*.0722};
+          const contrast=(a,b)=>{const x=lum(a),y=lum(b);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05)};
+          return {theme:document.documentElement.dataset.zaviTheme,count:labels.length,
+            labels:labels.map(el=>{
+              const span=el.querySelector('span'),box=el.querySelector('input[type=checkbox]');
+              const b=getComputedStyle(el),t=getComputedStyle(span);
+              return {label:span?.textContent.trim(),ink:t.color,bg:b.backgroundColor,
+                contrast:contrast(t.color,b.backgroundColor),
+                visible:t.visibility!=='hidden'&&t.display!=='none'&&el.getBoundingClientRect().height>=40,
+                checkbox:!!box,overflow:el.scrollWidth>el.clientWidth+3};
+            })};
+        })()""")
+        assert details['theme']==mode and details['count']>=10,details
+        assert all(x['label'] and x['checkbox'] and x['visible'] and
+                   not x['overflow'] and x['contrast']>=4.5
+                   for x in details['labels']),details
+    print('PASS every original module label readable in Light Dark Glass on 360px phone')
     browser.route('purchases')
     browser.until("""!!document.querySelector('#content .z66pm-actions .z66pm-action')""",
                   'actual purchase navigation loaded',seconds=12)
