@@ -2054,3 +2054,69 @@ html[data-zavi-theme="glass"] body #content.z66-compact-expenses>.card{
    flex:1 1 100%;min-width:0!important;
  }
 }
+
+
+/* V66.62 owner phone sale/purchase: less nesting, safe footer and no assistant over active invoices. */
+/* Cosmetic only: native sale line, barcode listener and payment payload remain
+   untouched. Keep all choices reachable within the original scrolling modal. */
+#dialogForm[data-zavi-sale-onepage="true"] .modal-body,
+#dialogForm[data-zavi-purchase-onepage="true"] .modal-body{
+  min-width:0!important;max-width:100%!important;
+  overscroll-behavior:contain;
+  scroll-padding-bottom:calc(84px + env(safe-area-inset-bottom,0px));
+}
+#dialogForm[data-zavi-sale-onepage="true"] .z66-sale-single{
+  gap:8px!important;margin:5px 0 9px!important;
+}
+#dialogForm[data-zavi-sale-onepage="true"] .z66-sale-single .z66-sale-section{
+  padding:10px!important;gap:7px!important;
+  border-radius:12px!important;box-shadow:none!important;
+}
+#dialogForm[data-zavi-sale-onepage="true"] .z66-sale-single h3{
+  font-size:13px!important;margin:0!important;line-height:1.4!important;
+}
+#dialogForm[data-zavi-sale-onepage="true"] .z66-sale-single .zavi-barcode-actions{
+  gap:5px!important;
+}
+#dialogForm[data-zavi-sale-onepage="true"] .z66-sale-single .z66-sale-paymodes{
+  gap:5px!important;
+}
+#dialogForm[data-zavi-sale-onepage="true"] .z66-sale-single .totals{
+  padding:9px!important;gap:5px!important;
+}
+#dialogForm[data-zavi-sale-onepage="true"] .z66-sale-single #orderItems{
+  gap:6px!important;
+}
+#dialogForm[data-zavi-sale-onepage="true"] .z66-sale-single #orderItems .order-line{
+  padding:8px!important;border-radius:10px!important;
+}
+#dialogForm[data-zavi-sale-onepage="true"] .modal-foot,
+#dialogForm[data-zavi-purchase-onepage="true"] .modal-foot{
+  padding:8px 10px calc(9px + env(safe-area-inset-bottom,0px))!important;
+  min-height:58px!important;gap:8px!important;
+  box-sizing:border-box!important;
+}
+#dialogForm[data-zavi-purchase-onepage="true"] .z66-purchase-onepage{
+  gap:8px!important;padding-block:3px 6px!important;
+}
+#dialogForm[data-zavi-purchase-onepage="true"] .z66-purchase-onepage .z66-purchase-section{
+  gap:7px!important;padding:10px!important;border-radius:12px!important;
+  box-shadow:none!important;
+}
+#dialogForm[data-zavi-purchase-onepage="true"] .z66-purchase-onepage h3{
+  font-size:13px!important;line-height:1.45!important;
+}
+/* Native assistant remains available from the app, but does not obstruct a
+   full-screen invoice dialog or the submit/cancel controls while editing. */
+body:has(#dialogForm[data-zavi-sale-onepage="true"]) #z637AiButton,
+body:has(#dialogForm[data-zavi-purchase-onepage="true"]) #z637AiButton,
+body:has(#dialogForm[data-zavi-sale-onepage="true"]) .z637-ai-button,
+body:has(#dialogForm[data-zavi-purchase-onepage="true"]) .z637-ai-button{
+  visibility:hidden!important;pointer-events:none!important;
+}
+@media(max-width:390px){
+ #dialogForm[data-zavi-sale-onepage="true"] .z66-sale-single .z66-sale-section,
+ #dialogForm[data-zavi-purchase-onepage="true"] .z66-purchase-onepage .z66-purchase-section{
+   padding:8px!important;
+ }
+}
