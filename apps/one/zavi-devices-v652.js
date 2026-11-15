@@ -72,8 +72,12 @@ function mount(w){
  function settingsHTML(){const l=lang();return `<section id="z652DevicePanel" class="card z652-card" aria-label="${escape(t('title',l))}"><header class="z652-title"><div><h3>📱 ${escape(t('title',l))}</h3><p>${escape(t('desc',l))}</p></div><div class="z652-actions"><button type="button" class="btn subtle" data-z652="refresh">${escape(t('refresh',l))}</button><button type="button" class="btn subtle" data-z652="checkin">${escape(t('checkin',l))}</button></div></header><div id="z652Status" class="z652-status" role="status" aria-live="polite">${escape(t('loading',l))}</div><div id="z652Devices" class="z652-devices"></div><details class="z652-audit"><summary>${escape(t('audit',l))}</summary><p>${escape(t('securityNote',l))}</p><div id="z652Events"></div></details><p class="z652-warning">${escape(t('revokeWarning',l))}</p></section>`}
  function report(message,error=false){const el=$('#z652Status');if(el){el.textContent=message;el.classList.toggle('z652-error',error)}}
  function render(){const el=$('#z652Devices'),ev=$('#z652Events'),l=lang();if(!el)return;
- if(!own()){el.textContent='';if(ev)ev.textContent='';report(t('noCloud',l));return}
- if(state!=='loaded'){el.textContent='';if(ev)ev.textContent='';return}
+ // No blank device grid when cloud data cannot be loaded. The live,
+ // accessible status above describes the actual owner/connection state;
+ // never fabricate device records or a successful security check.
+ if(!own()){el.hidden=true;el.textContent='';if(ev)ev.textContent='';report(t('noCloud',l));return}
+ if(state!=='loaded'){el.hidden=true;el.textContent='';if(ev)ev.textContent='';return}
+ el.hidden=false;
  if(!serverRows.length){el.textContent=t('none',l);}else{
   el.innerHTML=serverRows.map(d=>{const me=d.device_id===deviceId(),count=d.reported_pending_count;
    const canRevoke=d.status!=='revoked'&&!me;return `<article class="z652-item"><div class="z652-device-head"><strong>${escape(d.device_name||d.device_model||d.device_id||'—')}</strong><span class="z652-tag ${me?'z652-current':''}">${escape(d.status==='active'?t('primary',l):t('secondary',l))}${me?' · '+escape(t('current',l)):''} · ${escape(t(d.status||'pending',l))}</span></div><div class="z652-meta">${escape(d.device_model||'')}<span>${escape(t('lastSeen',l))}: ${escape(date(d.last_seen_at,l))}</span><span>${escape(t('lastSync',l))}: ${escape(date(d.last_sync_at,l))}</span><span>${escape(t('unsynced',l))}: ${count===null||count===undefined?'—':escape(latin(count))}</span>${isFresh(d.last_report_at)?'':`<em>${escape(t('unconfirmed',l))}</em>`}</div>${canRevoke?`<button class="btn danger tiny" type="button" data-z652-revoke="${escape(d.device_id)}">${escape(t('revoke',l))}</button>`:''}</article>`}).join('');
