@@ -840,6 +840,10 @@
   function update(){
     const root=document.getElementById('content');
     if(root){
+      // Presentation-only route markers for owner-approved condensed debtor and
+      // expense lists. No data, debt amounts, ledgers or payment routes change.
+      root.classList.toggle('z66-compact-debtors',typeof page==='string'&&page==='debtors');
+      root.classList.toggle('z66-compact-expenses',typeof page==='string'&&page==='expenses');
       enhanceMoney(root);
       enhanceReports(root);
       enhanceProducts(root);
