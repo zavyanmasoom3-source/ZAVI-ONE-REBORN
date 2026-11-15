@@ -390,7 +390,23 @@ function paint(){
    .forEach(el=>{el.hidden=true;el.setAttribute('aria-hidden','true');});
  // Group remaining original widgets instead of discarding any. They remain
  // available in the normal scroll, including setup and backup warnings.
- root.querySelectorAll(':scope > .backup-reminder').forEach(el=>el.classList.add('z66d-warning'));
+ const setupWarnings=[...root.querySelectorAll(':scope > .backup-reminder')];
+ if(setupWarnings.length){
+   // Phone screenshots: multiple full-width notices dominated the dashboard.
+   // Keep their LIVE owner setup and secure-backup buttons; collapse only
+   // the chrome. Never silently suppress a real safety reminder.
+   const fold=node('details','z66d-setup-fold');
+   const caption=lang()==='en'?'Store setup & backup':lang()==='ps'?
+     'د دوکان تنظیم او بیک اپ':'تنظیم فروشگاه و پشتیبان';
+   const summary=node('summary','z66d-setup-summary',caption);
+   const count=node('span','z66d-setup-count',String(setupWarnings.length));
+   summary.append(count);fold.append(summary);
+   const content=node('div','z66d-setup-content');fold.append(content);
+   setupWarnings[0].before(fold);
+   for(const warning of setupWarnings){
+     warning.classList.add('z66d-warning');content.append(warning);
+   }
+ }
  const footer=root.querySelector(':scope > .tiny-note');
  if(footer)footer.classList.add('z66d-footnote');
  // Show all user-approved sections; don't require "more reports" to be clicked.
