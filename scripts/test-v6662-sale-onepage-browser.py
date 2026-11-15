@@ -192,6 +192,29 @@ with Session() as browser:
         paymentHandlerSkipped:db.tx.length===before};
     })()""")
     assert all(saleReject.values()),saleReject
+    # All native inputs stay present and the floating helper cannot cover the
+    # invoice's sticky submit/cancel footer in a small Android viewport.
+    browser.command('Emulation.setDeviceMetricsOverride',{
+      'width':360,'height':780,'deviceScaleFactor':1,'mobile':True,
+      'screenWidth':360,'screenHeight':780})
+    mobile=browser.eval("""(()=>{
+      const f=document.querySelector('#dialogForm[data-zavi-sale-onepage=true]');
+      const body=f.querySelector('.modal-body');
+      const footer=f.querySelector('.modal-foot');
+      const assistant=document.querySelector('#z637AiButton,.z637-ai-button');
+      const style=assistant?getComputedStyle(assistant):null;
+      return {
+        inputs:f.querySelectorAll('input,select,textarea').length,
+        barcode:!!f.querySelector('#zaviBarcodeScan'),
+        footer:!!footer,footerHeight:footer?.getBoundingClientRect().height,
+        bodyClient:body?.clientWidth,bodyScroll:body?.scrollWidth,
+        assistantHidden:!assistant||style.visibility==='hidden'||style.display==='none'
+      };
+    })()""")
+    assert mobile['inputs']>=8 and mobile['barcode'] and mobile['footer'],mobile
+    assert mobile['footerHeight']>=44 and mobile['bodyScroll']<=mobile['bodyClient']+6,mobile
+    assert mobile['assistantHidden'],mobile
+    print('PASS mobile 360px invoice original barcode preserved, footer visible and assistant avoids invoice overlay')
     print('PASS: approved sale invoice in one real page; customer, barcode, quantity, editable unit price, totals, live native save')
     print('PASS: identical barcode repeat increments quantity and preserves manual unit price')
     print('PASS: three payment presets use the real paid input; no synthetic posting')
