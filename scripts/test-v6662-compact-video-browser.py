@@ -186,6 +186,41 @@ with Session() as browser:
                     assert data['heroHeight']>35 and data['hasSearch'] and data['nativeReceipts'],data
                 else: assert data['metrics']==2,data
     print('PASS original debtor receipts, balances and expense record screens remain accessible across all three themes and phone widths')
+    # The recorded owner video uses More to navigate all live sections.
+    # Verify readability and prevent the floating assistant covering mobile
+    # financial pages. No permissions or menu destinations are modified.
+    for mode in ('light','dark','glass'):
+        browser.eval("window.ZaviThemeV29.set("+json.dumps(mode)+")")
+        for width in (320,360,430):
+            browser.command('Emulation.setDeviceMetricsOverride',{
+              'width':width,'height':780,'deviceScaleFactor':1,'mobile':True,
+              'screenWidth':width,'screenHeight':780})
+            browser.eval("go('more')")
+            browser.until("""!!document.querySelector('#side.mobile-drawer')""",
+                          'native More drawer remains accessible',seconds=8)
+            menu=browser.eval("""(()=>{
+              const side=document.getElementById('side');
+              const items=[...side.querySelectorAll('[data-go].nav-btn')].filter(
+                e=>e.getClientRects().length&&!e.hidden);
+              const helper=document.querySelector('#z637AiButton');
+              return {
+                mode:document.documentElement.dataset.zaviTheme,
+                width:side.getBoundingClientRect().width,
+                viewport:window.innerWidth,
+                client:side.clientWidth,scroll:side.scrollWidth,
+                count:items.length,
+                rows:items.map(e=>({height:e.getBoundingClientRect().height,
+                  text:e.textContent.trim(),label:getComputedStyle(e).color})),
+                assistantObscures:!!helper&&getComputedStyle(helper).display!=='none'&&
+                  getComputedStyle(helper).visibility!=='hidden'
+              };
+            })()""")
+            assert menu['mode']==mode and menu['count']>=10,menu
+            assert menu['width']<=menu['viewport']+2 and menu['scroll']<=menu['client']+5,menu
+            assert all(x['height']>=40 and x['text'] for x in menu['rows']),menu
+            assert not menu['assistantObscures'],menu
+            browser.eval("closeDrawer()")
+    print('PASS native More menu, 3 themes x 3 phone widths, no missing destinations or assistant obstruction')
     print('PASS user-video compact light/dark/glass settings contrast, 7 original groups, native toggles')
     print('PASS four compact native purchase actions, real supplier/in-transit tabs, 360/420px layout')
     print(json.dumps(report,ensure_ascii=False))
