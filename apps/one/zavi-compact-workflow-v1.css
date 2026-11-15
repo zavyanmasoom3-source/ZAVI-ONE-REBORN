@@ -1896,3 +1896,161 @@ html.zavi-design-84 body :is(#za67-menu,#zrf-all) :is(button,a):focus-visible{
    padding:7px 6px!important;min-height:56px!important;
  }
 }
+
+
+/* V66.62 owner compact debts and expenses: native receipts and balances unchanged. */
+html[data-zavi-theme="light"] #content:is(.z66-compact-debtors,.z66-compact-expenses){
+  --z66-simple-surface:#fff;--z66-simple-ink:#173953;
+  --z66-simple-soft:#eff6fc;--z66-simple-muted:#4b677f;
+  --z66-simple-line:#bfd4e8;
+}
+html[data-zavi-theme="dark"] #content:is(.z66-compact-debtors,.z66-compact-expenses){
+  --z66-simple-surface:#193653;--z66-simple-ink:#f2f8ff;
+  --z66-simple-soft:#223f61;--z66-simple-muted:#c6dbed;
+  --z66-simple-line:#547da0;
+}
+html[data-zavi-theme="glass"] #content:is(.z66-compact-debtors,.z66-compact-expenses){
+  --z66-simple-surface:rgba(28,65,109,.85);--z66-simple-ink:#f7fbff;
+  --z66-simple-soft:rgba(37,79,127,.82);--z66-simple-muted:#d4e9ff;
+  --z66-simple-line:rgba(170,212,249,.65);
+}
+html[data-zavi-theme] body #content.z66-compact-debtors,
+html[data-zavi-theme] body #content.z66-compact-expenses{
+  min-width:0!important;max-width:100%!important;
+  padding-bottom:calc(112px + env(safe-area-inset-bottom,0px))!important;
+}
+html[data-zavi-theme] body #content.z66-compact-debtors>.page-head,
+html[data-zavi-theme] body #content.z66-compact-expenses>.page-head{
+  margin-block:0 10px!important;padding:0!important;
+  min-height:0!important;gap:7px!important;
+}
+html[data-zavi-theme] body #content.z66-compact-debtors>.page-head :is(h1,h2),
+html[data-zavi-theme] body #content.z66-compact-expenses>.page-head :is(h1,h2){
+  font-size:clamp(17px,4.7vw,22px)!important;margin:0!important;
+  line-height:1.45!important;
+}
+html[data-zavi-theme] body #content.z66-compact-debtors>.debt-hero{
+  padding:12px 14px!important;margin:0 0 10px!important;
+  min-height:0!important;border-radius:13px!important;
+  gap:10px!important;box-shadow:none!important;
+  isolation:isolate!important;
+}
+html[data-zavi-theme] body #content.z66-compact-debtors>.debt-hero:after{
+  display:none!important;
+}
+html[data-zavi-theme] body #content.z66-compact-debtors>.debt-hero small{
+  font-size:10px!important;line-height:1.45!important;
+}
+html[data-zavi-theme] body #content.z66-compact-debtors>.debt-hero strong{
+  font-size:clamp(21px,6vw,27px)!important;line-height:1.35!important;
+}
+html[data-zavi-theme] body #content.z66-compact-debtors>.debt-hero span{
+  font-size:10.5px!important;line-height:1.5!important;
+}
+html[data-zavi-theme] body #content.z66-compact-debtors>.debt-hero .btn{
+  min-height:44px!important;font-size:12px!important;
+  white-space:normal!important;padding:9px 10px!important;
+}
+html[data-zavi-theme] body #content.z66-compact-debtors>.card,
+html[data-zavi-theme] body #content.z66-compact-expenses>.card{
+  padding:10px!important;margin:0 0 10px!important;
+  min-width:0!important;max-width:100%!important;
+  box-shadow:none!important;
+  border-radius:13px!important;
+  color:var(--z66-simple-ink)!important;
+  background:var(--z66-simple-surface)!important;
+  border:1px solid var(--z66-simple-line)!important;
+}
+html[data-zavi-theme] body #content.z66-compact-debtors .table-bar,
+html[data-zavi-theme] body #content.z66-compact-expenses .table-bar{
+  padding:8px!important;gap:7px!important;min-width:0!important;
+}
+html[data-zavi-theme] body #content.z66-compact-debtors .searchbox input{
+  min-width:0!important;max-width:100%!important;
+}
+html[data-zavi-theme] body #content.z66-compact-debtors .debt-cards{
+  display:grid!important;gap:8px!important;
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,245px),1fr))!important;
+  margin:0 0 12px!important;
+}
+html[data-zavi-theme] body #content.z66-compact-debtors .debt-card{
+  min-width:0!important;max-width:100%!important;
+  padding:12px!important;border-radius:12px!important;
+  color:var(--z66-simple-ink)!important;
+  background:var(--z66-simple-surface)!important;
+  border:1px solid var(--z66-simple-line)!important;
+  box-shadow:none!important;
+}
+html[data-zavi-theme] body #content.z66-compact-debtors .debt-card .dc-top{
+  gap:7px!important;flex-wrap:wrap!important;
+}
+html[data-zavi-theme] body #content.z66-compact-debtors .debt-card h3{
+  font-size:13px!important;line-height:1.45!important;
+  color:var(--z66-simple-ink)!important;
+  -webkit-text-fill-color:var(--z66-simple-ink)!important;
+}
+html[data-zavi-theme] body #content.z66-compact-debtors .debt-card .dc-amount{
+  font-size:clamp(16px,4.5vw,19px)!important;
+  margin:5px 0 3px!important;line-height:1.35!important;
+}
+html[data-zavi-theme] body #content.z66-compact-debtors .debt-card .dc-contact{
+  font-size:10.5px!important;gap:5px!important;
+  margin:4px 0 8px!important;color:var(--z66-simple-muted)!important;
+}
+html[data-zavi-theme] body #content.z66-compact-debtors .debt-card .dc-actions{
+  gap:6px!important;margin-top:6px!important;
+}
+html[data-zavi-theme] body #content.z66-compact-debtors .debt-card .dc-actions .btn{
+  min-height:42px!important;padding:7px 9px!important;
+  font-size:11px!important;border-radius:9px!important;
+}
+html[data-zavi-theme] body #content.z66-compact-debtors .empty,
+html[data-zavi-theme] body #content.z66-compact-expenses .empty{
+  padding:20px 12px!important;min-height:0!important;
+  color:var(--z66-simple-muted)!important;
+}
+html[data-zavi-theme] body #content.z66-compact-debtors .empty :is(svg,img),
+html[data-zavi-theme] body #content.z66-compact-expenses .empty :is(svg,img){
+  max-width:29px!important;max-height:29px!important;
+}
+html[data-zavi-theme] body #content.z66-compact-expenses>.stat-grid{
+  margin:0 0 10px!important;gap:8px!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+}
+html[data-zavi-theme] body #content.z66-compact-expenses>.stat-grid>.card{
+  min-height:80px!important;max-width:100%!important;
+  padding:11px!important;box-shadow:none!important;
+  border-radius:12px!important;
+  color:var(--z66-simple-ink)!important;
+  background:var(--z66-simple-surface)!important;
+  border:1px solid var(--z66-simple-line)!important;
+}
+html[data-zavi-theme] body #content.z66-compact-expenses>.stat-grid .stat-icon{
+  width:28px!important;height:28px!important;
+}
+html[data-zavi-theme] body #content.z66-compact-expenses>.stat-grid .stat-label{
+  font-size:10.5px!important;margin:5px 0 2px!important;
+  color:var(--z66-simple-muted)!important;
+}
+html[data-zavi-theme] body #content.z66-compact-expenses>.stat-grid .stat-value{
+  font-size:clamp(15px,4vw,19px)!important;line-height:1.4!important;
+  color:var(--z66-simple-ink)!important;
+}
+html[data-zavi-theme] body #content.z66-compact-expenses>.card .panel-head{
+  padding:8px 11px!important;
+}
+html[data-zavi-theme] body #content.z66-compact-expenses>.card .panel-head h3{
+  font-size:13px!important;color:var(--z66-simple-ink)!important;
+}
+html[data-zavi-theme="glass"] body #content.z66-compact-debtors .debt-card,
+html[data-zavi-theme="glass"] body #content.z66-compact-expenses>.card{
+  -webkit-backdrop-filter:blur(11px);backdrop-filter:blur(11px);
+}
+@media(max-width:390px){
+ html[data-zavi-theme] body #content.z66-compact-debtors>.debt-hero{
+   flex-wrap:wrap!important;
+ }
+ html[data-zavi-theme] body #content.z66-compact-debtors>.debt-hero>.btn{
+   flex:1 1 100%;min-width:0!important;
+ }
+}
