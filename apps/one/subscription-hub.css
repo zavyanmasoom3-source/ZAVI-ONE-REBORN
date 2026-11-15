@@ -165,3 +165,125 @@ html[data-zavi-theme="glass"] #content .zsh :is(.zsh-card,.z46-offline-card){
  #content .zsh .zsh-renewal-requests{gap:6px!important}
  #content .zsh .zsh-duration-request{min-height:65px!important;padding:7px 3px!important}
 }
+
+
+/* V66.62 owner mobile video: separate renewal choices and concise live subscription (2026-11-15). */
+/* Server plan, expiry dates and activation rights remain authoritative. */
+#content #zaviSubscriptionHub{
+  width:100%;min-width:0;max-width:100%;
+  box-sizing:border-box;overflow-wrap:normal;
+  padding-bottom:calc(100px + env(safe-area-inset-bottom,0px));
+}
+#content #zaviSubscriptionHub .zsh-grid{
+  display:grid;grid-template-columns:minmax(0,1fr);gap:10px!important;
+  margin:0 0 10px!important;min-width:0;max-width:100%;
+}
+#content #zaviSubscriptionHub :is(.zsh-card,.z46-offline-card){
+  margin:0!important;min-width:0;max-width:100%;
+  box-sizing:border-box;padding:13px!important;
+  border-radius:14px!important;
+}
+#content #zaviSubscriptionHub .zsh-section-title{
+  min-width:0;align-items:flex-start;gap:10px!important;
+}
+#content #zaviSubscriptionHub .zsh-section-title>div{
+  min-width:0;flex:1;overflow-wrap:anywhere;
+}
+#content #zaviSubscriptionHub .zsh-section-title :is(h3,p){
+  margin:0!important;line-height:1.5!important;
+}
+#content #zaviSubscriptionHub .zsh-section-title p{
+  font-size:11px!important;margin-top:4px!important;
+}
+#content #zaviSubscriptionHub .zsh-hint{
+  margin:8px 0!important;line-height:1.6!important;
+  overflow-wrap:anywhere;
+}
+#content #zaviSubscriptionHub .zsh-renewal-requests{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:8px!important;width:100%;min-width:0;
+  margin:12px 0 8px!important;
+  align-items:stretch;
+}
+#content #zaviSubscriptionHub .zsh-renewal-requests>a.zsh-duration-request{
+  display:flex!important;flex-direction:column!important;
+  align-items:center!important;justify-content:center!important;
+  gap:4px!important;min-width:0!important;
+  min-height:86px!important;max-width:100%!important;
+  padding:9px 3px!important;
+  box-sizing:border-box!important;border-radius:12px!important;
+  text-align:center!important;white-space:normal!important;
+  text-decoration:none!important;word-break:normal!important;
+  overflow-wrap:normal!important;line-height:1.4!important;
+  letter-spacing:0!important;
+}
+#content #zaviSubscriptionHub .zsh-renewal-requests>a.zsh-duration-request :is(
+  strong,span,small){
+  display:block!important;float:none!important;
+  position:static!important;max-width:100%!important;
+  width:100%!important;text-align:center!important;
+  margin:0!important;padding:0!important;
+  white-space:normal!important;word-break:normal!important;
+  line-height:1.45!important;letter-spacing:0!important;
+}
+#content #zaviSubscriptionHub .zsh-duration-request strong{
+  font-size:21px!important;font-variant-numeric:tabular-nums;
+}
+#content #zaviSubscriptionHub .zsh-duration-request span{
+  font-size:11px!important;font-weight:650!important;
+}
+#content #zaviSubscriptionHub .zsh-duration-request small{
+  font-size:10px!important;font-weight:650!important;
+}
+#content #zaviSubscriptionHub .zsh-renewal-note{
+  display:block!important;clear:both!important;
+  margin:10px 0 0!important;padding:0!important;
+  max-width:100%;font-size:11px!important;
+  line-height:1.65!important;word-break:normal!important;
+  white-space:normal!important;
+}
+#content #zaviSubscriptionHub .zsh-actions,
+#content #zaviSubscriptionHub .z46-shell-actions{
+  display:flex!important;flex-wrap:wrap!important;gap:8px!important;
+  align-items:stretch;
+}
+#content #zaviSubscriptionHub .zsh-actions>*{
+  min-width:min(100%,135px);flex:1 1 135px;
+  text-align:center;justify-content:center;
+}
+#content #zaviSubscriptionHub .zsh-row{
+  display:flex;justify-content:space-between;gap:12px;
+  align-items:flex-start;min-height:40px;
+}
+#content #zaviSubscriptionHub .zsh-row>*{min-width:0;max-width:70%}
+#content #zaviSubscriptionHub .zsh-row>span{flex:0 1 36%;max-width:36%}
+#content #zaviSubscriptionHub .zsh-row>strong{
+  flex:1 1 64%;max-width:64%;overflow-wrap:normal;
+  white-space:normal;text-align:start;line-height:1.6;
+}
+#content #zaviSubscriptionHub .zsh-row .zavi-v10-date{
+  max-width:100%;width:100%;
+}
+#content #zaviSubscriptionHub .zsh-row .zavi-v10-date>span{
+  display:flex!important;flex-wrap:wrap!important;
+  gap:5px!important;max-width:100%!important;
+}
+html[data-zavi-theme="light"] #content #zaviSubscriptionHub .zsh-renewal-requests>a{
+  background:#ecf5ff!important;border-color:#a7cbe6!important;
+  color:#164569!important;-webkit-text-fill-color:#164569!important;
+}
+html:is([data-zavi-theme="dark"],[data-zavi-theme="glass"]) #content #zaviSubscriptionHub .zsh-renewal-requests>a{
+  background:#173b69!important;border-color:#7ba7d9!important;
+  color:#f4f9ff!important;-webkit-text-fill-color:#f4f9ff!important;
+}
+html[data-zavi-theme="glass"] #content #zaviSubscriptionHub .zsh-renewal-requests>a{
+  background:rgba(25,71,128,.79)!important;
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+}
+@media(max-width:380px){
+  #content #zaviSubscriptionHub .zsh-renewal-requests{gap:5px!important}
+  #content #zaviSubscriptionHub .zsh-renewal-requests>a.zsh-duration-request{
+    min-height:86px!important;padding:7px 2px!important;
+  }
+}
