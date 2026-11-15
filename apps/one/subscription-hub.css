@@ -38,3 +38,130 @@
 .z46-shell-actions .zsh-btn{flex:0 1 auto;padding:10px 14px}
 .z46-shell-actions .z46-shell-status{font-size:12px;line-height:1.8;flex:1 1 210px;color:inherit}
 @media(max-width:720px){.z46-shell-actions{flex-direction:column;align-items:stretch}.z46-shell-actions .zsh-btn{width:100%}}
+
+
+/* V66.62 owner phone: compact subscription and separated renewal choices. */
+/* Style-only. Dates, offline permissions, server verification and expiry
+   values are still rendered and checked by annual-license.js. */
+#content .zsh{
+  max-width:780px!important;min-width:0!important;
+  display:grid;gap:10px!important;
+  padding-bottom:calc(95px + env(safe-area-inset-bottom,0px))!important;
+}
+#content .zsh>.zsh-hero{
+  margin:0!important;padding:15px 17px!important;border-radius:15px!important;
+  min-height:0!important;box-shadow:none!important;
+}
+#content .zsh .zsh-hero h2{
+  font-size:clamp(18px,4.5vw,23px)!important;
+  margin:4px 0!important;line-height:1.45!important;
+}
+#content .zsh .zsh-hero p{font-size:11.5px!important;line-height:1.5!important}
+#content .zsh .zsh-eyebrow{font-size:9px;letter-spacing:0.04em}
+#content .zsh .zsh-emblem{width:44px!important;height:44px!important;font-size:23px!important;border-radius:12px!important}
+#content .zsh .zsh-state{margin-top:9px!important;padding:5px 10px!important;font-size:11px!important}
+#content .zsh>.zsh-grid{
+  display:grid!important;gap:9px!important;margin:0!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+}
+#content .zsh .zsh-card,
+#content .zsh .z46-offline-card{
+  min-width:0!important;max-width:100%!important;
+  padding:14px!important;margin:0!important;
+  border-radius:13px!important;box-shadow:none!important;
+}
+#content .zsh .zsh-card h3{font-size:clamp(14px,3.7vw,17px)!important;margin:3px 0 7px!important}
+#content .zsh .zsh-section-title{gap:9px!important}
+#content .zsh .zsh-icon{width:35px!important;height:35px!important;font-size:17px!important;border-radius:10px!important}
+#content .zsh .zsh-days{font-size:clamp(33px,8vw,45px)!important;line-height:1.25!important;gap:7px!important}
+#content .zsh .zsh-days small{font-size:11px!important;line-height:1.5!important}
+#content .zsh .zsh-progress{height:6px!important;margin-top:9px!important}
+#content .zsh .zsh-progress-note{
+  margin:7px 0 0!important;font-size:11px!important;line-height:1.55!important;
+  overflow-wrap:break-word!important;
+}
+#content .zsh .zsh-row{
+  padding:7px 0!important;gap:9px!important;
+  font-size:12px!important;line-height:1.5!important;
+}
+#content .zsh .zsh-row>span{flex:0 0 33%;min-width:0!important}
+#content .zsh .zsh-row>strong{flex:1 1 auto;min-width:0!important;text-align:start!important;overflow-wrap:break-word!important}
+#content .zsh .zavi-v10-date{gap:2px!important}
+#content .zsh .zavi-v10-date>span{gap:3px!important}
+#content .zsh .zavi-v10-date b{white-space:normal!important;font-size:11px!important}
+#content .zsh .zsh-actions{gap:7px!important;margin-top:10px!important}
+#content .zsh .zsh-btn{min-height:43px!important;padding:9px 10px!important;font-size:12px!important}
+#content .zsh .zsh-note{line-height:1.6!important;margin-top:8px!important;font-size:11px!important}
+#content .zsh .z46-offline-indicator{margin-top:10px!important;padding:7px 10px!important;min-height:34px!important}
+#content .zsh .z46-shell-actions{margin-top:8px!important;gap:7px!important}
+#content .zsh .z46-shell-actions .zsh-btn{min-height:43px!important}
+#content .zsh .z46-shell-status{line-height:1.55!important;font-size:11px!important}
+#content .zsh .z46-technical-options>summary{min-height:44px;display:flex;align-items:center}
+#content .zsh .zsh-renewal-requests{
+  display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:7px!important;margin:11px 0 6px!important;
+  min-width:0!important;max-width:100%!important;
+}
+#content .zsh .zsh-duration-request{
+  box-sizing:border-box!important;display:flex!important;flex-direction:column!important;
+  align-items:center!important;justify-content:center!important;
+  gap:2px!important;min-width:0!important;min-height:67px!important;
+  padding:8px 4px!important;border-radius:11px!important;
+  background:#143865!important;border:1px solid #4e82af!important;
+  color:#f7fbff!important;-webkit-text-fill-color:#f7fbff!important;
+  text-decoration:none!important;text-align:center!important;
+  white-space:normal!important;line-height:1.3!important;
+}
+#content .zsh .zsh-duration-request :is(strong,span,small){
+  display:block!important;max-width:100%!important;min-width:0!important;
+  color:inherit!important;-webkit-text-fill-color:inherit!important;
+  white-space:normal!important;text-align:center!important;
+}
+#content .zsh .zsh-duration-request strong{font-size:20px!important;font-weight:850!important}
+#content .zsh .zsh-duration-request span{font-size:10px!important}
+#content .zsh .zsh-duration-request small{font-size:10.5px!important;line-height:1.4!important}
+#content .zsh .zsh-duration-request:focus-visible{
+  outline:3px solid #70d2f9!important;outline-offset:2px;
+}
+#content .zsh .zsh-renewal-note{
+  margin:8px 0 0!important;font-size:11px!important;line-height:1.6!important;
+  overflow-wrap:break-word!important;
+}
+#content .zsh .z46-security-note{
+  display:flex!important;align-items:center!important;min-height:0!important;
+}
+html[data-zavi-theme="light"] #content .zsh .zsh-card,
+html[data-zavi-theme="light"] #content .zsh .z46-offline-card{
+  color:#173753!important;background:#fff!important;
+  background-image:none!important;border:1px solid #bdd2e7!important;
+}
+html[data-zavi-theme="light"] #content .zsh :is(.zsh-card h3,.zsh-days,.zsh-row strong){
+  color:#173753!important;-webkit-text-fill-color:#173753!important;
+}
+html[data-zavi-theme="light"] #content .zsh :is(
+  .zsh-caption,.zsh-row span,.zsh-hint,.zsh-note,.zsh-progress-note,.zsh-renewal-note){
+  color:#47647e!important;-webkit-text-fill-color:#47647e!important;
+}
+html[data-zavi-theme="light"] #content .zsh .zsh-duration-request{
+  background:#edf6ff!important;color:#17537e!important;
+  -webkit-text-fill-color:#17537e!important;border-color:#a9cee9!important;
+}
+html[data-zavi-theme="light"] #content .zsh .zavi-v10-date :is(small,b){
+  color:#234d70!important;-webkit-text-fill-color:#234d70!important;
+}
+html[data-zavi-theme="light"] #content .zsh .zsh-btn-light{
+  color:#135079!important;-webkit-text-fill-color:#135079!important;
+  background:#edf6ff!important;border:1px solid #b4d2e9!important;
+}
+html[data-zavi-theme="glass"] #content .zsh :is(.zsh-card,.z46-offline-card){
+  background:rgba(20,53,95,.84)!important;border-color:rgba(143,201,248,.65)!important;
+  -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+}
+@media(max-width:560px){
+ #content .zsh>.zsh-grid{grid-template-columns:minmax(0,1fr)!important}
+ #content .zsh .zsh-hero{padding:13px!important}
+ #content .zsh .zsh-card,#content .zsh .z46-offline-card{padding:12px!important}
+ #content .zsh .zsh-row{padding:6px 0!important}
+ #content .zsh .zsh-renewal-requests{gap:6px!important}
+ #content .zsh .zsh-duration-request{min-height:65px!important;padding:7px 3px!important}
+}
