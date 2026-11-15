@@ -1607,3 +1607,91 @@ html[data-zavi-theme="glass"] body #content .zsh :is(.zsh-card,.z46-offline-card
   grid-column:span 2!important;min-height:54px!important;
  }
 }
+
+
+/* V66.62 uploaded-phone repair: every real settings visibility toggle is readable. */
+/* The original app outputs <label class=zavi-switch><input><span>…</span>.
+   Legacy white-text and white-card rules can combine after a theme switch;
+   declare both foreground AND background with the same scoped token pair.
+   This corrects all module choices, not just the first QA checkbox. */
+html[data-zavi-theme="light"] body #content .zavi-clean-settings-hub{
+  --z66-phone-card:#fff;--z66-phone-ink:#173753;
+  --z66-phone-line:#bed2e5;--z66-phone-soft:#eef6ff;
+  --z66-phone-muted:#4e6880;
+}
+html[data-zavi-theme="dark"] body #content .zavi-clean-settings-hub{
+  --z66-phone-card:#163151;--z66-phone-ink:#f4f9ff;
+  --z66-phone-line:#51789f;--z66-phone-soft:#1d3b60;
+  --z66-phone-muted:#c7dcf3;
+}
+html[data-zavi-theme="glass"] body #content .zavi-clean-settings-hub{
+  --z66-phone-card:rgba(23,56,96,.94);--z66-phone-ink:#f7fbff;
+  --z66-phone-line:#86b2d9;--z66-phone-soft:rgba(31,72,121,.88);
+  --z66-phone-muted:#d5e5f9;
+}
+html[data-zavi-theme] body #content .zavi-clean-settings-hub .zavi-module-grid,
+html[data-zavi-theme] body #content .zavi-clean-settings-hub .z20-grid{
+  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:7px!important;min-width:0!important;max-width:100%!important;
+  margin-block:7px!important;
+}
+html[data-zavi-theme] body #content .zavi-clean-settings-hub :is(
+  .zavi-module-grid label.zavi-switch,.z20-grid label.z20-toggle){
+  display:flex!important;align-items:center!important;justify-content:space-between!important;
+  flex-direction:row!important;gap:10px!important;
+  min-width:0!important;max-width:100%!important;box-sizing:border-box!important;
+  min-height:46px!important;height:auto!important;
+  margin:0!important;padding:8px 10px!important;
+  border:1px solid var(--z66-phone-line)!important;border-radius:10px!important;
+  background:var(--z66-phone-card)!important;background-image:none!important;
+  color:var(--z66-phone-ink)!important;
+  -webkit-text-fill-color:var(--z66-phone-ink)!important;
+  opacity:1!important;visibility:visible!important;
+  font-size:12.5px!important;font-weight:650!important;line-height:1.55!important;
+  white-space:normal!important;overflow:visible!important;
+}
+html[data-zavi-theme] body #content .zavi-clean-settings-hub :is(
+  .zavi-module-grid label.zavi-switch,.z20-grid label.z20-toggle) :is(
+  span,b,strong,small){
+  display:inline!important;min-width:0!important;max-width:100%!important;
+  font:inherit!important;line-height:inherit!important;
+  color:var(--z66-phone-ink)!important;
+  -webkit-text-fill-color:var(--z66-phone-ink)!important;
+  opacity:1!important;visibility:visible!important;
+  white-space:normal!important;overflow-wrap:break-word!important;
+}
+html[data-zavi-theme] body #content .zavi-clean-settings-hub :is(
+  .zavi-module-grid label.zavi-switch,.z20-grid label.z20-toggle) input[type=checkbox]{
+  appearance:auto!important;flex:none!important;opacity:1!important;
+  width:20px!important;height:20px!important;min-width:20px!important;
+  margin:0!important;accent-color:#087bc2!important;
+  -webkit-text-fill-color:initial!important;
+  box-shadow:none!important;
+}
+html[data-zavi-theme] body #content .zavi-clean-settings-hub :is(
+  .zavi-module-grid label.zavi-switch,.z20-grid label.z20-toggle):focus-within{
+  outline:2px solid #1597d0!important;outline-offset:1px;
+}
+html[data-zavi-theme] body #content .zavi-clean-settings-hub .zavi-settings-extra{
+  background:var(--z66-phone-card)!important;border-color:var(--z66-phone-line)!important;
+}
+html[data-zavi-theme] body #content .zavi-clean-settings-hub .zavi-settings-extra>summary{
+  background:var(--z66-phone-soft)!important;color:var(--z66-phone-ink)!important;
+  -webkit-text-fill-color:var(--z66-phone-ink)!important;
+}
+html[data-zavi-theme] body #content .zavi-clean-settings-hub .zavi-settings-extra :is(
+  .tiny-note,p:not(.zavi-settings-feature-name)){
+  color:var(--z66-phone-muted)!important;
+  -webkit-text-fill-color:var(--z66-phone-muted)!important;
+}
+/* A large empty server-status holder is not proof of offline failure. Keep
+   its refresh button but do not reserve a card-height blank area. */
+html[data-zavi-theme] body #content .zavi-clean-settings-hub :is(
+  #z652DevicePanel,#z20CloudPanel,.z20-status){
+  min-height:0!important;height:auto!important;max-height:none!important;
+}
+@media(max-width:350px){
+ html[data-zavi-theme] body #content .zavi-clean-settings-hub .zavi-module-grid{
+   grid-template-columns:minmax(0,1fr)!important;
+ }
+}
