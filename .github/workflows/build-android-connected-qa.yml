@@ -38,6 +38,7 @@ on:
       - 'scripts/stage-original-v6662-model.py'
       - 'apps/one/zavi-final-settings-store-v6559.js'
       - 'apps/one/zavi-approved-settings-v6662.css'
+      - 'apps/one/subscription-hub.css'
       - 'apps/one/zavi-three-theme-v6627.js'
       - 'apps/one/zavi-final-settings-common-v1.css'
       - 'apps/one/zavi-assistant-visibility-v6619.js'
@@ -348,7 +349,9 @@ jobs:
             approved_files=(
               'zavi-compact-workflow-v1.js','zavi-compact-workflow-v1.css',
               'zavi-warehouses-v1.js','zavi-barcode-label-v6700.js',
-              'zavi-product-adaptive-v6662.js','zavi-in-transit-v1.js'
+              'zavi-product-adaptive-v6662.js','zavi-in-transit-v1.js',
+              'zavi-approved-settings-v6662.css','subscription-hub.css',
+              'zavi-owner-dashboard-v6662.css'
             )
             for name in approved_files:
               apk_content=z.read('assets/'+name)
