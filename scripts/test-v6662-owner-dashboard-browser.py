@@ -92,6 +92,24 @@ with Session() as browser:
     assert len(basics['actions'])==8,basics
     assert len(basics['stats'])>=3 and len(basics['accounts'])==2,basics
     assert all(basics[k] for k in ('allDocs','monthly','rate','inventory','recent','journaling','customer')),basics
+    warningFold=browser.eval("""(()=>{
+      const root=document.querySelector('#content.z66d-root');
+      const warnings=[...root.querySelectorAll('.backup-reminder')];
+      const fold=root.querySelector(':scope > .z66d-setup-fold');
+      const direct=root.querySelectorAll(':scope > .backup-reminder').length;
+      const saved=warnings.map(w=>w.querySelectorAll('button[data-go],button[data-action]').length);
+      const initiallyClosed=fold?(!fold.open):null;
+      if(fold)fold.open=true;
+      const stillAccessible=warnings.every(w=>w.isConnected&&fold.contains(w));
+      if(fold)fold.open=false;
+      return {count:warnings.length,direct,hasFold:!!fold,initiallyClosed,
+        stillAccessible,buttons:saved,summary:fold?.querySelector('summary')?.textContent};
+    })()""")
+    assert warningFold['direct']==0,warningFold
+    if warningFold['count']:
+        assert warningFold['hasFold'] and warningFold['initiallyClosed'],warningFold
+        assert warningFold['stillAccessible'] and all(n>=1 for n in warningFold['buttons']),warningFold
+    print('PASS original store setup and encrypted backup actions kept inside one concise dashboard disclosure')
     approved=browser.eval("""(()=>{
       const root=document.querySelector('#content.z66d-root');
       return {
