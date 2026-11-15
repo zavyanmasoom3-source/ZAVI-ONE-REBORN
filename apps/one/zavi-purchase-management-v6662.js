@@ -39,18 +39,18 @@
    const header='<div class="z66pm-hero"><div class="z66pm-heading">'+
       '<span class="z66pm-eyebrow">ZAVI ONE · V66.62</span>'+
       '<h2>'+title('مدیریت خرید','د پېرود مدیریت','Purchase management')+'</h2>'+
-      '<p>'+title('خرید، واردات، دریافت گدام و حساب عرضه‌کنندگان','پېرود، واردات، ګدام او عرضه کوونکي',
-        'Purchases, imports, warehouse receipts and supplier accounts')+'</p>'+
+      '<p>'+title('خرید، واردات، گدام و عرضه‌کنندگان','پېرود، واردات، ګدام او عرضه کوونکي',
+        'Purchases, imports, stock and suppliers')+'</p>'+
       '<span class="z66pm-trade">'+title('کسب‌وکار فعال: ','فعال کاروبار: ','Business: ')+esc(business)+'</span></div></div>';
    const buttons='<div class="z66pm-actions" aria-label="'+title('عملیات خرید','د پېرود چارې','Purchase actions')+'">'+
       action('new','＋',title('خرید جدید','نوی پېرود','New purchase'),
-        title('فاکتور قطعی و پرداخت','وروستی بل او تادیه','Invoice and payment'),'data-action="purchase"')+
+        title('فاکتور و پرداخت','وروستی بل او تادیه','Invoice and payment'),'data-action="purchase"')+
       action('foreign','🌐',title('خرید خارجی','بهرنی پېرود','Foreign purchase'),
-        title('هر کشور، هر ارز، گمرک و مالیات','هر هېواد، اسعار، ګمرک او مالیه','All countries, currencies and import costs'),'data-z66pm-foreign="1"')+
+        title('هر کشور، ارز و گمرک','هر هېواد، اسعار، ګمرک او مالیه','Countries, currencies and customs'),'data-z66pm-foreign="1"')+
       action('transit','🚚',title('سفارش‌های در راه','په لار کې فرمایشونه','Orders in transit'),
-        title('ثبت سفارش، دریافت کالا و دریافت قسمی','فرمایش، ګدام ته رسېدل او قسمي ترلاسه کول','Order, receive and track partial arrivals'),'data-z66pm-view="orders"')+
+        title('سفارش و دریافت مرحله‌ای','فرمایش، ګدام ته رسېدل او قسمي ترلاسه کول','Order and receive in stages'),'data-z66pm-view="orders"')+
       action('return','↩',title('برگشت خرید','د پېرود بېرته ستنول','Purchase return'),
-        title('اصلاح موجودی و سند برگشت','موجودي او د ستنولو سند','Return document and stock correction'),'data-action="purchase_return"')+
+        title('برگشت کالا و اصلاح حساب','موجودي او د ستنولو سند','Return document and stock correction'),'data-action="purchase_return"')+
       '</div>';
    const menu='<nav class="z66pm-menu" aria-label="'+title('بخش‌های خرید','د پېرود برخې','Purchase sections')+'">'+
       '<button type="button" class="z66pm-nav active" data-z66pm-view="invoices" aria-pressed="true">'+title('فاکتورها','بلونه','Invoices')+'</button>'+
