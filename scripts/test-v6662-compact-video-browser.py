@@ -152,6 +152,40 @@ with Session() as browser:
             assert state['scroll']<=state['width']+6,state
             assert state['originalRefresh'] and state['offline'] and state['dates']>=4,state
     print('PASS 7/180/365 renewal choices separated in original server-backed subscription, 3 themes x 2 mobile widths')
+    # Debtors and expenses: preserve original forms and controls while making
+    # the empty and populated screens usable on a 360px owner phone.
+    for route in ('debtors','expenses'):
+        browser.route(route)
+        browser.until("""document.getElementById('content')?.classList.contains(
+          'z66-compact-'+%s)"""%json.dumps(route),
+          'native '+route+' compact styling attached',seconds=12)
+        for theme in ('light','dark','glass'):
+            browser.eval("window.ZaviThemeV29.set("+json.dumps(theme)+")")
+            for width in (360,420):
+                browser.command('Emulation.setDeviceMetricsOverride',{
+                    'width':width,'height':780,'deviceScaleFactor':1,'mobile':True,
+                    'screenWidth':width,'screenHeight':780})
+                data=browser.eval("""(()=>{
+                  const c=document.getElementById('content');
+                  const r=typeof page==='string'?page:'';
+                  const hero=c.querySelector(':scope>.debt-hero'),
+                    grid=c.querySelector(':scope>.stat-grid');
+                  const sourceButtons=r==='debtors'?
+                    c.querySelectorAll('[data-action=customer_payment],[data-action=contact]'):
+                    c.querySelectorAll('[data-action=expense]');
+                  return {route:r,client:c.clientWidth,scroll:c.scrollWidth,
+                    heroHeight:hero?.getBoundingClientRect().height||0,
+                    metrics:grid?.children.length||0,buttons:sourceButtons.length,
+                    hasSearch:!!c.querySelector('#searchInput'),
+                    nativeReceipts:r==='debtors'?!!c.querySelector('[data-action=customer_payment]'):true,
+                    card:!!c.querySelector('section.card')};
+                })()""")
+                assert data['route']==route and data['scroll']<=data['client']+6,data
+                assert data['card'] and data['buttons']>=1,data
+                if route=='debtors':
+                    assert data['heroHeight']>35 and data['hasSearch'] and data['nativeReceipts'],data
+                else: assert data['metrics']==2,data
+    print('PASS original debtor receipts, balances and expense record screens remain accessible across all three themes and phone widths')
     print('PASS user-video compact light/dark/glass settings contrast, 7 original groups, native toggles')
     print('PASS four compact native purchase actions, real supplier/in-transit tabs, 360/420px layout')
     print(json.dumps(report,ensure_ascii=False))
