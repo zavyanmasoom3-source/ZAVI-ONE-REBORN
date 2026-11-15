@@ -220,3 +220,85 @@ body.zavi-settings-clean-active #content > [data-zavi-legacy-heading="true"]{
 body.zavi-settings-clean-active #content > .zavi-clean-settings-hub{
  display:block!important;overflow:visible;isolation:isolate;
 }
+
+
+/* V66.62 phone audit: visible modules three-theme contrast (2026-11-15). */
+/* Actual owner screenshot showed large white checkbox tiles with invisible
+   labels. These are live settings controls: never delete or replace them.
+   Force legible foreground/background together, also in pre-hub legacy
+   settings before the compact regrouping finishes. */
+html[data-zavi-theme="light"] body #content :is(
+  .zavi-module-grid .zavi-switch,.zavi-module-grid label.zavi-switch,
+  .z20-grid .z20-toggle,.z20-grid label.z20-toggle){
+  display:flex!important;align-items:center!important;
+  justify-content:space-between!important;
+  gap:10px!important;min-height:46px!important;max-width:100%!important;
+  border:1px solid #bfd4e9!important;border-radius:10px!important;
+  padding:9px 11px!important;margin:0!important;
+  background:#edf5fd!important;background-image:none!important;
+  color:#17344f!important;-webkit-text-fill-color:#17344f!important;
+  opacity:1!important;visibility:visible!important;
+  box-shadow:none!important;
+  font-size:13px!important;font-weight:650!important;
+  line-height:1.5!important;overflow-wrap:anywhere!important;
+  text-shadow:none!important;
+}
+html[data-zavi-theme="light"] body #content :is(
+  .zavi-module-grid .zavi-switch,.z20-grid .z20-toggle) :is(
+    span,strong,b,small,.z20-toggle-label,.zavi-module-title){
+  color:#17344f!important;-webkit-text-fill-color:#17344f!important;
+  opacity:1!important;visibility:visible!important;
+  text-shadow:none!important;
+}
+html[data-zavi-theme="light"] body #content :is(
+  .zavi-module-grid .zavi-switch,.z20-grid .z20-toggle) input[type=checkbox]{
+  display:block!important;flex:0 0 19px!important;
+  width:19px!important;height:19px!important;
+  accent-color:#0a6cac!important;
+  opacity:1!important;visibility:visible!important;
+  -webkit-text-fill-color:initial!important;
+}
+html:is([data-zavi-theme="dark"],[data-zavi-theme="glass"]) body #content :is(
+  .zavi-module-grid .zavi-switch,.z20-grid .z20-toggle){
+  border:1px solid var(--z66s-line,#537dbc)!important;
+  background:var(--z66s-raised,#163968)!important;
+  background-image:none!important;
+  color:var(--z66s-text,#f6faff)!important;
+  -webkit-text-fill-color:var(--z66s-text,#f6faff)!important;
+  opacity:1!important;
+}
+html:is([data-zavi-theme="dark"],[data-zavi-theme="glass"]) body #content :is(
+  .zavi-module-grid .zavi-switch,.z20-grid .z20-toggle) :is(
+    span,strong,b,small,.z20-toggle-label){
+  color:var(--z66s-text,#f6faff)!important;
+  -webkit-text-fill-color:var(--z66s-text,#f6faff)!important;
+}
+#content .zavi-clean-settings-hub .zavi-module-grid,
+#content .zavi-clean-settings-hub .z20-grid{
+  grid-template-columns:minmax(0,1fr)!important;
+  gap:6px!important;min-width:0!important;max-width:100%!important;
+}
+#content .zavi-clean-settings-hub .zavi-settings-extra{
+  max-width:100%;min-width:0;overflow:hidden;
+}
+#content .zavi-clean-settings-hub .zavi-settings-extra :is(
+  .zavi-module-grid,.z20-grid){
+  margin:0!important;padding:9px!important;
+}
+#content .zavi-clean-settings-hub .zavi-settings-feature-body :is(
+  .zavi-module-grid,.z20-grid)>:is(label,div){
+  min-width:0;max-width:100%;
+}
+@media(max-width:620px){
+  #content .zavi-clean-settings-hub .zavi-settings-feature-body{
+    padding:7px!important;
+  }
+  #content .zavi-clean-settings-hub .zavi-settings-feature-body>.settings-card{
+    padding:10px!important;
+  }
+  #content .zavi-clean-settings-hub :is(
+   .zavi-settings-feature>summary,.zavi-settings-extra>summary){
+    font-size:13px!important;line-height:1.5!important;
+    min-height:44px!important;
+  }
+}
