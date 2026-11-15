@@ -115,6 +115,43 @@ with Session() as browser:
         assert purchases['supplierTab'] and purchases['inTransitTab'],purchases
         assert all(h>=44 and h<=135 for h in purchases['heights']),purchases
         assert purchases['scroll']<=purchases['width']+6,purchases
+    # Screenshot: renewal requests previously ran into each other with no
+    # separate card styling. Check all three real WhatsApp links & layouts;
+    # never click/send a renewal or change the server subscription.
+    browser.route('subscription')
+    browser.until("""!!document.querySelector('#content #zaviSubscriptionHub .zsh-renewal-requests')""",
+                  'original subscription and renewal screen mounted',seconds=15)
+    for theme in ('light','dark','glass'):
+        browser.eval("window.ZaviThemeV29.set("+json.dumps(theme)+")")
+        for width in (360,420):
+            browser.command('Emulation.setDeviceMetricsOverride',{
+                'width':width,'height':780,'deviceScaleFactor':1,'mobile':True,
+                'screenWidth':width,'screenHeight':780})
+            state=browser.eval("""(()=>{
+              const root=document.querySelector('#content #zaviSubscriptionHub');
+              const nav=root.querySelector('.zsh-renewal-requests');
+              const links=[...nav.querySelectorAll('.zsh-duration-request')];
+              return {
+                links:links.map(el=>{
+                  const r=el.getBoundingClientRect(),s=getComputedStyle(el);
+                  return {days:el.dataset.zaviRenewRequest,href:el.getAttribute('href'),
+                    text:el.textContent.trim(),width:r.width,height:r.height,
+                    bg:s.backgroundColor,ink:s.color};
+                }),
+                width:root.clientWidth,scroll:root.scrollWidth,
+                originalRefresh:!!root.querySelector('#zaviAnnualRefresh'),
+                offline:!!root.querySelector('[data-zavi-auto-offline-card]'),
+                dates:root.querySelectorAll('.zsh-row').length,
+                px:[...links.map(el=>Math.round(el.getBoundingClientRect().left))]
+              };
+            })()""")
+            assert [x['days'] for x in state['links']]==['7','180','365'],state
+            assert all(x['href'].startswith('https://wa.me/') and x['height']>=44
+                       and x['width']>=85 and x['text'] for x in state['links']),state
+            assert len(set(state['px']))==3,state
+            assert state['scroll']<=state['width']+6,state
+            assert state['originalRefresh'] and state['offline'] and state['dates']>=4,state
+    print('PASS 7/180/365 renewal choices separated in original server-backed subscription, 3 themes x 2 mobile widths')
     print('PASS user-video compact light/dark/glass settings contrast, 7 original groups, native toggles')
     print('PASS four compact native purchase actions, real supplier/in-transit tabs, 360/420px layout')
     print(json.dumps(report,ensure_ascii=False))
