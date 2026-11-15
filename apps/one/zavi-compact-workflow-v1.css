@@ -1815,3 +1815,84 @@ html[data-zavi-theme="glass"] body #content .z66pm-root .z66pm-card{
    grid-column:1/-1;
  }
 }
+
+
+/* V66.62 phone: uncluttered ALL SECTIONS navigation without removing routes. */
+/* These are the real legacy/fullscreen menu entries. Their data-go actions,
+   module visibility and original navigation dispatch remain unchanged. */
+html.zavi-design-84 body :is(#za67-menu,#zrf-all){
+  --z66-more-gap:7px;
+}
+html.zavi-design-84 body #za67-menu .za67-panel,
+html.zavi-design-84 body #zrf-all .zrf-all-panel{
+  gap:0!important;
+  padding:calc(env(safe-area-inset-top,0px) + 7px)
+    10px calc(env(safe-area-inset-bottom,0px) + 9px)!important;
+}
+html.zavi-design-84 body #za67-menu .za67-head,
+html.zavi-design-84 body #zrf-all .zrf-all-brand{
+  min-height:42px!important;max-height:54px!important;
+  margin-bottom:6px!important;
+}
+html.zavi-design-84 body #za67-menu .za67-hero,
+html.zavi-design-84 body #zrf-all .zrf-all-hero{
+  min-height:52px!important;max-height:85px!important;
+  margin-bottom:8px!important;
+  padding:9px 12px!important;
+  border-radius:13px!important;
+  box-shadow:none!important;
+}
+html.zavi-design-84 body #za67-menu .za67-hero :is(h2,h3,strong),
+html.zavi-design-84 body #zrf-all .zrf-all-hero :is(h2,h3,strong){
+  font-size:clamp(16px,4vw,20px)!important;line-height:1.35!important;
+}
+html.zavi-design-84 body #za67-menu .za67-grid,
+html.zavi-design-84 body #zrf-all .zrf-all-grid{
+  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  grid-auto-rows:minmax(56px,auto)!important;
+  gap:var(--z66-more-gap)!important;
+  padding:1px 1px calc(25px + env(safe-area-inset-bottom,0px))!important;
+  scroll-padding-bottom:calc(20px + env(safe-area-inset-bottom,0px));
+}
+html.zavi-design-84 body #za67-menu .za67-item,
+html.zavi-design-84 body #zrf-all .zrf-all-item{
+  min-height:56px!important;height:auto!important;
+  padding:7px 9px!important;gap:7px!important;
+  border-radius:11px!important;
+  box-shadow:none!important;
+  font-size:clamp(11px,3vw,13px)!important;
+  line-height:1.4!important;
+}
+html.zavi-design-84 body #za67-menu .za67-symbol,
+html.zavi-design-84 body #zrf-all .zrf-all-icon{
+  flex:0 0 29px!important;width:29px!important;height:29px!important;
+  border-radius:9px!important;font-size:16px!important;
+}
+html.zavi-design-84 body #za67-menu .za67-label,
+html.zavi-design-84 body #zrf-all .zrf-all-name{
+  font-size:inherit!important;line-height:1.42!important;
+  font-weight:750!important;min-width:0!important;
+  overflow-wrap:break-word!important;
+}
+html.zavi-design-84 body #za67-menu .za67-chevron,
+html.zavi-design-84 body #zrf-all .zrf-all-chevron{
+  flex:0 0 8px!important;width:8px!important;
+  font-size:12px!important;
+}
+html.zavi-design-84 body :is(#za67-menu,#zrf-all) :is(button,a):focus-visible{
+  outline:3px solid #43c8ef!important;outline-offset:1px!important;
+}
+@media(min-width:650px){
+ html.zavi-design-84 body #za67-menu .za67-grid,
+ html.zavi-design-84 body #zrf-all .zrf-all-grid{
+   grid-template-columns:repeat(3,minmax(0,1fr))!important;
+ }
+}
+@media(max-width:370px){
+ html.zavi-design-84 body #za67-menu .za67-grid,
+ html.zavi-design-84 body #zrf-all .zrf-all-grid{gap:5px!important}
+ html.zavi-design-84 body #za67-menu .za67-item,
+ html.zavi-design-84 body #zrf-all .zrf-all-item{
+   padding:7px 6px!important;min-height:56px!important;
+ }
+}
