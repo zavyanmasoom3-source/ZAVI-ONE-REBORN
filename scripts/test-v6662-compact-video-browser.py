@@ -178,7 +178,7 @@ with Session() as browser:
                     metrics:grid?.children.length||0,buttons:sourceButtons.length,
                     hasSearch:!!c.querySelector('#searchInput'),
                     nativeReceipts:r==='debtors'?!!c.querySelector('[data-action=customer_payment]'):true,
-                    card:!!c.querySelector('section.card')};
+                    card:!!c.querySelector('.card')};
                 })()""")
                 assert data['route']==route and data['scroll']<=data['client']+6,data
                 assert data['card'] and data['buttons']>=1,data
